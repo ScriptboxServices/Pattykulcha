@@ -28,10 +28,10 @@ import Link from "next/link";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    Chana: "/images/footer/cart1.png",
-    "Impli Pyaz Chutney": "/images/footer/cart2.png",
-    "Amul Butter": "/images/footer/cart3.png",
-    "Normal Butter": "/images/footer/cart3.png",
+    Chana: "/images/landingpage/landing1.svg",
+    "Impli Pyaz Chutney": "/images/landingpage/landing2.svg",
+    "Amul Butter": "/images/landingpage/landing3.svg",
+    "Normal Butter": "/images//landingpage/landing3.svg",
     Pickle: "/images/footer/cart3.png",
     "Regular Coca-Cola": "/images/drinks/coke.png",
     "Large Coca-Cola": "/images/drinks/coke.png",
@@ -55,30 +55,30 @@ export const coffeeOptions = [
   {
     name: "Espresso",
     price: 3.5,
-    image: "/images/drinks/espresso.png", // Replace with the actual image path
+    image: "/images/landingpage/Espresso.png",
   },
   {
     name: "Caffe Latte",
     price: 3.5,
-    image: "/images/drinks/caffe-latte.png", // Replace with the actual image path
+    image: "/images/landingpage/caffe-latte.png",
   },
   {
     name: "Cold Coffee",
     price: 3.5,
-    image: "/images/drinks/cold-coffee.png", // Replace with the actual image path
+    image: "/images/landingpage/caffe-latte.png",
   },
 ];
 
-const teaOptions = [
+export const teaOptions = [
   {
     name: "Tea",
     price: 3.5,
-    image: "/images/drinks/milk-tea.png", // Replace with actual image path
+    image: "/images/landingpage/Caffe-latte.png",
   },
   {
     name: "Masala Tea",
     price: 3.5,
-    image: "/images/drinks/masala-tea.png", // Replace with actual image path
+    image: "/images/landingpage/Caffe-latte.png",
   },
 ];
 
@@ -86,9 +86,13 @@ export const lassiOptions = [
   {
     name: "Salted Lassi",
     price: 5.5,
-    image: "/images/drinks/salted-lassi.png",
+    image: "images/landingpage/Sweet-lassi.png",
   },
-  { name: "Sweet Lassi", price: 5.5, image: "/images/drinks/salted-lassi.png" },
+  {
+    name: "Sweet Lassi",
+    price: 5.5,
+    image: "/images/landingpage/Sweet-lassi.png",
+  },
 ];
 
 export const drinkOptions = [
@@ -130,7 +134,6 @@ export const drinkOptions = [
     image: "/images/drinks/sprite.png",
   },
 ];
-
 const MenuPage = () => {
   const {
     size,
@@ -139,12 +142,14 @@ const MenuPage = () => {
     setPrice,
     cal,
     setCal,
-    includedItems,
-    setIncludedItems,
+    includedItems2,
+    setIncludedItems2,
+    includedItems1,
     extraItems,
     setPlasticware,
-    quantity,
-    setQuantity,
+    selectedkulchas,
+    count,
+    setCount,
     selectedDrinks,
     setSelectedDrinks,
     selectedLassis,
@@ -204,11 +209,11 @@ const MenuPage = () => {
     };
 
     if (
-      !includedItems.some((includedItem) =>
+      !includedItems2.some((includedItem) =>
         includedItem.items.some((item) => item.name == itemName)
       )
     ) {
-      setIncludedItems([...includedItems, newItem]);
+      setIncludedItems2([...includedItems2, newItem]);
     }
   };
 
@@ -223,7 +228,7 @@ const MenuPage = () => {
   };
 
   const handleRemoveItem = (itemId: string) => {
-    setIncludedItems(includedItems.filter((item) => item.id !== itemId));
+    setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
     setSelectedLassis(selectedLassis.filter((lassi) => lassi !== itemId));
   };
@@ -258,19 +263,14 @@ const MenuPage = () => {
                 color: "#000000",
               }}
             >
-              AMRITSARI KULCHA
+              {selectedkulchas?.[selectedkulchas.length - 1]?.name}
             </Typography>
             <Typography
               variant="body1"
               sx={{ marginBottom: "1rem", color: "#000000" }}
             >
-              A classic North Indian delight, Kulcha features a crispy, flaky
-              crust with a savory spiced potato filling. Baked to perfection in
-              a traditional tandoor, this kulcha pairs wonderfully with tangy
-              chana and a touch of fresh butter, bringing the authentic flavors
-              to your plate.
+              {selectedkulchas?.[selectedkulchas.length - 1]?.desc}
             </Typography>
-
             <Box sx={{ marginTop: "2.5rem" }}>
               <ToggleButtonGroup
                 value={size}
@@ -298,9 +298,9 @@ const MenuPage = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ textAlign: "right" }}>
+          <Box sx={{ textAlign: "right", marginLeft: 13 }}>
             <img
-              src="/images/footer/main2.png"
+              src={selectedkulchas?.[selectedkulchas.length - 1]?.image}
               alt="Amritsari Kulcha"
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -311,7 +311,6 @@ const MenuPage = () => {
             sx={{
               marginTop: "2rem",
               paddingTop: "2rem",
-              marginBottom: "4rem",
               borderTop: "1px solid #dcdcdc",
             }}
           >
@@ -319,7 +318,7 @@ const MenuPage = () => {
               What's Included
             </Typography>
             <Grid container spacing={2} justifyContent="flex-start">
-              {includedItems.length == 0 ? (
+              {includedItems1.length == 0 ? (
                 <Grid item>
                   <Box
                     sx={{
@@ -346,7 +345,7 @@ const MenuPage = () => {
                   </Box>
                 </Grid>
               ) : (
-                includedItems.map((item) => (
+                includedItems1.map((item) => (
                   <Grid item xs={12} sm={6} md={2} key={item.id}>
                     <Box
                       sx={{
@@ -354,6 +353,92 @@ const MenuPage = () => {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "flex-start",
+                        padding: "1rem",
+                        backgroundColor: "white",
+                        border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        position: "relative",
+                        cursor: "pointer",
+                        height: "300px",
+                        width: "175px",
+                        margin: "0.5rem",
+                        boxShadow: item
+                          ? "0 0 10px rgba(30, 144, 255, 0.5)"
+                          : "none",
+                      }}
+                    >
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "#1e90ff",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <img
+                        src={getImageSrc(item.items[0].name)}
+                        alt={item.items[0].name}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Typography variant="body1" color="textPrimary">
+                        {item.items[0].name}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ color: "#021e3a", marginTop: 4 }}
+            >
+              Additional items
+            </Typography>
+            <Grid container spacing={2} justifyContent="flex-start">
+              {includedItems2.length == 0 ? (
+                <Grid item>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "1rem",
+                      backgroundColor: "white",
+                      border: "2px solid #dcdcdc",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                      height: "300px",
+                      width: "175px",
+                      margin: "1rem",
+                    }}
+                  >
+                    <AddCircleOutlineIcon
+                      sx={{ fontSize: "4rem", color: "#1e90ff" }}
+                    />
+                    <Typography variant="body1" color="textSecondary">
+                      Add Items
+                    </Typography>
+                  </Box>
+                </Grid>
+              ) : (
+                includedItems2.map((item) => (
+                  <Grid item xs={12} sm={6} md={2} key={item.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "space-between", // Changed to space-between
                         padding: "1rem",
                         backgroundColor: "white",
                         border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
@@ -402,7 +487,7 @@ const MenuPage = () => {
                           backgroundColor: "transparent",
                           color: "#1e90ff",
                           border: "1px solid #1e90ff",
-                          marginTop: "1rem",
+                          marginTop: "auto", // Pushes the button to the bottom
                           borderRadius: "20px",
                           textTransform: "none",
                         }}
@@ -419,8 +504,8 @@ const MenuPage = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "2rem",
-              paddingTop: "2rem",
+              marginTop: "0.5rem",
+              paddingTop: "1.0rem",
               marginBottom: "4rem",
               borderTop: "1px solid #dcdcdc",
             }}
@@ -666,15 +751,18 @@ const MenuPage = () => {
           }}
         >
           <Box display="flex" justifyContent="flex-end" alignItems="center">
-            <Link href={"/checkout"}>
-              <Button
-                variant="contained"
-                color="warning"
-                disabled={includedItems.length == 0}
-              >
-                Checkout
-              </Button>
-            </Link>
+            {/* <Link href={"/checkout"}> */}
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => setCount(count + 1)}
+              disabled={
+                includedItems1.length == 0 && includedItems2.length == 0
+              }
+            >
+              Add to order
+            </Button>
+            {/* </Link> */}
           </Box>
         </Box>
       </Grid>

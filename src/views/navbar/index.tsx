@@ -15,10 +15,11 @@ import {
   ListItemText,
   Divider,
   styled,
+  Badge,
 } from "@mui/material";
-
 import MenuIcon from "@mui/icons-material/Menu";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useMenuContext } from "@/context";
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "white",
@@ -56,6 +57,7 @@ const OrderButton = styled(Button)({
 
 const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { count } = useMenuContext(); // Fetch count from context
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -107,8 +109,13 @@ const Navbar: React.FC = () => {
     <>
       <StyledAppBar position="static">
         <StyledToolbar>
-          <Typography variant="h6" component="div" sx={{ mr: 5 }}>
-            LOGO
+          <Typography
+            sx={{
+              color: "#333333", // Adjust the color to match your site design
+              fontWeight: "bold",
+            }}
+          >
+            PATTYKULCHA
           </Typography>
           <Box
             sx={{
@@ -127,6 +134,22 @@ const Navbar: React.FC = () => {
           <Box
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
+            <Link href="/checkout">
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="cart"
+              sx={{ ml: 2 }}
+            >
+              <Badge
+                badgeContent={count > 0 ? count : undefined}
+                color="error"
+                invisible={count === 0}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+            </Link>
             <Link href="/createaccount" passHref>
               <NavButton>Sign Up</NavButton>
             </Link>
@@ -137,16 +160,16 @@ const Navbar: React.FC = () => {
             <Link href="/cart" passHref>
               <OrderButton variant="contained">Order Now</OrderButton>
             </Link>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ display: { xs: "flex", md: "none" } }}
+              onClick={handleDrawerToggle}
+            >
+              <MenuIcon />
+            </IconButton>
           </Box>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ display: { xs: "flex", md: "none" } }}
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
         </StyledToolbar>
       </StyledAppBar>
       <Drawer

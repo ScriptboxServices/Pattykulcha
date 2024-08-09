@@ -8,12 +8,19 @@ import React, {
   useEffect,
 } from "react";
 
-interface IncludedItem {
+export interface IncludedItem {
   id: string;
   items: Array<{
     name: string;
     price: number;
   }>;
+}
+
+export interface Kulcha {
+  name: string;
+  desc: string;
+  image: string;
+  price: number;
 }
 
 interface MenuContextType {
@@ -23,8 +30,12 @@ interface MenuContextType {
   setPrice: (price: number) => void;
   cal: number;
   setCal: (cal: number) => void;
-  includedItems: IncludedItem[];
-  setIncludedItems: (items: IncludedItem[]) => void;
+  selectedkulchas: Kulcha[];
+  setSelectedKulchas: (kulchas: Kulcha[]) => void;
+  includedItems1: IncludedItem[];
+  setIncludedItems1: (items: IncludedItem[]) => void;
+  includedItems2: IncludedItem[];
+  setIncludedItems2: (items: IncludedItem[]) => void;
   quantities: { [key: string]: number };
   setQuantityForItem: (itemName: string, quantity: number) => void;
   extraItems: string[];
@@ -41,6 +52,8 @@ interface MenuContextType {
   setSelectedLassis: (lassis: string[]) => void;
   total: number;
   setTotal: (total: number) => void;
+  count: number; // New property
+  setCount: (count: number) => void; // New setter
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -57,14 +70,29 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [size, setSize] = useState("regular");
   const [price, setPrice] = useState(0);
   const [cal, setCal] = useState(640);
-  const [includedItems, setIncludedItems] = useState<IncludedItem[]>([]);
+  const [selectedkulchas, setSelectedKulchas] = useState<Kulcha[]>([]);
+  const [includedItems1, setIncludedItems1] = useState<IncludedItem[]>([
+    {
+      id: "chana",
+      items: [{ name: "Chana", price: 50 }],
+    },
+    {
+      id: "impli-pyaz-chutney",
+      items: [{ name: "Impli Pyaz Chutney", price: 60 }],
+    },
+    {
+      id: "amul-butter",
+      items: [{ name: "Amul Butter", price: 70 }],
+    },
+  ]);
+  const [includedItems2, setIncludedItems2] = useState<IncludedItem[]>([]);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [extraItems, setExtraItems] = useState<string[]>([
     "Chana",
     "Impli Pyaz Chutney",
     "Amul Butter",
     "Normal Butter",
-    "Pickle"
+    "Pickle",
   ]);
   const [plasticware, setPlasticware] = useState("no");
   const [instructions, setInstructions] = useState("");
@@ -72,6 +100,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [selectedDrinks, setSelectedDrinks] = useState<string[]>([]);
   const [selectedLassis, setSelectedLassis] = useState<string[]>([]);
   const [total, setTotal] = useState(0);
+  const [count, setCount] = useState(0); // New state
 
   useEffect(() => {
     const getStoredData = (key: string, defaultValue: any) => {
@@ -82,7 +111,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setSize(getStoredData("size", "regular"));
     setPrice(getStoredData("price", 0));
     setCal(getStoredData("cal", 640));
-    setIncludedItems(getStoredData("includedItems", []));
+    setSelectedKulchas(getStoredData("selectedkulchas", []));
+    setIncludedItems1(getStoredData("includedItems1", []));
+    setIncludedItems2(getStoredData("includedItems2", []));
     setQuantities(getStoredData("quantities", {}));
     setExtraItems(getStoredData("extraItems", [
       "Chana",
@@ -96,13 +127,16 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setSelectedDrinks(getStoredData("selectedDrinks", []));
     setSelectedLassis(getStoredData("selectedLassis", []));
     setTotal(getStoredData("total", 0));
+    setCount(getStoredData("count", 0)); // New state
   }, []);
 
   useEffect(() => {
     localStorage.setItem("size", JSON.stringify(size));
     localStorage.setItem("price", JSON.stringify(price));
     localStorage.setItem("cal", JSON.stringify(cal));
-    localStorage.setItem("includedItems", JSON.stringify(includedItems));
+    localStorage.setItem("selectedkulchas", JSON.stringify(selectedkulchas));
+    localStorage.setItem("includedItems1", JSON.stringify(includedItems1));
+    localStorage.setItem("includedItems2", JSON.stringify(includedItems2));
     localStorage.setItem("quantities", JSON.stringify(quantities));
     localStorage.setItem("extraItems", JSON.stringify(extraItems));
     localStorage.setItem("plasticware", JSON.stringify(plasticware));
@@ -111,11 +145,14 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("selectedDrinks", JSON.stringify(selectedDrinks));
     localStorage.setItem("selectedLassis", JSON.stringify(selectedLassis));
     localStorage.setItem("total", JSON.stringify(total));
+    localStorage.setItem("count", JSON.stringify(count)); // New state
   }, [
     size,
     price,
     cal,
-    includedItems,
+    selectedkulchas,
+    includedItems1,
+    includedItems2,
     quantities,
     extraItems,
     plasticware,
@@ -124,6 +161,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     selectedDrinks,
     selectedLassis,
     total,
+    count, // New state
   ]);
 
   const setQuantityForItem = (itemName: string, quantity: number) => {
@@ -140,8 +178,12 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setPrice,
     cal,
     setCal,
-    includedItems,
-    setIncludedItems,
+    selectedkulchas,
+    setSelectedKulchas,
+    includedItems1,
+    setIncludedItems1,
+    includedItems2,
+    setIncludedItems2,
     quantities,
     setQuantityForItem,
     extraItems,
@@ -158,6 +200,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setSelectedLassis,
     total,
     setTotal,
+    count, // New property
+    setCount, // New setter
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

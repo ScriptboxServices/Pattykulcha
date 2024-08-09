@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import {
@@ -23,77 +23,88 @@ const menuItems = [
     name: "Mix Kulcha",
     image: "/images/landingpage/menu1.png",
     desc: "Crisp Indian bread filled with potato, cauliflower, peas, onion, corn, coriander, carrot, ginger, green chilli and beetroot, delivering a savoury taste.",
+    price: 9.99,
   },
   {
     name: "Aloo Kulcha",
     image: "/images/landingpage/menu2.png",
     desc: "A tender, golden leavened bread stuffed with potato and onion, cooked in a tandoor and served with chana.",
+    price: 9.99,
   },
   {
     name: "Onion Kulcha",
     image: "/images/landingpage/menu3.png",
     desc: "A warm, flavorful Indian bread stuffed with onion, and topped with rich masala, giving a satisfying taste.",
+    price: 9.99,
   },
   {
     name: "Gobi Kulcha",
-    image: "/images/landingpage/image5.jpg",
+    image: "/images/landingpage/menu4.png",
     desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
+    price: 9.99,
   },
   {
     name: "Paneer Kulcha",
     image: "/images/landingpage/menu5.png",
     desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
+    price: 12.99,
   },
   {
     name: "Hot & Spicy Mix Kulcha",
     image: "/images/landingpage/menu6.png",
     desc: "A golden and flaky Indian bread filled with potato, cauliflower, onion, carrot, ginger, beetroot, corn, coriander, peas, and green chilli, having a tempting taste.",
+    price: 9.99,
   },
 ];
 
-interface IncludedItem {
-  id: string;
-  items: { name: string; price: number }[];
-}
-
-
 const MenuSection = () => {
-  const {  setIncludedItems ,includedItems} = useMenuContext();
+  const { setIncludedItems1, includedItems1, setSelectedKulchas } =
+    useMenuContext();
 
-  const router=useRouter();
+  const router = useRouter();
 
-  const handleAddItem = (itemName: string) => {
+  const handleAddItem = (
+    itemName: string,
+    desc: string,
+    image: string,
+    price: number
+  ) => {
     const itemId = uuidv4();
 
-    // Determine the price for the item
-    const drink = drinkOptions.find((drink) => drink.name == itemName);
-    const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
+    // // Determine the price for the item
+    // const drink = drinkOptions.find((drink) => drink.name == itemName);
+    // const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
 
-    const price =
-      drink?.price ||
-      lassi?.price ||
-      (itemName == "Chana"
-        ? 3.0
-        : itemName == "Impli Pyaz Chutney"
-        ? 2.0
-        : itemName == "Amul Butter"
-        ? 1.1
-        : itemName == "Normal Butter"
-        ? 0.75
-        : 3); // Default price if item is not in the above lists
+    // const price =
+    //   drink?.price ||
+    //   lassi?.price ||
+    //   (itemName == "Chana"
+    //     ? 3.0
+    //     : itemName == "Impli Pyaz Chutney"
+    //     ? 2.0
+    //     : itemName == "Amul Butter"
+    //     ? 1.1
+    //     : itemName == "Normal Butter"
+    //     ? 0.75
+    //     : 3); // Default price if item is not in the above lists
 
-    const newItem= {
-      id: itemId,
-      items: [{ name: itemName, price }],
-    };
+    // const newItem= {
+    //   id: itemId,
+    //   items: [{ name: itemName, price }],
+    // };
 
-    if (
-      !includedItems.some((includedItem) =>
-        includedItem.items.some((item) => item.name == itemName)
-      )
-    ) {
-      setIncludedItems([...includedItems, newItem]);
-    }
+    // if (
+    //   !includedItems1.some((includedItem) =>
+    //     includedItem.items.some((item) => item.name == itemName)
+    //   )
+    // ) {
+    //   setIncludedItems1([...includedItems1, newItem]);
+    // }
+
+    const newKulcha = { name: itemName, desc, image, price };
+
+    // Add the new item to the selectedkulchas array
+    setSelectedKulchas((prevKulchas) => [...prevKulchas, newKulcha]);
   };
 
   return (
@@ -108,9 +119,9 @@ const MenuSection = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center", // Center the title
+          justifyContent: "center",
           alignItems: "center",
-          marginBottom: 14, // Increase margin below the title for spacing
+          marginBottom: 14,
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -118,7 +129,7 @@ const MenuSection = () => {
             variant="h4"
             component="h2"
             sx={{
-              color: "#333333", // Adjust the color to match your site design
+              color: "#333333",
               fontWeight: "bold",
             }}
           >
@@ -136,22 +147,22 @@ const MenuSection = () => {
               sm={6}
               md={4}
               key={index}
-              sx={{ paddingLeft: 2, paddingRight: 2, marginBottom: 6 }} // Added marginBottom
+              sx={{ paddingLeft: 2, paddingRight: 2, marginBottom: 6 }}
             >
               <Card
                 sx={{
                   maxWidth: 345,
                   height: "100%",
                   margin: "0 auto",
-                  borderRadius: "20px", // Rounded corners for the card
-                  overflow: "visible", // Make sure overflow is visible to show the image
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Light shadow effect
+                  borderRadius: "20px",
+                  overflow: "visible",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between", // Ensure that the content is spaced evenly
-                  position: "relative", // Required for positioning the image
-                  paddingTop: "80px", // Add space at the top for the image
-                  paddingBottom: "10px", // Add padding at the bottom of the card
+                  justifyContent: "space-between",
+                  position: "relative",
+                  paddingTop: "80px",
+                  paddingBottom: "10px",
                 }}
               >
                 <CardMedia
@@ -159,24 +170,38 @@ const MenuSection = () => {
                   image={item.image}
                   alt={item.name}
                   sx={{
-                    borderRadius: "50%", // Make the image circular
-                    width: "220px", // Set the width of the image
-                    height: "220px", // Set the height of the image
-                    position: "absolute", // Position the image absolutely
-                    top: "-74px", // Adjust to move the image to the visible area
-                    left: "50%", // Center the image horizontally
-                    transform: "translateX(-50%)", // Adjust the centering
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Add shadow to the image
+                    borderRadius: "50%",
+                    width: "220px",
+                    height: "220px",
+                    position: "absolute",
+                    top: "-74px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                   }}
                 />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "-50px",
+                    left: "30px",
+                    backgroundColor: "#c33d32",
+                    padding: "4px 8px",
+                    borderRadius: "4px",
+                    color: "#FFF",
+                    fontWeight: "bold",
+                  }}
+                >
+                  PRICE ${item.price.toFixed(2)}
+                </Box>
                 <CardContent
                   sx={{
-                    flexGrow: 1, // Allow the content to grow to fill available space
+                    flexGrow: 1,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     textAlign: "center",
-                    marginTop: "80px", // Add space below the image for the content
+                    marginTop: "80px",
                   }}
                 >
                   <Typography
@@ -186,15 +211,15 @@ const MenuSection = () => {
                     sx={{
                       textAlign: "center",
                       fontWeight: 600,
-                      fontSize: "1.2rem", // Larger font for the dish name
-                      minHeight: "40px", // Set a minimum height for the title to ensure uniformity
+                      fontSize: "1.2rem",
+                      minHeight: "40px",
                     }}
                   >
                     {item.name}
                   </Typography>
                   <Box
                     sx={{
-                      flexGrow: 1, // Allow the description box to take up remaining space
+                      flexGrow: 1,
                       display: "flex",
                     }}
                   >
@@ -230,8 +255,8 @@ const MenuSection = () => {
                       },
                     }}
                     onClick={() => {
-                      handleAddItem(item.name)
-                      router.push("/cart")
+                      handleAddItem(item.name, item.desc, item.image,item.price);
+                      router.push("/cart");
                     }}
                   >
                     Order Now

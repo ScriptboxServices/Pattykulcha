@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -13,32 +13,61 @@ import {
 } from "@mui/material";
 import { Remove, Add } from "@mui/icons-material";
 import Image from "next/image";
-import { useMenuContext } from "@/context";
+import { IncludedItem, Kulcha, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 
-// Define types for item and context
-interface Item {
-  id: string;
-  items: Array<{
-    name: string;
-    price: number;
-  }>;
-}
-
-interface MenuContextType {
-  includedItems: Item[];
-  setIncludedItems: React.Dispatch<React.SetStateAction<Item[]>>;
-  quantities: Record<string, number>;
-  setQuantityForItem: (id: string, quantity: number) => void;
-}
+// Type guard to check if the item is an IncludedItem
+const isIncludedItem = (
+  item: Kulcha | IncludedItem
+): item is IncludedItem => {
+  return (item as IncludedItem).items !== undefined;
+};
 
 const OrderHome: React.FC = () => {
   const {
-    includedItems,
-    setIncludedItems,
+    selectedkulchas,
+    includedItems1,
+    includedItems2,
     quantities,
     setQuantityForItem,
-  } = useMenuContext() as MenuContextType;
+  } = useMenuContext();
+
+  const router = useRouter();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const mergeItems = () => {
+    const combinedItems = [...selectedkulchas, ...includedItems1, ...includedItems2];
+
+    const itemMap = combinedItems.reduce((acc, item) => {
+      let itemName: string;
+      let itemPrice: number;
+
+      if (isIncludedItem(item)) {
+        itemName = item.items[0].name;
+        itemPrice = item.items[0].price;
+      } else {
+        itemName = item.name;
+        itemPrice = item.price; // Assuming price is not available for Kulcha items
+      }
+
+      if (acc[itemName]) {
+        acc[itemName].quantity += quantities[item.id] || 1;
+      } else {
+        acc[itemName] = {
+          id: item.id,
+          name: itemName,
+          price: itemPrice,
+          quantity: quantities[item.id] || 1,
+        };
+      }
+      return acc;
+    }, {} as Record<string, { id: string; name: string; price: number; quantity: number }>);
+
+    return Object.values(itemMap);
+  };
+
+  const mergedItems = mergeItems();
 
   const handleIncrease = (id: string) => {
     setQuantityForItem(id, (quantities[id] || 1) + 1);
@@ -49,24 +78,16 @@ const OrderHome: React.FC = () => {
   };
 
   const handleRemove = (id: string) => {
-    setIncludedItems((prevItems) =>
-      prevItems.filter((item) => item.id !== id)
-    );
+    // Remove item logic here
   };
 
   const calculateTotal = () => {
-    return includedItems
+    return mergedItems
       .reduce((total, item) => {
-        const itemPrice = item.items[0].price; // Assuming each item has a price stored in items array
-        return total + itemPrice * (quantities[item.id] || 1);
+        return total + item.price * item.quantity;
       }, 0)
       .toFixed(2);
   };
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const router = useRouter();
 
   return (
     <Box
@@ -82,7 +103,7 @@ const OrderHome: React.FC = () => {
       }}
     >
       <Container maxWidth="xl">
-        {includedItems.map((item) => (
+        {mergedItems.map((item) => (
           <Paper
             key={item.id}
             sx={{
@@ -90,13 +111,13 @@ const OrderHome: React.FC = () => {
               alignItems: "center",
               p: 4,
               backgroundColor: "#FFFFFF",
-              width: isSmallScreen ? "100%" : "57%", // Set card width to 600px or full width on small screens
+              width: isSmallScreen ? "100%" : "57%",
               boxShadow: "none",
               mb: 2,
               flexDirection: isSmallScreen ? "column" : "row",
               borderRadius: "12px",
               border: "1px solid #E5E7EB",
-              margin: "0 auto", // Center the card
+              margin: "0 auto",
               marginTop: "14px",
             }}
           >
@@ -109,7 +130,7 @@ const OrderHome: React.FC = () => {
             >
               <Image
                 src="/images/checkout/checkout2.png"
-                alt={item.items[0].name}
+                alt={item.name}
                 width={80}
                 height={80}
               />
@@ -119,10 +140,7 @@ const OrderHome: React.FC = () => {
                 variant="h6"
                 sx={{ fontWeight: "bold", color: "#1F2937", paddingBottom: "4px" }}
               >
-                {item.items[0].name}
-              </Typography>
-              <Typography variant="body1" sx={{ color: "#4B5563", mb: 1, pb: 2 }}>
-                {item.items.slice(1).map((subItem) => subItem.name).join(", ")}
+                {item.name}
               </Typography>
               <Box
                 sx={{
@@ -177,12 +195,15 @@ const OrderHome: React.FC = () => {
                 width: isSmallScreen ? "100%" : "auto",
               }}
             >
-              <Typography
-                variant="body1"
-                sx={{ color: "#1F2937", fontWeight: "bold", mr: 2 }}
-              >
-                ${item.items[0].price.toFixed(2)}
-              </Typography>
+              {/* Conditionally render price */}
+              {!(item.quantity == 1 && (item.name == "Chana" ||item.name == "Impli Pyaz Chutney" || item.name == "Amul Butter")) && (
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#1F2937", fontWeight: "bold", mr: 2 }}
+                >
+                  ${item.price.toFixed(2)}
+                </Typography>
+              )}
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <IconButton
                   onClick={() => handleDecrease(item.id)}
@@ -198,7 +219,7 @@ const OrderHome: React.FC = () => {
                   variant="body1"
                   sx={{ mx: 2, color: "#1F2937", fontWeight: "bold" }}
                 >
-                  {quantities[item.id] || 1}
+                  {item.quantity}
                 </Typography>
                 <IconButton
                   onClick={() => handleIncrease(item.id)}

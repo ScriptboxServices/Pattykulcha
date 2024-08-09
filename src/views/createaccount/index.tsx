@@ -10,17 +10,27 @@ import {
   Box,
   Container,
   CardContent,
-  IconButton,
+  Grid,
   InputAdornment,
+  Autocomplete
 } from "@mui/material";
+
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
+import { countryCodes } from "@/utils/constants";
+import { Icon } from "@iconify/react";
 
 interface CreateAccountFormData {
+  name: string;
   phone: string;
+  countryCode: string;
 }
+
+const filterOptions = (options: typeof countryCodes, state: any) =>
+  options.filter((option) =>
+    option.name.toLowerCase().includes(state.inputValue.toLowerCase())
+  );
 
 // Create a Yup schema for validation
 const createAccountSchema = yup.object().shape({
@@ -29,10 +39,7 @@ const createAccountSchema = yup.object().shape({
     .string()
     .required("Phone number is required")
     .min(10, "Phone number must be at least 10 digits long"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters long"),
+  countryCode: yup.string().required("Country code is required"),
 });
 
 const CreateAccount: React.FC = () => {
@@ -41,10 +48,8 @@ const CreateAccount: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateAccountFormData>({
-    resolver: yupResolver(createAccountSchema) as any,
+    resolver: yupResolver(createAccountSchema),
   });
-
-
 
   const onSubmit = (data: CreateAccountFormData) => {
     console.log(data);
@@ -55,7 +60,7 @@ const CreateAccount: React.FC = () => {
       component="main"
       maxWidth="xl"
       sx={{
-        backgroundImage: 'url(/images/bgimage.png)',
+        backgroundImage: "url(/images/bgimage.png)",
         height: "100vh",
         display: "flex",
         justifyContent: "center",
@@ -94,41 +99,109 @@ const CreateAccount: React.FC = () => {
               onSubmit={handleSubmit(onSubmit)}
               style={{ width: "100%" }}
             >
-              <Controller
-                name="phone"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState }) => (
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Phone Number"
-                    autoComplete="tel"
-                    {...field}
-                    error={!!fieldState.error}
-                    helperText={
-                      fieldState.error ? fieldState.error.message : null
-                    }
-                    InputProps={{
-                      style: { color: "black" },
-                      sx: {
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                          "&.Mui-focused": {
-                            backgroundColor: "black",
-                            color: "white",
-                          },
-                        },
-                      },
-                    }}
-                    InputLabelProps={{ style: { color: "black" } }}
+              <Grid container spacing={2}>
+                <Grid item xs={5}>
+                  <Controller
+                    name="countryCode"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <Autocomplete
+                        fullWidth
+                        defaultValue={countryCodes[0]}
+                        options={countryCodes}
+                        filterOptions={filterOptions}
+                        getOptionLabel={(option) =>
+                          `${option.name} (${option.phone})`
+                        }
+                        renderOption={(props, option) => (
+                          <Box component="li" {...props}>
+                            <Icon icon={option.icon} width={20} height={20} />
+                            {option.name} ({option.phone})
+                          </Box>
+                        )}
+                        value={
+                          countryCodes.find(
+                            (code) => code.phone === value
+                          ) || null
+                        }
+                        onChange={(event, newValue) =>
+                          onChange(newValue?.phone ?? "")
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Country Code"
+                            placeholder="Select Country Code"
+                            required
+                            error={!!errors.countryCode}
+                            helperText={errors.countryCode?.message ?? ""}
+                            InputProps={{
+                              ...params.InputProps,
+                              startAdornment: (
+                                <>
+                                  {params.InputProps.startAdornment}
+                                  <InputAdornment position="start">
+                                    <Icon
+                                      icon={
+                                        countryCodes.find(
+                                          (option) =>
+                                            option.phone === value
+                                        )?.icon || ""
+                                      }
+                                    />
+                                  </InputAdornment>
+                                </>
+                              ),
+                            }}
+                          />
+                        )}
+                      />
+                    )}
                   />
-                )}
-              />
+                </Grid>
+                <Grid item xs={7}>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        required
+                        fullWidth
+                        type="tel"
+                        label="Phone Number"
+                        placeholder="123-456-7890"
+                        value={value}
+                        onChange={onChange}
+                        error={!!errors.phone}
+                        helperText={errors.phone?.message ?? ""}
+                        inputProps={{
+                          maxLength: 10,
+                          pattern: "[0-9]*",
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Icon icon="ri:phone-fill" />
+                            </InputAdornment>
+                          ),
+                        }}
+                        InputLabelProps={{ style: { color: "black" } }}
+                        onKeyDown={(e) => {
+                          if (
+                            !/[0-9]/.test(e.key) &&
+                            e.key !== "Backspace" &&
+                            e.key !== "Delete" &&
+                            e.key !== "ArrowLeft" &&
+                            e.key !== "ArrowRight"
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
               <FormControlLabel
                 control={
                   <Checkbox

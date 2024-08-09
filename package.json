@@ -13,6 +13,8 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
+    "@iconify/icons-emojione": "^1.2.6",
+    "@iconify/react": "^5.0.2",
     "@mui/icons-material": "^5.16.6",
     "@mui/material-nextjs": "^5.16.6",
     "keen-slider": "^6.8.6",

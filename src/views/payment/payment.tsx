@@ -18,7 +18,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMenuContext } from "@/context";
+import { IncludedItem, Kulcha, useMenuContext } from "@/context";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
 
@@ -36,6 +36,12 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
+const isIncludedItem = (
+  item: Kulcha | IncludedItem
+): item is IncludedItem => {
+  return (item as IncludedItem).items !== undefined;
+};
+
 const CheckoutMain = () => {
   const {
     control,
@@ -45,7 +51,46 @@ const CheckoutMain = () => {
     resolver: yupResolver(validationSchema) as any,
   });
 
-  const { includedItems, quantities } = useMenuContext();
+  const {
+    selectedkulchas,
+    includedItems1,
+    includedItems2,
+    quantities,
+  } = useMenuContext();
+
+
+  const mergeItems = () => {
+    const combinedItems = [...selectedkulchas, ...includedItems1, ...includedItems2];
+
+    const itemMap = combinedItems.reduce((acc, item) => {
+      let itemName: string;
+      let itemPrice: number;
+
+      if (isIncludedItem(item)) {
+        itemName = item.items[0].name;
+        itemPrice = item.items[0].price;
+      } else {
+        itemName = item.name;
+        itemPrice = item.price; 
+      }
+
+      if (acc[itemName]) {
+        acc[itemName].quantity += quantities[item.id] || 1;
+      } else {
+        acc[itemName] = {
+          id: item.id,
+          name: itemName,
+          price: itemPrice,
+          quantity: quantities[item.id] || 1,
+        };
+      }
+      return acc;
+    }, {} as Record<string, { id: string; name: string; price: number; quantity: number }>);
+
+    return Object.values(itemMap);
+  };
+
+  const mergedItems1 = mergeItems();
 
   const onSubmit = (data: FormValues) => {
     console.log("Form Data: ", data);
@@ -53,13 +98,13 @@ const CheckoutMain = () => {
   };
 
   const calculateTotal = () => {
-    return includedItems
+    return mergedItems1
       .reduce((total, item) => {
-        const itemPrice = item.items[0].price; // Assuming each item has a price stored in items array
-        return total + itemPrice * (quantities[item.id] || 1);
+        return total + item.price * item.quantity;
       }, 0)
       .toFixed(2);
   };
+
 
   return (
     <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4 , pb: 8}}>
@@ -195,7 +240,7 @@ const CheckoutMain = () => {
 
                     <Box display="flex" justifyContent="space-between" mb={2}>
                       <Typography>Number of Items</Typography>
-                      <Typography>{includedItems.length}</Typography>
+                      <Typography>{mergedItems1.length}</Typography>
                     </Box>
                     <Divider sx={{ my: 2 }} />
                     <Box display="flex" justifyContent="space-between" mb={3}>
