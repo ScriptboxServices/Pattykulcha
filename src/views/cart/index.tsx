@@ -28,10 +28,11 @@ import Link from "next/link";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    "Chana": "/images/footer/cart1.png",
+    Chana: "/images/footer/cart1.png",
     "Impli Pyaz Chutney": "/images/footer/cart2.png",
     "Amul Butter": "/images/footer/cart3.png",
     "Normal Butter": "/images/footer/cart3.png",
+    Pickle: "/images/footer/cart3.png",
     "Regular Coca-Cola": "/images/drinks/coke.png",
     "Large Coca-Cola": "/images/drinks/coke.png",
     "Regular Coke Zero Sugar": "/images/drinks/coke-zero.png",
@@ -40,8 +41,13 @@ export const getImageSrc = (item: string) => {
     "Large Diet Coke": "/images/drinks/diet-coke.png",
     "Salted Lassi": "/images/drinks/salted-lassi.png",
     "Sweet Lassi": "/images/drinks/salted-lassi.png",
+    "Mix Kulcha": "/images/landingpage/menu1.png",
+    "Aloo Kulcha": "/images/landingpage/menu2.png",
+    "Onion Kulcha": "/images/landingpage/menu3.png",
+    "Gobi Kulcha": "/images/landingpage/image5.jpg",
+    "Paneer Kulcha": "/images/landingpage/menu5.png",
+    "Hot & Spicy Mix Kulcha": "/images/landingpage/menu6.png",
   };
-
   return images[item] || "/images/footer/default.png";
 };
 
@@ -60,7 +66,7 @@ export const coffeeOptions = [
     name: "Cold Coffee",
     price: 3.5,
     image: "/images/drinks/cold-coffee.png", // Replace with the actual image path
-  },
+  },
 ];
 
 const teaOptions = [
@@ -76,8 +82,14 @@ const teaOptions = [
   },
 ];
 
-const lassiOptions = [ { name: "Salted Lassi", price: 5.5, image: "/images/drinks/salted-lassi.png", }, { name: "Sweet Lassi", price: 5.5, image: "/images/drinks/salted-lassi.png" }, ];
-
+export const lassiOptions = [
+  {
+    name: "Salted Lassi",
+    price: 5.5,
+    image: "/images/drinks/salted-lassi.png",
+  },
+  { name: "Sweet Lassi", price: 5.5, image: "/images/drinks/salted-lassi.png" },
+];
 
 export const drinkOptions = [
   { name: "Regular Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
@@ -116,10 +128,8 @@ export const drinkOptions = [
     name: "Sprite",
     price: 3.0,
     image: "/images/drinks/sprite.png",
-  }
+  },
 ];
-
-
 
 const MenuPage = () => {
   const {
@@ -170,30 +180,32 @@ const MenuPage = () => {
     const itemId = uuidv4();
 
     // Determine the price for the item
-    const drink = drinkOptions.find((drink) => drink.name === itemName);
-    const lassi = lassiOptions.find((lassi) => lassi.name === itemName);
+    const drink = drinkOptions.find((drink) => drink.name == itemName);
+    const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
 
     const price =
       drink?.price ||
       lassi?.price ||
-      (itemName === "Chana"
+      (itemName == "Chana"
         ? 3.0
-        : itemName === "Impli Pyaz Chutney"
+        : itemName == "Impli Pyaz Chutney"
         ? 2.0
-        : itemName === "Amul Butter"
+        : itemName == "Amul Butter"
         ? 1.1
-        : itemName === "Normal Butter"
+        : itemName == "Normal Butter"
         ? 0.75
+        : itemName == "Pickle"
+        ? 1.5 // Assuming the price for Pickle is 1.5
         : 0); // Default price if item is not in the above lists
 
-    const newItem= {
+    const newItem = {
       id: itemId,
       items: [{ name: itemName, price }],
     };
 
     if (
       !includedItems.some((includedItem) =>
-        includedItem.items.some((item) => item.name === itemName)
+        includedItem.items.some((item) => item.name == itemName)
       )
     ) {
       setIncludedItems([...includedItems, newItem]);
@@ -201,12 +213,12 @@ const MenuPage = () => {
   };
 
   const handleDrinkSelect = (drink: string) => {
-    const drinkItem = drinkOptions.find((d) => d.name === drink);
+    const drinkItem = drinkOptions.find((d) => d.name == drink);
     handleAddItem(drinkItem!.name);
   };
 
   const handleLassiSelect = (lassi: string) => {
-    const lassiItem = lassiOptions.find((l) => l.name === lassi);
+    const lassiItem = lassiOptions.find((l) => l.name == lassi);
     handleAddItem(lassiItem!.name);
   };
 
@@ -214,16 +226,6 @@ const MenuPage = () => {
     setIncludedItems(includedItems.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
     setSelectedLassis(selectedLassis.filter((lassi) => lassi !== itemId));
-  };
-
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
   };
 
   const handleDrinkDialogOpen = () => {
@@ -248,12 +250,6 @@ const MenuPage = () => {
         <Grid item xs={12} md={6}>
           <Box>
             <Typography
-              variant="body2"
-              sx={{ marginBottom: "1rem", color: "#000000" }}
-            >
-              Menu / Everyday Value / Kulcha
-            </Typography>
-            <Typography
               variant="h4"
               sx={{
                 marginBottom: "1rem",
@@ -268,50 +264,35 @@ const MenuPage = () => {
               variant="body1"
               sx={{ marginBottom: "1rem", color: "#000000" }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam
-            </Typography>
-            <Typography>
-              {price} {cal} cal
+              A classic North Indian delight, Kulcha features a crispy, flaky
+              crust with a savory spiced potato filling. Baked to perfection in
+              a traditional tandoor, this kulcha pairs wonderfully with tangy
+              chana and a touch of fresh butter, bringing the authentic flavors
+              to your plate.
             </Typography>
 
-            <Box sx={{ marginTop: "4rem" }}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                sx={{ color: "#00070e", fontWeight: 500 }}
-              >
-                Size
-              </Typography>
+            <Box sx={{ marginTop: "2.5rem" }}>
               <ToggleButtonGroup
                 value={size}
                 exclusive
                 onChange={handleSize}
                 aria-label="size"
               >
-                <ToggleButton
+                <Button
                   value="regular"
                   aria-label="regular"
                   sx={{
-                    width: "200px",
-                    height: "60px",
-                    borderRadius: "8px !important",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    "&:not(.Mui-selected)": {
-                      border: "1px solid #dcdcdc",
-                    },
-                    "&.Mui-selected": {
-                      border: "2px solid #1e90ff",
-                      boxShadow: "0 0 10px rgba(30, 144, 255, 0.5)",
+                    color: "white",
+                    backgroundColor: "black",
+                    padding: "8px 16px", // Adjust padding as needed
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "black",
                     },
                   }}
                 >
                   Regular
-                  <br />
-                  +$8.00 | 640 cal
-                </ToggleButton>
+                </Button>
               </ToggleButtonGroup>
             </Box>
           </Box>
@@ -338,7 +319,7 @@ const MenuPage = () => {
               What's Included
             </Typography>
             <Grid container spacing={2} justifyContent="flex-start">
-              {includedItems.length === 0 ? (
+              {includedItems.length == 0 ? (
                 <Grid item>
                   <Box
                     sx={{
@@ -366,13 +347,13 @@ const MenuPage = () => {
                 </Grid>
               ) : (
                 includedItems.map((item) => (
-                  <Grid item xs={12} sm={6} md={3} key={item.id}>
+                  <Grid item xs={12} sm={6} md={2} key={item.id}>
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent: "flex-start",
                         padding: "1rem",
                         backgroundColor: "white",
                         border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
@@ -382,7 +363,7 @@ const MenuPage = () => {
                         cursor: "pointer",
                         height: "300px",
                         width: "175px",
-                        margin: "1rem",
+                        margin: "0.5rem",
                         boxShadow: item
                           ? "0 0 10px rgba(30, 144, 255, 0.5)"
                           : "none",
@@ -469,7 +450,7 @@ const MenuPage = () => {
                   >
                     <Box display="flex" alignItems="center">
                       <img
-                        src={`/images/footer/cartt${index + 1}.png`}
+                        src={`/images/footer/cart1.png`}
                         alt={item}
                         style={{
                           width: "50px",
@@ -686,7 +667,11 @@ const MenuPage = () => {
         >
           <Box display="flex" justifyContent="flex-end" alignItems="center">
             <Link href={"/checkout"}>
-              <Button variant="contained" color="warning" disabled={includedItems.length==0}>
+              <Button
+                variant="contained"
+                color="warning"
+                disabled={includedItems.length == 0}
+              >
                 Checkout
               </Button>
             </Link>

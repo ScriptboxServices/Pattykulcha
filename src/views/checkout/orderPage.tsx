@@ -214,14 +214,7 @@ const OrderPage: React.FC = () => {
               </Box>
             )}
 
-            <Link href="#" underline="none">
-              <Typography
-                variant="body1"
-                sx={{ color: "#162548", fontWeight: 600 }}
-              >
-                Make It A Group Order
-              </Typography>
-            </Link>
+            
           </Box>
         </Paper>
       </Container>

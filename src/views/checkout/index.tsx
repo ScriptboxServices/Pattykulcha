@@ -11,7 +11,7 @@ const Checkout = () => {
     <>
       <OrderPage />
       <OrderHome />
-      <RecommendationSlider />
+      {/* <RecommendationSlider /> */}
       <AddCouponComponent />
     </>
   );

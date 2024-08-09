@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import {
   Container,
@@ -9,7 +11,12 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import Link from "next/link";
+
+import { useMenuContext } from "@/context";
+import { useRouter } from "next/navigation";
+import { drinkOptions, lassiOptions } from "@/views/cart";
+
+import { v4 as uuidv4 } from "uuid";
 
 const menuItems = [
   {
@@ -44,7 +51,51 @@ const menuItems = [
   },
 ];
 
+interface IncludedItem {
+  id: string;
+  items: { name: string; price: number }[];
+}
+
+
 const MenuSection = () => {
+  const {  setIncludedItems ,includedItems} = useMenuContext();
+
+  const router=useRouter();
+
+  const handleAddItem = (itemName: string) => {
+    const itemId = uuidv4();
+
+    // Determine the price for the item
+    const drink = drinkOptions.find((drink) => drink.name == itemName);
+    const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
+
+    const price =
+      drink?.price ||
+      lassi?.price ||
+      (itemName == "Chana"
+        ? 3.0
+        : itemName == "Impli Pyaz Chutney"
+        ? 2.0
+        : itemName == "Amul Butter"
+        ? 1.1
+        : itemName == "Normal Butter"
+        ? 0.75
+        : 3); // Default price if item is not in the above lists
+
+    const newItem= {
+      id: itemId,
+      items: [{ name: itemName, price }],
+    };
+
+    if (
+      !includedItems.some((includedItem) =>
+        includedItem.items.some((item) => item.name == itemName)
+      )
+    ) {
+      setIncludedItems([...includedItems, newItem]);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -95,12 +146,12 @@ const MenuSection = () => {
                   borderRadius: "20px", // Rounded corners for the card
                   overflow: "visible", // Make sure overflow is visible to show the image
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Light shadow effect
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between', // Ensure that the content is spaced evenly
-                  position: 'relative', // Required for positioning the image
-                  paddingTop: '80px', // Add space at the top for the image
-                  paddingBottom: '10px', // Add padding at the bottom of the card
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between", // Ensure that the content is spaced evenly
+                  position: "relative", // Required for positioning the image
+                  paddingTop: "80px", // Add space at the top for the image
+                  paddingBottom: "10px", // Add padding at the bottom of the card
                 }}
               >
                 <CardMedia
@@ -125,7 +176,7 @@ const MenuSection = () => {
                     flexDirection: "column",
                     alignItems: "center",
                     textAlign: "center",
-                    marginTop: '80px', // Add space below the image for the content
+                    marginTop: "80px", // Add space below the image for the content
                   }}
                 >
                   <Typography
@@ -136,8 +187,7 @@ const MenuSection = () => {
                       textAlign: "center",
                       fontWeight: 600,
                       fontSize: "1.2rem", // Larger font for the dish name
-                      minHeight: '40px', // Set a minimum height for the title to ensure uniformity
-
+                      minHeight: "40px", // Set a minimum height for the title to ensure uniformity
                     }}
                   >
                     {item.name}
@@ -153,19 +203,18 @@ const MenuSection = () => {
                       color="text.secondary"
                       sx={{ fontSize: "0.9rem" }}
                     >
-                      {item.desc} 
+                      {item.desc}
                     </Typography>
                   </Box>
                 </CardContent>
                 <Box
                   sx={{
                     padding: 2,
-                    width: "100%", 
+                    width: "100%",
                     textAlign: "center",
                     marginTop: "auto",
                   }}
                 >
-                  <Link href="/cart">
                   <Button
                     variant="contained"
                     sx={{
@@ -180,10 +229,13 @@ const MenuSection = () => {
                         color: "white",
                       },
                     }}
+                    onClick={() => {
+                      handleAddItem(item.name)
+                      router.push("/cart")
+                    }}
                   >
                     Order Now
                   </Button>
-                  </Link>
                 </Box>
               </Card>
             </Grid>
