@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import {
   Container,
@@ -11,31 +9,38 @@ import {
   Button,
   Box,
 } from "@mui/material";
+import Link from "next/link";
 
 const menuItems = [
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
+    name: "Mix Kulcha",
     image: "/images/landingpage/menu1.png",
+    desc: "Crisp Indian bread filled with potato, cauliflower, peas, onion, corn, coriander, carrot, ginger, green chilli and beetroot, delivering a savoury taste.",
   },
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
+    name: "Aloo Kulcha",
     image: "/images/landingpage/menu2.png",
+    desc: "A tender, golden leavened bread stuffed with potato and onion, cooked in a tandoor and served with chana.",
   },
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
+    name: "Onion Kulcha",
     image: "/images/landingpage/menu3.png",
+    desc: "A warm, flavorful Indian bread stuffed with onion, and topped with rich masala, giving a satisfying taste.",
   },
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
-    image: "/images/landingpage/menu4.png",
+    name: "Gobi Kulcha",
+    image: "/images/landingpage/image5.jpg",
+    desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
   },
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
+    name: "Paneer Kulcha",
     image: "/images/landingpage/menu5.png",
+    desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
   },
   {
-    name: "Baked 4-Cheese Chicken Alfredo",
+    name: "Hot & Spicy Mix Kulcha",
     image: "/images/landingpage/menu6.png",
+    desc: "A golden and flaky Indian bread filled with potato, cauliflower, onion, carrot, ginger, beetroot, corn, coriander, peas, and green chilli, having a tempting taste.",
   },
 ];
 
@@ -51,79 +56,27 @@ const MenuSection = () => {
     >
       <Box
         sx={{
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-          marginBottom: 4,
-          position: "absolute",
-          top: "3%",
-          left: "27%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <img
-          src="/images/landingpage/image4.png"
-          alt="Photo1"
-          style={{ maxWidth: "100%", height: "140px" }}
-        />
-      </Box>
-
-      <Box
-        sx={{
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-          marginBottom: 4,
-          position: "absolute",
-          bottom: "10%",
-          left: "7%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <img
-          src="/images/landingpage/image4.png"
-          alt="Photo2"
-          style={{ maxWidth: "100%", height: "140px" }}
-        />
-      </Box>
-
-      <Box
-        sx={{
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-          marginBottom: 4,
-          position: "absolute",
-          top: "43%",
-          left: "83%",
-          zIndex: 1,
-        }}
-      >
-        <img
-          src="/images/landingpage/image6.png"
-          alt="Photo3"
-          style={{ maxWidth: "100%", height: "140px" }}
-        />
-      </Box>
-
-      <Box
-        sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center", // Center the title
           alignItems: "center",
-          marginBottom: 2,
+          marginBottom: 14, // Increase margin below the title for spacing
         }}
       >
-        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
-          <Typography variant="h4" component="h2">
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h4"
+            component="h2"
+            sx={{
+              color: "#333333", // Adjust the color to match your site design
+              fontWeight: "bold",
+            }}
+          >
             OUR MENU
           </Typography>
         </Box>
-        <Box>
-          <Button variant="text" sx={{ color: "black" }}>
-            View Full Menu
-          </Button>
-        </Box>
       </Box>
 
-      <Container sx={{ marginTop: 5 }}>
+      <Container sx={{ marginTop: 5, textAlign: "center" }}>
         <Grid container spacing={7}>
           {menuItems.map((item, index) => (
             <Grid
@@ -132,149 +85,111 @@ const MenuSection = () => {
               sm={6}
               md={4}
               key={index}
-              sx={{ paddingLeft: 2, paddingRight: 2 }}
+              sx={{ paddingLeft: 2, paddingRight: 2, marginBottom: 6 }} // Added marginBottom
             >
-              <Card sx={{ maxWidth: 345, height: "100%", margin: "0 auto" }}>
+              <Card
+                sx={{
+                  maxWidth: 345,
+                  height: "100%",
+                  margin: "0 auto",
+                  borderRadius: "20px", // Rounded corners for the card
+                  overflow: "visible", // Make sure overflow is visible to show the image
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Light shadow effect
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between', // Ensure that the content is spaced evenly
+                  position: 'relative', // Required for positioning the image
+                  paddingTop: '80px', // Add space at the top for the image
+                  paddingBottom: '10px', // Add padding at the bottom of the card
+                }}
+              >
                 <CardMedia
                   component="img"
-                  height="200"
                   image={item.image}
                   alt={item.name}
+                  sx={{
+                    borderRadius: "50%", // Make the image circular
+                    width: "220px", // Set the width of the image
+                    height: "220px", // Set the height of the image
+                    position: "absolute", // Position the image absolutely
+                    top: "-74px", // Adjust to move the image to the visible area
+                    left: "50%", // Center the image horizontally
+                    transform: "translateX(-50%)", // Adjust the centering
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Add shadow to the image
+                  }}
                 />
                 <CardContent
                   sx={{
+                    flexGrow: 1, // Allow the content to grow to fill available space
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    textAlign: "center",
+                    marginTop: '80px', // Add space below the image for the content
                   }}
                 >
                   <Typography
                     gutterBottom
                     variant="h6"
                     component="div"
-                    sx={{ textAlign: "center", fontWeight: 600 }}
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: 600,
+                      fontSize: "1.2rem", // Larger font for the dish name
+                      minHeight: '40px', // Set a minimum height for the title to ensure uniformity
+
+                    }}
                   >
                     {item.name}
                   </Typography>
-                  <Button
-                    variant="outlined"
+                  <Box
                     sx={{
-                      mt: 1,
-                      color: "black",
-                      borderColor: "black",
-                      borderRadius: 10,
-                      border: 2,
+                      flexGrow: 1, // Allow the description box to take up remaining space
+                      display: "flex",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.9rem" }}
+                    >
+                      {item.desc} 
+                    </Typography>
+                  </Box>
+                </CardContent>
+                <Box
+                  sx={{
+                    padding: 2,
+                    width: "100%", 
+                    textAlign: "center",
+                    marginTop: "auto",
+                  }}
+                >
+                  <Link href="/cart">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      borderRadius: 20,
+                      paddingX: 4,
+                      paddingY: 1,
+                      fontWeight: "bold",
                       "&:hover": {
-                        backgroundColor: "#ECAB21",
+                        backgroundColor: "#FFC107",
                         color: "white",
-                        borderColor: "#ECAB21",
                       },
                     }}
                   >
                     Order Now
                   </Button>
-                </CardContent>
+                  </Link>
+                </Box>
               </Card>
             </Grid>
           ))}
         </Grid>
       </Container>
-
-      <Box
-        sx={{
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-          mt: 7,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-around",
-            alignItems: "center",
-            backgroundColor: "#FFFFFF",
-            padding: { xs: 1, sm: 2 },
-            borderRadius: 50,
-            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            width: { xs: "95%", sm: "80%" },
-            maxWidth: "600px",
-            marginBottom: 4,
-            flexWrap: "nowrap",
-          }}
-        >
-          <Box
-            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
-          >
-            <img
-              src="/images/landingpage/image1.png"
-              alt="Spicy"
-              style={{ maxWidth: "82%", height: "17%", paddingRight: "4px" }}
-            />
-            <Typography
-              className="css-1i9wwnn-MuiTypography-root"
-              variant="body1"
-              component="p"
-              sx={{ fontWeight: 600 }}
-            >
-              Spicy
-            </Typography>
-          </Box>
-          <Box
-            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
-          >
-            <img
-              src="/images/landingpage/image2.png"
-              alt="Gluten Sensitive"
-              style={{ maxWidth: "82%", height: "27%", paddingRight: "4px" }}
-            />
-            <Typography
-              className="css-1i9wwnn-MuiTypography-root"
-              variant="body1"
-              component="p"
-              sx={{ fontWeight: 600 }}
-            >
-              Gluten Sensitive
-            </Typography>
-          </Box>
-          <Box
-            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
-          >
-            <img
-              src="/images/landingpage/image3.png"
-              alt="Vegetarian"
-              style={{ maxWidth: "82%", height: "27%", paddingRight: "4px" }}
-            />
-            <Typography
-              className="css-1i9wwnn-MuiTypography-root"
-              variant="body1"
-              component="p"
-              sx={{ fontWeight: 600 }}
-            >
-              Vegetarian
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 7 }}>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#ECAB21",
-            borderRadius: 10,
-            color: "black",
-            fontSize: 16,
-            fontWeight: 600,
-            paddingX: 5,
-            paddingY: 2,
-            "&:hover": {
-              backgroundColor: "#FFC107",
-            },
-          }}
-        >
-          View Full Menu
-        </Button>
-      </Box>
     </Box>
   );
 };

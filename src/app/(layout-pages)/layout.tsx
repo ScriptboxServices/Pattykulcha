@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 import Navbar from "@/views/navbar";
 import Footer from "@/views/footer";
+import { MenuProvider } from "@/context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
       <body className="flex flex-col overflow-y-auto">
-        <Navbar/>
-        <div>{children}</div>
-        <Footer/>
+        <Navbar />
+        <MenuProvider>
+          <div>{children}</div>
+        </MenuProvider>
+        <Footer />
       </body>
     </html>
   );

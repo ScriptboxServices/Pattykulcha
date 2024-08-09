@@ -1,17 +1,19 @@
 'use client'
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Button, Checkbox, Container, FormControlLabel, TextField, Typography, Link, CssBaseline, IconButton, InputAdornment } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Button, Container, TextField, Typography, Link, CssBaseline } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 // Define the Yup schema
 const schema = yup.object().shape({
-  email: yup.string().email('Invalid email address').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-  remember: yup.boolean().optional(),
+  phone: yup
+    .string()
+    .matches(/^\d+$/, 'Phone number is not valid')
+    .min(10, 'Phone number must be at least 10 digits')
+    .required('Phone number is required'),
 });
 
 // Define the TypeScript interface based on the Yup schema
@@ -22,15 +24,12 @@ const Login: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<IFormInput> = data => {
     console.log(data);
+    // Navigate to /verification after successful login
+    router.push('/verification');
   };
 
   return (
@@ -67,7 +66,7 @@ const Login: React.FC = () => {
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit(onSubmit)}>
               <Controller
-                name="email"
+                name="phone"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
@@ -75,58 +74,18 @@ const Login: React.FC = () => {
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address"
+                    id="phone"
+                    label="Phone Number"
+                    type="tel"
                     {...field}
-                    error={!!errors.email}
-                    helperText={errors.email ? errors.email.message : ''}
-                    autoComplete="email"
+                    error={!!errors.phone}
+                    helperText={errors.phone ? errors.phone.message : ''}
+                    autoComplete="tel"
                     autoFocus
+                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                   />
                 )}
               />
-              <Controller
-                name="password"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Password"
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    {...field}
-                    error={!!errors.password}
-                    helperText={errors.password ? errors.password.message : ''}
-                    autoComplete="current-password"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormControlLabel
-                  control={<Checkbox {...control.register('remember')} sx={{ color: 'black', '&.Mui-checked': { color: 'black' } }} />}
-                  label="Remember me"
-                />
-                <Link href="/forgot-password" variant="body2" sx={{ color: 'black', textDecoration: 'none', fontWeight: 'bold', '&:hover': { textDecoration: 'underline' } }}>
-                  Forgot password?
-                </Link>
-              </Box>
               <Button
                 type="submit"
                 fullWidth

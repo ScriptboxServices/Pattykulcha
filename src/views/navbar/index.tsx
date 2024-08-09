@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { 
+import React, { useState } from "react";
+import Link from "next/link";
+import {
   AppBar,
   Toolbar,
   Typography,
@@ -14,43 +14,43 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  styled
-} from '@mui/material';
+  styled,
+} from "@mui/material";
 
-import MenuIcon from '@mui/icons-material/Menu';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MenuIcon from "@mui/icons-material/Menu";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const StyledAppBar = styled(AppBar)({
-  backgroundColor: 'white',
+  backgroundColor: "white",
 });
 
 const StyledToolbar = styled(Toolbar)({
-  display: 'flex',
-  justifyContent: 'space-between',
+  display: "flex",
+  justifyContent: "space-between",
   color: "black",
 });
 
 const NavButton = styled(Button)({
-  color: 'black',
-  textTransform: 'none',
-  margin: '0 8px',
+  color: "black",
+  textTransform: "none",
+  margin: "0 8px",
 });
 
 const LocationButton = styled(Button)({
-  backgroundColor: 'white',
-  color: 'black',
-  borderRadius: '20px',
-  textTransform: 'none',
-  '&:hover': {
-    backgroundColor: '#f5f5f5',
+  backgroundColor: "white",
+  color: "black",
+  borderRadius: "20px",
+  textTransform: "none",
+  "&:hover": {
+    backgroundColor: "#f5f5f5",
   },
 });
 
 const OrderButton = styled(Button)({
-  backgroundColor: '#f39c12',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: '#e67e22',
+  backgroundColor: "#f39c12",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#e67e22",
   },
 });
 
@@ -68,7 +68,7 @@ const Navbar: React.FC = () => {
       </Typography>
       <Divider />
       <List>
-        {['Menu', 'Rewards', 'Catering', 'Careers', 'About'].map((text) => (
+        {["Menu", "About"].map((text) => (
           <ListItem button key={text}>
             <ListItemText primary={text} />
           </ListItem>
@@ -78,25 +78,26 @@ const Navbar: React.FC = () => {
       <List>
         <ListItem button>
           <Link href="/createaccount" passHref>
-            <Button sx={{ textTransform: 'none', color: 'black', width: '100%' }}>
+            <Button
+              sx={{ textTransform: "none", color: "black", width: "100%" }}
+            >
               Sign Up
             </Button>
           </Link>
         </ListItem>
         <ListItem button>
           <Link href="/login" passHref>
-            <Button sx={{ textTransform: 'none', color: 'black', width: '100%' }}>
+            <Button
+              sx={{ textTransform: "none", color: "black", width: "100%" }}
+            >
               Log In
             </Button>
           </Link>
         </ListItem>
         <ListItem button>
-          <LocationButton startIcon={<LocationOnIcon />}>
-            Find A Location
-          </LocationButton>
-        </ListItem>
-        <ListItem button>
-          <OrderButton fullWidth>Order Now</OrderButton>
+          <Link href="/cart" passHref>
+            <OrderButton fullWidth>Order Now</OrderButton>
+          </Link>
         </ListItem>
       </List>
     </Box>
@@ -106,17 +107,26 @@ const Navbar: React.FC = () => {
     <>
       <StyledAppBar position="static">
         <StyledToolbar>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" sx={{ mr: 5 }}>
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
-            <NavButton>Menu</NavButton>
-            <NavButton>Rewards</NavButton>
-            <NavButton>Catering</NavButton>
-            <NavButton>Careers</NavButton>
-            <NavButton>About</NavButton>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "left",
+            }}
+          >
+            <Link href="/home" passHref>
+              <NavButton>Menu</NavButton>
+            </Link>
+            <Link href="/about-us" passHref>
+              <NavButton>About</NavButton>
+            </Link>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+          >
             <Link href="/createaccount" passHref>
               <NavButton>Sign Up</NavButton>
             </Link>
@@ -124,16 +134,15 @@ const Navbar: React.FC = () => {
             <Link href="/login" passHref>
               <NavButton>Log In</NavButton>
             </Link>
-            <LocationButton startIcon={<LocationOnIcon />} sx={{ mx: 1 }}>
-              Find A Location
-            </LocationButton>
-            <OrderButton variant="contained">Order Now</OrderButton>
+            <Link href="/cart" passHref>
+              <OrderButton variant="contained">Order Now</OrderButton>
+            </Link>
           </Box>
-          <IconButton 
-            edge="start" 
-            color="inherit" 
-            aria-label="menu" 
-            sx={{ display: { xs: 'flex', md: 'none' } }} 
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { xs: "flex", md: "none" } }}
             onClick={handleDrawerToggle}
           >
             <MenuIcon />

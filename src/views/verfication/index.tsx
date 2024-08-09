@@ -1,7 +1,6 @@
-// pages/verification.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -10,6 +9,7 @@ import {
   styled,
   Container,
 } from "@mui/material";
+import Link from "next/link";
 
 const StyledRoot = styled(Box)({
   display: "flex",
@@ -37,26 +37,35 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
 }));
 
 const VerificationPage: React.FC = () => {
-  const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState<string[]>(
     Array(6).fill("")
   );
+
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleCodeChange =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = [...verificationCode];
       newCode[index] = event.target.value;
       setVerificationCode(newCode);
+
+      // Automatically focus the next input if the current input has a value and it's not the last input
+      if (event.target.value && index < verificationCode.length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    };
+
+  const handleKeyDown =
+    (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Backspace" && !verificationCode[index] && index > 0) {
+        // If backspace is pressed and the current input is empty, move focus to the previous input
+        inputRefs.current[index - 1]?.focus();
+      }
     };
 
   const handleVerify = () => {
     // Add your verification logic here
-    console.log(
-      "Verifying email:",
-      email,
-      "with code:",
-      verificationCode.join("")
-    );
+    console.log("Verifying with code:", verificationCode.join(""));
   };
 
   return (
@@ -76,20 +85,24 @@ const VerificationPage: React.FC = () => {
       <StyledRoot>
         <StyledForm>
           <Typography variant="h4" gutterBottom>
-            Verify your email
+            Verify your phone number
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Check your inbox and spam folder for the verification code, sent to
-            your email (alakhhanpal2003@gmail.com).
+            Check the messages for the verification code, sent to your phone number.
           </Typography>
-          <Box mt={2} className={StyledCodeInput.toString()}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 400 }}>
+            Enter OTP
+          </Typography>
+          <StyledCodeInput>
             {verificationCode.map((code, index) => (
               <TextField
                 key={index}
                 variant="outlined"
                 value={code}
                 onChange={handleCodeChange(index)}
+                onKeyDown={handleKeyDown(index)}
                 inputProps={{ maxLength: 1 }}
+                inputRef={(el) => (inputRefs.current[index] = el)}
                 sx={{
                   width: "50px",
                   margin: 0.5,
@@ -110,7 +123,8 @@ const VerificationPage: React.FC = () => {
                 }}
               />
             ))}
-          </Box>
+          </StyledCodeInput>
+          <Link href='/home'>
           <Box mt={2}>
             <Button
               variant="contained"
@@ -122,6 +136,7 @@ const VerificationPage: React.FC = () => {
               Confirm
             </Button>
           </Box>
+          </Link>
         </StyledForm>
       </StyledRoot>
     </Container>

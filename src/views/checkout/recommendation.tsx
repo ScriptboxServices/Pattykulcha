@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
-import { Box, Typography, Card, CardContent, Button, IconButton, Badge } from '@mui/material';
+import { Box, Typography, Card, CardContent, Button, IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward, CheckCircle } from '@mui/icons-material';
 import { useKeenSlider } from 'keen-slider/react';
 import 'keen-slider/keen-slider.min.css';
@@ -17,8 +17,8 @@ const KulchaCard: React.FC<KulchaCardProps> = ({ title, selected }) => {
       {selected && <CheckCircle sx={{ position: 'absolute', top: 8, right: 8, color: 'primary.main' }} />}
       <CardContent>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <img src="/images/checkout/checkout2.png" alt={`${title}`} style={{ width: '150px', height: '150px' }} />
-          <Typography variant="h6">{title}</Typography>
+          <img src="/images/checkout/checkout2.png" alt={`${title}} style={{ width: '150px', height: '150px' }`} />
+          <Typography variant="h6" align="center">{title}</Typography>
           <Button variant="outlined" sx={{ marginTop: 1 }}>Add</Button>
         </Box>
       </CardContent>
@@ -57,14 +57,17 @@ const RecommendationSlider: React.FC = () => {
 
   return (
     <Box sx={{ backgroundColor: '#FAF3E0', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 2 }}>
-      <Typography variant="h4" sx={{fontWeight:600}} gutterBottom>
+      <Typography variant="h4" sx={{ fontWeight: 600, color: 'black' }} gutterBottom>
         YOU MAY ALSO LIKE
       </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: 1200,mt:5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: 1200, mt: 5 }}>
         {loaded && instanceRef.current && (
           <IconButton
-            onClick={(e) => e.stopPropagation() || instanceRef.current?.prev()}
-            disabled={currentSlide === 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              instanceRef.current?.prev();
+            }}
+            disabled={currentSlide == 0}
           >
             <ArrowBack />
           </IconButton>
@@ -78,8 +81,11 @@ const RecommendationSlider: React.FC = () => {
         </Box>
         {loaded && instanceRef.current && (
           <IconButton
-            onClick={(e) => e.stopPropagation() || instanceRef.current?.next()}
-            disabled={currentSlide === instanceRef.current.track.details.slides.length - 3}
+            onClick={(e) => {
+              e.stopPropagation();
+              instanceRef.current?.next();
+            }}
+            disabled={currentSlide == instanceRef.current.track.details.slides.length - 3}
           >
             <ArrowForward />
           </IconButton>
@@ -87,22 +93,18 @@ const RecommendationSlider: React.FC = () => {
       </Box>
       {loaded && instanceRef.current && (
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-          {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => (
-            <Badge
+          {Array.from({ length: instanceRef.current.track.details.slides.length }).map((_, idx) => (
+            <Box
               key={idx}
-              variant='dot'
-              component='div'
               sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: currentSlide == idx ? 'primary.main' : 'grey.400',
+                margin: '0 4px',
                 cursor: 'pointer',
-                margin: 1,
-                '&.active': {
-                  backgroundColor: 'primary.main',
-                },
               }}
-              className={currentSlide === idx ? 'active' : ''}
-              onClick={() => {
-                instanceRef.current?.moveToIdx(idx);
-              }}
+              onClick={() => instanceRef.current?.moveToIdx(idx)}
             />
           ))}
         </Box>

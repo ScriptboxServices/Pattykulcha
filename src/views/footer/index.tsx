@@ -7,29 +7,11 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TikTokIcon from '@mui/icons-material/MusicNote';
 
 const Footer: React.FC = () => {
-  const footerSections = [
-    {
-      title: 'About',
-      items: ['Locations', 'Gift Cards', 'Fundraising', 'Goodness Guarantee', 'Nourish & Inspire', 'We Care', 'Animal Welfare', 'Executive Bios', 'Foundation', 'Real Estate', 'Investor Relations'],
-    },
-    {
-      title: 'Our Food',
-      items: ['Catering', 'Eat Well', 'LEANguini', 'Zoodles', 'Impossible Panko Chicken', 'Mac Bar'],
-    },
-    {
-      title: 'Franchising',
-      items: ['Why Noodles?', 'What You Get', 'Ideal Partner Criteria', 'Markets'],
-    },
-    {
-      title: 'Company Info',
-      items: ['Contact Us', 'Careers - Apply Now', 'Our Benefits', 'W-2 Address Changes', 'FAQs', 'Newsroom'],
-    },
-  ];
 
   return (
     <Box component="footer" sx={{ bgcolor: '#162548', color: 'white', py: 6 }}>
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
+        {/* <Grid container spacing={4}>
           {footerSections.map((section) => (
             <Grid 
               item 
@@ -66,7 +48,7 @@ const Footer: React.FC = () => {
               ))}
             </Grid>
           ))}
-        </Grid>
+        </Grid> */}
         <Box 
           sx={{ 
             mt: 4, 
@@ -76,7 +58,7 @@ const Footer: React.FC = () => {
             alignItems: 'center' 
           }}
         >
-          <Button 
+          {/* <Button 
             variant="outlined" 
             color="primary" 
             sx={{ 
@@ -89,8 +71,8 @@ const Footer: React.FC = () => {
             }}
           >
             Join Today
-          </Button>
-          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2 }}>
+          </Button> */}
+          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' }, gap: 2, width:'100%'}}>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><FacebookIcon /></Link>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><TwitterIcon /></Link>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><InstagramIcon /></Link>
@@ -107,16 +89,16 @@ const Footer: React.FC = () => {
             alignItems: 'center' 
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2, mb: { xs: 2, md: 0 } }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2, mb: { xs: 2, md: 0 } }}>
             <img src="/images/footer/image2.jpg" alt="Get it on Google Play" style={{ height: 40 }} />
             <img src="/images/footer/image1.png" alt="Download on the App Store" style={{ height: 40 }} />
-          </Box>
-          <Typography variant="body2" sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+          </Box> */}
+          <Typography variant="body2" sx={{ textAlign: { xs: 'center', md: 'right',width:'100%' } }}>
             © 2024 All Rights Reserved
           </Typography>
         </Box>
-        <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
-          <Link href="#" color="inherit" underline="hover">
+        <Typography variant="body2" sx={{ mt: 2, textAlign: { xs: 'center', md: 'right',width:'100%' } }}>
+          <Link href="/privacypolicy" color="inherit" underline="hover">
             Privacy Policy
           </Link>
         </Typography>

@@ -38,91 +38,224 @@ const PrivacyPolicyPage = () => {
     <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', padding: '2rem 0' }}>
       <HeaderCard elevation={0}>
         <CardContent>
-          <Typography variant='h4' component='h1'>
+          <Typography variant='h2' component='h1' sx={{color:'black', fontWeight:600}}>
             Privacy Policy
           </Typography>
         </CardContent>
       </HeaderCard>
       <Container maxWidth="md" sx={{paddingY:6}}>
         <ContentCard className=' mt-4'>
-          <SectionTitle variant='h5'>
-            Information Collection
-          </SectionTitle>
-          <Typography paragraph>
-            <strong>Personal Information:</strong> We collect your personal information involving name, email, address, documents for IRCC account through the forms you submit.
+          <Typography variant='h5' component='h1'>
+            <strong>PRIVACY NOTICE</strong>
           </Typography>
           <Typography paragraph>
-            <strong>Automatically Collected Information:</strong> We also collect information about the interaction of your browsers, and devices with our services, including IP address, cookies, user account that has logged in, and the date, time, and URL of your request.
+            <strong>Last Updated on August 8, 2024</strong>
           </Typography>
           <Typography paragraph>
-            <strong>Purchase activity:</strong> We collect your payment information and purchase history details.
+            At Patty Kuchla ("Patty Kuchla", "we", or "us"), we value your privacy and want to explain the types of information we may gather, why we gather your information, how we use your information, when we might disclose your information, and how you can manage your information. This privacy policy applies to our website located at www.pattykuchla.com, and our services. This Privacy Notice does not apply to third-party websites and applications linked to or from the Site. We are not responsible for the actions and privacy policies of these third-party websites and applications.
+          </Typography>
+          <Typography paragraph>
+            By using our Services, you accept the practices described in this Privacy Notice. We may update this Privacy Notice from time to time. Your continued use of our Services following the posting of changes will mean you accept those changes.
           </Typography>
         </ContentCard>
+
         <ContentCard>
           <SectionTitle variant='h5'>
-            Information Use
+            INFORMATION WE COLLECT
           </SectionTitle>
           <Typography paragraph>
-            <strong>Providing services:</strong> We use your information to provide services which includes updating, securing, and troubleshooting, as well as providing support, processing transactions, and communicating with users.
+            <strong>Information We Collect from You</strong>
           </Typography>
           <Typography paragraph>
-            <strong>Maintain performance:</strong> We use the data to operate our business, which includes analyzing our performance, developing our workforce, and conducting research.
-          </Typography>
-          <Typography paragraph>
-            <strong>Communication:</strong> We use information we collect, like your email address, to interact with you directly.
+            We may collect non-personal and personal information directly from you when you use the website, such as when you register for an account, place an order, or access certain features or content. The information we collect includes:
           </Typography>
           <Typography component="ul">
-            <li>Communicate with you regarding customer service issues.</li>
-            <li>Communicate with you about your requests.</li>
+            <li>Contact information: such as your name, phone number.</li>
+            <li>Ordering information: such as your favourite items and order history.</li>
+            <li>Delivery information: such as your delivery address.</li>
+            <li>Payment and financial details: such as payment card number, expiration date, authentication code, and billing address, processed by a third-party processor.</li>
+            <li>Login information: such as your username and password.</li>
+            <li>Demographic information: such as your state and county of residence.</li>
           </Typography>
-        </ContentCard>
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            Sharing Your Information
-          </SectionTitle>
+
+          <Typography paragraph>
+            <strong>Collection of Information from Social Media Websites and Other Sources</strong>
+          </Typography>
+          <Typography paragraph>
+            When you interact with Patty Kuchla on a social media platform, we may collect information you make available on that page, including your account ID or username. If you log into your Patty Kuchla account through a social networking service, we may share certain information about you and your activities with that service.
+          </Typography>
+          <Typography paragraph>
+            We may also collect information from other sources, including business partners, vendors, or public sources.
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Information We Collect from Website Visitors</strong>
+          </Typography>
+          <Typography paragraph>
+            We collect information when users interact with the Services. This includes:
+          </Typography>
           <Typography component="ul">
-            <li>We share your personal data with your consent to complete any transaction or provide certain services you have requested.</li>
-            <li>We use service providers to help operate our data centers, improve our business processes, and deliver services to users.</li>
-            <li>We disclose your information for legal activities such as enforcing Terms of Services and detecting and preventing fraud.</li>
-            <li>We share your grade mark sheets with international credit evaluation organizations to evaluate and convert them to equate the grades to the grading system of the country you apply to.</li>
-            <li>We create your application(s) using the information you give us and the documents you upload, and submit the application(s) to the Immigration department of countries for the programs you choose to apply to.</li>
+            <li>Demographic data: such as age, gender, and ZIP code.</li>
+            <li>Device information: about devices used to access the website.</li>
+            <li>Usage and traffic information: such as pages viewed, date and time of access, and referring website addresses.</li>
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Collection of Your Location Information</strong>
+          </Typography>
+          <Typography paragraph>
+            You may send us information that discloses your general location. The Site can deliver content based on your specific location if you enable that feature.
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Use of Cookies, Web Beacons, and Other Technologies</strong>
+          </Typography>
+          <Typography paragraph>
+            We use cookies, web beacons, and other technologies to track use of our Site, improve the Site, and provide a better user experience. Cookies are small text files stored on your device when you visit certain online pages. Most web browsers automatically accept cookies, but you can modify your browser settings to disable or reject cookies. Note that some features of the Site may not function properly if cookies are disabled.
+          </Typography>
+          <Typography paragraph>
+            We use Google Analytics to help us analyse how users interact with the website. Google Analytics collects information such as your IP address, time of visit, and referring website. The information generated by Google Analytics will be transmitted to and stored by Google and will be subject to Google's privacy policies.
           </Typography>
         </ContentCard>
+
         <ContentCard>
           <SectionTitle variant='h5'>
-            Data Security
-          </SectionTitle>
-          <Typography component="ul">
-            <li>We use certain encryption techniques to detect, prevent, and respond to fraud, security risks, and technical issues that could harm our users.</li>
-            <li>We review our information collection and processing practices to ensure secure access to the servers.</li>
-            <li>We limit access of employees and agents to your personal information through the use of strong passwords and access control mechanisms, ensuring that there is no misuse of your profile information.</li>
-            <li>Our advanced security systems protect your profile information, ensuring that it is kept private, and is not utilized for any other applicant, limiting the access to you only.</li>
-          </Typography>
-        </ContentCard>
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            User Rights
-          </SectionTitle>
-          <Typography component="ul">
-            <li>Once you have signed in, you can access, review, and update your information.</li>
-            <li>You may also close your account if you want to withdraw your consent from our further use of your information.</li>
-            <li>Users can grant and revoke the access of their profile whenever required and limit the use of their profile.</li>
-          </Typography>
-        </ContentCard>
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            Children Privacy Protection
+            HOW WE USE YOUR INFORMATION
           </SectionTitle>
           <Typography paragraph>
-            The services on our Website are intended for those seeking immigration assistance, including individuals who may be younger than 18. If the individual is under 18, their legal guardian must give consent for the collection, use, and disclosure of their Personal Information.
+            We use your information to personalise and improve your experience with the Services. Uses include:
+          </Typography>
+          <Typography component="ul">
+            <li>Providing you with content, products, and services you request.</li>
+            <li>Communicating with you about your account or transactions.</li>
+            <li>Sending you information about features and enhancements.</li>
+            <li>Sending newsletters, offers, promotions, or other communications.</li>
+            <li>Advertising our products and services.</li>
+            <li>Administering contests, sweepstakes, promotions, and surveys.</li>
+            <li>Detecting and preventing activities that may violate our policies or be illegal.</li>
+            <li>Enforcing our agreements.</li>
+            <li>Improving our menu offerings and operations.</li>
+            <li>Protecting the rights, safety, health, and security of our customers, employees, and the general public.</li>
+            <li>Performing statistical, demographic, and marketing analyses.</li>
+          </Typography>
+          <Typography paragraph>
+            We may combine information collected on one portion of the Services with information collected on other portions of the Services, and we may combine that information with information collected offline or from third-party sources.
           </Typography>
         </ContentCard>
+
         <ContentCard>
           <SectionTitle variant='h5'>
-            Changes to This Privacy Policy
+            HOW WE SHARE YOUR INFORMATION
           </SectionTitle>
           <Typography paragraph>
-            We change this Privacy Policy from time to time without reducing your rights. If changes are significant, we’ll provide a notice (email notification of Privacy Policy changes).
+            <strong>Third-Party Service Providers</strong>
+          </Typography>
+          <Typography paragraph>
+            We use third-party service providers, agents, and affiliates to perform functions on our behalf, including hosting, content management, marketing, analytics, customer service, and payment processing. These entities may have access to your information to perform their services and are restricted from using it for any other purpose.
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Assignment</strong>
+          </Typography>
+          <Typography paragraph>
+            In the event of a change in ownership or corporate organisation, or a sale of assets associated with the Services, we may transfer your information to the acquiring entity. We will request that the acquiring entity follow the practices described in this Privacy Notice.
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Law Enforcement, Legal Process, and Emergency Situations</strong>
+          </Typography>
+          <Typography paragraph>
+            We may use or disclose personal information if required by law or in good faith that such action is necessary to comply with legal requirements, protect our rights or property, or act to protect the personal safety of users or the public.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            PROTECTING YOUR INFORMATION
+          </SectionTitle>
+          <Typography paragraph>
+            We use commercially reasonable efforts to protect your personal information. However, no data transmission over the Internet or any public network can be guaranteed to be 100% secure.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            STORING YOUR INFORMATION
+          </SectionTitle>
+          <Typography paragraph>
+            The retention period for your information varies according to its intended use. Unless legally required to retain it, we will keep your information no longer than necessary for the purposes for which it was collected.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            CHILDREN’S INFORMATION
+          </SectionTitle>
+          <Typography paragraph>
+            The Services are not directed at children under 13 years of age. We do not knowingly collect personal information from children under 18 years of age without parental consent. If we discover that a child under 13 has provided us with personal information without parental consent, we will delete that information. If you believe a child has provided us with personal information without parental consent, please notify us immediately.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            PUBLIC AREAS OF THE SITE
+          </SectionTitle>
+          <Typography paragraph>
+            Any information you share in public areas of the Site becomes public. Please be careful about what you disclose in these areas.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            CONTESTS AND PROMOTIONS
+          </SectionTitle>
+          <Typography paragraph>
+            Specific rules apply to promotions that explain how the information you provide will be used and disclosed.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            NOTICE TO USERS OUTSIDE THE CANADA
+          </SectionTitle>
+          <Typography paragraph>
+            The Services are directed to individuals in the United States. If you access the Services from outside Canada, you do so at your own risk and are responsible for compliance with local laws. By using the Services, you consent to the transfer of your personal information to Canada.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            CHOICES ABOUT HOW WE USE AND DISCLOSE YOUR INFORMATION
+          </SectionTitle>
+          <Typography component="ul">
+            <li>Tracking Technologies and Advertising: Set your browser to refuse cookies or alert you when cookies are being sent. Some parts of the Site may be inaccessible if cookies are disabled.</li>
+            <li>Promotional Offers: Opt out of promotional emails by following the instructions on the promotion or by emailing email.</li>
+            <li>Do Not Track Signals: The Services do not respond to Do Not Track signals. We may continue to collect information as described in this Privacy Notice.</li>
+            <li>Account Information: Review and change your information by logging into your account or contacting us at email. We may not be able to delete your personal information without deleting your user account.</li>
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            CHANGES TO OUR PRIVACY NOTICE
+          </SectionTitle>
+          <Typography paragraph>
+            We may update this Privacy Notice from time to time. Changes will be posted on the Site, and we will only use data collected from the time of the Privacy Notice change forward for new or different purposes. If we make a material change, we will provide an opportunity to opt out of such use. The date of the last revision is at the top of this page. You are responsible for reviewing this Privacy Notice periodically.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            STATE-SPECIFIC RIGHTS
+          </SectionTitle>
+          <Typography paragraph>
+            If you are a resident of certain states within Canada, you may have additional rights. Please refer to the relevant state-specific notices regarding these rights.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <Typography paragraph>
+            <strong>Copyright © 2024 PattyKuchla. All rights reserved.</strong>
           </Typography>
         </ContentCard>
       </Container>

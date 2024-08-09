@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   TextField,
   Button,
@@ -16,24 +16,15 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// Define the interface for form data
+
 interface CreateAccountFormData {
-  name: string;
-  email: string;
   phone: string;
-  password: string;
 }
 
 // Create a Yup schema for validation
 const createAccountSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  email: yup
-    .string()
-    .email("Invalid email address")
-    .required("Email is required"),
   phone: yup
     .string()
     .required("Phone number is required")
@@ -50,12 +41,10 @@ const CreateAccount: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateAccountFormData>({
-    resolver: yupResolver(createAccountSchema),
+    resolver: yupResolver(createAccountSchema) as any,
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
 
   const onSubmit = (data: CreateAccountFormData) => {
     console.log(data);
@@ -106,75 +95,6 @@ const CreateAccount: React.FC = () => {
               style={{ width: "100%" }}
             >
               <Controller
-                name="name"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState }) => (
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Name"
-                    autoComplete="name"
-                    {...field}
-                    error={!!errors?.name}
-                    helperText={errors?.name ? errors?.name?.message : null}
-                    InputProps={{
-                      style: { color: "black" },
-                      sx: {
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                          "&.Mui-focused": {
-                            backgroundColor: "black",
-                            color: "white",
-                          },
-                        },
-                      },
-                    }}
-                    InputLabelProps={{ style: { color: "black" } }}
-                  />
-                )}
-              />
-              <Controller
-                name="email"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState }) => (
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Email"
-                    type="email"
-                    autoComplete="email"
-                    {...field}
-                    error={!!fieldState.error}
-                    helperText={
-                      fieldState.error ? fieldState.error.message : null
-                    }
-                    InputProps={{
-                      style: { color: "black" },
-                      sx: {
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                          "&.Mui-focused": {
-                            backgroundColor: "black",
-                            color: "white",
-                          },
-                        },
-                      },
-                    }}
-                    InputLabelProps={{ style: { color: "black" } }}
-                  />
-                )}
-              />
-              <Controller
                 name="phone"
                 control={control}
                 defaultValue=""
@@ -204,53 +124,6 @@ const CreateAccount: React.FC = () => {
                           },
                         },
                       },
-                    }}
-                    InputLabelProps={{ style: { color: "black" } }}
-                  />
-                )}
-              />
-              <Controller
-                name="password"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState }) => (
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    {...field}
-                    error={!!fieldState.error}
-                    helperText={
-                      fieldState.error ? fieldState.error.message : null
-                    }
-                    InputProps={{
-                      style: { color: "black" },
-                      sx: {
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                          "&.Mui-focused": {
-                            backgroundColor: "black",
-                            color: "white",
-                          },
-                        },
-                      },
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
                     }}
                     InputLabelProps={{ style: { color: "black" } }}
                   />
