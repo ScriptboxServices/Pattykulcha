@@ -1,3 +1,6 @@
+// @ts-nocheck
+
+
 "use client";
 
 import React from "react";
@@ -11,12 +14,10 @@ import {
   Button,
   Box,
 } from "@mui/material";
-
 import { useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { drinkOptions, lassiOptions } from "@/views/cart";
-
 import { v4 as uuidv4 } from "uuid";
+import { Kulcha } from "@/context";
 
 const menuItems = [
   {
@@ -39,13 +40,13 @@ const menuItems = [
   },
   {
     name: "Gobi Kulcha",
-    image: "/images/landingpage/menu4.png",
+    image: "/images/landingpage/Gobikulcha.png",
     desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
     price: 9.99,
   },
   {
     name: "Paneer Kulcha",
-    image: "/images/landingpage/menu5.png",
+    image: "/images/landingpage/Paneerkulcha.png",
     desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
     price: 12.99,
   },
@@ -57,10 +58,9 @@ const menuItems = [
   },
 ];
 
-const MenuSection = () => {
-  const { setIncludedItems1, includedItems1, setSelectedKulchas } =
-    useMenuContext();
 
+const MenuSection = () => {
+  const { setIncludedItems1, includedItems1, setSelectedKulchas } = useMenuContext();
   const router = useRouter();
 
   const handleAddItem = (
@@ -69,42 +69,10 @@ const MenuSection = () => {
     image: string,
     price: number
   ) => {
-    const itemId = uuidv4();
+    const newKulcha: Kulcha = { name: itemName, desc, image, price };
 
-    // // Determine the price for the item
-    // const drink = drinkOptions.find((drink) => drink.name == itemName);
-    // const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
+    setSelectedKulchas((prevKulchas: Kulcha[]): Kulcha[] => [...prevKulchas, newKulcha]);
 
-    // const price =
-    //   drink?.price ||
-    //   lassi?.price ||
-    //   (itemName == "Chana"
-    //     ? 3.0
-    //     : itemName == "Impli Pyaz Chutney"
-    //     ? 2.0
-    //     : itemName == "Amul Butter"
-    //     ? 1.1
-    //     : itemName == "Normal Butter"
-    //     ? 0.75
-    //     : 3); // Default price if item is not in the above lists
-
-    // const newItem= {
-    //   id: itemId,
-    //   items: [{ name: itemName, price }],
-    // };
-
-    // if (
-    //   !includedItems1.some((includedItem) =>
-    //     includedItem.items.some((item) => item.name == itemName)
-    //   )
-    // ) {
-    //   setIncludedItems1([...includedItems1, newItem]);
-    // }
-
-    const newKulcha = { name: itemName, desc, image, price };
-
-    // Add the new item to the selectedkulchas array
-    setSelectedKulchas((prevKulchas) => [...prevKulchas, newKulcha]);
   };
 
   return (
@@ -255,7 +223,7 @@ const MenuSection = () => {
                       },
                     }}
                     onClick={() => {
-                      handleAddItem(item.name, item.desc, item.image,item.price);
+                      handleAddItem(item.name, item.desc, item.image, item.price);
                       router.push("/cart");
                     }}
                   >

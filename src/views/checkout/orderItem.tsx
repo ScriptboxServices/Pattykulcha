@@ -52,13 +52,13 @@ const OrderHome: React.FC = () => {
       }
 
       if (acc[itemName]) {
-        acc[itemName].quantity += quantities[item.id] || 1;
+        acc[itemName].quantity +=  1;
       } else {
         acc[itemName] = {
-          id: item.id,
+          id: '3',
           name: itemName,
           price: itemPrice,
-          quantity: quantities[item.id] || 1,
+          quantity: 1,
         };
       }
       return acc;

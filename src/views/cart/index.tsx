@@ -54,17 +54,17 @@ export const getImageSrc = (item: string) => {
 export const coffeeOptions = [
   {
     name: "Espresso",
-    price: 3.5,
+    price: 3.50,
     image: "/images/landingpage/Espresso.png",
   },
   {
     name: "Caffe Latte",
-    price: 3.5,
+    price: 3.50,
     image: "/images/landingpage/caffe-latte.png",
   },
   {
     name: "Cold Coffee",
-    price: 3.5,
+    price: 3.50,
     image: "/images/landingpage/caffe-latte.png",
   },
 ];
@@ -72,12 +72,12 @@ export const coffeeOptions = [
 export const teaOptions = [
   {
     name: "Tea",
-    price: 3.5,
+    price: 3.50,
     image: "/images/landingpage/Caffe-latte.png",
   },
   {
     name: "Masala Tea",
-    price: 3.5,
+    price: 3.50,
     image: "/images/landingpage/Caffe-latte.png",
   },
 ];
@@ -85,19 +85,19 @@ export const teaOptions = [
 export const lassiOptions = [
   {
     name: "Salted Lassi",
-    price: 5.5,
+    price: 5.50,
     image: "images/landingpage/Sweet-lassi.png",
   },
   {
     name: "Sweet Lassi",
-    price: 5.5,
+    price: 5.50,
     image: "/images/landingpage/Sweet-lassi.png",
   },
 ];
 
 export const drinkOptions = [
   { name: "Regular Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
-  { name: "Large Coca-Cola", price: 3.5, image: "/images/drinks/coke.png" },
+  { name: "Large Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
   {
     name: "Regular Coke Zero Sugar",
     price: 3.0,
@@ -105,7 +105,7 @@ export const drinkOptions = [
   },
   {
     name: "Large Coke Zero Sugar",
-    price: 3.5,
+    price: 3.0,
     image: "/images/drinks/coke-zero.png",
   },
   {
@@ -115,7 +115,7 @@ export const drinkOptions = [
   },
   {
     name: "Large Diet Coke",
-    price: 3.5,
+    price: 3.0,
     image: "/images/drinks/diet-coke.png",
   },
   {
@@ -192,15 +192,15 @@ const MenuPage = () => {
       drink?.price ||
       lassi?.price ||
       (itemName == "Chana"
-        ? 3.0
+        ? 1.50
         : itemName == "Impli Pyaz Chutney"
-        ? 2.0
+        ? 1.50
         : itemName == "Amul Butter"
-        ? 1.1
+        ? 2.50
         : itemName == "Normal Butter"
-        ? 0.75
+        ? 1.50
         : itemName == "Pickle"
-        ? 1.5 // Assuming the price for Pickle is 1.5
+        ? 1 // Assuming the price for Pickle is 1.5
         : 0); // Default price if item is not in the above lists
 
     const newItem = {
