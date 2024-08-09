@@ -54,45 +54,48 @@ export const useMenuContext = () => {
 };
 
 export const MenuProvider = ({ children }: { children: ReactNode }) => {
-  const getStoredData = (key: string, defaultValue: any) => {
-    if (typeof window !== "undefined") {
+  const [size, setSize] = useState("regular");
+  const [price, setPrice] = useState(0);
+  const [cal, setCal] = useState(640);
+  const [includedItems, setIncludedItems] = useState<IncludedItem[]>([]);
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [extraItems, setExtraItems] = useState<string[]>([
+    "Chana",
+    "Impli Pyaz Chutney",
+    "Amul Butter",
+    "Normal Butter",
+  ]);
+  const [plasticware, setPlasticware] = useState("no");
+  const [instructions, setInstructions] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [selectedDrinks, setSelectedDrinks] = useState<string[]>([]);
+  const [selectedLassis, setSelectedLassis] = useState<string[]>([]);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const getStoredData = (key: string, defaultValue: any) => {
       const storedValue = localStorage.getItem(key);
       return storedValue ? JSON.parse(storedValue) : defaultValue;
-    }
-    return defaultValue;
-  };
+    };
 
-  const [size, setSize] = useState(() => getStoredData("size", "regular"));
-  const [price, setPrice] = useState(() => getStoredData("price", 0));
-  const [cal, setCal] = useState(() => getStoredData("cal", 640));
-  const [includedItems, setIncludedItems] = useState<IncludedItem[]>(() =>
-    getStoredData("includedItems", [])
-  );
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>(() =>
-    getStoredData("quantities", {})
-  );
-  const [extraItems, setExtraItems] = useState<string[]>(() =>
-    getStoredData("extraItems", [
+    setSize(getStoredData("size", "regular"));
+    setPrice(getStoredData("price", 0));
+    setCal(getStoredData("cal", 640));
+    setIncludedItems(getStoredData("includedItems", []));
+    setQuantities(getStoredData("quantities", {}));
+    setExtraItems(getStoredData("extraItems", [
       "Chana",
       "Impli Pyaz Chutney",
       "Amul Butter",
       "Normal Butter",
-    ])
-  );
-  const [plasticware, setPlasticware] = useState(() =>
-    getStoredData("plasticware", "no")
-  );
-  const [instructions, setInstructions] = useState(() =>
-    getStoredData("instructions", "")
-  );
-  const [quantity, setQuantity] = useState(() => getStoredData("quantity", 1));
-  const [selectedDrinks, setSelectedDrinks] = useState<string[]>(() =>
-    getStoredData("selectedDrinks", [])
-  );
-  const [selectedLassis, setSelectedLassis] = useState<string[]>(() =>
-    getStoredData("selectedLassis", [])
-  );
-  const [total, setTotal] = useState(() => getStoredData("total", 0));
+    ]));
+    setPlasticware(getStoredData("plasticware", "no"));
+    setInstructions(getStoredData("instructions", ""));
+    setQuantity(getStoredData("quantity", 1));
+    setSelectedDrinks(getStoredData("selectedDrinks", []));
+    setSelectedLassis(getStoredData("selectedLassis", []));
+    setTotal(getStoredData("total", 0));
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("size", JSON.stringify(size));

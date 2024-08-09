@@ -19,13 +19,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col overflow-y-auto">
-        <Navbar />
-        <MenuProvider>
+      <MenuProvider>
+        <body className="flex flex-col overflow-y-auto">
+          <Navbar />
+
           <div>{children}</div>
-        </MenuProvider>
-        <Footer />
-      </body>
+
+          <Footer />
+        </body>
+      </MenuProvider>
     </html>
   );
 }

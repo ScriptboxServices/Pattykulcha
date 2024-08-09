@@ -61,7 +61,7 @@ const Login: React.FC = () => {
             <Typography component="h2" variant="subtitle1" align="left" sx={{ width: '100%', mt: 3 }}>
               Welcome to Pattykulcha!
             </Typography>
-            <Typography component="p" variant="body2" align="left" sx={{ width: '100%', mt: 0.5 }} gutterBottom>
+            <Typography variant="body2" align="left" sx={{ width: '100%', mt: 0.5 }} gutterBottom>
               Please sign-in to your account.
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit(onSubmit)}>
@@ -94,7 +94,7 @@ const Login: React.FC = () => {
               >
                 Login
               </Button>
-              <Typography component="p" variant="body2" align="center" sx={{ mt: 2 }}>
+              <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                 New on our platform? <Link href="/createaccount" variant="body2" sx={{ color: 'black', textDecoration: 'none', fontWeight: 'bold', '&:hover': { textDecoration: 'underline' } }}>Create An Account</Link>
               </Typography>
             </Box>
