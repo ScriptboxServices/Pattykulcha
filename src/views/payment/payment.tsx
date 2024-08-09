@@ -32,9 +32,7 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   paymentMethod: Yup.string().required("Payment method is required"),
   cardNumber: Yup.string().required("Card number is required"),
-
   expDate: Yup.string().required("Expiration date is required"),
-
   cvv: Yup.string().required("CVV is required"),
 });
 
@@ -47,8 +45,7 @@ const CheckoutMain = () => {
     resolver: yupResolver(validationSchema) as any,
   });
 
-  const { includedItems,  quantities, } =
-    useMenuContext();
+  const { includedItems, quantities } = useMenuContext();
 
   const onSubmit = (data: FormValues) => {
     console.log("Form Data: ", data);
@@ -65,11 +62,18 @@ const CheckoutMain = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 5 }}>
+    <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4 , pb: 8}}>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Card sx={{ width: { xs: "100%", sm: "90%", md: "80%", lg: "85%" } }}>
-          <CardContent>
-            <Typography variant="h4" mb={2}>
+        <Card
+          sx={{
+            width: { xs: "100%", sm: "90%", md: "75%", lg: "70%" },
+            boxShadow: 3,
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
+            <Typography variant="h4" mb={2} textAlign="center">
               Checkout
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,6 +96,7 @@ const CheckoutMain = () => {
                               <img
                                 src="https://img.icons8.com/color/48/000000/visa.png"
                                 alt="Visa"
+                                style={{ maxWidth: "48px" }}
                               />
                             }
                           />
@@ -106,7 +111,7 @@ const CheckoutMain = () => {
                   <Typography variant="h6" mb={2}>
                     Credit Card Info
                   </Typography>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2} >
                     <Grid item xs={12}>
                       <Controller
                         name="cardNumber"
@@ -122,12 +127,15 @@ const CheckoutMain = () => {
                             variant="outlined"
                             error={!!errors.cardNumber}
                             helperText={errors.cardNumber?.message}
+                            InputProps={{
+                              sx: { height: '50px' },  // Adjust the height here
+                            }}
                           />
                         )}
                       />
                     </Grid>
 
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={6}>
                       <Controller
                         name="expDate"
                         control={control}
@@ -142,12 +150,15 @@ const CheckoutMain = () => {
                             variant="outlined"
                             error={!!errors.expDate}
                             helperText={errors.expDate?.message}
+                            InputProps={{
+                              sx: { height: '50px' },  // Match height with Card Number
+                            }}
                           />
                         )}
                       />
                     </Grid>
 
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={6}>
                       <Controller
                         name="cvv"
                         control={control}
@@ -162,6 +173,9 @@ const CheckoutMain = () => {
                             variant="outlined"
                             error={!!errors.cvv}
                             helperText={errors.cvv?.message}
+                            InputProps={{
+                              sx: { height: '50px' },  // Match height with Card Number
+                            }}
                           />
                         )}
                       />
@@ -172,28 +186,28 @@ const CheckoutMain = () => {
                   <Box
                     p={3}
                     bgcolor="background.paper"
-                    border={1}
-                    borderColor="grey.300"
                     borderRadius={2}
+                    sx={{ boxShadow: 2 }}
                   >
-                    <Typography variant="h5" mb={3}>
+                    <Typography variant="h5" mb={3} textAlign="center">
                       Order Summary
                     </Typography>
 
-                    <Box display="flex" justifyContent="space-between">
+                    <Box display="flex" justifyContent="space-between" mb={2}>
                       <Typography>Number of Items</Typography>
                       <Typography>{includedItems.length}</Typography>
                     </Box>
-                    <Divider sx={{ my: 3 }} />
+                    <Divider sx={{ my: 2 }} />
                     <Box display="flex" justifyContent="space-between" mb={3}>
                       <Typography variant="h6">Total</Typography>
-                      <Typography variant="h6">{calculateTotal()}</Typography>
+                      <Typography variant="h6">${calculateTotal()}</Typography>
                     </Box>
                     <Button
                       type="submit"
                       variant="contained"
                       color="primary"
                       fullWidth
+                      sx={{ py: 1.5 }}
                     >
                       Proceed With Payment
                     </Button>
