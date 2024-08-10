@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
   TextField,
   Typography,
+  Alert,
   styled,
   Container,
+  CircularProgress
 } from "@mui/material";
 import Link from "next/link";
-
+import { useMenuContext } from "@/context";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import { auth, db } from "@/firebase";
+import { doc , setDoc } from "firebase/firestore"
 const StyledRoot = styled(Box)({
   display: "flex",
   flexDirection: "column",
@@ -42,6 +48,10 @@ const VerificationPage: React.FC = () => {
   );
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const {confirmationResult,setConfirmationResult} = useMenuContext()
+  const [loading,setLoading] = useState<boolean>(false) 
+  const [error,setError] = useState<string>('') 
+  const router = useRouter();
 
   const handleCodeChange =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +73,49 @@ const VerificationPage: React.FC = () => {
       }
     };
 
-  const handleVerify = () => {
+    useEffect(() => {
+      if(verificationCode.join('').length === 6){
+        submitOtp()
+      }
+    },[verificationCode])
+
+    const submitOtp = async  () => {
+      if(verificationCode.join('').length !== 6){
+        setError('Please enter complete otp.')
+        return
+      }
+      
+      if(!confirmationResult){
+        return router.push("/login");
+      }
+      
+      try{
+        setLoading(true)
+        const result = await confirmationResult?.confirm(verificationCode?.join(''))
+        const {user} = result
+        if(user){
+          const docRef = doc(db,'users',user.uid)
+          await setDoc(docRef,{
+            phoneNumber : user?.phoneNumber,
+            profile:'',
+            email:'',
+          })
+        }
+        setConfirmationResult(null)
+        setLoading(false)
+        router.push("/")
+      }catch(err : any) {
+        console.log(err.code);
+        setLoading(false)
+        if(err.code === 'auth/invalid-verification-code'){
+          setError('Invalid verification code.')
+        }
+      }
+    } 
+
+  const handleVerify = (e:any) => {
+    e.preventDefault()
+    submitOtp()
     // Add your verification logic here
     console.log("Verifying with code:", verificationCode.join(""));
   };
@@ -126,15 +178,31 @@ const VerificationPage: React.FC = () => {
           </StyledCodeInput>
           <Link href='/home'>
           <Box mt={2}>
+          {
+                loading ? <Box sx={{mt:2,textAlign:'center'}} component='div'><CircularProgress /> </Box> : <>
             <Button
               variant="contained"
               color="primary"
               onClick={handleVerify}
               fullWidth
-              style={{ backgroundColor: "black" }}
+              sx={{
+                backgroundColor: "#ECAB21",
+                color: "white",
+                paddingX: 4,
+                paddingY: 1,
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#FFC107",
+                  color: "white",
+                },
+              }}
             >
               Confirm
             </Button>
+            </>
+}   {
+                error && <Alert sx={{mt:2}} severity="error">{error}</Alert>
+              }
           </Box>
           </Link>
         </StyledForm>

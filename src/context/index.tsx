@@ -1,5 +1,8 @@
 "use client";
 
+import { auth } from "@/firebase";
+import { ConfirmationResult } from "firebase/auth";
+import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
   useContext,
@@ -54,9 +57,17 @@ interface MenuContextType {
   setTotal: (total: number) => void;
   count: number; // New property
   setCount: (count: number) => void; // New setter
+  confirmationResult : ConfirmationResult | null,
+  setConfirmationResult :any
+}
+
+interface AuthContextType {
+  user : any,
+  isLoggedIn : boolean
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useMenuContext = () => {
   const context = useContext(MenuContext);
@@ -66,7 +77,42 @@ export const useMenuContext = () => {
   return context;
 };
 
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("Auth must be used within a MenuProvider");
+  }
+  return context;
+};
+
+export const AuthProvider = ({children} : {children : ReactNode}) => {
+  const router  = useRouter()
+  const pathname = usePathname()
+  const [user,setUser] = useState<object | null>(null)
+  const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser((prev) => user);
+        setIsLoggedIn((prev) => true);
+        router.push(pathname)
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+        router.push('/login')
+      }
+    });
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  return <AuthContext.Provider value={{user,isLoggedIn}}>{children}</AuthContext.Provider>;
+}
+
+
+
 export const MenuProvider = ({ children }: { children: ReactNode }) => {
+  const [confirmationResult,setConfirmationResult] = useState<ConfirmationResult | null>(null)
   const [size, setSize] = useState("regular");
   const [price, setPrice] = useState(0);
   const [cal, setCal] = useState(640);
@@ -202,6 +248,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setTotal,
     count, // New property
     setCount, // New setter
+    setConfirmationResult,
+    confirmationResult,
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

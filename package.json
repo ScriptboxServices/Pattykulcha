@@ -17,6 +17,7 @@
     "@iconify/react": "^5.0.2",
     "@mui/icons-material": "^5.16.6",
     "@mui/material-nextjs": "^5.16.6",
+    "firebase": "^10.12.5",
     "keen-slider": "^6.8.6",
     "next": "14.2.5",
     "react": "^18",

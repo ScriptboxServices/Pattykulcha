@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,10 +15,15 @@ import {
   Grid,
   Autocomplete,
   InputAdornment,
+  CircularProgress,
+  Alert
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Icon, IconifyIcon } from "@iconify/react";
 import { countryCodes } from "@/utils/constants";
+import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "@/firebase";
+import { useMenuContext } from "@/context";
 
 export interface CountryCode {
   name: string;
@@ -54,16 +59,53 @@ const Login: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
+  const [loading,setLoading] = useState<boolean>(false)
+  const [error,setError] = useState<string>('')
+  const [recaptchaVerifier,setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null)
   const router = useRouter();
+  const {confirmationResult,setConfirmationResult} =  useMenuContext()
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
-    // Navigate to /verification after successful login
+
+  useEffect(() => {
+    const recaptchaVerifier = new RecaptchaVerifier(auth,"recaptcha-container",{
+      size : 'invisible'
+    })
+
+    setRecaptchaVerifier(recaptchaVerifier)
+    return () => {
+      recaptchaVerifier.clear()
+    }
+  },[auth])
+
+  useEffect(() => {
+    if(!confirmationResult) return
     router.push("/verification");
+  },[confirmationResult])
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setError('')
+    if(!recaptchaVerifier) return
+
+    try{
+      setLoading(true)
+      const confirmation = await signInWithPhoneNumber(auth,`+${data?.countryCode}${data?.phoneNumber}`,recaptchaVerifier)
+      setLoading(false)
+
+      setConfirmationResult(confirmation)
+    }catch(err : any) {
+      console.log(err.code);
+      setLoading(false)
+      if(err.code === 'auth/invalid-phone-number'){
+        setError('Invalid phone number.')
+      }else{
+        setError('Failed to send otp.')
+      }
+    }
   };
 
   return (
     <>
+      <div id="recaptcha-container" />
       <CssBaseline />
       <Box
         sx={{
@@ -108,7 +150,7 @@ const Login: React.FC = () => {
             <Typography
               variant="body2"
               align="left"
-              sx={{ width: "100%", mt: 0.5 }}
+              sx={{ width: "100%", mt: 0.5,mb:3 }}
               gutterBottom
             >
               Please sign-in to your account.
@@ -116,10 +158,10 @@ const Login: React.FC = () => {
             <Box
               component="form"
               noValidate
-              sx={{ mt: 1 }}
+              sx={{ mt: 1,width:'100%' }}
               onSubmit={handleSubmit(onSubmit)}
             >
-              <Grid container spacing={2}>
+              <Grid container spacing={1}>
                 <Grid item xs={5}>
                   <Controller
                     name="countryCode"
@@ -220,21 +262,34 @@ const Login: React.FC = () => {
                   />
                 </Grid>
               </Grid>
+              {
+                loading ? <Box sx={{mt:2,textAlign:'center'}} component='div'><CircularProgress /> </Box> : <>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{
-                  mt: 3,
-                  mb: 2,
-                  backgroundColor: "black",
-                  "&:hover": { backgroundColor: "black" },
-                  borderRadius: 1,
+                  backgroundColor: "#ECAB21",
+                  color: "white",
+                  paddingX: 4,
+                  paddingY: 1,
+                  mt:2,
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#FFC107",
+                    color: "white",
+                  },
                 }}
               >
                 Login
               </Button>
-              <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+                
+                </>
+              }
+              {
+                error && <Alert severity="error">{error}</Alert>
+              }
+              {/* <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                 New on our platform?{" "}
                 <Link
                   href="/createaccount"
@@ -248,7 +303,7 @@ const Login: React.FC = () => {
                 >
                   Create An Account
                 </Link>
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
         </Container>

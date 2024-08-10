@@ -315,7 +315,7 @@ const MenuPage = () => {
             }}
           >
             <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-              What's Included
+              What&rsquo;s Included
             </Typography>
             <Grid container spacing={2} justifyContent="flex-start">
               {includedItems1.length == 0 ? (
@@ -760,7 +760,7 @@ const MenuPage = () => {
                 includedItems1.length == 0 && includedItems2.length == 0
               }
             >
-              Add to order
+              Add to cart
             </Button>
             {/* </Link> */}
           </Box>

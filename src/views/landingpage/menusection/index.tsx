@@ -14,7 +14,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { Kulcha } from "@/context";
@@ -60,6 +60,8 @@ const menuItems = [
 
 
 const MenuSection = () => {
+  const {user,isLoggedIn} = useAuthContext()
+  console.log(user,isLoggedIn);
   const { setIncludedItems1, includedItems1, setSelectedKulchas } = useMenuContext();
   const router = useRouter();
 
@@ -74,6 +76,7 @@ const MenuSection = () => {
     setSelectedKulchas((prevKulchas: Kulcha[]): Kulcha[] => [...prevKulchas, newKulcha]);
 
   };
+
 
   return (
     <Box
@@ -223,6 +226,8 @@ const MenuSection = () => {
                       },
                     }}
                     onClick={() => {
+                      if(!isLoggedIn) return router.push("/login");
+
                       handleAddItem(item.name, item.desc, item.image, item.price);
                       router.push("/cart");
                     }}

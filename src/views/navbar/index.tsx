@@ -19,7 +19,9 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext } from "@/context";
+import { auth } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "white",
@@ -56,8 +58,10 @@ const OrderButton = styled(Button)({
 });
 
 const Navbar: React.FC = () => {
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useMenuContext(); // Fetch count from context
+  const {user,isLoggedIn} = useAuthContext()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -78,7 +82,7 @@ const Navbar: React.FC = () => {
       </List>
       <Divider />
       <List>
-        <ListItem button>
+        {/* <ListItem button>
           <Link href="/createaccount" passHref>
             <Button
               sx={{ textTransform: "none", color: "black", width: "100%" }}
@@ -86,7 +90,7 @@ const Navbar: React.FC = () => {
               Sign Up
             </Button>
           </Link>
-        </ListItem>
+        </ListItem> */}
         <ListItem button>
           <Link href="/login" passHref>
             <Button
@@ -134,30 +138,45 @@ const Navbar: React.FC = () => {
           <Box
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
-            <Link href="/checkout">
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="cart"
-              sx={{ ml: 2 }}
-            >
-              <Badge
-                badgeContent={count > 0 ? count : undefined}
-                color="error"
-                invisible={count === 0}
-              >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            </Link>
-            <Link href="/createaccount" passHref>
+            {
+              isLoggedIn &&
+              <>
+                <Link href="/checkout">
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="cart"
+                  sx={{ ml: 2,mr:2 }}
+                >
+                  <Badge
+                    badgeContent={count > 0 ? count : undefined}
+                    color="error"
+                    invisible={count === 0}
+                  >
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+                </Link>
+                <Typography sx={{ mx: 1 }}>|</Typography>
+              </>
+            }
+            {/* <Link href="/createaccount" passHref>
               <NavButton>Sign Up</NavButton>
-            </Link>
-            <Typography sx={{ mx: 1 }}>|</Typography>
-            <Link href="/login" passHref>
-              <NavButton>Log In</NavButton>
-            </Link>
-            <Link href="/cart" passHref>
+            </Link> */}
+            {
+              !isLoggedIn ?
+              <Link href="/login" passHref>
+                <NavButton>Log In</NavButton>
+              </Link> : 
+              <>
+                <NavButton onClick={async () => {
+                  await auth.signOut()
+                  router.push('/login')
+                }}>Logout</NavButton>
+
+              </>
+            }
+            <Link href={isLoggedIn ? "/cart" : '/login'} passHref>
               <OrderButton variant="contained">Order Now</OrderButton>
             </Link>
             <IconButton
