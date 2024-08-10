@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import {
   Box,
   Typography,
@@ -14,7 +15,6 @@ import {
   DialogContent,
   DialogActions,
   Card,
-  CardMedia,
   CardContent,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -28,11 +28,11 @@ import Link from "next/link";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    Chana: "/images/landingpage/landing1.svg",
-    "Impli Pyaz Chutney": "/images/landingpage/landing2.svg",
-    "Amul Butter": "/images/landingpage/landing3.svg",
-    "Normal Butter": "/images//landingpage/landing3.svg",
-    Pickle: "/images/footer/cart3.png",
+    "Chana": "/images/landingpage/Chana.svg",
+    "Imli Pyaz Chutney": "/images/landingpage/Chutney.svg",
+    "Amul Butter": "/images/landingpage/butter_6587237.svg",
+    "Normal Butter": "/images/landingpage/butter_6587237.svg",
+    "Pickle": "/images/landingpage/pickle.svg",
     "Regular Coca-Cola": "/images/drinks/coke.png",
     "Large Coca-Cola": "/images/drinks/coke.png",
     "Regular Coke Zero Sugar": "/images/drinks/coke-zero.png",
@@ -47,6 +47,11 @@ export const getImageSrc = (item: string) => {
     "Gobi Kulcha": "/images/landingpage/image5.jpg",
     "Paneer Kulcha": "/images/landingpage/menu5.png",
     "Hot & Spicy Mix Kulcha": "/images/landingpage/menu6.png",
+    Tea: "/images/landingpage/milktea.png",
+    "Masala Tea": "/images/landingpage/tea.png",
+    Espresso: "/images/landingpage/Espresso.png",
+    "Caffe Latte": "/images/landingpage/caffe-latte.png",
+    "Cold Coffee": "/images/landingpage/caffe-latte.png",
   };
   return images[item] || "/images/footer/default.png";
 };
@@ -54,17 +59,17 @@ export const getImageSrc = (item: string) => {
 export const coffeeOptions = [
   {
     name: "Espresso",
-    price: 3.50,
+    price: 3.5,
     image: "/images/landingpage/Espresso.png",
   },
   {
     name: "Caffe Latte",
-    price: 3.50,
+    price: 3.5,
     image: "/images/landingpage/caffe-latte.png",
   },
   {
     name: "Cold Coffee",
-    price: 3.50,
+    price: 3.5,
     image: "/images/landingpage/caffe-latte.png",
   },
 ];
@@ -72,25 +77,25 @@ export const coffeeOptions = [
 export const teaOptions = [
   {
     name: "Tea",
-    price: 3.50,
-    image: "/images/landingpage/Caffe-latte.png",
+    price: 3.5,
+    image: "/images/landingpage/milktea.png",
   },
   {
     name: "Masala Tea",
-    price: 3.50,
-    image: "/images/landingpage/Caffe-latte.png",
+    price: 3.5,
+    image: "/images/landingpage/tea.png",
   },
 ];
 
 export const lassiOptions = [
   {
     name: "Salted Lassi",
-    price: 5.50,
-    image: "images/landingpage/Sweet-lassi.png",
+    price: 5.5,
+    image: "/images/landingpage/Salted-lassi.png",
   },
   {
     name: "Sweet Lassi",
-    price: 5.50,
+    price: 5.5,
     image: "/images/landingpage/Sweet-lassi.png",
   },
 ];
@@ -134,6 +139,15 @@ export const drinkOptions = [
     image: "/images/drinks/sprite.png",
   },
 ];
+
+export interface IncludedItem {
+  id: string;
+  items: Array<{
+    name: string;
+    price: number;
+  }>;
+}
+
 const MenuPage = () => {
   const {
     size,
@@ -158,6 +172,8 @@ const MenuPage = () => {
 
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
+  const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
+  const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
 
   const handleSize = (event: any, newSize: string | null) => {
     if (newSize !== null) {
@@ -172,33 +188,28 @@ const MenuPage = () => {
     }
   };
 
-  const handlePlasticwareChange = (
-    event: any,
-    newPlasticware: string | null
-  ) => {
-    if (newPlasticware !== null) {
-      setPlasticware(newPlasticware);
-    }
-  };
-
   const handleAddItem = (itemName: string) => {
     const itemId = uuidv4();
 
     // Determine the price for the item
     const drink = drinkOptions.find((drink) => drink.name == itemName);
     const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
+    const tea = teaOptions.find((tea) => tea.name == itemName);
+    const coffee = coffeeOptions.find((coffee) => coffee.name == itemName);
 
     const price =
       drink?.price ||
       lassi?.price ||
+      tea?.price ||
+      coffee?.price ||
       (itemName == "Chana"
-        ? 1.50
-        : itemName == "Impli Pyaz Chutney"
-        ? 1.50
+        ? 1.5
+        : itemName == "Imli Pyaz Chutney"
+        ? 1.5
         : itemName == "Amul Butter"
-        ? 2.50
+        ? 2.5
         : itemName == "Normal Butter"
-        ? 1.50
+        ? 1.5
         : itemName == "Pickle"
         ? 1 // Assuming the price for Pickle is 1.5
         : 0); // Default price if item is not in the above lists
@@ -227,6 +238,16 @@ const MenuPage = () => {
     handleAddItem(lassiItem!.name);
   };
 
+  const handleTeaSelect = (tea: string) => {
+    const teaItem = teaOptions.find((t) => t.name == tea);
+    handleAddItem(teaItem!.name);
+  };
+
+  const handleCoffeeSelect = (coffee: string) => {
+    const coffeeItem = coffeeOptions.find((c) => c.name == coffee);
+    handleAddItem(coffeeItem!.name);
+  };
+
   const handleRemoveItem = (itemId: string) => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
@@ -247,6 +268,22 @@ const MenuPage = () => {
 
   const handleLassiDialogClose = () => {
     setIsLassiDialogOpen(false);
+  };
+
+  const handleTeaDialogOpen = () => {
+    setIsTeaDialogOpen(true);
+  };
+
+  const handleTeaDialogClose = () => {
+    setIsTeaDialogOpen(false);
+  };
+
+  const handleCoffeeDialogOpen = () => {
+    setIsCoffeeDialogOpen(true);
+  };
+
+  const handleCoffeeDialogClose = () => {
+    setIsCoffeeDialogOpen(false);
   };
 
   return (
@@ -299,9 +336,12 @@ const MenuPage = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Box sx={{ textAlign: "right", marginLeft: 13 }}>
-            <img
+            <Image
               src={selectedkulchas?.[selectedkulchas.length - 1]?.image}
               alt="Amritsari Kulcha"
+              layout="responsive"
+              width={500}
+              height={500}
               style={{ maxWidth: "100%", height: "auto" }}
             />
           </Box>
@@ -315,7 +355,7 @@ const MenuPage = () => {
             }}
           >
             <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-              What&rsquo;s Included
+              `What's Included
             </Typography>
             <Grid container spacing={2} justifyContent="flex-start">
               {includedItems1.length == 0 ? (
@@ -360,7 +400,7 @@ const MenuPage = () => {
                         textAlign: "center",
                         position: "relative",
                         cursor: "pointer",
-                        height: "300px",
+                        height: "270px",
                         width: "175px",
                         margin: "0.5rem",
                         boxShadow: item
@@ -378,14 +418,15 @@ const MenuPage = () => {
                           borderRadius: "50%",
                         }}
                       />
-                      <img
+                      <Image
                         src={getImageSrc(item.items[0].name)}
                         alt={item.items[0].name}
+                        width={150}
+                        height={150}
                         style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                          borderRadius: "50%",
+                          width: "65%", // Set the width to 60% of the container
+                          height: "55%", // Set the height to 60% of the container
+                          objectFit: "contain", // Maintain the aspect ratio
                         }}
                       />
                       <Typography variant="body1" color="textPrimary">
@@ -417,16 +458,13 @@ const MenuPage = () => {
                       border: "2px solid #dcdcdc",
                       borderRadius: "8px",
                       textAlign: "center",
-                      height: "300px",
+                      height: "270px",
                       width: "175px",
                       margin: "1rem",
                     }}
                   >
-                    <AddCircleOutlineIcon
-                      sx={{ fontSize: "4rem", color: "#1e90ff" }}
-                    />
                     <Typography variant="body1" color="textSecondary">
-                      Add Items
+                      Add items will be shown here
                     </Typography>
                   </Box>
                 </Grid>
@@ -438,7 +476,7 @@ const MenuPage = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "space-between", // Changed to space-between
+                        justifyContent: "space-between",
                         padding: "1rem",
                         backgroundColor: "white",
                         border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
@@ -446,7 +484,7 @@ const MenuPage = () => {
                         textAlign: "center",
                         position: "relative",
                         cursor: "pointer",
-                        height: "300px",
+                        height: "270px",
                         width: "175px",
                         margin: "0.5rem",
                         boxShadow: item
@@ -464,14 +502,15 @@ const MenuPage = () => {
                           borderRadius: "50%",
                         }}
                       />
-                      <img
+                      <Image
                         src={getImageSrc(item.items[0].name)}
                         alt={item.items[0].name}
+                        width={150}
+                        height={150}
                         style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                          borderRadius: "50%",
+                          width: "65%", // Set the width to 60% of the container
+                          height: "55%", // Set the height to 60% of the container
+                          objectFit: "contain", // Maintain the aspect ratio
                         }}
                       />
                       <Typography variant="body1" color="textPrimary">
@@ -487,7 +526,7 @@ const MenuPage = () => {
                           backgroundColor: "transparent",
                           color: "#1e90ff",
                           border: "1px solid #1e90ff",
-                          marginTop: "auto", // Pushes the button to the bottom
+                          marginTop: "auto",
                           borderRadius: "20px",
                           textTransform: "none",
                         }}
@@ -534,12 +573,13 @@ const MenuPage = () => {
                     onClick={() => handleAddItem(item)}
                   >
                     <Box display="flex" alignItems="center">
-                      <img
-                        src={`/images/footer/cart1.png`}
+                      <Image
+                        src={getImageSrc(item)}
                         alt={item}
+                        layout="fixed"
+                        width={50}
+                        height={50}
                         style={{
-                          width: "50px",
-                          height: "50px",
                           objectFit: "cover",
                           borderRadius: "50%",
                         }}
@@ -593,12 +633,13 @@ const MenuPage = () => {
                   onClick={handleDrinkDialogOpen}
                 >
                   <Box display="flex" alignItems="center">
-                    <img
-                      src="/images/footer/drinks.png"
+                    <Image
+                      src="/images/landingpage/Drinks.svg"
                       alt="Add a Drink"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "50px",
-                        height: "50px",
                         objectFit: "cover",
                         borderRadius: "50%",
                       }}
@@ -633,12 +674,13 @@ const MenuPage = () => {
                   onClick={handleLassiDialogOpen}
                 >
                   <Box display="flex" alignItems="center">
-                    <img
-                      src="/images/footer/lassi.jpg"
+                    <Image
+                      src="/images/landingpage/Lassi.svg"
                       alt="Add a Lassi"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "50px",
-                        height: "50px",
                         objectFit: "cover",
                         borderRadius: "50%",
                       }}
@@ -670,15 +712,16 @@ const MenuPage = () => {
                     margin: "1rem 0",
                     width: "60%",
                   }}
-                  onClick={handleLassiDialogOpen}
+                  onClick={handleTeaDialogOpen}
                 >
                   <Box display="flex" alignItems="center">
-                    <img
-                      src="/images/footer/lassi.jpg"
-                      alt="Add a Lassi"
+                    <Image
+                      src="/images/landingpage/tea.svg"
+                      alt="Add a Tea"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "50px",
-                        height: "50px",
                         objectFit: "cover",
                         borderRadius: "50%",
                       }}
@@ -707,18 +750,20 @@ const MenuPage = () => {
                     textAlign: "left",
                     position: "relative",
                     cursor: "pointer",
+                  
                     margin: "1rem 0",
                     width: "60%",
                   }}
-                  onClick={handleLassiDialogOpen}
+                  onClick={handleCoffeeDialogOpen}
                 >
                   <Box display="flex" alignItems="center">
-                    <img
-                      src="/images/footer/lassi.jpg"
-                      alt="Add a Lassi"
+                    <Image
+                      src="/images/landingpage/coffee.svg"
+                      alt="Add a Coffee"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "50px",
-                        height: "50px",
                         objectFit: "cover",
                         borderRadius: "50%",
                       }}
@@ -737,7 +782,6 @@ const MenuPage = () => {
             </Grid>
           </Box>
         </Grid>
-        {/* New Section for Plasticware */}
         <Box
           sx={{
             position: "fixed",
@@ -751,7 +795,6 @@ const MenuPage = () => {
           }}
         >
           <Box display="flex" justifyContent="flex-end" alignItems="center">
-            {/* <Link href={"/checkout"}> */}
             <Button
               variant="contained"
               color="warning"
@@ -760,9 +803,8 @@ const MenuPage = () => {
                 includedItems1.length == 0 && includedItems2.length == 0
               }
             >
-              Add to cart
+              Add to order
             </Button>
-            {/* </Link> */}
           </Box>
         </Box>
       </Grid>
@@ -780,19 +822,30 @@ const MenuPage = () => {
                 <Card
                   onClick={() => handleDrinkSelect(drink.name)}
                   sx={{
-                    border: selectedDrinks.includes(drink.name)
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === drink.name)
+                    )
                       ? "2px solid green"
                       : "1px solid #ddd",
                     position: "relative",
                     cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
-                  <CardMedia
-                    component="img"
+                  <Image
                     alt={drink.name}
-                    height="140"
-                    image={drink.image}
-                    sx={{ objectFit: "contain", padding: "1rem" }}
+                    src={drink.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 60% of the container
+                      height: "65%", // Set the height to 60% of the container
+                      objectFit: "cover", // Maintain the aspect ratio
+                      marginInline: "auto", // Center horizontally within the container
+                    }}
                   />
                   <CardContent>
                     <Typography
@@ -809,7 +862,9 @@ const MenuPage = () => {
                     >
                       ${drink.price.toFixed(2)}
                     </Typography>
-                    {selectedDrinks.includes(drink.name) && (
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === drink.name)
+                    ) && (
                       <CheckCircleIcon
                         sx={{
                           position: "absolute",
@@ -850,19 +905,30 @@ const MenuPage = () => {
                 <Card
                   onClick={() => handleLassiSelect(lassi.name)}
                   sx={{
-                    border: selectedLassis.includes(lassi.name)
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === lassi.name)
+                    )
                       ? "2px solid green"
                       : "1px solid #ddd",
                     position: "relative",
                     cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
-                  <CardMedia
-                    component="img"
+                  <Image
                     alt={lassi.name}
-                    height="140"
-                    image={lassi.image}
-                    sx={{ objectFit: "contain", padding: "1rem" }}
+                    src={lassi.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 60% of the container
+                      height: "65%", // Set the height to 60% of the container
+                      objectFit: "cover", // Maintain the aspect ratio
+                      marginInline: "auto", // Center horizontally within the container
+                    }}
                   />
                   <CardContent>
                     <Typography
@@ -879,7 +945,9 @@ const MenuPage = () => {
                     >
                       ${lassi.price.toFixed(2)}
                     </Typography>
-                    {selectedLassis.includes(lassi.name) && (
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === lassi.name)
+                    ) && (
                       <CheckCircleIcon
                         sx={{
                           position: "absolute",
@@ -902,6 +970,172 @@ const MenuPage = () => {
             Cancel
           </Button>
           <Button onClick={handleLassiDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isTeaDialogOpen}
+        onClose={handleTeaDialogClose}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Add a Tea</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {teaOptions.map((tea) => (
+              <Grid item xs={12} sm={6} md={4} key={tea.name}>
+                <Card
+                  onClick={() => handleTeaSelect(tea.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === tea.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    alt={tea.name}
+                    src={tea.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 60% of the container
+                      height: "65%", // Set the height to 60% of the container
+                      objectFit: "cover", // Maintain the aspect ratio
+                      marginInline: "auto", // Center horizontally within the container
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      align="center"
+                    >
+                      {tea.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
+                      ${tea.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === tea.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleTeaDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleTeaDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isCoffeeDialogOpen}
+        onClose={handleCoffeeDialogClose}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Add a Coffee</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {coffeeOptions.map((coffee) => (
+              <Grid item xs={12} sm={6} md={4} key={coffee.name}>
+                <Card
+                  onClick={() => handleCoffeeSelect(coffee.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === coffee.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    alt={coffee.name}
+                    src={coffee.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 60% of the container
+                      height: "65%", // Set the height to 60% of the container
+                      objectFit: "cover", // Maintain the aspect ratio
+                      marginInline: "auto", // Center horizontally within the container
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      align="center"
+                    >
+                      {coffee.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
+                      ${coffee.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === coffee.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCoffeeDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCoffeeDialogClose} color="primary">
             Save
           </Button>
         </DialogActions>

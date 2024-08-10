@@ -19,6 +19,7 @@ import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IncludedItem, Kulcha, useMenuContext } from "@/context";
+import Image from "next/image";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
 
@@ -57,7 +58,6 @@ const CheckoutMain = () => {
     includedItems2,
     quantities,
   } = useMenuContext();
-
 
   const mergeItems = () => {
     const combinedItems = [...selectedkulchas, ...includedItems1, ...includedItems2];
@@ -138,14 +138,15 @@ const CheckoutMain = () => {
                             value="VisaCard"
                             control={<Radio />}
                             label={
-                              <img
+                              <Image
                                 src="https://img.icons8.com/color/48/000000/visa.png"
                                 alt="Visa"
+                                width={48}
+                                height={30}
                                 style={{ maxWidth: "48px" }}
                               />
                             }
                           />
-                          {/* Add more payment methods if needed */}
                         </RadioGroup>
                       )}
                     />

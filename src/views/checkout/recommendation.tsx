@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Box, Typography, Card, CardContent, Button, IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward, CheckCircle } from '@mui/icons-material';
 import { useKeenSlider } from 'keen-slider/react';
@@ -17,7 +18,13 @@ const KulchaCard: React.FC<KulchaCardProps> = ({ title, selected }) => {
       {selected && <CheckCircle sx={{ position: 'absolute', top: 8, right: 8, color: 'primary.main' }} />}
       <CardContent>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <img src="/images/checkout/checkout2.png" alt={`${title}} style={{ width: '150px', height: '150px' }`} />
+          <Image 
+            src="/images/checkout/checkout2.png" 
+            alt={`${title}`} 
+            width={150} 
+            height={150} 
+            style={{ width: '60%', height: '60%', objectFit: 'contain' }} 
+          />
           <Typography variant="h6" align="center">{title}</Typography>
           <Button variant="outlined" sx={{ marginTop: 1 }}>Add</Button>
         </Box>

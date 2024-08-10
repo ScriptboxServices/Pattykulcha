@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
       <Divider />
       <List>
         {["Menu", "About"].map((text) => (
-          <ListItem button key={text}>
+          <ListItem key={text}>
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
             </Button>
           </Link>
         </ListItem> */}
-        <ListItem button>
+        <ListItem >
           <Link href="/login" passHref>
             <Button
               sx={{ textTransform: "none", color: "black", width: "100%" }}

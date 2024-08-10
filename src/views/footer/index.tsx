@@ -11,44 +11,6 @@ const Footer: React.FC = () => {
   return (
     <Box component="footer" sx={{ bgcolor: '#162548', color: 'white', py: 6 }}>
       <Container maxWidth="lg">
-        {/* <Grid container spacing={4}>
-          {footerSections.map((section) => (
-            <Grid 
-              item 
-              xs={12} 
-              sm={6} 
-              md={3} 
-              key={section.title} 
-              sx={{
-                textAlign: { xs: 'center', md: 'left' }, 
-                mb: { xs: 2, md: 0 }
-              }}
-            >
-              <Typography 
-                variant="h6" 
-                color="primary.light" 
-                gutterBottom
-                sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}
-              >
-                {section.title}
-              </Typography>
-              {section.items.map((item) => (
-                <Typography 
-                  variant="body2" 
-                  key={item} 
-                  sx={{ 
-                    my: 0.5,
-                    fontSize: { xs: '0.875rem', md: '1rem' }
-                  }}
-                >
-                  <Link href="#" color="inherit" underline="hover">
-                    {item}
-                  </Link>
-                </Typography>
-              ))}
-            </Grid>
-          ))}
-        </Grid> */}
         <Box 
           sx={{ 
             mt: 4, 
@@ -58,20 +20,7 @@ const Footer: React.FC = () => {
             alignItems: 'center' 
           }}
         >
-          {/* <Button 
-            variant="outlined" 
-            color="primary" 
-            sx={{ 
-              color: 'white', 
-              borderColor: 'white', 
-              px: 3, 
-              py: 1, 
-              fontWeight: 'bold',
-              mb: { xs: 2, md: 0 }
-            }}
-          >
-            Join Today
-          </Button> */}
+
           <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' }, gap: 2, width:'100%'}}>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><FacebookIcon /></Link>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><TwitterIcon /></Link>
@@ -89,10 +38,6 @@ const Footer: React.FC = () => {
             alignItems: 'center' 
           }}
         >
-          {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2, mb: { xs: 2, md: 0 } }}>
-            <img src="/images/footer/image2.jpg" alt="Get it on Google Play" style={{ height: 40 }} />
-            <img src="/images/footer/image1.png" alt="Download on the App Store" style={{ height: 40 }} />
-          </Box> */}
           <Typography variant="body2" sx={{ textAlign: { xs: 'center', md: 'right',width:'100%' } }}>
             © 2024 All Rights Reserved
           </Typography>

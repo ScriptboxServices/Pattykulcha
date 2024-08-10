@@ -196,7 +196,7 @@ const OrderHome: React.FC = () => {
               }}
             >
               {/* Conditionally render price */}
-              {!(item.quantity == 1 && (item.name == "Chana" ||item.name == "Impli Pyaz Chutney" || item.name == "Amul Butter")) && (
+              {!(item.quantity == 1 && (item.name == "Chana" ||item.name == "Imli Pyaz Chutney" || item.name == "Amul Butter")) && (
                 <Typography
                   variant="body1"
                   sx={{ color: "#1F2937", fontWeight: "bold", mr: 2 }}

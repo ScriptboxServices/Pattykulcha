@@ -1,6 +1,3 @@
-// @ts-nocheck
-
-
 "use client";
 
 import React from "react";
@@ -9,7 +6,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardMedia,
   Typography,
   Button,
   Box,
@@ -18,6 +14,7 @@ import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { Kulcha } from "@/context";
+import Image from "next/image";
 
 const menuItems = [
   {
@@ -58,10 +55,8 @@ const menuItems = [
   },
 ];
 
-
 const MenuSection = () => {
-  const {user,isLoggedIn} = useAuthContext()
-  console.log(user,isLoggedIn);
+  const { user, isLoggedIn } = useAuthContext();
   const { setIncludedItems1, includedItems1, setSelectedKulchas } = useMenuContext();
   const router = useRouter();
 
@@ -74,9 +69,7 @@ const MenuSection = () => {
     const newKulcha: Kulcha = { name: itemName, desc, image, price };
 
     setSelectedKulchas((prevKulchas: Kulcha[]): Kulcha[] => [...prevKulchas, newKulcha]);
-
   };
-
 
   return (
     <Box
@@ -136,10 +129,7 @@ const MenuSection = () => {
                   paddingBottom: "10px",
                 }}
               >
-                <CardMedia
-                  component="img"
-                  image={item.image}
-                  alt={item.name}
+                <Box
                   sx={{
                     borderRadius: "50%",
                     width: "220px",
@@ -149,8 +139,21 @@ const MenuSection = () => {
                     left: "50%",
                     transform: "translateX(-50%)",
                     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    overflow: "hidden",
                   }}
-                />
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={220}
+                    height={300}
+                    objectFit="contain"
+                    style={{
+                      height:"100%",
+                      width:"100%"
+                    }}
+                  />
+                </Box>
                 <Box
                   sx={{
                     position: "absolute",
@@ -226,7 +229,7 @@ const MenuSection = () => {
                       },
                     }}
                     onClick={() => {
-                      if(!isLoggedIn) return router.push("/login");
+                      if (!isLoggedIn) return router.push("/login");
 
                       handleAddItem(item.name, item.desc, item.image, item.price);
                       router.push("/cart");

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Grid from "@mui/material/Grid";
+import Image from "next/image";
 
 const HeaderSection = () => {
   return (
@@ -10,11 +11,12 @@ const HeaderSection = () => {
       justifyContent="center"
       alignItems="center"
     >
-      <div style={{ flex: 1, textAlign: "center" }}>
-        <img
+      <div style={{ flex: 1, textAlign: "center", width: "100vw", height: "100vh", position: "relative" }}>
+        <Image
           src="/images/landingpage/main1.png"
           alt="Pulled Pork"
-          style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
+          layout="fill"
+          objectFit="cover"
         />
       </div>
     </Grid>

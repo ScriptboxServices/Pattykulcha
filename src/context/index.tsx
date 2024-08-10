@@ -120,22 +120,22 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [includedItems1, setIncludedItems1] = useState<IncludedItem[]>([
     {
       id: "chana",
-      items: [{ name: "Chana", price: 50 }],
+      items: [{ name: "Chana", price: 1.50 }],
     },
     {
-      id: "impli-pyaz-chutney",
-      items: [{ name: "Impli Pyaz Chutney", price: 60 }],
+      id: "imli-pyaz-chutney",
+      items: [{ name: "Imli Pyaz Chutney", price: 1.50 }],
     },
     {
       id: "amul-butter",
-      items: [{ name: "Amul Butter", price: 70 }],
+      items: [{ name: "Amul Butter", price: 1.50 }],
     },
   ]);
   const [includedItems2, setIncludedItems2] = useState<IncludedItem[]>([]);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [extraItems, setExtraItems] = useState<string[]>([
     "Chana",
-    "Impli Pyaz Chutney",
+    "Imli Pyaz Chutney",
     "Amul Butter",
     "Normal Butter",
     "Pickle",
@@ -163,7 +163,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setQuantities(getStoredData("quantities", {}));
     setExtraItems(getStoredData("extraItems", [
       "Chana",
-      "Impli Pyaz Chutney",
+      "Imli Pyaz Chutney",
       "Amul Butter",
       "Normal Butter",
     ]));

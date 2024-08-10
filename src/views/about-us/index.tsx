@@ -1,8 +1,9 @@
-'use client'
+'use client';
 
 import React from 'react';
 import { Container, Box, Typography, Grid } from '@mui/material';
 import styled from '@emotion/styled';
+import Image from 'next/image';
 
 const BackgroundContainer = styled(Box)`
   background-color: #ffffff;
@@ -22,7 +23,7 @@ const Title = styled(Typography)`
   text-align: center;
 `;
 
-const TitleImage = styled.img`
+const TitleImage = styled.div`
   display: block;
   margin: 0 auto 2rem;
   width: 35%;
@@ -51,7 +52,7 @@ const Card = styled(Box)`
   }
 `;
 
-const CardImage = styled.img`
+const CardImage = styled.div`
   display: block;
   width: 50px;
   height: 50px;
@@ -63,12 +64,12 @@ const CardTitle = styled(Typography)`
   margin-bottom: 1rem;
   color: #000000;
   text-decoration: underline;
-  text-align: center; /* Center the text */
+  text-align: center;
 `;
 
 const CardDescription = styled(Typography)`
   color: #000000;
-  text-align: center; /* Center the text */
+  text-align: center;
 `;
 
 const AboutUs: React.FC = () => {
@@ -77,28 +78,50 @@ const AboutUs: React.FC = () => {
       <Title variant="h4">
         ABOUT PATTYKULCHA
       </Title>
-      <TitleImage src="/images/footersection/image.png" alt="Underline Image" />
+      <TitleImage>
+        <Image
+          src="/images/footersection/image.png"
+          alt="Underline Image"
+          layout="responsive"
+          width={100}
+          height={100}
+        />
+      </TitleImage>
       <Container>
         <CardContainer container spacing={6} justifyContent="space-evenly">
           <Grid item xs={12} sm={6} md={4}>
             <Card>
-              <CardImage src="/images/footersection/image2.png" alt="Explore Our Menu" />
+              <CardImage>
+                <Image
+                  src="/images/footersection/image2.png"
+                  alt="Explore Our Menu"
+                  width={50}
+                  height={50}
+                />
+              </CardImage>
               <CardTitle variant="h6">
                 Explore Our Menu
               </CardTitle>
               <CardDescription variant="body1">
-              Discover the rich flavors of Punjab with our diverse PattyKulcha menu. From classic Aloo to spicy Chana, each dish is freshly made to order. We also offer unique fusion options that blend traditional flavors with contemporary tastes, making every meal an adventure. Whether you're in the mood for something familiar or eager to try something new, our menu has something wfor everyone.
+                Discover the rich flavors of Punjab with our diverse PattyKulcha menu. From classic Aloo to spicy Chana, each dish is freshly made to order. We also offer unique fusion options that blend traditional flavors with contemporary tastes, making every meal an adventure. Whether you're in the mood for something familiar or eager to try something new, our menu has something for everyone.
               </CardDescription>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card>
-              <CardImage src="/images/footersection/image1.png" alt="Our Food" />
+              <CardImage>
+                <Image
+                  src="/images/footersection/image1.png"
+                  alt="Our Food"
+                  width={50}
+                  height={50}
+                />
+              </CardImage>
               <CardTitle variant="h6">
                 Our Food
               </CardTitle>
               <CardDescription variant="body1">
-              Quality and authenticity are at the heart of everything   we do. We stay true to the roots of Punjabi cuisine while adding a contemporary touch, delivering a perfect balance of flavors in every bite. Every PattyKulcha is hand-crafted with care, ensuring that each bite is a perfect balance of flavors and textures,  designed to bring you the comforting taste of home, no matter where you are.
+                Quality and authenticity are at the heart of everything we do. We stay true to the roots of Punjabi cuisine while adding a contemporary touch, delivering a perfect balance of flavors in every bite. Every PattyKulcha is hand-crafted with care, ensuring that each bite is a perfect balance of flavors and textures, designed to bring you the comforting taste of home, no matter where you are.
               </CardDescription>
             </Card>
           </Grid>
