@@ -26,7 +26,7 @@ import {
   useMenuContext,
 } from "@/context";
 import Image from "next/image";
-import { useEffect, useState,useRef,forwardRef,useImperativeHandle } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -58,7 +58,7 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
-const CheckoutForm = forwardRef((_props,ref) => {
+const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -70,6 +70,7 @@ const CheckoutForm = forwardRef((_props,ref) => {
     try {
       event.preventDefault();
       if (!stripe || !elements) return;
+
       const result = await stripe.confirmPayment({
         elements,
         redirect: "if_required",
@@ -90,9 +91,6 @@ const CheckoutForm = forwardRef((_props,ref) => {
     }
   };
 
-  useImperativeHandle(ref, () => ({
-    handleSubmit,
-  }));
 
   return (
     <Box>
@@ -131,7 +129,7 @@ const CheckoutForm = forwardRef((_props,ref) => {
         </Button>
     </Box>
   );
-});
+};
 
 const CheckoutMain = () => {
   const {
@@ -149,7 +147,6 @@ const CheckoutMain = () => {
   });
 
   const router = useRouter();
-  const childFunRef : any = useRef()
   const { isLoggedIn, user } = useAuthContext();
   const { selectedkulchas, includedItems1, includedItems2, quantities, count } =
     useMenuContext();
@@ -192,11 +189,6 @@ const CheckoutMain = () => {
       });
   };
 
-  const onSubmit = () => {
-    if (childFunRef.current) {
-      childFunRef.current.handleSubmit(); // Call the child function
-    }
-  };
 
   return (
     <Container maxWidth='xl' sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
@@ -212,7 +204,7 @@ const CheckoutMain = () => {
             <Typography variant='h4' mb={2} textAlign='center'>
               Checkout
             </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <Grid container spacing={4}>
                 <Grid item xs={12} md={7}>
                   <FormControl component='fieldset'>
@@ -262,7 +254,7 @@ const CheckoutMain = () => {
                           },
                         ],
                       }}>
-                      <CheckoutForm ref={childFunRef}/>
+                      <CheckoutForm />
                     </Elements>
                   }
                 </Grid>
@@ -285,14 +277,6 @@ const CheckoutMain = () => {
                       <Typography variant='h6'>Total</Typography>
                       <Typography variant='h6'>${100}</Typography>
                     </Box>
-                    <Button
-                      type='submit'
-                      variant='contained'
-                      color='primary'
-                      fullWidth
-                      sx={{ py: 1.5 }}>
-                      Proceed With Payment
-                    </Button>
                     <Typography
                       variant='body2'
                       color='textSecondary'
