@@ -12,7 +12,7 @@ const Checkout = () => {
       <OrderPage />
       <OrderHome />
       {/* <RecommendationSlider /> */}
-      <AddCouponComponent />
+      {/* <AddCouponComponent /> */}
     </>
   );
 };

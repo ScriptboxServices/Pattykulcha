@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Grid,
@@ -57,7 +57,7 @@ const menuItems = [
 
 const MenuSection = () => {
   const { user, isLoggedIn } = useAuthContext();
-  const { setIncludedItems1, includedItems1, setSelectedKulchas } = useMenuContext();
+  const { setIncludedItems2, includedItems1, setSelectedKulchas,setKulcha,kulcha } = useMenuContext();
   const router = useRouter();
 
   const handleAddItem = (
@@ -67,9 +67,19 @@ const MenuSection = () => {
     price: number
   ) => {
     const newKulcha: Kulcha = { name: itemName, desc, image, price };
-
-    setSelectedKulchas((prevKulchas: Kulcha[]): Kulcha[] => [...prevKulchas, newKulcha]);
+    setKulcha({
+      ...newKulcha
+    })
+    localStorage.setItem("kulcha", JSON.stringify(newKulcha))
+    setSelectedKulchas((prevKulchas: Kulcha[]) : Kulcha[] => [...prevKulchas, newKulcha]);
   };
+
+  console.log(kulcha,"Abhishek");
+
+  useEffect(() => {
+    localStorage.removeItem('includedItems2')
+    setIncludedItems2([])
+  },[])
 
   return (
     <Box

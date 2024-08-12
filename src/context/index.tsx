@@ -34,7 +34,7 @@ interface MenuContextType {
   cal: number;
   setCal: (cal: number) => void;
   selectedkulchas: Kulcha[];
-  setSelectedKulchas: (kulchas: Kulcha[]) => void;
+  setSelectedKulchas: any;
   includedItems1: IncludedItem[];
   setIncludedItems1: (items: IncludedItem[]) => void;
   includedItems2: IncludedItem[];
@@ -58,7 +58,9 @@ interface MenuContextType {
   count: number; // New property
   setCount: (count: number) => void; // New setter
   confirmationResult : ConfirmationResult | null,
-  setConfirmationResult :any
+  setConfirmationResult :any,
+  kulcha : any,
+  setKulcha : any
 }
 
 interface AuthContextType {
@@ -99,7 +101,7 @@ export const AuthProvider = ({children} : {children : ReactNode}) => {
       } else {
         setUser(null);
         setIsLoggedIn(false);
-        router.push('/login')
+        router.push('/home')
       }
     });
     // Cleanup subscription on unmount
@@ -117,6 +119,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [price, setPrice] = useState(0);
   const [cal, setCal] = useState(640);
   const [selectedkulchas, setSelectedKulchas] = useState<Kulcha[]>([]);
+  const [kulcha, setKulcha] = useState({});
   const [includedItems1, setIncludedItems1] = useState<IncludedItem[]>([
     {
       id: "chana",
@@ -149,49 +152,51 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [count, setCount] = useState(0); // New state
 
   useEffect(() => {
-    const getStoredData = (key: string, defaultValue: any) => {
+    const getStoredData = (key: string, defaultValue : any) => {
+      
       const storedValue = localStorage.getItem(key);
       return storedValue ? JSON.parse(storedValue) : defaultValue;
     };
-
-    setSize(getStoredData("size", "regular"));
-    setPrice(getStoredData("price", 0));
-    setCal(getStoredData("cal", 640));
-    setSelectedKulchas(getStoredData("selectedkulchas", []));
+    setKulcha(getStoredData("kulcha",{}));
+    // setSize(getStoredData("size", "regular"));
+    // setPrice(getStoredData("price", 0));
+    // setCal(getStoredData("cal", 640));
+    // setSelectedKulchas(getStoredData("selectedkulchas", []));
+    setCount(getStoredData("count", 0)); 
     setIncludedItems1(getStoredData("includedItems1", []));
     setIncludedItems2(getStoredData("includedItems2", []));
-    setQuantities(getStoredData("quantities", {}));
-    setExtraItems(getStoredData("extraItems", [
-      "Chana",
-      "Imli Pyaz Chutney",
-      "Amul Butter",
-      "Normal Butter",
-    ]));
-    setPlasticware(getStoredData("plasticware", "no"));
-    setInstructions(getStoredData("instructions", ""));
-    setQuantity(getStoredData("quantity", 1));
-    setSelectedDrinks(getStoredData("selectedDrinks", []));
-    setSelectedLassis(getStoredData("selectedLassis", []));
-    setTotal(getStoredData("total", 0));
-    setCount(getStoredData("count", 0)); // New state
+    // setQuantities(getStoredData("quantities", {}));
+    // setExtraItems(getStoredData("extraItems", [
+    //   "Chana",
+    //   "Imli Pyaz Chutney",
+    //   "Amul Butter",
+    //   "Normal Butter",
+    // ]));
+    // setPlasticware(getStoredData("plasticware", "no"));
+    // setInstructions(getStoredData("instructions", ""));
+    // setQuantity(getStoredData("quantity", 1));
+    // setSelectedDrinks(getStoredData("selectedDrinks", []));
+    // setSelectedLassis(getStoredData("selectedLassis", []));
+    // setTotal(getStoredData("total", 0));
   }, []);
 
+
   useEffect(() => {
-    localStorage.setItem("size", JSON.stringify(size));
-    localStorage.setItem("price", JSON.stringify(price));
-    localStorage.setItem("cal", JSON.stringify(cal));
-    localStorage.setItem("selectedkulchas", JSON.stringify(selectedkulchas));
+    // localStorage.setItem("size", JSON.stringify(size));
+    // localStorage.setItem("price", JSON.stringify(price));
+    // localStorage.setItem("cal", JSON.stringify(cal));
+    // localStorage.setItem("selectedkulchas", JSON.stringify(selectedkulchas));
     localStorage.setItem("includedItems1", JSON.stringify(includedItems1));
-    localStorage.setItem("includedItems2", JSON.stringify(includedItems2));
-    localStorage.setItem("quantities", JSON.stringify(quantities));
-    localStorage.setItem("extraItems", JSON.stringify(extraItems));
-    localStorage.setItem("plasticware", JSON.stringify(plasticware));
-    localStorage.setItem("instructions", JSON.stringify(instructions));
-    localStorage.setItem("quantity", JSON.stringify(quantity));
-    localStorage.setItem("selectedDrinks", JSON.stringify(selectedDrinks));
-    localStorage.setItem("selectedLassis", JSON.stringify(selectedLassis));
-    localStorage.setItem("total", JSON.stringify(total));
-    localStorage.setItem("count", JSON.stringify(count)); // New state
+    // localStorage.setItem("includedItems2", JSON.stringify(includedItems2));
+    // localStorage.setItem("quantities", JSON.stringify(quantities));
+    // localStorage.setItem("extraItems", JSON.stringify(extraItems));
+    // localStorage.setItem("plasticware", JSON.stringify(plasticware));
+    // localStorage.setItem("instructions", JSON.stringify(instructions));
+    // localStorage.setItem("quantity", JSON.stringify(quantity));
+    // localStorage.setItem("selectedDrinks", JSON.stringify(selectedDrinks));
+    // localStorage.setItem("selectedLassis", JSON.stringify(selectedLassis));
+    // localStorage.setItem("total", JSON.stringify(total));
+    // localStorage.setItem("count", JSON.stringify(count));
   }, [
     size,
     price,
@@ -250,6 +255,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setCount, // New setter
     setConfirmationResult,
     confirmationResult,
+    kulcha,
+    setKulcha
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

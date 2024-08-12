@@ -103,7 +103,7 @@ const VerificationPage: React.FC = () => {
         }
         setConfirmationResult(null)
         setLoading(false)
-        router.push("/")
+        router.push("/home")
       }catch(err : any) {
         console.log(err.code);
         setLoading(false)

@@ -7,6 +7,7 @@ const PaymentPage = () => {
     <>
         <OrderPage/>
         <OrderHome/>
+        
         <CheckoutMain/>
     </>
   )

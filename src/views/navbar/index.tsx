@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
           </Link>
         </ListItem> */}
         <ListItem >
-          <Link href="/login" passHref>
+          <Link href="login" passHref>
             <Button
               sx={{ textTransform: "none", color: "black", width: "100%" }}
             >
@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
           </Link>
         </ListItem>
         <ListItem button>
-          <Link href="/cart" passHref>
+          <Link href="cart" passHref>
             <OrderButton fullWidth>Order Now</OrderButton>
           </Link>
         </ListItem>
@@ -128,10 +128,10 @@ const Navbar: React.FC = () => {
               justifyContent: "left",
             }}
           >
-            <Link href="/home" passHref>
+            <Link href="home" passHref>
               <NavButton>Menu</NavButton>
             </Link>
-            <Link href="/about-us" passHref>
+            <Link href="about-us" passHref>
               <NavButton>About</NavButton>
             </Link>
           </Box>
@@ -141,7 +141,7 @@ const Navbar: React.FC = () => {
             {
               isLoggedIn &&
               <>
-                <Link href="/checkout">
+                <Link href="checkout">
                 <IconButton
                   edge="end"
                   color="inherit"
@@ -165,7 +165,7 @@ const Navbar: React.FC = () => {
             </Link> */}
             {
               !isLoggedIn ?
-              <Link href="/login" passHref>
+              <Link href="login" passHref>
                 <NavButton>Log In</NavButton>
               </Link> : 
               <>
@@ -176,7 +176,7 @@ const Navbar: React.FC = () => {
 
               </>
             }
-            <Link href={isLoggedIn ? "/cart" : '/login'} passHref>
+            <Link href={isLoggedIn ? "cart" : 'login'} passHref>
               <OrderButton variant="contained">Order Now</OrderButton>
             </Link>
             <IconButton

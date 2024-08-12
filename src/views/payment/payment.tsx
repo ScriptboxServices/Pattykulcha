@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 "use client";
 
 import {
@@ -18,8 +19,24 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IncludedItem, Kulcha, useMenuContext } from "@/context";
+import {
+  IncludedItem,
+  Kulcha,
+  useAuthContext,
+  useMenuContext,
+} from "@/context";
 import Image from "next/image";
+import { useEffect, useState,useRef,forwardRef,useImperativeHandle } from "react";
+import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import axios from "axios";
+import { auth } from "@/firebase";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
 
@@ -30,6 +47,10 @@ interface FormValues {
   cvv: string;
 }
 
+const stripePromise = loadStripe(
+  "pk_test_51PmHOUIxcOjAC9k0ES5X0sXAlGLxsgrB2QDZEpJQAC04dGjNOtra6GXlEjj5oWcYUok9DfAFCYViGzXBuJcQ33is00s41IqlSO"
+);
+
 const validationSchema = Yup.object().shape({
   paymentMethod: Yup.string().required("Payment method is required"),
   cardNumber: Yup.string().required("Card number is required"),
@@ -37,11 +58,80 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
-const isIncludedItem = (
-  item: Kulcha | IncludedItem
-): item is IncludedItem => {
-  return (item as IncludedItem).items !== undefined;
-};
+const CheckoutForm = forwardRef((_props,ref) => {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const {user} = useAuthContext()
+
+  const handleSubmit = async (event: any) => {
+
+    console.log("Call payment");
+    try {
+      event.preventDefault();
+      if (!stripe || !elements) return;
+      const result = await stripe.confirmPayment({
+        elements,
+        redirect: "if_required",
+        confirmParams: {
+          return_url: "https://tiffinhub.ca/myPlans/orderConfirmed",
+          save_payment_method: true,
+          payment_method_data: {
+            billing_details: {
+              phone : user?.phoneNumber,
+            },
+          },
+        },
+      });
+
+      console.log(result,"Poddar Poddar");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleSubmit,
+  }));
+
+  return (
+    <Box>
+      <PaymentElement
+        options={{
+          wallets: { applePay: "auto", googlePay: "auto" },
+          terms: {
+            googlePay: "always",
+            applePay: "always",
+            auBecsDebit: "always",
+            bancontact: "always",
+            card: "always",
+            cashapp: "always",
+            ideal: "always",
+            paypal: "always",
+            sepaDebit: "always",
+            sofort: "always",
+            usBankAccount: "always",
+          },
+          fields: {
+            billingDetails: {
+              address: "auto",
+              name: "auto",
+            },
+          },
+        }}
+      />
+        <Button
+        onClick={handleSubmit}
+          type='submit'
+          variant='contained'
+          color='primary'
+          fullWidth
+          sx={{ py: 1.5 }}>
+          Proceed With Payment
+        </Button>
+    </Box>
+  );
+});
 
 const CheckoutMain = () => {
   const {
@@ -52,62 +142,64 @@ const CheckoutMain = () => {
     resolver: yupResolver(validationSchema) as any,
   });
 
-  const {
-    selectedkulchas,
-    includedItems1,
-    includedItems2,
-    quantities,
-  } = useMenuContext();
+  const [{ clientSecret, customer, ephemeralKey }, setStripeCred] = useState({
+    clientSecret: "",
+    customer: "",
+    ephemeralKey: "",
+  });
 
-  const mergeItems = () => {
-    const combinedItems = [...selectedkulchas, ...includedItems1, ...includedItems2];
+  const router = useRouter();
+  const childFunRef : any = useRef()
+  const { isLoggedIn, user } = useAuthContext();
+  const { selectedkulchas, includedItems1, includedItems2, quantities, count } =
+    useMenuContext();
 
-    const itemMap = combinedItems.reduce((acc, item) => {
-      let itemName: string;
-      let itemPrice: number;
+  useEffect(() => {
+    getPaymentSheet();
+  }, [user]);
 
-      if (isIncludedItem(item)) {
-        itemName = item.items[0].name;
-        itemPrice = item.items[0].price;
-      } else {
-        itemName = item.name;
-        itemPrice = item.price; 
-      }
+  const getPaymentSheet = async () => {
+    if (!auth.currentUser && !isLoggedIn) return;
 
-      if (acc[itemName]) {
-        acc[itemName].quantity += 1;
-      } else {
-        acc[itemName] = {
-          id: '3',
-          name: itemName,
-          price: itemPrice,
-          quantity: 1,
-        };
-      }
-      return acc;
-    }, {} as Record<string, { id: string; name: string; price: number; quantity: number }>);
+    const isValid = clientSecret && customer && ephemeralKey;
+    if (isValid) return;
 
-    return Object.values(itemMap);
+    return axios
+      .request({
+        method: "POST",
+        url: `/api/getPaymentSheet`,
+        headers: {
+          token: `Bearer ${user?.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        data: {
+          id: user?.uid,
+          total_amount: 100,
+          tax_amount: 100,
+          sub_total: 100,
+          order: [],
+        },
+      })
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+        return undefined;
+      })
+      .then((result) => {
+        if (result.code != 1) return console.log(result.message);
+        const { paymentIntent, ephemeralKey, customer } = result.data;
+        setStripeCred({ clientSecret: paymentIntent, customer, ephemeralKey });
+      });
   };
 
-  const mergedItems1 = mergeItems();
-
-  const onSubmit = (data: FormValues) => {
-    console.log("Form Data: ", data);
-    // Handle form submission
+  const onSubmit = () => {
+    if (childFunRef.current) {
+      childFunRef.current.handleSubmit(); // Call the child function
+    }
   };
-
-  const calculateTotal = () => {
-    return mergedItems1
-      .reduce((total, item) => {
-        return total + item.price * item.quantity;
-      }, 0)
-      .toFixed(2);
-  };
-
 
   return (
-    <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4 , pb: 8}}>
+    <Container maxWidth='xl' sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card
           sx={{
@@ -115,32 +207,31 @@ const CheckoutMain = () => {
             boxShadow: 3,
             borderRadius: 2,
             overflow: "hidden",
-          }}
-        >
+          }}>
           <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
-            <Typography variant="h4" mb={2} textAlign="center">
+            <Typography variant='h4' mb={2} textAlign='center'>
               Checkout
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={4}>
                 <Grid item xs={12} md={7}>
-                  <FormControl component="fieldset">
-                    <Typography variant="h6" mb={2}>
+                  <FormControl component='fieldset'>
+                    <Typography variant='h6' mb={2}>
                       Payment Method
                     </Typography>
                     <Controller
-                      name="paymentMethod"
+                      name='paymentMethod'
                       control={control}
-                      defaultValue="VisaCard"
+                      defaultValue='VisaCard'
                       render={({ field }) => (
                         <RadioGroup row {...field}>
                           <FormControlLabel
-                            value="VisaCard"
+                            value='VisaCard'
                             control={<Radio />}
                             label={
                               <Image
-                                src="https://img.icons8.com/color/48/000000/visa.png"
-                                alt="Visa"
+                                src='https://img.icons8.com/color/48/000000/visa.png'
+                                alt='Visa'
                                 width={48}
                                 height={30}
                                 style={{ maxWidth: "48px" }}
@@ -154,115 +245,59 @@ const CheckoutMain = () => {
 
                   <Divider sx={{ my: 4 }} />
 
-                  <Typography variant="h6" mb={2}>
+                  <Typography variant='h6' mb={2}>
                     Credit Card Info
                   </Typography>
-                  <Grid container spacing={2} >
-                    <Grid item xs={12}>
-                      <Controller
-                        name="cardNumber"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            required
-                            fullWidth
-                            id="cardNumber"
-                            label="Card Number"
-                            variant="outlined"
-                            error={!!errors.cardNumber}
-                            helperText={errors.cardNumber?.message}
-                            InputProps={{
-                              sx: { height: '50px' },  // Adjust the height here
-                            }}
-                          />
-                        )}
-                      />
-                    </Grid>
-
-                    <Grid item xs={6} sm={6}>
-                      <Controller
-                        name="expDate"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            required
-                            fullWidth
-                            id="expDate"
-                            label="EXP. Date (MM/YY)"
-                            variant="outlined"
-                            error={!!errors.expDate}
-                            helperText={errors.expDate?.message}
-                            InputProps={{
-                              sx: { height: '50px' },  // Match height with Card Number
-                            }}
-                          />
-                        )}
-                      />
-                    </Grid>
-
-                    <Grid item xs={6} sm={6}>
-                      <Controller
-                        name="cvv"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            required
-                            fullWidth
-                            id="cvv"
-                            label="CVV"
-                            variant="outlined"
-                            error={!!errors.cvv}
-                            helperText={errors.cvv?.message}
-                            InputProps={{
-                              sx: { height: '50px' },  // Match height with Card Number
-                            }}
-                          />
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
+                  {
+                    clientSecret &&
+                    <Elements
+                      stripe={stripePromise}
+                      options={{
+                        clientSecret,
+                        customerOptions: { customer, ephemeralKey },
+                        fonts: [
+                          {
+                            cssSrc:
+                              "https://fonts.googleapis.com/css?family=Roboto",
+                          },
+                        ],
+                      }}>
+                      <CheckoutForm ref={childFunRef}/>
+                    </Elements>
+                  }
                 </Grid>
                 <Grid item xs={12} md={5}>
                   <Box
                     p={3}
-                    bgcolor="background.paper"
+                    bgcolor='background.paper'
                     borderRadius={2}
-                    sx={{ boxShadow: 2 }}
-                  >
-                    <Typography variant="h5" mb={3} textAlign="center">
+                    sx={{ boxShadow: 2 }}>
+                    <Typography variant='h5' mb={3} textAlign='center'>
                       Order Summary
                     </Typography>
 
-                    <Box display="flex" justifyContent="space-between" mb={2}>
+                    <Box display='flex' justifyContent='space-between' mb={2}>
                       <Typography>Number of Items</Typography>
-                      <Typography>{mergedItems1.length}</Typography>
+                      <Typography>{count}</Typography>
                     </Box>
                     <Divider sx={{ my: 2 }} />
-                    <Box display="flex" justifyContent="space-between" mb={3}>
-                      <Typography variant="h6">Total</Typography>
-                      <Typography variant="h6">${calculateTotal()}</Typography>
+                    <Box display='flex' justifyContent='space-between' mb={3}>
+                      <Typography variant='h6'>Total</Typography>
+                      <Typography variant='h6'>${100}</Typography>
                     </Box>
                     <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
+                      type='submit'
+                      variant='contained'
+                      color='primary'
                       fullWidth
-                      sx={{ py: 1.5 }}
-                    >
+                      sx={{ py: 1.5 }}>
                       Proceed With Payment
                     </Button>
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="center"
-                      mt={2}
-                    >
+                      variant='body2'
+                      color='textSecondary'
+                      align='center'
+                      mt={2}>
                       By continuing, you accept to our Terms of Services and
                       Privacy Policy. Please note that payments are
                       non-refundable.

@@ -103,7 +103,7 @@ const AboutUs: React.FC = () => {
                 Explore Our Menu
               </CardTitle>
               <CardDescription variant="body1">
-                Discover the rich flavors of Punjab with our diverse PattyKulcha menu. From classic Aloo to spicy Chana, each dish is freshly made to order. We also offer unique fusion options that blend traditional flavors with contemporary tastes, making every meal an adventure. Whether you're in the mood for something familiar or eager to try something new, our menu has something for everyone.
+                Discover the rich flavors of Punjab with our diverse PattyKulcha menu. From classic Aloo to spicy Chana, each dish is freshly made to order. We also offer unique fusion options that blend traditional flavors with contemporary tastes, making every meal an adventure. Whether you&apos;re in the mood for something familiar or eager to try something new, our menu has something for everyone.
               </CardDescription>
             </Card>
           </Grid>

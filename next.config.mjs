@@ -9,6 +9,9 @@ const nextConfig = {
         },
       ];
     },
+    images: {
+      domains: ['img.icons8.com'],
+    },
     eslint: {
       ignoreDuringBuilds: true,
     },

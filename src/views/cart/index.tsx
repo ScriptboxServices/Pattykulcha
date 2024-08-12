@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Box,
@@ -22,9 +22,12 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext } from "@/context";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
+import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
+import { db } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
@@ -155,6 +158,7 @@ const MenuPage = () => {
     price,
     setPrice,
     cal,
+    kulcha,
     setCal,
     includedItems2,
     setIncludedItems2,
@@ -169,6 +173,12 @@ const MenuPage = () => {
     selectedLassis,
     setSelectedLassis,
   } = useMenuContext();
+
+  const {user} = useAuthContext()
+
+  const router = useRouter()
+
+  const [loading,setLoading] = useState<boolean>(false)
 
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
@@ -190,7 +200,6 @@ const MenuPage = () => {
 
   const handleAddItem = (itemName: string) => {
     const itemId = uuidv4();
-
     // Determine the price for the item
     const drink = drinkOptions.find((drink) => drink.name == itemName);
     const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
@@ -225,6 +234,7 @@ const MenuPage = () => {
       )
     ) {
       setIncludedItems2([...includedItems2, newItem]);
+      localStorage.setItem('includedItems2',JSON.stringify([...includedItems2,newItem]))
     }
   };
 
@@ -252,6 +262,7 @@ const MenuPage = () => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
     setSelectedLassis(selectedLassis.filter((lassi) => lassi !== itemId));
+    localStorage.setItem('includedItems2',JSON.stringify([...includedItems2.filter((item) => item.id !== itemId)]))
   };
 
   const handleDrinkDialogOpen = () => {
@@ -286,6 +297,31 @@ const MenuPage = () => {
     setIsCoffeeDialogOpen(false);
   };
 
+  const handleAddToCart = async () => {
+
+    try{
+      setLoading(true)
+      const colRef = collection(db,'carts')
+      await addDoc(colRef,{
+        userId : user?.uid,
+        order :{
+          kulcha: kulcha,
+          withKulcha : [...includedItems1],
+          additional : [...includedItems2]       
+        },
+        createdAt : Timestamp.now()
+      })
+      setLoading(false)
+      setCount(count + 1)
+      localStorage.removeItem('includedItems2')
+      localStorage.removeItem('kulcha')
+      router.push('/checkout')
+    }catch(err) {
+      console.log(err);
+      setLoading(false)
+    }
+  }
+
   return (
     <Box sx={{ backgroundColor: "#f8f8f8", padding: "2rem" }}>
       <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
@@ -300,13 +336,13 @@ const MenuPage = () => {
                 color: "#000000",
               }}
             >
-              {selectedkulchas?.[selectedkulchas.length - 1]?.name}
+              {kulcha?.name}
             </Typography>
             <Typography
               variant="body1"
               sx={{ marginBottom: "1rem", color: "#000000" }}
             >
-              {selectedkulchas?.[selectedkulchas.length - 1]?.desc}
+              {kulcha?.desc}
             </Typography>
             <Box sx={{ marginTop: "2.5rem" }}>
               <ToggleButtonGroup
@@ -337,7 +373,7 @@ const MenuPage = () => {
         <Grid item xs={12} md={6}>
           <Box sx={{ textAlign: "right", marginLeft: 13 }}>
             <Image
-              src={selectedkulchas?.[selectedkulchas.length - 1]?.image}
+              src={kulcha?.image}
               alt="Amritsari Kulcha"
               layout="responsive"
               width={500}
@@ -355,7 +391,7 @@ const MenuPage = () => {
             }}
           >
             <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-              `What's Included
+              What&apos;s Included
             </Typography>
             <Grid container spacing={2} justifyContent="flex-start">
               {includedItems1.length == 0 ? (
@@ -798,12 +834,12 @@ const MenuPage = () => {
             <Button
               variant="contained"
               color="warning"
-              onClick={() => setCount(count + 1)}
+              onClick={handleAddToCart}
               disabled={
                 includedItems1.length == 0 && includedItems2.length == 0
               }
             >
-              Add to order
+              Add to cart
             </Button>
           </Box>
         </Box>
