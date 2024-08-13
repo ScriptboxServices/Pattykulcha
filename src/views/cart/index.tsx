@@ -302,7 +302,7 @@ const MenuPage = () => {
     try{
       setLoading(true)
       const colRef = collection(db,'carts')
-      await addDoc(colRef,{
+      const data = {
         userId : user?.uid,
         order :{
           kulcha: kulcha,
@@ -310,6 +310,9 @@ const MenuPage = () => {
           additional : [...includedItems2]       
         },
         createdAt : Timestamp.now()
+      }
+      await addDoc(colRef,{
+        ...data
       })
       setLoading(false)
       setCount(count + 1)

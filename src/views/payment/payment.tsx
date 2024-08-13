@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   FormControl,
   Card,
+  Alert,
   CardContent,
   Divider,
 } from "@mui/material";
@@ -36,6 +37,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import axios from "axios";
+import { getIdToken } from "firebase/auth";
 import { auth } from "@/firebase";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
@@ -58,15 +60,29 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
-const CheckoutForm = () => {
+const CheckoutForm = ({errorFunc} : { errorFunc: (message: string) => void }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const { user } = useAuthContext();
 
-  const {user} = useAuthContext()
+  const [isPaymentReady,setIsPaymentReady] = useState(false)
 
+  useEffect(() => {
+    if (!elements) return;
+
+    const paymentElement = elements.getElement(PaymentElement);
+    console.log(paymentElement,"Payment");
+    if (paymentElement) {
+      const handleChange = (event: any) => {
+        setIsPaymentReady(event.complete);
+      };
+      paymentElement.on('change', handleChange);
+      return () => {
+        paymentElement.off('change', handleChange);
+      };
+    }
+  }, [elements]);
   const handleSubmit = async (event: any) => {
-
-    console.log("Call payment");
     try {
       event.preventDefault();
       if (!stripe || !elements) return;
@@ -79,18 +95,30 @@ const CheckoutForm = () => {
           save_payment_method: true,
           payment_method_data: {
             billing_details: {
-              phone : user?.phoneNumber,
+              phone: user?.phoneNumber,
             },
           },
         },
       });
+      if(result.error){
+        throw result.error
+      }else{
 
-      console.log(result,"Poddar Poddar");
-    } catch (err) {
-      console.error(err);
+      }
+    } catch (err :any) {
+      console.error(err.type);
+      if (err.type === 'StripeCardError') {
+            console.error('Your card was declined:', err.message);
+            errorFunc('Your card was declined. Please check your card details and try again.');
+          } else if (err.type === 'StripeInvalidRequestError') {
+            console.error('Invalid request:', err.message);
+            errorFunc('There was an error with your payment request. Please try again.');
+          } else{
+            console.error('An unexpected error occurred:', err.message);
+            errorFunc('An unexpected error occurred. Please try again or contact support.');
+          }
     }
   };
-
 
   return (
     <Box>
@@ -118,15 +146,29 @@ const CheckoutForm = () => {
           },
         }}
       />
-        <Button
+      <Button
         onClick={handleSubmit}
-          type='submit'
-          variant='contained'
-          color='primary'
-          fullWidth
-          sx={{ py: 1.5 }}>
-          Proceed With Payment
-        </Button>
+        type="submit"
+        variant="contained"
+        disabled={!isPaymentReady}
+        sx={{
+          backgroundColor: "#ECAB21",
+          color: "white",
+          borderRadius: 2,
+          py: 1.5, 
+          mt: 3 ,
+          paddingX: 4,
+          paddingY: 1,
+          fontWeight: "bold",
+          "&:hover": {
+            backgroundColor: "#FFC107",
+            color: "white",
+          },
+        }}
+        fullWidth
+      >
+        Proceed With Payment
+      </Button>
     </Box>
   );
 };
@@ -148,15 +190,21 @@ const CheckoutMain = () => {
 
   const router = useRouter();
   const { isLoggedIn, user } = useAuthContext();
-  const { selectedkulchas, includedItems1, includedItems2, quantities, count } =
-    useMenuContext();
+  const { instructions, address, count,grandTotal } = useMenuContext();
+  const [error,setError] = useState('')
 
   useEffect(() => {
     getPaymentSheet();
   }, [user]);
 
+const errorFunc = (error : string) => {
+  setError(error)
+}
+
   const getPaymentSheet = async () => {
     if (!auth.currentUser && !isLoggedIn) return;
+
+    const token = await getIdToken(user);
 
     const isValid = clientSecret && customer && ephemeralKey;
     if (isValid) return;
@@ -166,15 +214,12 @@ const CheckoutMain = () => {
         method: "POST",
         url: `/api/getPaymentSheet`,
         headers: {
-          token: `Bearer ${user?.accessToken}`,
+          "x-token": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         data: {
-          id: user?.uid,
-          total_amount: 100,
-          tax_amount: 100,
-          sub_total: 100,
-          order: [],
+          address,
+          instructions,
         },
       })
       .then((response) => response.data)
@@ -189,9 +234,8 @@ const CheckoutMain = () => {
       });
   };
 
-
   return (
-    <Container maxWidth='xl' sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
+    <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card
           sx={{
@@ -199,31 +243,37 @@ const CheckoutMain = () => {
             boxShadow: 3,
             borderRadius: 2,
             overflow: "hidden",
-          }}>
+          }}
+        >
           <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
-            <Typography variant='h4' mb={2} textAlign='center'>
+            <Typography variant="h4" mb={2} textAlign="center">
               Checkout
             </Typography>
             <form>
               <Grid container spacing={4}>
-                <Grid item xs={12} md={7}>
-                  <FormControl component='fieldset'>
-                    <Typography variant='h6' mb={2}>
+                <Grid item xs={12} md={5}>
+                  <Box
+                    p={3}
+                    bgcolor="background.paper"
+                    borderRadius={2}
+                    sx={{ boxShadow: 2 }}
+                  >
+                    <Typography variant="h6" mb={2}>
                       Payment Method
                     </Typography>
                     <Controller
-                      name='paymentMethod'
+                      name="paymentMethod"
                       control={control}
-                      defaultValue='VisaCard'
+                      defaultValue="VisaCard"
                       render={({ field }) => (
                         <RadioGroup row {...field}>
                           <FormControlLabel
-                            value='VisaCard'
+                            value="VisaCard"
                             control={<Radio />}
                             label={
                               <Image
-                                src='https://img.icons8.com/color/48/000000/visa.png'
-                                alt='Visa'
+                                src="https://img.icons8.com/color/48/000000/visa.png"
+                                alt="Visa"
                                 width={48}
                                 height={30}
                                 style={{ maxWidth: "48px" }}
@@ -233,62 +283,68 @@ const CheckoutMain = () => {
                         </RadioGroup>
                       )}
                     />
-                  </FormControl>
-
-                  <Divider sx={{ my: 4 }} />
-
-                  <Typography variant='h6' mb={2}>
-                    Credit Card Info
-                  </Typography>
-                  {
-                    clientSecret &&
-                    <Elements
-                      stripe={stripePromise}
-                      options={{
-                        clientSecret,
-                        customerOptions: { customer, ephemeralKey },
-                        fonts: [
-                          {
-                            cssSrc:
-                              "https://fonts.googleapis.com/css?family=Roboto",
-                          },
-                        ],
-                      }}>
-                      <CheckoutForm />
-                    </Elements>
-                  }
-                </Grid>
-                <Grid item xs={12} md={5}>
-                  <Box
-                    p={3}
-                    bgcolor='background.paper'
-                    borderRadius={2}
-                    sx={{ boxShadow: 2 }}>
-                    <Typography variant='h5' mb={3} textAlign='center'>
+                    <Divider sx={{ my: 3 }} />
+                    <Typography variant="h5" mb={3} textAlign="center">
                       Order Summary
                     </Typography>
 
-                    <Box display='flex' justifyContent='space-between' mb={2}>
+                    <Box display="flex" justifyContent="space-between" mb={2}>
                       <Typography>Number of Items</Typography>
                       <Typography>{count}</Typography>
                     </Box>
-                    <Divider sx={{ my: 2 }} />
-                    <Box display='flex' justifyContent='space-between' mb={3}>
-                      <Typography variant='h6'>Total</Typography>
-                      <Typography variant='h6'>${100}</Typography>
+                    <Divider sx={{ my: 3 }} />
+                    <Box display="flex" justifyContent="space-between" mb={3}>
+                      <Typography variant="h6">Total</Typography>
+                      <Typography variant="h6">${grandTotal}</Typography>
                     </Box>
                     <Typography
-                      variant='body2'
-                      color='textSecondary'
-                      align='center'
-                      mt={2}>
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                      mt={2}
+                    >
                       By continuing, you accept to our Terms of Services and
                       Privacy Policy. Please note that payments are
                       non-refundable.
                     </Typography>
                   </Box>
                 </Grid>
+                <Grid item xs={12} md={7}>
+                  <Box
+                    p={3}
+                    bgcolor="background.paper"
+                    borderRadius={2}
+                    sx={{ boxShadow: 2 }}
+                  >
+                    <Typography variant="h6" mb={2}>
+                      Credit Card Info
+                    </Typography>
+                    {clientSecret && (
+                      <Elements
+                        stripe={stripePromise}
+                        options={{
+                          clientSecret,
+                          customerOptions: { customer, ephemeralKey },
+                          fonts: [
+                            {
+                              cssSrc:
+                                "https://fonts.googleapis.com/css?family=Roboto",
+                            },
+                          ],
+                        }}
+                      >
+                        <CheckoutForm errorFunc={errorFunc} />
+                      </Elements>
+                    )}
+                  </Box>
+                </Grid>
               </Grid>
+              {
+                error &&
+                <Box>
+                  <Alert sx={{mt:4}} severity="error">{error}</Alert>
+                </Box>
+              }
             </form>
           </CardContent>
         </Card>

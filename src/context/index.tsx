@@ -10,6 +10,8 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+import { collection,query,getDocs,where } from "firebase/firestore";
+import { db } from "@/firebase";
 
 export interface IncludedItem {
   id: string;
@@ -60,7 +62,13 @@ interface MenuContextType {
   confirmationResult : ConfirmationResult | null,
   setConfirmationResult :any,
   kulcha : any,
-  setKulcha : any
+  setKulcha : any,
+  address: any,
+  setAddress : any,
+  setCarts : any,
+  carts : any[],
+  grandTotal : any,
+  setGrandTotal : any
 }
 
 interface AuthContextType {
@@ -86,14 +94,51 @@ export const useAuthContext = () => {
   }
   return context;
 };
+export const getCartData = async (_id : string) => {
+  try {
+    let raw: any = [];
+    const colRef = collection(db, "carts");
+    const q = query(colRef, where("userId", "==", _id));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc : any) => {
+      let obj: any = {};
+      console.log(doc.id, " => ", doc.data());
+      obj = {
+        id: doc.id,
+        ...doc.data(),
+      };
+      raw.push(obj);
+    });
+    return raw
+  } catch (err) {
+    console.log(err);
+    return err
+  }
+};
+
+export const calculateGrandTotal = (carts : any[]) => {
+  const grandTotal = carts?.reduce((acc, item) => {
+    const { order } = item;
+    const { kulcha, additional } = order;
+
+    const total = additional?.reduce((acc: any, value: any) => {
+      return (acc = acc + Number(value?.items?.[0]?.price));
+    }, Number(kulcha?.price));
+    let tax = Number(total) * 0.13
+    return (acc = acc + (Number(total) + Number(tax)));
+  }, 0);
+
+  return Number(grandTotal).toFixed(2);
+};
 
 export const AuthProvider = ({children} : {children : ReactNode}) => {
   const router  = useRouter()
   const pathname = usePathname()
   const [user,setUser] = useState<object | null>(null)
   const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         setUser((prev) => user);
         setIsLoggedIn((prev) => true);
@@ -104,7 +149,6 @@ export const AuthProvider = ({children} : {children : ReactNode}) => {
         router.push('/home')
       }
     });
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -114,12 +158,14 @@ export const AuthProvider = ({children} : {children : ReactNode}) => {
 
 
 export const MenuProvider = ({ children }: { children: ReactNode }) => {
+  const {user} = useAuthContext()
   const [confirmationResult,setConfirmationResult] = useState<ConfirmationResult | null>(null)
   const [size, setSize] = useState("regular");
   const [price, setPrice] = useState(0);
   const [cal, setCal] = useState(640);
   const [selectedkulchas, setSelectedKulchas] = useState<Kulcha[]>([]);
   const [kulcha, setKulcha] = useState({});
+  const [carts, setCarts] = useState<any[]>([]);
   const [includedItems1, setIncludedItems1] = useState<IncludedItem[]>([
     {
       id: "chana",
@@ -144,12 +190,34 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     "Pickle",
   ]);
   const [plasticware, setPlasticware] = useState("no");
-  const [instructions, setInstructions] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedDrinks, setSelectedDrinks] = useState<string[]>([]);
   const [selectedLassis, setSelectedLassis] = useState<string[]>([]);
   const [total, setTotal] = useState(0);
-  const [count, setCount] = useState(0); // New state
+  const [instructions, setInstructions] = useState('');
+  const [count, setCount] = useState(0);
+  const [grandTotal, setGrandTotal] = useState<string | number>(0);
+  const [address, setAddress] = useState({
+    raw:'',
+    seperate: {
+      city:'',
+      line1:'',
+      postal_code:'',
+      state:''
+    }
+  });
+
+
+  const getData = async (_id : string) => {
+    if(_id){
+      const result = await getCartData(_id)
+      if(result){
+        setGrandTotal(calculateGrandTotal(result || []))
+        setCarts([...result] || [])
+        setCount(result.length)
+      }
+    }
+  }
 
   useEffect(() => {
     const getStoredData = (key: string, defaultValue : any) => {
@@ -157,12 +225,17 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       const storedValue = localStorage.getItem(key);
       return storedValue ? JSON.parse(storedValue) : defaultValue;
     };
+    getData(user?.uid)
     setKulcha(getStoredData("kulcha",{}));
     // setSize(getStoredData("size", "regular"));
     // setPrice(getStoredData("price", 0));
     // setCal(getStoredData("cal", 640));
     // setSelectedKulchas(getStoredData("selectedkulchas", []));
     setCount(getStoredData("count", 0)); 
+    setAddress(getStoredData("address", {
+      raw :"",
+      seperate:{}
+    })); 
     setIncludedItems1(getStoredData("includedItems1", []));
     setIncludedItems2(getStoredData("includedItems2", []));
     // setQuantities(getStoredData("quantities", {}));
@@ -173,12 +246,12 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     //   "Normal Butter",
     // ]));
     // setPlasticware(getStoredData("plasticware", "no"));
-    // setInstructions(getStoredData("instructions", ""));
+    setInstructions(localStorage.getItem("instructions") || '');
     // setQuantity(getStoredData("quantity", 1));
     // setSelectedDrinks(getStoredData("selectedDrinks", []));
     // setSelectedLassis(getStoredData("selectedLassis", []));
     // setTotal(getStoredData("total", 0));
-  }, []);
+  }, [user]);
 
 
   useEffect(() => {
@@ -256,7 +329,13 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setConfirmationResult,
     confirmationResult,
     kulcha,
-    setKulcha
+    setKulcha,
+    address,
+    setAddress,
+    setCarts,
+    carts,
+    grandTotal,
+    setGrandTotal
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

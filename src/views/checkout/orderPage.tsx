@@ -1,5 +1,6 @@
 "use client";
 
+import Autocomplete from "react-google-autocomplete";
 import React, { useState } from "react";
 import {
   Box,
@@ -16,13 +17,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SaveIcon from "@mui/icons-material/Save";
+import { useMenuContext } from "@/context";
 
 const OrderPage: React.FC = () => {
+  const { address, setAddress,instructions,setInstructions } = useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
-  const [address, setAddress] = useState("123 Delivery St, Apt 4B");
-  const [instructions, setInstructions] = useState("Leave at the door.");
 
   const handleOptionChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -43,8 +44,15 @@ const OrderPage: React.FC = () => {
 
   const handleSaveClick = (field: string) => {
     if (field == "address") {
+      localStorage.setItem(
+        "address",
+        JSON.stringify({
+          ...address,
+        })
+      );
       setIsEditingAddress(false);
     } else if (field == "instructions") {
+      localStorage.setItem('instructions',instructions)
       setIsEditingInstructions(false);
     }
   };
@@ -140,13 +148,126 @@ const OrderPage: React.FC = () => {
               <Box>
                 <Box sx={{ mb: 2 }}>
                   {isEditingAddress ? (
-                    <Box display="flex" alignItems="center">
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        value={address}
-                        onChange={handleAddressChange}
-                        sx={{ mr: 2 }}
+                    <Box display="flex" sx={{gap:'17px'}} alignItems="center">
+                      <Autocomplete
+                        apiKey="AIzaSyDsewz1qgdIcG21YdoAgIlLQwY546IxdCU"
+                        style={{
+                          outline: "none",
+                          color: "#8F8996",
+                          padding: "14px 10px",
+                          fontWeight: "bold",
+                          border: "1px solid grey",
+                          fontSize: "1rem",
+                          flex: "1",
+                        }}
+                        defaultValue={address?.raw}
+                        // required={true}
+                        // placeholder='Search the address'
+                        onPlaceSelected={(place) => {
+
+                          if(!place) return 
+
+                          let zipCode: string;
+                          let city: string;
+                          let state: string;
+                          for (
+                            let i = 0;
+                            i < (place.address_components?.length ?? 0);
+                            i++
+                          ) {
+                            for (
+                              let j = 0;
+                              j < (place.address_components![i].types.length ?? 0 );
+                              j++
+                            ) {
+                              if (
+                                place.address_components![i].types[j] ==
+                                "postal_code"
+                              ) {
+                                zipCode = place.address_components![i].long_name;
+                              }
+                              if (
+                                place?.address_components![i].types[j] ==
+                                "locality"
+                              ) {
+                                city = place.address_components[i].long_name;
+                              }
+                              if (
+                                place?.address_components![i].types[j] ==
+                                "administrative_area_level_1"
+                              ) {
+                                state = place?.address_components[i].long_name;
+                              }
+                            }
+                          }
+
+                          const geocoder = new window.google.maps.Geocoder();
+                          const post = place.geometry?.location
+
+                          if(!post) return
+
+                          const latlng = new window.google.maps.LatLng(post.lat(),post.lng());
+                          geocoder.geocode(
+                            { location: latlng },
+                            (results: any, status: any) => {
+                              if (status === "OK") {
+                                if (results.length !== 0) {
+                                  let plusCode = "";
+                                  let postalCode = "";
+                                  for (let i = 0; i < results.length; i++) {
+                                    for (
+                                      let j = 0;
+                                      j < results[i].types.length;
+                                      j++
+                                    ) {
+                                      if (results[i].types[j] == "plus_code") {
+                                        plusCode =
+                                          results[i]?.plus_code.global_code;
+                                      }
+                                      if (
+                                        results[i].types[j] == "postal_code"
+                                      ) {
+                                        postalCode =
+                                          results[i]?.address_components[j]
+                                            .long_name;
+                                      }
+                                    }
+                                  }
+
+                                  console.log(
+                                    state + "sssss",
+                                    city,
+                                    zipCode,
+                                    plusCode,
+                                    postalCode
+                                  );
+                                  setAddress({
+                                    ...address,
+                                    raw: place.formatted_address,
+                                    seperate: {
+                                      state: state,
+                                      city: city,
+                                      postal_code:
+                                        postalCode || plusCode || zipCode,
+                                      line1:
+                                        place.formatted_address?.split(",")[0],
+                                    },
+                                  });
+                                } else {
+                                  console.error("No results found");
+                                }
+                              } else {
+                                console.error(
+                                  "Geocoder failed due to: " + status
+                                );
+                              }
+                            }
+                          );
+                        }}
+                        options={{
+                          componentRestrictions: { country: ["ca"] },
+                          types: ["geocode", "establishment"],
+                        }}
                       />
                       <IconButton onClick={() => handleSaveClick("address")}>
                         <SaveIcon sx={{ color: "#6B7280" }} />
@@ -162,7 +283,7 @@ const OrderPage: React.FC = () => {
                         alignItems: "center",
                       }}
                     >
-                      Address: {address}
+                      Address: {address?.raw}
                       <IconButton onClick={() => handleEditClick("address")}>
                         <EditIcon sx={{ color: "#6B7280" }} />
                       </IconButton>
@@ -213,8 +334,6 @@ const OrderPage: React.FC = () => {
                 </Box>
               </Box>
             )}
-
-            
           </Box>
         </Paper>
       </Container>

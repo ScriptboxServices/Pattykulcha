@@ -21,11 +21,13 @@
     "@stripe/stripe-js": "^4.2.0",
     "axios": "^1.7.3",
     "firebase": "^10.12.5",
+    "firebase-admin": "^12.3.1",
     "keen-slider": "^6.8.6",
     "newpattykulcha": "file:",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-google-autocomplete": "^2.7.3",
     "react-hook-form": "^7.52.2",
     "react-toastify": "^10.0.5",
     "stripe": "^16.7.0",
@@ -34,6 +36,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/googlemaps": "^3.43.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
