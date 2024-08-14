@@ -323,7 +323,7 @@ const OrderPage: React.FC = () => {
                         alignItems: "center",
                       }}
                     >
-                      Special Instructions: {instructions}
+                      Delivery Instructions: {instructions}
                       <IconButton
                         onClick={() => handleEditClick("instructions")}
                       >

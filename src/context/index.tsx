@@ -231,7 +231,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     // setPrice(getStoredData("price", 0));
     // setCal(getStoredData("cal", 640));
     // setSelectedKulchas(getStoredData("selectedkulchas", []));
-    setCount(getStoredData("count", 0)); 
+    // setCount(getStoredData("count", 0)); 
     setAddress(getStoredData("address", {
       raw :"",
       seperate:{}

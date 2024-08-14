@@ -171,6 +171,11 @@ const Navbar: React.FC = () => {
               <>
                 <NavButton onClick={async () => {
                   await auth.signOut()
+                  localStorage.removeItem('address')
+                  localStorage.removeItem('instructions')
+                  localStorage.removeItem('kulcha')
+                  localStorage.removeItem('includedItems2')
+                  
                   router.push('/login')
                 }}>Logout</NavButton>
 
