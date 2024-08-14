@@ -11,7 +11,7 @@ const isIncludedItem = (item: Kulcha | IncludedItem): item is IncludedItem => {
 
 const AddCouponComponent: React.FC = () => {
   const router = useRouter();
-  const { selectedkulchas, includedItems1, includedItems2, quantities } =
+  const { selectedkulchas, includedItems1, includedItems2, address,instructions } =
     useMenuContext();
 
   const mergeItems = () => {
@@ -60,6 +60,7 @@ const AddCouponComponent: React.FC = () => {
   };
 
   const handleProceedToPayment = () => {
+    if(!address?.raw || instructions) return
     router.push("/payment");
   };
 

@@ -12,58 +12,53 @@ import {
 } from "@mui/material";
 import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { Kulcha } from "@/context";
 import Image from "next/image";
-import { RootState } from "@/redux-store";
-import { setActiveCategory } from "@/redux-store/slices/Menu";
 
-type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
-
-interface MenuCategory {
-  icon: string;
-  label: MenuCategoryKey;
-}
-
-
-interface MenuItem {
-  name: string;
-  desc: string;
-  image: string;
-  price: number;
-}
-
-
-
+const menuItems = [
+  {
+    name: "Mix Kulcha",
+    image: "/images/landingpage/menu1.png",
+    desc: "Crisp Indian bread filled with potato, cauliflower, peas, onion, corn, coriander, carrot, ginger, green chilli and beetroot, delivering a savoury taste.",
+    price: 9.99,
+  },
+  {
+    name: "Aloo Kulcha",
+    image: "/images/landingpage/menu2.png",
+    desc: "A tender, golden leavened bread stuffed with potato and onion, cooked in a tandoor and served with chana.",
+    price: 9.99,
+  },
+  {
+    name: "Onion Kulcha",
+    image: "/images/landingpage/menu3.png",
+    desc: "A warm, flavorful Indian bread stuffed with onion, and topped with rich masala, giving a satisfying taste.",
+    price: 9.99,
+  },
+  {
+    name: "Gobi Kulcha",
+    image: "/images/landingpage/Gobikulcha.png",
+    desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
+    price: 9.99,
+  },
+  {
+    name: "Paneer Kulcha",
+    image: "/images/landingpage/Paneerkulcha.png",
+    desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
+    price: 12.99,
+  },
+  {
+    name: "Hot & Spicy Mix Kulcha",
+    image: "/images/landingpage/menu6.png",
+    desc: "A golden and flaky Indian bread filled with potato, cauliflower, onion, carrot, ginger, beetroot, corn, coriander, peas, and green chilli, having a tempting taste.",
+    price: 9.99,
+  },
+];
 
 const MenuSection = () => {
   const { user, isLoggedIn } = useAuthContext();
-  const {
-    setIncludedItems2,
-    includedItems1,
-    setSelectedKulchas,
-    setKulcha,
-    kulcha,
-  } = useMenuContext();
+  const { setIncludedItems2, includedItems1, setSelectedKulchas,setKulcha,kulcha } = useMenuContext();
   const router = useRouter();
-  const dispatch = useDispatch();
-
-  const activeCategory = useSelector(
-    (state: RootState) => state.menu.activeCategory as MenuCategoryKey
-  );
-
-  const menuItems = useSelector(
-    (state: RootState) => state.menu.items[activeCategory]
-  ) as MenuItem[];
-
-  const menuCategories: MenuCategory[] = [
-    { icon: "👍", label: "Kulcha" },
-    { icon: "⭐", label: "Lassi" },
-    { icon: "🍵", label: "Tea" },
-    { icon: "☕", label: "Coffee" },
-    { icon: "🥤", label: "Soft Drinks" },
-  ];
 
   const handleAddItem = (
     itemName: string,
@@ -71,26 +66,20 @@ const MenuSection = () => {
     image: string,
     price: number
   ) => {
-    const newKulcha = { name: itemName, desc, image, price };
-    setKulcha(newKulcha);
-    localStorage.setItem("kulcha", JSON.stringify(newKulcha));
-    setSelectedKulchas((prevKulchas: MenuItem[]) => [
-      ...prevKulchas,
-      newKulcha,
-    ]);
+    const newKulcha: Kulcha = { name: itemName, desc, image, price };
+    setKulcha({
+      ...newKulcha
+    })
+    localStorage.setItem("kulcha", JSON.stringify(newKulcha))
+    setSelectedKulchas((prevKulchas: Kulcha[]) : Kulcha[] => [...prevKulchas, newKulcha]);
   };
 
-  console.log(kulcha, "Abhishek");
+  console.log(kulcha,"Abhishek");
 
   useEffect(() => {
-    localStorage.removeItem("includedItems2");
-    setIncludedItems2([]);
-  }, []);
-
-  const isOrderableCategory = (categoryLabel: string) => {
-    // Only show "Order Now" for categories other than Lassi, Tea, Coffee, and Soft Drinks
-    return !["Lassi", "Tea", "Coffee", "Soft Drinks"].includes(categoryLabel);
-  };
+    localStorage.removeItem('includedItems2')
+    setIncludedItems2([])
+  },[])
 
   return (
     <Box
@@ -101,78 +90,31 @@ const MenuSection = () => {
         paddingTop: 12,
       }}
     >
-      <Box sx={{ textAlign: "center" }}>
-        <Typography
-          variant="h4"
-          component="h2"
-          sx={{ color: "#333333", fontWeight: "bold" }}
-        >
-          OUR MENU
-        </Typography>
-      </Box>
-
       <Box
         sx={{
-          backgroundColor: "#FFF8E1",
-          padding: "20px 0",
-          marginBottom: 1,
-          overflowX: "auto",
-          marginTop: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 14,
         }}
       >
-        <Container>
-          <Grid container spacing={9} justifyContent="center" wrap="nowrap">
-            {menuCategories?.map((category, index) => (
-              <Grid item key={index}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    minWidth: "80px",
-                  }}
-                  onClick={() => dispatch(setActiveCategory(category.label))}
-                >
-                  <Box
-                    sx={{
-                      width: 70,
-                      height: 70,
-                      borderRadius: "50%",
-                      backgroundColor:
-                        activeCategory === category.label
-                          ? "#3a5795"
-                          : "#e0e0e0",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 1,
-                      fontSize: "24px",
-                    }}
-                  >
-                    {category.icon}
-                  </Box>
-                  <Typography
-                    variant="h4"
-                    align="center"
-                    sx={{
-                      fontSize: "1.25rem",
-                      fontWeight:
-                        activeCategory === category.label ? "bold" : "normal",
-                    }}
-                  >
-                    {category.label}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h4"
+            component="h2"
+            sx={{
+              color: "#333333",
+              fontWeight: "bold",
+            }}
+          >
+            OUR MENU
+          </Typography>
+        </Box>
       </Box>
 
-      <Container sx={{ marginTop: 12, textAlign: "center" }}>
+      <Container sx={{ marginTop: 5, textAlign: "center" }}>
         <Grid container spacing={7}>
-          {menuItems?.map((item, index) => (
+          {menuItems.map((item, index) => (
             <Grid
               item
               xs={12}
@@ -188,17 +130,13 @@ const MenuSection = () => {
                   margin: "0 auto",
                   borderRadius: "20px",
                   overflow: "visible",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   position: "relative",
                   paddingTop: "80px",
                   paddingBottom: "10px",
-                  transition: "transform 0.3s ease-in-out",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.358)",
-                  },
                 }}
               >
                 <Box
@@ -220,7 +158,10 @@ const MenuSection = () => {
                     width={220}
                     height={300}
                     objectFit="contain"
-                    style={{ height: "100%", width: "100%" }}
+                    style={{
+                      height:"100%",
+                      width:"100%"
+                    }}
                   />
                 </Box>
                 <Box
@@ -260,7 +201,12 @@ const MenuSection = () => {
                   >
                     {item.name}
                   </Typography>
-                  <Box sx={{ flexGrow: 1, display: "flex" }}>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      display: "flex",
+                    }}
+                  >
                     <Typography
                       variant="body2"
                       color="text.secondary"
@@ -270,45 +216,38 @@ const MenuSection = () => {
                     </Typography>
                   </Box>
                 </CardContent>
-                {isOrderableCategory(activeCategory) && (
-                  <Box
+                <Box
+                  sx={{
+                    padding: 2,
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "auto",
+                  }}
+                >
+                  <Button
+                    variant="contained"
                     sx={{
-                      padding: 2,
-                      width: "100%",
-                      textAlign: "center",
-                      marginTop: "auto",
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      borderRadius: 20,
+                      paddingX: 4,
+                      paddingY: 1,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#FFC107",
+                        color: "white",
+                      },
+                    }}
+                    onClick={() => {
+                      if (!isLoggedIn) return router.push("/login");
+
+                      handleAddItem(item.name, item.desc, item.image, item.price);
+                      router.push("/cart");
                     }}
                   >
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#ECAB21",
-                        color: "white",
-                        borderRadius: 20,
-                        paddingX: 4,
-                        paddingY: 1,
-                        fontWeight: "bold",
-                        "&:hover": {
-                          backgroundColor: "#FFC107",
-                          color: "white",
-                        },
-                      }}
-                      onClick={() => {
-                        if (!isLoggedIn) return router.push("/login");
-
-                        handleAddItem(
-                          item.name,
-                          item.desc,
-                          item.image,
-                          item.price
-                        );
-                        router.push("/cart");
-                      }}
-                    >
-                      Order Now
-                    </Button>
-                  </Box>
-                )}
+                    Order Now
+                  </Button>
+                </Box>
               </Card>
             </Grid>
           ))}

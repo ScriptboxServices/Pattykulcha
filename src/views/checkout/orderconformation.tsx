@@ -88,7 +88,7 @@ const OrdersPage: React.FC = () => {
                       </Box>
                     )}
                     {cartItem.order.additional &&
-                      cartItem.order.additional.map((item, i) => (
+                      cartItem.order.additional.map((item :any, i : number) => (
                         <Box key={i} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                           <Typography variant="body2" color="text.secondary">
                             {item.items[0].name}

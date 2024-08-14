@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { auth, db } from "@/firebase";
 import { doc , setDoc } from "firebase/firestore"
+import CircularLodar from "@/components/CircularLodar";
 const StyledRoot = styled(Box)({
   display: "flex",
   flexDirection: "column",
@@ -116,98 +117,97 @@ const VerificationPage: React.FC = () => {
   const handleVerify = (e:any) => {
     e.preventDefault()
     submitOtp()
-    // Add your verification logic here
-    console.log("Verifying with code:", verificationCode.join(""));
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xl"
-      sx={{
-        backgroundImage: "url(/images/bgimage.png)",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        padding: 2,
-      }}
-    >
-      <StyledRoot>
-        <StyledForm>
-          <Typography variant="h4" gutterBottom>
-            Verify your phone number
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Check the messages for the verification code, sent to your phone number.
-          </Typography>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 400 }}>
-            Enter OTP
-          </Typography>
-          <StyledCodeInput>
-            {verificationCode.map((code, index) => (
-              <TextField
-                key={index}
-                variant="outlined"
-                value={code}
-                onChange={handleCodeChange(index)}
-                onKeyDown={handleKeyDown(index)}
-                inputProps={{ maxLength: 1 }}
-                inputRef={(el) => (inputRefs.current[index] = el)}
+    <>
+      <CircularLodar isLoading={loading} />    
+      <Container
+        component="main"
+        maxWidth="xl"
+        sx={{
+          backgroundImage: "url(/images/bgimage.png)",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+          padding: 2,
+        }}
+      >
+        <StyledRoot>
+          <StyledForm>
+            <Typography variant="h4" gutterBottom>
+              Verify your phone number
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Check the messages for the verification code, sent to your phone number.
+            </Typography>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 400 }}>
+              Enter OTP
+            </Typography>
+            <StyledCodeInput>
+              {verificationCode.map((code, index) => (
+                <TextField
+                  key={index}
+                  variant="outlined"
+                  value={code}
+                  onChange={handleCodeChange(index)}
+                  onKeyDown={handleKeyDown(index)}
+                  inputProps={{ maxLength: 1 }}
+                  inputRef={(el) => (inputRefs.current[index] = el)}
+                  sx={{
+                    width: "50px",
+                    margin: 0.5,
+                    border: "1px solid black",
+                    borderRadius: 1,
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "black",
+                      },
+                      "& input": {
+                        textAlign: "center",
+                      },
+                      "&.Mui-focused input": {
+                        borderColor: "black",
+                        color: "black",
+                      },
+                    },
+                  }}
+                />
+              ))}
+            </StyledCodeInput>
+            <Link href='/home'>
+            <Box mt={2}>
+      
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleVerify}
+                fullWidth
                 sx={{
-                  width: "50px",
-                  margin: 0.5,
-                  border: "1px solid black",
-                  borderRadius: 1,
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      borderColor: "black",
-                    },
-                    "& input": {
-                      textAlign: "center",
-                    },
-                    "&.Mui-focused input": {
-                      borderColor: "black",
-                      color: "black",
-                    },
+                  backgroundColor: "#ECAB21",
+                  color: "white",
+                  paddingX: 4,
+                  paddingY: 1,
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#FFC107",
+                    color: "white",
                   },
                 }}
-              />
-            ))}
-          </StyledCodeInput>
-          <Link href='/home'>
-          <Box mt={2}>
-          {
-                loading ? <Box sx={{mt:2,textAlign:'center'}} component='div'><CircularProgress /> </Box> : <>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleVerify}
-              fullWidth
-              sx={{
-                backgroundColor: "#ECAB21",
-                color: "white",
-                paddingX: 4,
-                paddingY: 1,
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#FFC107",
-                  color: "white",
-                },
-              }}
-            >
-              Confirm
-            </Button>
-            </>
-}   {
-                error && <Alert sx={{mt:2}} severity="error">{error}</Alert>
-              }
-          </Box>
-          </Link>
-        </StyledForm>
-      </StyledRoot>
-    </Container>
+              >
+                Confirm
+              </Button>
+        {
+                  error && <Alert sx={{mt:2}} severity="error">{error}</Alert>
+                }
+            </Box>
+            </Link>
+          </StyledForm>
+        </StyledRoot>
+      </Container>
+    </>
   );
 };
 

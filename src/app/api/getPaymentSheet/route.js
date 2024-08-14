@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { admin } from "@/firebaseAdmin/config";
 
-const stripe = new Stripe(process.env?.NEXT_PUBLIC_STRIPE_SK ?? '');
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SK ?? '',{
+  apiVersion: '2024-06-20'
+});
 
 const db = admin.firestore();
 
@@ -108,7 +110,7 @@ export const POST = async (req, res) => {
 
     const ephemeralKey = await stripe.ephemeralKeys.create(
       { customer: customer.id },
-      { apiVersion: "2023-10-16" }
+      { apiVersion: "2024-06-20" }
     );
 
     const paymentIntent = await stripe.paymentIntents.create({
@@ -123,6 +125,8 @@ export const POST = async (req, res) => {
         name: `Customer_${uid}`,
       },
     });
+
+    console.log(ephemeralKey.secret,"SWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
 
     return NextResponse.json({
       code: 1,

@@ -24,6 +24,7 @@ import { countryCodes } from "@/utils/constants";
 import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useMenuContext } from "@/context";
+import CircularLodar from "@/components/CircularLodar";
 
 export interface CountryCode {
   name: string;
@@ -105,6 +106,7 @@ const Login: React.FC = () => {
 
   return (
     <>
+      <CircularLodar isLoading={loading} />
       <div id="recaptcha-container" />
       <CssBaseline />
       <Box
@@ -262,8 +264,6 @@ const Login: React.FC = () => {
                   />
                 </Grid>
               </Grid>
-              {
-                loading ? <Box sx={{mt:2,textAlign:'center'}} component='div'><CircularProgress /> </Box> : <>
               <Button
                 type="submit"
                 fullWidth
@@ -283,9 +283,6 @@ const Login: React.FC = () => {
               >
                 Login
               </Button>
-                
-                </>
-              }
               {
                 error && <Alert severity="error">{error}</Alert>
               }
