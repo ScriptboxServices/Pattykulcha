@@ -70,7 +70,7 @@ const OrderPage: React.FC = () => {
   return (
     <Box
       sx={{
-        backgroundImage: "url('/images/checkout/checkout1.png')",
+        backgroundImage: "url('/images/checkout/Frame3.png')",
         minHeight: "80vh",
         display: "flex",
         alignItems: "center",
@@ -150,7 +150,7 @@ const OrderPage: React.FC = () => {
                   {isEditingAddress ? (
                     <Box display="flex" sx={{gap:'17px'}} alignItems="center">
                       <Autocomplete
-                        apiKey={'AIzaSyDsewz1qgdIcG21YdoAgIlLQwY546IxdCU'}
+                        apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY }
                         style={{
                           outline: "none",
                           color: "#8F8996",

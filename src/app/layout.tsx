@@ -2,6 +2,7 @@ import { AuthProvider, MenuProvider } from "@/context"
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import ReduxProvider from "@/redux-store/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "PattyKulcha",
@@ -22,7 +23,7 @@ export default function RootLayout({
         <body>
           <AuthProvider>
               <MenuProvider>
-                {children}
+                <ReduxProvider>{children}</ReduxProvider>
               </MenuProvider>
           </AuthProvider>
         </body>
