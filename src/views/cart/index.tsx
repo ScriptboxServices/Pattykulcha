@@ -1020,14 +1020,14 @@ const MenuPage = () => {
             ))}
           </Grid>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleDrinkDialogClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleDrinkDialogClose} color="primary">
             Save
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <Dialog
         open={isLassiDialogOpen}
@@ -1104,14 +1104,14 @@ const MenuPage = () => {
             ))}
           </Grid>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleLassiDialogClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleLassiDialogClose} color="primary">
             Save
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <Dialog
         open={isTeaDialogOpen}
@@ -1188,14 +1188,14 @@ const MenuPage = () => {
             ))}
           </Grid>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleTeaDialogClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleTeaDialogClose} color="primary">
             Save
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <Dialog
         open={isCoffeeDialogOpen}
@@ -1272,14 +1272,14 @@ const MenuPage = () => {
             ))}
           </Grid>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleCoffeeDialogClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleCoffeeDialogClose} color="primary">
             Save
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <ToastContainer />
     </Box>
