@@ -31,11 +31,11 @@ import { useRouter } from "next/navigation";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    "Chana": "/images/landingpage/Chana.svg",
+    Chana: "/images/landingpage/Chana.svg",
     "Imli Pyaz Chutney": "/images/landingpage/Chutney.svg",
     "Amul Butter": "/images/landingpage/butter_6587237.svg",
     "Normal Butter": "/images/landingpage/butter_6587237.svg",
-    "Pickle": "/images/landingpage/pickle.svg",
+    Pickle: "/images/landingpage/pickle.svg",
     "Regular Coca-Cola": "/images/drinks/coke.png",
     "Large Coca-Cola": "/images/drinks/coke.png",
     "Regular Coke Zero Sugar": "/images/drinks/coke-zero.png",
@@ -174,11 +174,11 @@ const MenuPage = () => {
     setSelectedLassis,
   } = useMenuContext();
 
-  const {user} = useAuthContext()
+  const { user } = useAuthContext();
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
@@ -234,7 +234,10 @@ const MenuPage = () => {
       )
     ) {
       setIncludedItems2([...includedItems2, newItem]);
-      localStorage.setItem('includedItems2',JSON.stringify([...includedItems2,newItem]))
+      localStorage.setItem(
+        "includedItems2",
+        JSON.stringify([...includedItems2, newItem])
+      );
     }
   };
 
@@ -262,7 +265,10 @@ const MenuPage = () => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
     setSelectedLassis(selectedLassis.filter((lassi) => lassi !== itemId));
-    localStorage.setItem('includedItems2',JSON.stringify([...includedItems2.filter((item) => item.id !== itemId)]))
+    localStorage.setItem(
+      "includedItems2",
+      JSON.stringify([...includedItems2.filter((item) => item.id !== itemId)])
+    );
   };
 
   const handleDrinkDialogOpen = () => {
@@ -298,44 +304,81 @@ const MenuPage = () => {
   };
 
   const handleAddToCart = async () => {
-
-    try{
-      setLoading(true)
-      const colRef = collection(db,'carts')
+    try {
+      setLoading(true);
+      const colRef = collection(db, "carts");
       const data = {
-        userId : user?.uid,
-        order :{
+        userId: user?.uid,
+        order: {
           kulcha: kulcha,
-          withKulcha : [...includedItems1],
-          additional : [...includedItems2]       
+          withKulcha: [...includedItems1],
+          additional: [...includedItems2],
         },
-        createdAt : Timestamp.now()
-      }
-      await addDoc(colRef,{
-        ...data
-      })
-      setLoading(false)
-      setCount(count + 1)
-      localStorage.removeItem('includedItems2')
-      localStorage.removeItem('kulcha')
-      router.push('/checkout')
-    }catch(err) {
+        createdAt: Timestamp.now(),
+      };
+      await addDoc(colRef, {
+        ...data,
+      });
+      setLoading(false);
+      setCount(count + 1);
+      localStorage.removeItem("includedItems2");
+      localStorage.removeItem("kulcha");
+      router.push("/checkout");
+    } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <Box sx={{ backgroundColor: "#f8f8f8", padding: "2rem" }}>
+    <Box
+      sx={{
+        backgroundColor: "#fffaeb",
+        padding: { xs: "1rem", sm: "2rem" },
+        backgroundImage: `
+        url('/images/small/chana.png'), 
+        url('/images/small/chilli.png'), 
+        url('/images/small/bowl.png'), 
+        url('/images/small/bowl2.png'), 
+        url('/images/small/bucket.png'), 
+        url('/images/small/butter.png'),
+        url('/images/small/drink.png'),
+        url('/images/small/plate.png')
+      `,
+        backgroundPosition: `
+      left bottom 20%,   
+      right bottom 20%,  
+      left bottom 40%,  
+      right bottom 40%,  
+      left bottom 60%,   
+      right bottom 60%, 
+      center bottom 30%, 
+      center bottom 50%  
+    `,
+        backgroundSize: `
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px
+      `,
+        backgroundRepeat:
+          "no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat",
+      }}
+    >
       <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
         <Grid item xs={12} md={6}>
-          <Box>
+          <Box sx={{ paddingLeft: "7%" }}>
             <Typography
               variant="h4"
               sx={{
                 marginBottom: "1rem",
+                marginTop: "2rem",
                 fontWeight: "bold",
-                fontSize: "2rem",
+                fontSize: { xs: "1.5rem", sm: "3.2rem" },
                 color: "#000000",
               }}
             >
@@ -343,11 +386,15 @@ const MenuPage = () => {
             </Typography>
             <Typography
               variant="body1"
-              sx={{ marginBottom: "1rem", color: "#000000" }}
+              sx={{
+                marginBottom: "1rem",
+                color: "#000000",
+                fontSize: { xs: "1rem", sm: "1.2rem" },
+              }}
             >
               {kulcha?.desc}
             </Typography>
-            <Box sx={{ marginTop: "2.5rem" }}>
+            <Box sx={{ marginTop: "3.2rem" }}>
               <ToggleButtonGroup
                 value={size}
                 exclusive
@@ -358,30 +405,44 @@ const MenuPage = () => {
                   value="regular"
                   aria-label="regular"
                   sx={{
-                    color: "white",
-                    backgroundColor: "black",
-                    padding: "8px 16px", // Adjust padding as needed
+                    color: "black",
+                    // backgroundColor: "black",
+                    border: "2px solid black",
+                    borderRadius: "12px",
+                    padding: { xs: "6px 12px", sm: "8px 20px" }, // Adjust padding as needed
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "black",
+                      color: "black",
+
+                      // backgroundColor: "black",
                     },
                   }}
                 >
-                  Regular
+                  Regular Size
                 </Button>
               </ToggleButtonGroup>
             </Box>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ textAlign: "right", marginLeft: 13 }}>
+          <Box
+            sx={{
+              textAlign: { xs: "center", md: "right" },
+              marginLeft: { md: 13 },
+              paddingRight: "10%",
+            }}
+          >
             <Image
               src={kulcha?.image}
               alt="Amritsari Kulcha"
               layout="responsive"
               width={500}
               height={500}
-              style={{ maxWidth: "100%", height: "auto" }}
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "5%", // This makes the image round
+                objectFit: "cover",
+              }}
             />
           </Box>
         </Grid>
@@ -390,13 +451,22 @@ const MenuPage = () => {
             sx={{
               marginTop: "2rem",
               paddingTop: "2rem",
-              borderTop: "1px solid #dcdcdc",
+              textAlign: "center",
             }}
           >
-            <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
+            <Box
+              sx={{
+                width: "60%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
               What&apos;s Included
             </Typography>
-            <Grid container spacing={2} justifyContent="flex-start">
+            <Grid container spacing={2} justifyContent="center">
               {includedItems1.length == 0 ? (
                 <Grid item>
                   <Box
@@ -410,13 +480,18 @@ const MenuPage = () => {
                       border: "2px solid #dcdcdc",
                       borderRadius: "8px",
                       textAlign: "center",
-                      height: "300px",
-                      width: "175px",
+                      height: {
+                        xs: "200px",
+                        sm: "220px",
+                        md: "250px",
+                        lg: "250px",
+                      },
+                      width: { xs: "150px", sm: "175px" },
                       margin: "1rem",
                     }}
                   >
                     <AddCircleOutlineIcon
-                      sx={{ fontSize: "4rem", color: "#1e90ff" }}
+                      sx={{ fontSize: "4rem", color: "#336195" }}
                     />
                     <Typography variant="body1" color="textSecondary">
                       Add Items
@@ -425,7 +500,7 @@ const MenuPage = () => {
                 </Grid>
               ) : (
                 includedItems1.map((item) => (
-                  <Grid item xs={12} sm={6} md={2} key={item.id}>
+                  <Grid item xs={6} sm={4} md={1.6} key={item.id}>
                     <Box
                       sx={{
                         display: "flex",
@@ -434,17 +509,20 @@ const MenuPage = () => {
                         justifyContent: "flex-start",
                         padding: "1rem",
                         backgroundColor: "white",
-                        border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
-                        borderRadius: "8px",
-                        textAlign: "center",
-                        position: "relative",
-                        cursor: "pointer",
-                        height: "270px",
-                        width: "175px",
-                        margin: "0.5rem",
-                        boxShadow: item
-                          ? "0 0 10px rgba(30, 144, 255, 0.5)"
-                          : "none",
+                        border: "2px solid #87939f", // Updated border color
+                        borderRadius: "8px", // Updated border-radius
+                        textAlign: "center", // Center text alignment
+                        position: "relative", // Maintain position relative
+                        cursor: "pointer", // Pointer cursor
+                        height: {
+                          xs: "200px",
+                          sm: "220px",
+                          md: "250px",
+                          lg: "250px",
+                        },
+                        width: { xs: "150px", sm: "175px" },
+                        margin: "0.5rem", // Updated margin
+                        boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
                       }}
                     >
                       <CheckCircleIcon
@@ -452,7 +530,7 @@ const MenuPage = () => {
                           position: "absolute",
                           top: "10px",
                           right: "10px",
-                          color: "#1e90ff",
+                          color: "#336195",
                           backgroundColor: "white",
                           borderRadius: "50%",
                         }}
@@ -463,9 +541,9 @@ const MenuPage = () => {
                         width={150}
                         height={150}
                         style={{
-                          width: "65%", // Set the width to 60% of the container
-                          height: "55%", // Set the height to 60% of the container
-                          objectFit: "contain", // Maintain the aspect ratio
+                          width: "65%", // Set the width to 65% of the container
+                          height: "65%", // Set the height to 55% of the container
+                          objectFit: "contain",
                         }}
                       />
                       <Typography variant="body1" color="textPrimary">
@@ -477,13 +555,13 @@ const MenuPage = () => {
               )}
             </Grid>
             <Typography
-              variant="h6"
+              variant="h4"
               gutterBottom
               sx={{ color: "#021e3a", marginTop: 4 }}
             >
               Additional items
             </Typography>
-            <Grid container spacing={2} justifyContent="flex-start">
+            <Grid container spacing={2} justifyContent="center">
               {includedItems2.length == 0 ? (
                 <Grid item>
                   <Box
@@ -497,8 +575,8 @@ const MenuPage = () => {
                       border: "2px solid #dcdcdc",
                       borderRadius: "8px",
                       textAlign: "center",
-                      height: "270px",
-                      width: "175px",
+                      height: { xs: "200px", sm: "270px" },
+                      width: { xs: "150px", sm: "175px" },
                       margin: "1rem",
                     }}
                   >
@@ -509,26 +587,24 @@ const MenuPage = () => {
                 </Grid>
               ) : (
                 includedItems2.map((item) => (
-                  <Grid item xs={12} sm={6} md={2} key={item.id}>
+                  <Grid item xs={6} sm={4} md={1.6} key={item.id}>
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent: "center",
                         padding: "1rem",
                         backgroundColor: "white",
-                        border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
+                        border: "2px solid #87939f", // Updated border color
                         borderRadius: "8px",
                         textAlign: "center",
                         position: "relative",
                         cursor: "pointer",
-                        height: "270px",
-                        width: "175px",
+                        height: { xs: "220px", sm: "270px" },
+                        width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem",
-                        boxShadow: item
-                          ? "0 0 10px rgba(30, 144, 255, 0.5)"
-                          : "none",
+                        boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
                       }}
                     >
                       <CheckCircleIcon
@@ -536,7 +612,7 @@ const MenuPage = () => {
                           position: "absolute",
                           top: "10px",
                           right: "10px",
-                          color: "#1e90ff",
+                          color: "#336195",
                           backgroundColor: "white",
                           borderRadius: "50%",
                         }}
@@ -547,8 +623,8 @@ const MenuPage = () => {
                         width={150}
                         height={150}
                         style={{
-                          width: "65%", // Set the width to 60% of the container
-                          height: "55%", // Set the height to 60% of the container
+                          width: "65%", // Set the width to 65% of the container
+                          height: "55%", // Set the height to 55% of the container
                           objectFit: "contain", // Maintain the aspect ratio
                         }}
                       />
@@ -563,8 +639,8 @@ const MenuPage = () => {
                         onClick={() => handleRemoveItem(item.id)}
                         sx={{
                           backgroundColor: "transparent",
-                          color: "#1e90ff",
-                          border: "1px solid #1e90ff",
+                          color: "#336195",
+                          border: "1px solid #336195",
                           marginTop: "auto",
                           borderRadius: "20px",
                           textTransform: "none",
@@ -582,18 +658,32 @@ const MenuPage = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "0.5rem",
-              paddingTop: "1.0rem",
-              marginBottom: "4rem",
-              borderTop: "1px solid #dcdcdc",
+              marginTop: "2.7rem",
+              paddingTop: "0rem",
+              marginBottom: "0rem",
+              textAlign: "center",
             }}
           >
-            <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
+            <Box
+              sx={{
+                width: "65%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
               Would you like to add extra items?
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1} justifyContent="center">
               {extraItems.map((item, index) => (
-                <Grid item xs={12} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  key={index}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -606,8 +696,8 @@ const MenuPage = () => {
                       textAlign: "left",
                       position: "relative",
                       cursor: "pointer",
-                      margin: "1rem 0",
-                      width: "60%",
+                      margin: "0.5rem 0",
+                      width: { xs: "100%", md: "60%" },
                     }}
                     onClick={() => handleAddItem(item)}
                   >
@@ -631,7 +721,7 @@ const MenuPage = () => {
                         {item}
                       </Typography>
                     </Box>
-                    <IconButton sx={{ color: "#1e90ff" }}>
+                    <IconButton sx={{ color: "#336195" }}>
                       <AddCircleOutlineIcon />
                     </IconButton>
                   </Box>
@@ -643,16 +733,25 @@ const MenuPage = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "2rem",
-              paddingTop: "2rem",
-              marginBottom: "4rem",
-              borderTop: "1px solid #dcdcdc",
+              marginTop: "2.7rem",
+              paddingTop: "0rem",
+              marginBottom: "0.5rem",
+              textAlign: "center",
             }}
           >
-            <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
+            <Box
+              sx={{
+                width: "65%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
               Make it a Meal
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1} justifyContent="center">
               <Grid item xs={12}>
                 <Box
                   sx={{
@@ -666,8 +765,9 @@ const MenuPage = () => {
                     textAlign: "left",
                     position: "relative",
                     cursor: "pointer",
-                    margin: "1rem 0",
-                    width: "60%",
+                    margin: "0.2rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
                   }}
                   onClick={handleDrinkDialogOpen}
                 >
@@ -708,7 +808,8 @@ const MenuPage = () => {
                     position: "relative",
                     cursor: "pointer",
                     margin: "1rem 0",
-                    width: "60%",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
                   }}
                   onClick={handleLassiDialogOpen}
                 >
@@ -748,8 +849,9 @@ const MenuPage = () => {
                     textAlign: "left",
                     position: "relative",
                     cursor: "pointer",
-                    margin: "1rem 0",
-                    width: "60%",
+                    margin: "0.5rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
                   }}
                   onClick={handleTeaDialogOpen}
                 >
@@ -789,9 +891,9 @@ const MenuPage = () => {
                     textAlign: "left",
                     position: "relative",
                     cursor: "pointer",
-                  
-                    margin: "1rem 0",
-                    width: "60%",
+                    margin: "0.5rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
                   }}
                   onClick={handleCoffeeDialogOpen}
                 >
@@ -824,8 +926,8 @@ const MenuPage = () => {
         <Box
           sx={{
             position: "fixed",
-            bottom: "20px",
-            right: "20px",
+            bottom: { xs: "10px", md: "20px" },
+            right: { xs: "10px", md: "20px" },
             backgroundColor: "#ebebe1",
             border: "2px solid #dcdcdc",
             borderRadius: "8px",
@@ -880,8 +982,8 @@ const MenuPage = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 60% of the container
-                      height: "65%", // Set the height to 60% of the container
+                      width: "65%", // Set the width to 65% of the container
+                      height: "65%", // Set the height to 65% of the container
                       objectFit: "cover", // Maintain the aspect ratio
                       marginInline: "auto", // Center horizontally within the container
                     }}
@@ -963,8 +1065,8 @@ const MenuPage = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 60% of the container
-                      height: "65%", // Set the height to 60% of the container
+                      width: "65%", // Set the width to 65% of the container
+                      height: "65%", // Set the height to 65% of the container
                       objectFit: "cover", // Maintain the aspect ratio
                       marginInline: "auto", // Center horizontally within the container
                     }}
@@ -1046,8 +1148,8 @@ const MenuPage = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 60% of the container
-                      height: "65%", // Set the height to 60% of the container
+                      width: "65%", // Set the width to 65% of the container
+                      height: "65%", // Set the height to 65% of the container
                       objectFit: "cover", // Maintain the aspect ratio
                       marginInline: "auto", // Center horizontally within the container
                     }}
@@ -1129,8 +1231,8 @@ const MenuPage = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 60% of the container
-                      height: "65%", // Set the height to 60% of the container
+                      width: "65%", // Set the width to 65% of the container
+                      height: "65%", // Set the height to 65% of the container
                       objectFit: "cover", // Maintain the aspect ratio
                       marginInline: "auto", // Center horizontally within the container
                     }}

@@ -1,7 +1,7 @@
-import { AuthProvider, MenuProvider } from "@/context"
+import { AuthProvider, MenuProvider } from "@/context";
 import "./globals.css";
-import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import ReduxProvider from "@/redux-store/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "PattyKulcha",
@@ -9,23 +9,20 @@ export const metadata: Metadata = {
 };
 
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
-        <body>
-          <AuthProvider>
-              <MenuProvider>
-                {children}
-              </MenuProvider>
-          </AuthProvider>
-        </body>
+      <body>
+        <AuthProvider>
+          <MenuProvider>
+            <ReduxProvider>{children}</ReduxProvider>
+          </MenuProvider>
+        </AuthProvider>
+      </body>
     </html>
-  )
+  );
 }
