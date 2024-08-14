@@ -150,7 +150,7 @@ const OrderPage: React.FC = () => {
                   {isEditingAddress ? (
                     <Box display="flex" sx={{gap:'17px'}} alignItems="center">
                       <Autocomplete
-                        apiKey={process.env.GOOGLE_API_KEY}
+                        apiKey={'AIzaSyDsewz1qgdIcG21YdoAgIlLQwY546IxdCU'}
                         style={{
                           outline: "none",
                           color: "#8F8996",
