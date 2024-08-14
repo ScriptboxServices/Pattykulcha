@@ -87,7 +87,7 @@ const OrdersPage: React.FC = () => {
                         </Typography>
                       </Box>
                     )}
-                    {cartItem.order.additional &&
+                    {/* {cartItem.order.additional &&
                       cartItem.order.additional.map((item :any, i : number) => (
                         <Box key={i} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                           <Typography variant="body2" color="text.secondary">
@@ -97,7 +97,7 @@ const OrdersPage: React.FC = () => {
                             +${item.items[0].price.toFixed(2)}
                           </Typography>
                         </Box>
-                      ))}
+                      ))} */}
                   </Box>
                 ))
               ) : (

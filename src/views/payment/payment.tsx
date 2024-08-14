@@ -61,6 +61,7 @@ const validationSchema = Yup.object().shape({
 
 const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) => void, setLoading : any }) => {
   const stripe = useStripe();
+  const router = useRouter()
   const elements = useElements();
   const { user } = useAuthContext();
   const [isPaymentReady,setIsPaymentReady] = useState(false)
@@ -102,6 +103,7 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
         throw result.error
       }else{
         console.log(result)
+        router.push('/orderconformation')
         setLoading(false)
       }
     } catch (err :any) {
