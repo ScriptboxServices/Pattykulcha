@@ -28,6 +28,8 @@ import Link from "next/link";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
+import { lassiOptions,teaOptions,coffeeOptions,drinkOptions } from "@/constants/MenuOptions";
+
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
@@ -58,90 +60,6 @@ export const getImageSrc = (item: string) => {
   };
   return images[item] || "/images/footer/default.png";
 };
-
-export const coffeeOptions = [
-  {
-    name: "Espresso",
-    price: 3.5,
-    image: "/images/landingpage/Espresso.png",
-  },
-  {
-    name: "Caffe Latte",
-    price: 3.5,
-    image: "/images/landingpage/caffe-latte.png",
-  },
-  {
-    name: "Cold Coffee",
-    price: 3.5,
-    image: "/images/landingpage/caffe-latte.png",
-  },
-];
-
-export const teaOptions = [
-  {
-    name: "Tea",
-    price: 3.5,
-    image: "/images/landingpage/milktea.png",
-  },
-  {
-    name: "Masala Tea",
-    price: 3.5,
-    image: "/images/landingpage/tea.png",
-  },
-];
-
-export const lassiOptions = [
-  {
-    name: "Salted Lassi",
-    price: 5.5,
-    image: "/images/landingpage/Salted-lassi.png",
-  },
-  {
-    name: "Sweet Lassi",
-    price: 5.5,
-    image: "/images/landingpage/Sweet-lassi.png",
-  },
-];
-
-export const drinkOptions = [
-  { name: "Regular Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
-  { name: "Large Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
-  {
-    name: "Regular Coke Zero Sugar",
-    price: 3.0,
-    image: "/images/drinks/coke-zero.png",
-  },
-  {
-    name: "Large Coke Zero Sugar",
-    price: 3.0,
-    image: "/images/drinks/coke-zero.png",
-  },
-  {
-    name: "Regular Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Large Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Coke",
-    price: 3.0,
-    image: "/images/drinks/coke.png",
-  },
-  {
-    name: "Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Sprite",
-    price: 3.0,
-    image: "/images/drinks/sprite.png",
-  },
-];
 
 export interface IncludedItem {
   id: string;
@@ -952,7 +870,7 @@ const MenuPage = () => {
       <Dialog
         open={isDrinkDialogOpen}
         onClose={handleDrinkDialogClose}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle>Add a Drink</DialogTitle>
@@ -1035,7 +953,7 @@ const MenuPage = () => {
       <Dialog
         open={isLassiDialogOpen}
         onClose={handleLassiDialogClose}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle>Add a Lassi</DialogTitle>
@@ -1118,7 +1036,7 @@ const MenuPage = () => {
       <Dialog
         open={isTeaDialogOpen}
         onClose={handleTeaDialogClose}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle>Add a Tea</DialogTitle>
@@ -1201,7 +1119,7 @@ const MenuPage = () => {
       <Dialog
         open={isCoffeeDialogOpen}
         onClose={handleCoffeeDialogClose}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle>Add a Coffee</DialogTitle>

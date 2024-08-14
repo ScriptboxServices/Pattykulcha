@@ -70,7 +70,7 @@ const OrderPage: React.FC = () => {
   return (
     <Box
       sx={{
-        backgroundImage: "url('/images/checkout/checkout1.png')",
+        backgroundImage: "url('/images/checkout/Frame3.png')",
         minHeight: "80vh",
         display: "flex",
         alignItems: "center",
