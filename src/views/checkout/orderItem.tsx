@@ -30,6 +30,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import CircularLodar from "@/components/CircularLodar";
 
 // Type guard to check if the item is an IncludedItem
 const isIncludedItem = (item: Kulcha | IncludedItem): item is IncludedItem => {
@@ -85,15 +86,18 @@ const OrderHome: React.FC = () => {
   };
 
   const handleRemove = async (id: string) => {
-    console.log("first", id);
-    try {
-      const docRef = doc(db, "carts", id);
-      await deleteDoc(docRef);
-      getData(user?.id);
-    } catch (err) {
+    try{
+      setLoading(true)
+      const docRef = doc(db,'carts',id)
+      await deleteDoc(docRef)
+      await getData(user?.uid)
+      setLoading(false)
+    }catch(err){
       console.log(err);
+      setLoading(false)
     }
   };
+
 
   useEffect(() => {
     getData(user?.uid);
@@ -119,6 +123,8 @@ const OrderHome: React.FC = () => {
         zIndex: 1,
       }}
     >
+            <CircularLodar isLoading={loading} />    
+
       <Container maxWidth="xl">
         {carts?.length !== 0 ? (
           <>
@@ -367,7 +373,7 @@ const OrderHome: React.FC = () => {
                         Edit
                       </Button> */}
                       <Button
-                        onClick={() => handleRemove(item.id)}
+                          onClick={() => handleRemove(item.id)}
                         sx={{
                           textTransform: "none",
                           color: "#B91C1C",

@@ -28,6 +28,7 @@ import Link from "next/link";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
+import CircularLodar from "@/components/CircularLodar";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
@@ -369,6 +370,8 @@ const MenuPage = () => {
           "no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat",
       }}
     >
+      <CircularLodar isLoading={loading} />
+
       <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
         <Grid item xs={12} md={6}>
           <Box sx={{ paddingLeft: "7%" }}>
@@ -960,61 +963,60 @@ const MenuPage = () => {
           <Grid container spacing={2}>
             {drinkOptions.map((drink) => (
               <Grid item xs={12} sm={6} md={4} key={drink.name}>
-              <Card
-                onClick={() => handleDrinkSelect(drink.name)}
-                sx={{
-                  border: includedItems2.some((item) =>
-                    item.items.some((i) => i.name === drink.name)
-                  )
-                    ? "2px solid green"
-                    : "1px solid #ddd",
-                  position: "relative",
-                  cursor: "pointer",
-                  height: "270px", // Ensure all cards have the same height
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center", // Align items center horizontally
-                }}
-              >
-                <Image
-                  alt={drink.name}
-                  src={drink.image}
-                  width={150}
-                  height={150}
-                  style={{
-                    width: "65%", // Set the width to 65% of the container
-                    height: "55%", // Set the height to 55% of the container
-                    objectFit: "contain",
-                    display: "block", // Ensures the image is treated as a block-level element
-                    margin: "0 auto", // Center horizontally within the container
+                <Card
+                  onClick={() => handleDrinkSelect(drink.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === drink.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center", // Align items center horizontally
                   }}
-                />
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="body1" color="textPrimary">
-                    {drink.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    ${drink.price.toFixed(2)}
-                  </Typography>
-                  {includedItems2.some((item) =>
-                    item.items.some((i) => i.name === drink.name)
-                  ) && (
-                    <CheckCircleIcon
-                      sx={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        color: "green",
-                        backgroundColor: "white",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-            
+                >
+                  <Image
+                    alt={drink.name}
+                    src={drink.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 65% of the container
+                      height: "55%", // Set the height to 55% of the container
+                      objectFit: "contain",
+                      display: "block", // Ensures the image is treated as a block-level element
+                      margin: "0 auto", // Center horizontally within the container
+                    }}
+                  />
+                  <CardContent sx={{ textAlign: "center" }}>
+                    <Typography variant="body1" color="textPrimary">
+                      {drink.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      ${drink.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === drink.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
             ))}
           </Grid>
         </DialogContent>
@@ -1061,10 +1063,10 @@ const MenuPage = () => {
                     height={150}
                     style={{
                       width: "65%", // Set the width to 65% of the container
-                    height: "55%", // Set the height to 55% of the container
-                    objectFit: "contain",
-                    display: "block", // Ensures the image is treated as a block-level element
-                    margin: "0 auto",// Center horizontally within the container
+                      height: "55%", // Set the height to 55% of the container
+                      objectFit: "contain",
+                      display: "block", // Ensures the image is treated as a block-level element
+                      margin: "0 auto", // Center horizontally within the container
                     }}
                   />
                   <CardContent>
@@ -1229,10 +1231,10 @@ const MenuPage = () => {
                     height={150}
                     style={{
                       width: "65%", // Set the width to 65% of the container
-                    height: "55%", // Set the height to 55% of the container
-                    objectFit: "contain",
-                    display: "block", // Ensures the image is treated as a block-level element
-                    margin: "0 auto",
+                      height: "55%", // Set the height to 55% of the container
+                      objectFit: "contain",
+                      display: "block", // Ensures the image is treated as a block-level element
+                      margin: "0 auto",
                     }}
                   />
                   <CardContent>
