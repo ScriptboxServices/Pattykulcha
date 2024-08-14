@@ -28,15 +28,14 @@ import Link from "next/link";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
-import CircularLodar from "@/components/CircularLodar";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    "Chana": "/images/landingpage/Chana.svg",
+    Chana: "/images/landingpage/Chana.svg",
     "Imli Pyaz Chutney": "/images/landingpage/Chutney.svg",
     "Amul Butter": "/images/landingpage/butter_6587237.svg",
     "Normal Butter": "/images/landingpage/butter_6587237.svg",
-    "Pickle": "/images/landingpage/pickle.svg",
+    Pickle: "/images/landingpage/pickle.svg",
     "Regular Coca-Cola": "/images/drinks/coke.png",
     "Large Coca-Cola": "/images/drinks/coke.png",
     "Regular Coke Zero Sugar": "/images/drinks/coke-zero.png",
@@ -158,6 +157,7 @@ const MenuPage = () => {
     setSize,
     price,
     setPrice,
+    cal,
     kulcha,
     setCal,
     includedItems2,
@@ -172,15 +172,13 @@ const MenuPage = () => {
     setSelectedDrinks,
     selectedLassis,
     setSelectedLassis,
-    instructions,
-    address
   } = useMenuContext();
 
-  const {user} = useAuthContext()
+  const { user } = useAuthContext();
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
@@ -236,7 +234,10 @@ const MenuPage = () => {
       )
     ) {
       setIncludedItems2([...includedItems2, newItem]);
-      localStorage.setItem('includedItems2',JSON.stringify([...includedItems2,newItem]))
+      localStorage.setItem(
+        "includedItems2",
+        JSON.stringify([...includedItems2, newItem])
+      );
     }
   };
 
@@ -264,7 +265,10 @@ const MenuPage = () => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
     setSelectedDrinks(selectedDrinks.filter((drink) => drink !== itemId));
     setSelectedLassis(selectedLassis.filter((lassi) => lassi !== itemId));
-    localStorage.setItem('includedItems2',JSON.stringify([...includedItems2.filter((item) => item.id !== itemId)]))
+    localStorage.setItem(
+      "includedItems2",
+      JSON.stringify([...includedItems2.filter((item) => item.id !== itemId)])
+    );
   };
 
   const handleDrinkDialogOpen = () => {
@@ -299,892 +303,984 @@ const MenuPage = () => {
     setIsCoffeeDialogOpen(false);
   };
 
-  const handleAddToCart = async () => {    
-    try{
-      setLoading(true)
-      const colRef = collection(db,'carts')
+  const handleAddToCart = async () => {
+    try {
+      setLoading(true);
+      const colRef = collection(db, "carts");
       const data = {
-        userId : user?.uid,
-        order :{
+        userId: user?.uid,
+        order: {
           kulcha: kulcha,
-          withKulcha : [...includedItems1],
-          additional : [...includedItems2]       
+          withKulcha: [...includedItems1],
+          additional: [...includedItems2],
         },
-        createdAt : Timestamp.now()
-      }
-      await addDoc(colRef,{
-        ...data
-      })
-      setLoading(false)
-      setCount(count + 1)
-      localStorage.removeItem('includedItems2')
-      localStorage.removeItem('kulcha')
-      router.push('/checkout')
-    }catch(err) {
+        createdAt: Timestamp.now(),
+      };
+      await addDoc(colRef, {
+        ...data,
+      });
+      setLoading(false);
+      setCount(count + 1);
+      localStorage.removeItem("includedItems2");
+      localStorage.removeItem("kulcha");
+      router.push("/checkout");
+    } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <>   
-      <CircularLodar isLoading={loading} />
-      <Box sx={{ backgroundColor: "#f8f8f8", padding: "2rem" }}>
-        <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
-          <Grid item xs={12} md={6}>
-            <Box>
-              <Typography
-                variant="h4"
-                sx={{
-                  marginBottom: "1rem",
-                  fontWeight: "bold",
-                  fontSize: "2rem",
-                  color: "#000000",
-                }}
+    <Box
+      sx={{
+        backgroundColor: "#fffaeb",
+        padding: { xs: "1rem", sm: "2rem" },
+        backgroundImage: `
+        url('/images/small/chana.png'), 
+        url('/images/small/chilli.png'), 
+        url('/images/small/bowl.png'), 
+        url('/images/small/bowl2.png'), 
+        url('/images/small/bucket.png'), 
+        url('/images/small/butter.png'),
+        url('/images/small/drink.png'),
+        url('/images/small/plate.png')
+      `,
+        backgroundPosition: `
+      left bottom 20%,   
+      right bottom 20%,  
+      left bottom 40%,  
+      right bottom 40%,  
+      left bottom 60%,   
+      right bottom 60%, 
+      center bottom 30%, 
+      center bottom 50%  
+    `,
+        backgroundSize: `
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px, 
+        150px 150px
+      `,
+        backgroundRepeat:
+          "no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat",
+      }}
+    >
+      <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ paddingLeft: "7%" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "1rem",
+                marginTop: "2rem",
+                fontWeight: "bold",
+                fontSize: { xs: "1.5rem", sm: "3.2rem" },
+                color: "#000000",
+              }}
+            >
+              {kulcha?.name}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                marginBottom: "1rem",
+                color: "#000000",
+                fontSize: { xs: "1rem", sm: "1.2rem" },
+              }}
+            >
+              {kulcha?.desc}
+            </Typography>
+            <Box sx={{ marginTop: "3.2rem" }}>
+              <ToggleButtonGroup
+                value={size}
+                exclusive
+                onChange={handleSize}
+                aria-label="size"
               >
-                {kulcha?.name}
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ marginBottom: "1rem", color: "#000000" }}
-              >
-                {kulcha?.desc}
-              </Typography>
-              <Box sx={{ marginTop: "2.5rem" }}>
-                <ToggleButtonGroup
-                  value={size}
-                  exclusive
-                  onChange={handleSize}
-                  aria-label="size"
+                <Button
+                  value="regular"
+                  aria-label="regular"
+                  sx={{
+                    color: "black",
+                    // backgroundColor: "black",
+                    border: "2px solid black",
+                    borderRadius: "12px",
+                    padding: { xs: "6px 12px", sm: "8px 20px" }, // Adjust padding as needed
+                    "&:hover": {
+                      color: "black",
+
+                      // backgroundColor: "black",
+                    },
+                  }}
                 >
-                  <Button
-                    value="regular"
-                    aria-label="regular"
-                    sx={{
-                      color: "white",
-                      backgroundColor: "black",
-                      padding: "8px 16px", // Adjust padding as needed
-                      "&:hover": {
-                        color: "white",
-                        backgroundColor: "black",
-                      },
-                    }}
-                  >
-                    Regular
-                  </Button>
-                </ToggleButtonGroup>
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ textAlign: "right", marginLeft: 13 }}>
-              <Image
-                src={kulcha?.image}
-                alt="Amritsari Kulcha"
-                layout="responsive"
-                width={500}
-                height={500}
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                marginTop: "2rem",
-                paddingTop: "2rem",
-                borderTop: "1px solid #dcdcdc",
-              }}
-            >
-              <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-                What&apos;s Included
-              </Typography>
-              <Grid container spacing={2} justifyContent="flex-start">
-                {includedItems1.length == 0 ? (
-                  <Grid item>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "1rem",
-                        backgroundColor: "white",
-                        border: "2px solid #dcdcdc",
-                        borderRadius: "8px",
-                        textAlign: "center",
-                        height: "300px",
-                        width: "175px",
-                        margin: "1rem",
-                      }}
-                    >
-                      <AddCircleOutlineIcon
-                        sx={{ fontSize: "4rem", color: "#1e90ff" }}
-                      />
-                      <Typography variant="body1" color="textSecondary">
-                        Add Items
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ) : (
-                  includedItems1.map((item) => (
-                    <Grid item xs={12} sm={6} md={2} key={item.id}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          padding: "1rem",
-                          backgroundColor: "white",
-                          border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
-                          borderRadius: "8px",
-                          textAlign: "center",
-                          position: "relative",
-                          cursor: "pointer",
-                          height: "270px",
-                          width: "175px",
-                          margin: "0.5rem",
-                          boxShadow: item
-                            ? "0 0 10px rgba(30, 144, 255, 0.5)"
-                            : "none",
-                        }}
-                      >
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "#1e90ff",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                        <Image
-                          src={getImageSrc(item.items[0].name)}
-                          alt={item.items[0].name}
-                          width={150}
-                          height={150}
-                          style={{
-                            width: "65%", // Set the width to 60% of the container
-                            height: "55%", // Set the height to 60% of the container
-                            objectFit: "contain", // Maintain the aspect ratio
-                          }}
-                        />
-                        <Typography variant="body1" color="textPrimary">
-                          {item.items[0].name}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  ))
-                )}
-              </Grid>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ color: "#021e3a", marginTop: 4 }}
-              >
-                Additional items
-              </Typography>
-              <Grid container spacing={2} justifyContent="flex-start">
-                {includedItems2.length == 0 ? (
-                  <Grid item>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "1rem",
-                        backgroundColor: "white",
-                        border: "2px solid #dcdcdc",
-                        borderRadius: "8px",
-                        textAlign: "center",
-                        height: "270px",
-                        width: "175px",
-                        margin: "1rem",
-                      }}
-                    >
-                      <Typography variant="body1" color="textSecondary">
-                        Add items will be shown here
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ) : (
-                  includedItems2.map((item) => (
-                    <Grid item xs={12} sm={6} md={2} key={item.id}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "1rem",
-                          backgroundColor: "white",
-                          border: `2px solid ${item ? "#1e90ff" : "#dcdcdc"}`,
-                          borderRadius: "8px",
-                          textAlign: "center",
-                          position: "relative",
-                          cursor: "pointer",
-                          height: "270px",
-                          width: "175px",
-                          margin: "0.5rem",
-                          boxShadow: item
-                            ? "0 0 10px rgba(30, 144, 255, 0.5)"
-                            : "none",
-                        }}
-                      >
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "#1e90ff",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                        <Image
-                          src={getImageSrc(item.items[0].name)}
-                          alt={item.items[0].name}
-                          width={150}
-                          height={150}
-                          style={{
-                            width: "65%", // Set the width to 60% of the container
-                            height: "55%", // Set the height to 60% of the container
-                            objectFit: "contain", // Maintain the aspect ratio
-                          }}
-                        />
-                        <Typography variant="body1" color="textPrimary">
-                          {item.items[0].name}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          ${item.items[0].price.toFixed(2)}
-                        </Typography>
-                        <Button
-                          variant="outlined"
-                          onClick={() => handleRemoveItem(item.id)}
-                          sx={{
-                            backgroundColor: "transparent",
-                            color: "#1e90ff",
-                            border: "1px solid #1e90ff",
-                            marginTop: "auto",
-                            borderRadius: "20px",
-                            textTransform: "none",
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      </Box>
-                    </Grid>
-                  ))
-                )}
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                marginTop: "0.5rem",
-                paddingTop: "1.0rem",
-                marginBottom: "4rem",
-                borderTop: "1px solid #dcdcdc",
-              }}
-            >
-              <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-                Would you like to add extra items?
-              </Typography>
-              <Grid container spacing={2}>
-                {extraItems.map((item, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "1rem",
-                        backgroundColor: "white",
-                        border: "2px solid #dcdcdc",
-                        borderRadius: "8px",
-                        textAlign: "left",
-                        position: "relative",
-                        cursor: "pointer",
-                        margin: "1rem 0",
-                        width: "60%",
-                      }}
-                      onClick={() => handleAddItem(item)}
-                    >
-                      <Box display="flex" alignItems="center">
-                        <Image
-                          src={getImageSrc(item)}
-                          alt={item}
-                          layout="fixed"
-                          width={50}
-                          height={50}
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "50%",
-                          }}
-                        />
-                        <Typography
-                          variant="body1"
-                          color="textPrimary"
-                          sx={{ marginLeft: "1rem" }}
-                        >
-                          {item}
-                        </Typography>
-                      </Box>
-                      <IconButton sx={{ color: "#1e90ff" }}>
-                        <AddCircleOutlineIcon />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                marginTop: "2rem",
-                paddingTop: "2rem",
-                marginBottom: "4rem",
-                borderTop: "1px solid #dcdcdc",
-              }}
-            >
-              <Typography variant="h6" gutterBottom sx={{ color: "#021e3a" }}>
-                Make it a Meal
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "left",
-                      position: "relative",
-                      cursor: "pointer",
-                      margin: "1rem 0",
-                      width: "60%",
-                    }}
-                    onClick={handleDrinkDialogOpen}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Image
-                        src="/images/landingpage/Drinks.svg"
-                        alt="Add a Drink"
-                        layout="fixed"
-                        width={50}
-                        height={50}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ marginLeft: "1rem" }}
-                      >
-                        Add a Drink
-                      </Typography>
-                    </Box>
-                    <ArrowForwardIosIcon />
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "left",
-                      position: "relative",
-                      cursor: "pointer",
-                      margin: "1rem 0",
-                      width: "60%",
-                    }}
-                    onClick={handleLassiDialogOpen}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Image
-                        src="/images/landingpage/Lassi.svg"
-                        alt="Add a Lassi"
-                        layout="fixed"
-                        width={50}
-                        height={50}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ marginLeft: "1rem" }}
-                      >
-                        Add a Lassi
-                      </Typography>
-                    </Box>
-                    <ArrowForwardIosIcon />
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "left",
-                      position: "relative",
-                      cursor: "pointer",
-                      margin: "1rem 0",
-                      width: "60%",
-                    }}
-                    onClick={handleTeaDialogOpen}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Image
-                        src="/images/landingpage/tea.svg"
-                        alt="Add a Tea"
-                        layout="fixed"
-                        width={50}
-                        height={50}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ marginLeft: "1rem" }}
-                      >
-                        Add a Tea
-                      </Typography>
-                    </Box>
-                    <ArrowForwardIosIcon />
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "left",
-                      position: "relative",
-                      cursor: "pointer",
-                    
-                      margin: "1rem 0",
-                      width: "60%",
-                    }}
-                    onClick={handleCoffeeDialogOpen}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Image
-                        src="/images/landingpage/coffee.svg"
-                        alt="Add a Coffee"
-                        layout="fixed"
-                        width={50}
-                        height={50}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ marginLeft: "1rem" }}
-                      >
-                        Add a Coffee
-                      </Typography>
-                    </Box>
-                    <ArrowForwardIosIcon />
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: "20px",
-              right: "20px",
-              backgroundColor: "#ebebe1",
-              border: "2px solid #dcdcdc",
-              borderRadius: "8px",
-              padding: "1rem",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Box display="flex" justifyContent="flex-end" alignItems="center">
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={handleAddToCart}
-                disabled={
-                  includedItems1.length == 0 && includedItems2.length == 0
-                }
-              >
-                Add to cart
-              </Button>
+                  Regular Size
+                </Button>
+              </ToggleButtonGroup>
             </Box>
           </Box>
         </Grid>
-        <Dialog
-          open={isDrinkDialogOpen}
-          onClose={handleDrinkDialogClose}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Add a Drink</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              {drinkOptions.map((drink) => (
-                <Grid item xs={12} sm={6} md={4} key={drink.name}>
-                  <Card
-                    onClick={() => handleDrinkSelect(drink.name)}
+        <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              textAlign: { xs: "center", md: "right" },
+              marginLeft: { md: 13 },
+              paddingRight: "10%",
+            }}
+          >
+            <Image
+              src={kulcha?.image}
+              alt="Amritsari Kulcha"
+              layout="responsive"
+              width={500}
+              height={500}
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "5%", // This makes the image round
+                objectFit: "cover",
+              }}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              marginTop: "2rem",
+              paddingTop: "2rem",
+              textAlign: "center",
+            }}
+          >
+            <Box
+              sx={{
+                width: "60%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+              What&apos;s Included
+            </Typography>
+            <Grid container spacing={2} justifyContent="center">
+              {includedItems1.length == 0 ? (
+                <Grid item>
+                  <Box
                     sx={{
-                      border: includedItems2.some((item) =>
-                        item.items.some((i) => i.name === drink.name)
-                      )
-                        ? "2px solid green"
-                        : "1px solid #ddd",
-                      position: "relative",
-                      cursor: "pointer",
-                      height: "270px", // Ensure all cards have the same height
                       display: "flex",
                       flexDirection: "column",
+                      alignItems: "center",
                       justifyContent: "center",
+                      padding: "1rem",
+                      backgroundColor: "white",
+                      border: "2px solid #dcdcdc",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                      height: {
+                        xs: "200px",
+                        sm: "220px",
+                        md: "250px",
+                        lg: "250px",
+                      },
+                      width: { xs: "150px", sm: "175px" },
+                      margin: "1rem",
                     }}
                   >
-                    <Image
-                      alt={drink.name}
-                      src={drink.image}
-                      width={150}
-                      height={150}
-                      style={{
-                        width: "65%", // Set the width to 60% of the container
-                        height: "65%", // Set the height to 60% of the container
-                        objectFit: "cover", // Maintain the aspect ratio
-                        marginInline: "auto", // Center horizontally within the container
-                      }}
+                    <AddCircleOutlineIcon
+                      sx={{ fontSize: "4rem", color: "#336195" }}
                     />
-                    <CardContent>
+                    <Typography variant="body1" color="textSecondary">
+                      Add Items
+                    </Typography>
+                  </Box>
+                </Grid>
+              ) : (
+                includedItems1.map((item) => (
+                  <Grid item xs={6} sm={4} md={1.6} key={item.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        padding: "1rem",
+                        backgroundColor: "white",
+                        border: "2px solid #87939f", // Updated border color
+                        borderRadius: "8px", // Updated border-radius
+                        textAlign: "center", // Center text alignment
+                        position: "relative", // Maintain position relative
+                        cursor: "pointer", // Pointer cursor
+                        height: {
+                          xs: "200px",
+                          sm: "220px",
+                          md: "250px",
+                          lg: "250px",
+                        },
+                        width: { xs: "150px", sm: "175px" },
+                        margin: "0.5rem", // Updated margin
+                        boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
+                      }}
+                    >
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "#336195",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Image
+                        src={getImageSrc(item.items[0].name)}
+                        alt={item.items[0].name}
+                        width={150}
+                        height={150}
+                        style={{
+                          width: "65%", // Set the width to 65% of the container
+                          height: "65%", // Set the height to 55% of the container
+                          objectFit: "contain",
+                        }}
+                      />
+                      <Typography variant="body1" color="textPrimary">
+                        {item.items[0].name}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{ color: "#021e3a", marginTop: 4 }}
+            >
+              Additional items
+            </Typography>
+            <Grid container spacing={2} justifyContent="center">
+              {includedItems2.length == 0 ? (
+                <Grid item>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "1rem",
+                      backgroundColor: "white",
+                      border: "2px solid #dcdcdc",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                      height: { xs: "200px", sm: "270px" },
+                      width: { xs: "150px", sm: "175px" },
+                      margin: "1rem",
+                    }}
+                  >
+                    <Typography variant="body1" color="textSecondary">
+                      Add items will be shown here
+                    </Typography>
+                  </Box>
+                </Grid>
+              ) : (
+                includedItems2.map((item) => (
+                  <Grid item xs={6} sm={4} md={1.6} key={item.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "1rem",
+                        backgroundColor: "white",
+                        border: "2px solid #87939f", // Updated border color
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        position: "relative",
+                        cursor: "pointer",
+                        height: { xs: "220px", sm: "270px" },
+                        width: { xs: "150px", sm: "175px" },
+                        margin: "0.5rem",
+                        boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
+                      }}
+                    >
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "#336195",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Image
+                        src={getImageSrc(item.items[0].name)}
+                        alt={item.items[0].name}
+                        width={150}
+                        height={150}
+                        style={{
+                          width: "65%", // Set the width to 65% of the container
+                          height: "55%", // Set the height to 55% of the container
+                          objectFit: "contain", // Maintain the aspect ratio
+                        }}
+                      />
+                      <Typography variant="body1" color="textPrimary">
+                        {item.items[0].name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        ${item.items[0].price.toFixed(2)}
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleRemoveItem(item.id)}
+                        sx={{
+                          backgroundColor: "transparent",
+                          color: "#336195",
+                          border: "1px solid #336195",
+                          marginTop: "auto",
+                          borderRadius: "20px",
+                          textTransform: "none",
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </Box>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              marginTop: "2.7rem",
+              paddingTop: "0rem",
+              marginBottom: "0rem",
+              textAlign: "center",
+            }}
+          >
+            <Box
+              sx={{
+                width: "65%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+              Would you like to add extra items?
+            </Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {extraItems.map((item, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  key={index}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "1rem",
+                      backgroundColor: "white",
+                      border: "2px solid #dcdcdc",
+                      borderRadius: "8px",
+                      textAlign: "left",
+                      position: "relative",
+                      cursor: "pointer",
+                      margin: "0.5rem 0",
+                      width: { xs: "100%", md: "60%" },
+                    }}
+                    onClick={() => handleAddItem(item)}
+                  >
+                    <Box display="flex" alignItems="center">
+                      <Image
+                        src={getImageSrc(item)}
+                        alt={item}
+                        layout="fixed"
+                        width={50}
+                        height={50}
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
                       <Typography
                         variant="body1"
                         color="textPrimary"
-                        align="center"
+                        sx={{ marginLeft: "1rem" }}
                       >
-                        {drink.name}
+                        {item}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        align="center"
-                      >
-                        ${drink.price.toFixed(2)}
-                      </Typography>
-                      {includedItems2.some((item) =>
-                        item.items.some((i) => i.name === drink.name)
-                      ) && (
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "green",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
+                    </Box>
+                    <IconButton sx={{ color: "#336195" }}>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                  </Box>
                 </Grid>
               ))}
             </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDrinkDialogClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleDrinkDialogClose} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={isLassiDialogOpen}
-          onClose={handleLassiDialogClose}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Add a Lassi</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              {lassiOptions.map((lassi) => (
-                <Grid item xs={12} sm={6} md={4} key={lassi.name}>
-                  <Card
-                    onClick={() => handleLassiSelect(lassi.name)}
-                    sx={{
-                      border: includedItems2.some((item) =>
-                        item.items.some((i) => i.name === lassi.name)
-                      )
-                        ? "2px solid green"
-                        : "1px solid #ddd",
-                      position: "relative",
-                      cursor: "pointer",
-                      height: "270px", // Ensure all cards have the same height
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              marginTop: "2.7rem",
+              paddingTop: "0rem",
+              marginBottom: "0.5rem",
+              textAlign: "center",
+            }}
+          >
+            <Box
+              sx={{
+                width: "65%",
+                height: "1px",
+                backgroundColor: "#dcdcdc",
+                margin: "0 auto", // Center the line horizontally
+                marginBottom: "23px", // Add space between the line and the text
+              }}
+            />
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+              Make it a Meal
+            </Typography>
+            <Grid container spacing={1} justifyContent="center">
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    border: "2px solid #dcdcdc",
+                    borderRadius: "8px",
+                    textAlign: "left",
+                    position: "relative",
+                    cursor: "pointer",
+                    margin: "0.2rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
+                  }}
+                  onClick={handleDrinkDialogOpen}
+                >
+                  <Box display="flex" alignItems="center">
                     <Image
-                      alt={lassi.name}
-                      src={lassi.image}
-                      width={150}
-                      height={150}
+                      src="/images/landingpage/Drinks.svg"
+                      alt="Add a Drink"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "65%", // Set the width to 60% of the container
-                        height: "65%", // Set the height to 60% of the container
-                        objectFit: "cover", // Maintain the aspect ratio
-                        marginInline: "auto", // Center horizontally within the container
+                        objectFit: "cover",
+                        borderRadius: "50%",
                       }}
                     />
-                    <CardContent>
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        align="center"
-                      >
-                        {lassi.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        align="center"
-                      >
-                        ${lassi.price.toFixed(2)}
-                      </Typography>
-                      {includedItems2.some((item) =>
-                        item.items.some((i) => i.name === lassi.name)
-                      ) && (
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "green",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleLassiDialogClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleLassiDialogClose} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={isTeaDialogOpen}
-          onClose={handleTeaDialogClose}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Add a Tea</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              {teaOptions.map((tea) => (
-                <Grid item xs={12} sm={6} md={4} key={tea.name}>
-                  <Card
-                    onClick={() => handleTeaSelect(tea.name)}
-                    sx={{
-                      border: includedItems2.some((item) =>
-                        item.items.some((i) => i.name === tea.name)
-                      )
-                        ? "2px solid green"
-                        : "1px solid #ddd",
-                      position: "relative",
-                      cursor: "pointer",
-                      height: "270px", // Ensure all cards have the same height
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      sx={{ marginLeft: "1rem" }}
+                    >
+                      Add a Drink
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    border: "2px solid #dcdcdc",
+                    borderRadius: "8px",
+                    textAlign: "left",
+                    position: "relative",
+                    cursor: "pointer",
+                    margin: "1rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
+                  }}
+                  onClick={handleLassiDialogOpen}
+                >
+                  <Box display="flex" alignItems="center">
                     <Image
-                      alt={tea.name}
-                      src={tea.image}
-                      width={150}
-                      height={150}
+                      src="/images/landingpage/Lassi.svg"
+                      alt="Add a Lassi"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "65%", // Set the width to 60% of the container
-                        height: "65%", // Set the height to 60% of the container
-                        objectFit: "cover", // Maintain the aspect ratio
-                        marginInline: "auto", // Center horizontally within the container
+                        objectFit: "cover",
+                        borderRadius: "50%",
                       }}
                     />
-                    <CardContent>
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        align="center"
-                      >
-                        {tea.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        align="center"
-                      >
-                        ${tea.price.toFixed(2)}
-                      </Typography>
-                      {includedItems2.some((item) =>
-                        item.items.some((i) => i.name === tea.name)
-                      ) && (
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "green",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleTeaDialogClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleTeaDialogClose} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={isCoffeeDialogOpen}
-          onClose={handleCoffeeDialogClose}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Add a Coffee</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              {coffeeOptions.map((coffee) => (
-                <Grid item xs={12} sm={6} md={4} key={coffee.name}>
-                  <Card
-                    onClick={() => handleCoffeeSelect(coffee.name)}
-                    sx={{
-                      border: includedItems2.some((item) =>
-                        item.items.some((i) => i.name === coffee.name)
-                      )
-                        ? "2px solid green"
-                        : "1px solid #ddd",
-                      position: "relative",
-                      cursor: "pointer",
-                      height: "270px", // Ensure all cards have the same height
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      sx={{ marginLeft: "1rem" }}
+                    >
+                      Add a Lassi
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    border: "2px solid #dcdcdc",
+                    borderRadius: "8px",
+                    textAlign: "left",
+                    position: "relative",
+                    cursor: "pointer",
+                    margin: "0.5rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
+                  }}
+                  onClick={handleTeaDialogOpen}
+                >
+                  <Box display="flex" alignItems="center">
                     <Image
-                      alt={coffee.name}
-                      src={coffee.image}
-                      width={150}
-                      height={150}
+                      src="/images/landingpage/tea.svg"
+                      alt="Add a Tea"
+                      layout="fixed"
+                      width={50}
+                      height={50}
                       style={{
-                        width: "65%", // Set the width to 60% of the container
-                        height: "65%", // Set the height to 60% of the container
-                        objectFit: "cover", // Maintain the aspect ratio
-                        marginInline: "auto", // Center horizontally within the container
+                        objectFit: "cover",
+                        borderRadius: "50%",
                       }}
                     />
-                    <CardContent>
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        align="center"
-                      >
-                        {coffee.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        align="center"
-                      >
-                        ${coffee.price.toFixed(2)}
-                      </Typography>
-                      {includedItems2.some((item) =>
-                        item.items.some((i) => i.name === coffee.name)
-                      ) && (
-                        <CheckCircleIcon
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            color: "green",
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      sx={{ marginLeft: "1rem" }}
+                    >
+                      Add a Tea
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    border: "2px solid #dcdcdc",
+                    borderRadius: "8px",
+                    textAlign: "left",
+                    position: "relative",
+                    cursor: "pointer",
+                    margin: "0.5rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
+                  }}
+                  onClick={handleCoffeeDialogOpen}
+                >
+                  <Box display="flex" alignItems="center">
+                    <Image
+                      src="/images/landingpage/coffee.svg"
+                      alt="Add a Coffee"
+                      layout="fixed"
+                      width={50}
+                      height={50}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      sx={{ marginLeft: "1rem" }}
+                    >
+                      Add a Coffee
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon />
+                </Box>
+              </Grid>
             </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCoffeeDialogClose} color="primary">
-              Cancel
+          </Box>
+        </Grid>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: { xs: "10px", md: "20px" },
+            right: { xs: "10px", md: "20px" },
+            backgroundColor: "#ebebe1",
+            border: "2px solid #dcdcdc",
+            borderRadius: "8px",
+            padding: "1rem",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={handleAddToCart}
+              disabled={
+                includedItems1.length == 0 && includedItems2.length == 0
+              }
+            >
+              Add to cart
             </Button>
-            <Button onClick={handleCoffeeDialogClose} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <ToastContainer />
-      </Box>
-    </>
+          </Box>
+        </Box>
+      </Grid>
+      <Dialog
+        open={isDrinkDialogOpen}
+        onClose={handleDrinkDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Add a Drink</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {drinkOptions.map((drink) => (
+              <Grid item xs={12} sm={6} md={4} key={drink.name}>
+              <Card
+                onClick={() => handleDrinkSelect(drink.name)}
+                sx={{
+                  border: includedItems2.some((item) =>
+                    item.items.some((i) => i.name === drink.name)
+                  )
+                    ? "2px solid green"
+                    : "1px solid #ddd",
+                  position: "relative",
+                  cursor: "pointer",
+                  height: "270px", // Ensure all cards have the same height
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center", // Align items center horizontally
+                }}
+              >
+                <Image
+                  alt={drink.name}
+                  src={drink.image}
+                  width={150}
+                  height={150}
+                  style={{
+                    width: "65%", // Set the width to 65% of the container
+                    height: "55%", // Set the height to 55% of the container
+                    objectFit: "contain",
+                    display: "block", // Ensures the image is treated as a block-level element
+                    margin: "0 auto", // Center horizontally within the container
+                  }}
+                />
+                <CardContent sx={{ textAlign: "center" }}>
+                  <Typography variant="body1" color="textPrimary">
+                    {drink.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    ${drink.price.toFixed(2)}
+                  </Typography>
+                  {includedItems2.some((item) =>
+                    item.items.some((i) => i.name === drink.name)
+                  ) && (
+                    <CheckCircleIcon
+                      sx={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        color: "green",
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+            
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDrinkDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDrinkDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isLassiDialogOpen}
+        onClose={handleLassiDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Add a Lassi</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {lassiOptions.map((lassi) => (
+              <Grid item xs={12} sm={6} md={4} key={lassi.name}>
+                <Card
+                  onClick={() => handleLassiSelect(lassi.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === lassi.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    alt={lassi.name}
+                    src={lassi.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 65% of the container
+                    height: "55%", // Set the height to 55% of the container
+                    objectFit: "contain",
+                    display: "block", // Ensures the image is treated as a block-level element
+                    margin: "0 auto",// Center horizontally within the container
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      align="center"
+                    >
+                      {lassi.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
+                      ${lassi.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === lassi.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLassiDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleLassiDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isTeaDialogOpen}
+        onClose={handleTeaDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Add a Tea</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {teaOptions.map((tea) => (
+              <Grid item xs={12} sm={6} md={4} key={tea.name}>
+                <Card
+                  onClick={() => handleTeaSelect(tea.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === tea.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    alt={tea.name}
+                    src={tea.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 65% of the container
+                      height: "55%", // Set the height to 55% of the container
+                      objectFit: "contain",
+                      display: "block", // Ensures the image is treated as a block-level element
+                      margin: "0 auto",
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      align="center"
+                    >
+                      {tea.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
+                      ${tea.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === tea.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleTeaDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleTeaDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isCoffeeDialogOpen}
+        onClose={handleCoffeeDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Add a Coffee</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {coffeeOptions.map((coffee) => (
+              <Grid item xs={12} sm={6} md={4} key={coffee.name}>
+                <Card
+                  onClick={() => handleCoffeeSelect(coffee.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i) => i.name === coffee.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    alt={coffee.name}
+                    src={coffee.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 65% of the container
+                    height: "55%", // Set the height to 55% of the container
+                    objectFit: "contain",
+                    display: "block", // Ensures the image is treated as a block-level element
+                    margin: "0 auto",
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      align="center"
+                    >
+                      {coffee.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
+                      ${coffee.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i) => i.name === coffee.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCoffeeDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCoffeeDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <ToastContainer />
+    </Box>
   );
 };
 
