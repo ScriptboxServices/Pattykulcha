@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
               justifyContent: "left",
             }}
           >
-            <Link href="home" passHref>
+            <Link href="/home" passHref>
               <NavButton>Menu</NavButton>
             </Link>
             <Link href="about-us" passHref>
@@ -175,7 +175,6 @@ const Navbar: React.FC = () => {
                   localStorage.removeItem('instructions')
                   localStorage.removeItem('kulcha')
                   localStorage.removeItem('includedItems2')
-                  
                   router.push('/login')
                 }}>Logout</NavButton>
 

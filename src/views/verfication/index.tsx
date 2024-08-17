@@ -100,6 +100,8 @@ const VerificationPage: React.FC = () => {
             phoneNumber : user?.phoneNumber,
             profile:'',
             email:'',
+            name : '',
+            address : ''
           })
         }
         setConfirmationResult(null)

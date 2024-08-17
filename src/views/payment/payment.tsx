@@ -40,6 +40,7 @@ import axios from "axios";
 import { getIdToken } from "firebase/auth";
 import { auth } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
+import {encrypt} from "@/utils/commonFunctions"
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
 
@@ -95,6 +96,7 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
           payment_method_data: {
             billing_details: {
               phone: user?.phoneNumber,
+              name:'Abhishek Poddar'
             },
           },
         },
@@ -102,8 +104,8 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
       if(result.error){
         throw result.error
       }else{
-        console.log(result)
-        router.push('/orderconformation')
+        const { id } = result.paymentIntent
+        router.replace(`/orderconformation/${encodeURIComponent(encrypt({payment_id : id}))}`)
         setLoading(false)
       }
     } catch (err :any) {
@@ -188,6 +190,7 @@ const CheckoutMain = () => {
     clientSecret: "",
     customer: "",
     ephemeralKey: "",
+    payment_id : ""
   });
 
   const router = useRouter();
@@ -242,8 +245,8 @@ const errorFunc = (error : string) => {
       })
       .then((result) => {
         if (result.code != 1) return console.log(result.message);
-        const { paymentIntent, ephemeralKey, customer } = result.data;
-        setStripeCred({ clientSecret: paymentIntent, customer, ephemeralKey });
+        const { paymentIntent, ephemeralKey, customer, payment_id } = result.data;
+        setStripeCred({ clientSecret: paymentIntent, customer, ephemeralKey, payment_id });
       });
   };
 

@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { admin } from "@/firebaseAdmin/config";
-
-const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SK ?? '',{
-  apiVersion: '2024-06-20'
-});
+import { stripe } from "@/stripe/config"
 
 const db = admin.firestore();
 
@@ -39,7 +35,9 @@ export const POST = async (req, res) => {
       return NextResponse.json({
         code: 0,
         message: "Unauthorized User",
-      });
+      },{
+        status : 401
+    });
 
     const decodeToken = await admin.auth().verifyIdToken(xToken);
 
@@ -62,13 +60,15 @@ export const POST = async (req, res) => {
   
     cartResult.forEach((doc,index) => {
       cart.push({_id : doc.id,...doc.data()});
+    });
 
-      description += doc.data().order.kulcha.name;
-      
-      if (index < cartResult.length - 1) {
+    for(let i = 0 ; i < cart.length ; i++){
+      description += cart[i].order.kulcha.name;
+        
+      if (i < cart.length - 1) {
         description += ' | ';
       }
-    });
+    }
 
     const {grand_total,total_tax ,sub_total} = calculateGrandTotal(cart);
 
@@ -76,11 +76,12 @@ export const POST = async (req, res) => {
 
     const metadata = {
       uid: uid,
-      order: JSON.stringify([...cart.map(item => ({_id : item._id,userId : item.userid}))]),
+      order: JSON.stringify([...cart.map(item => ({_id : item._id,userId : item.userId}))]),
       grand_total,
       total_tax,
       basic_amount: sub_total,
       instructions,
+      address: address.raw
     };
 
     const _address = {
@@ -126,8 +127,6 @@ export const POST = async (req, res) => {
       },
     });
 
-    console.log(ephemeralKey.secret,"SWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
-
     return NextResponse.json({
       code: 1,
       message: "Payment Intents initiated Successfully",
@@ -135,6 +134,7 @@ export const POST = async (req, res) => {
         paymentIntent: paymentIntent.client_secret,
         ephemeralKey: ephemeralKey.secret,
         customer: customer.id,
+        payment_id : paymentIntent.id
       },
     });
   } catch (err) {
