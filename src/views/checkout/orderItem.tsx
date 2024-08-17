@@ -353,13 +353,13 @@ const OrderHome: React.FC = () => {
                         sx={{
                           display: "flex",
                           justifyContent: isSmallScreen
-                            ? "space-between"
+                            ? "center"
                             : "flex-start",
                           width: "100%",
                           mt: 2,
                         }}>
                         {/* <Button
-                          onClick={() => router.push(`/cart`)}
+                          onClick={() => router.push(/cart)}
                           sx={{
                             textTransform: "none",
                             color: "#1F2937",
@@ -452,7 +452,7 @@ const OrderHome: React.FC = () => {
                       return 
                     } 
                     setError(false)
-                    return router.push(`/payment`);
+                    return router.push("/payment");
                   }}
                   fullWidth
                   variant='contained'

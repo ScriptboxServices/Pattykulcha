@@ -26,16 +26,12 @@ interface MenuCategory {
   label: MenuCategoryKey;
 }
 
-
 interface MenuItem {
   name: string;
   desc: string;
   image: string;
   price: number;
 }
-
-
-
 
 const MenuSection = () => {
   const { user, isLoggedIn } = useAuthContext();
@@ -111,64 +107,7 @@ const MenuSection = () => {
         </Typography>
       </Box>
 
-      <Box
-        sx={{
-          backgroundColor: "#FFF8E1",
-          padding: "20px 0",
-          marginBottom: 1,
-          overflowX: "auto",
-          marginTop: 4,
-        }}
-      >
-        <Container>
-          <Grid container spacing={9} justifyContent="center" wrap="nowrap">
-            {menuCategories?.map((category, index) => (
-              <Grid item key={index}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    minWidth: "80px",
-                  }}
-                  onClick={() => dispatch(setActiveCategory(category.label))}
-                >
-                  <Box
-                    sx={{
-                      width: 70,
-                      height: 70,
-                      borderRadius: "50%",
-                      backgroundColor:
-                        activeCategory === category.label
-                          ? "#3a5795"
-                          : "#e0e0e0",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 1,
-                      fontSize: "24px",
-                    }}
-                  >
-                    {category.icon}
-                  </Box>
-                  <Typography
-                    variant="h4"
-                    align="center"
-                    sx={{
-                      fontSize: "1.25rem",
-                      fontWeight:
-                        activeCategory === category.label ? "bold" : "normal",
-                    }}
-                  >
-                    {category.label}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+      
 
       <Container sx={{ marginTop: 12, textAlign: "center" }}>
         <Grid container spacing={7}>

@@ -1,4 +1,3 @@
-// pages/index.tsx
 "use client";
 
 import React from "react";
@@ -41,7 +40,7 @@ const TitleImage = styled.div`
 `;
 
 const CardContainer = styled(Grid)`
-  
+  justify-content: space-evenly;
 `;
 
 const Card = styled(Box)`
@@ -95,12 +94,12 @@ const AboutUs: React.FC = () => {
     <Box
       sx={{
         paddingY: 5,
-        paddingX: 14,
+        paddingX: { xs: 2, sm: 4, md: 14 },
         backgroundColor: "white",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh", // Make sure the Box takes the full height of the viewport
+        minHeight: "100vh",
         flexDirection: "column",
       }}
     >
@@ -123,7 +122,7 @@ const AboutUs: React.FC = () => {
             flexDirection: "column",
             alignItems: "flex-start",
             justifyContent: "flex-start",
-            padding: 9,
+            padding: { xs: 2, sm: 4, md: 9 },
           }}
         >
           <Typography variant="h2" gutterBottom>
@@ -156,7 +155,7 @@ const AboutUs: React.FC = () => {
           </Link>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ position: "relative", height: 630, width: 600 }}>
+          <Box sx={{ position: "relative", height: { xs: 300, sm: 400, md: 630 }, width: "100%" }}>
             <Image
               src="/images/about-us/img.webp"
               alt="Restaurant delivery scene"
@@ -178,7 +177,7 @@ const AboutUs: React.FC = () => {
           />
         </TitleImage>
         <Container>
-          <CardContainer container spacing={6} justifyContent="space-evenly">
+          <CardContainer container spacing={6}>
             <Grid item xs={12} sm={6} md={4}>
               <Card>
                 <CardImage>

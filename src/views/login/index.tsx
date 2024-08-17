@@ -60,46 +60,45 @@ const Login: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const [loading,setLoading] = useState<boolean>(false)
-  const [error,setError] = useState<string>('')
-  const [recaptchaVerifier,setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null)
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
   const router = useRouter();
-  const {confirmationResult,setConfirmationResult} =  useMenuContext()
-
+  const { confirmationResult, setConfirmationResult } = useMenuContext();
 
   useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(auth,"recaptcha-container",{
-      size : 'invisible'
-    })
+    const recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: 'invisible'
+    });
 
-    setRecaptchaVerifier(recaptchaVerifier)
+    setRecaptchaVerifier(recaptchaVerifier);
     return () => {
-      recaptchaVerifier.clear()
-    }
-  },[auth])
+      recaptchaVerifier.clear();
+    };
+  }, [auth]);
 
   useEffect(() => {
-    if(!confirmationResult) return
+    if (!confirmationResult) return;
     router.push("/verification");
-  },[confirmationResult])
+  }, [confirmationResult]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setError('')
-    if(!recaptchaVerifier) return
+    setError('');
+    if (!recaptchaVerifier) return;
 
-    try{
-      setLoading(true)
-      const confirmation = await signInWithPhoneNumber(auth,`+${data?.countryCode}${data?.phoneNumber}`,recaptchaVerifier)
-      setLoading(false)
+    try {
+      setLoading(true);
+      const confirmation = await signInWithPhoneNumber(auth, `+${data?.countryCode}${data?.phoneNumber}`, recaptchaVerifier);
+      setLoading(false);
 
-      setConfirmationResult(confirmation)
-    }catch(err : any) {
+      setConfirmationResult(confirmation);
+    } catch (err: any) {
       console.log(err.code);
-      setLoading(false)
-      if(err.code === 'auth/invalid-phone-number'){
-        setError('Invalid phone number.')
-      }else{
-        setError('Failed to send otp.')
+      setLoading(false);
+      if (err.code == 'auth/invalid-phone-number') {
+        setError('Invalid phone number.');
+      } else {
+        setError('Failed to send otp.');
       }
     }
   };
@@ -152,7 +151,7 @@ const Login: React.FC = () => {
             <Typography
               variant="body2"
               align="left"
-              sx={{ width: "100%", mt: 0.5,mb:3 }}
+              sx={{ width: "100%", mt: 0.5, mb: 3 }}
               gutterBottom
             >
               Please sign-in to your account.
@@ -160,11 +159,11 @@ const Login: React.FC = () => {
             <Box
               component="form"
               noValidate
-              sx={{ mt: 1,width:'100%' }}
+              sx={{ mt: 1, width: '100%' }}
               onSubmit={handleSubmit(onSubmit)}
             >
               <Grid container spacing={1}>
-                <Grid item xs={5}>
+                <Grid item xs={12} sm={5}>
                   <Controller
                     name="countryCode"
                     control={control}
@@ -207,7 +206,7 @@ const Login: React.FC = () => {
                                       icon={
                                         countryCodes.find(
                                           (option) =>
-                                            option.phone === Number(value)
+                                            option.phone == Number(value)
                                         )?.icon || ""
                                       }
                                     />
@@ -221,7 +220,7 @@ const Login: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={12} sm={7}>
                   <Controller
                     name="phoneNumber"
                     control={control}
@@ -248,13 +247,18 @@ const Login: React.FC = () => {
                           ),
                         }}
                         InputLabelProps={{ style: { color: "black" } }}
+                        sx={{
+                          '@media (max-width: 600px)': {
+                            marginTop: '16px',
+                          },
+                        }}
                         onKeyDown={(e) => {
                           if (
                             !/[0-9]/.test(e.key) &&
-                            e.key !== "Backspace" &&
-                            e.key !== "Delete" &&
-                            e.key !== "ArrowLeft" &&
-                            e.key !== "ArrowRight"
+                            e.key != "Backspace" &&
+                            e.key != "Delete" &&
+                            e.key != "ArrowLeft" &&
+                            e.key != "ArrowRight"
                           ) {
                             e.preventDefault();
                           }
@@ -273,7 +277,7 @@ const Login: React.FC = () => {
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
-                  mt:2,
+                  mt: 2,
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
@@ -283,9 +287,7 @@ const Login: React.FC = () => {
               >
                 Login
               </Button>
-              {
-                error && <Alert severity="error">{error}</Alert>
-              }
+              {error && <Alert severity="error">{error}</Alert>}
               {/* <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                 New on our platform?{" "}
                 <Link

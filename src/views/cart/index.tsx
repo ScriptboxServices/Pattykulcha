@@ -18,7 +18,6 @@ import {
   CardContent,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +28,17 @@ import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import CircularLodar from "@/components/CircularLodar";
+
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+
+
+import {
+  drinkOptions,
+  lassiOptions,
+  coffeeOptions,
+  teaOptions,
+} from "@/constants/MenuOptions";
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
@@ -59,90 +69,6 @@ export const getImageSrc = (item: string) => {
   };
   return images[item] || "/images/footer/default.png";
 };
-
-export const coffeeOptions = [
-  {
-    name: "Espresso",
-    price: 3.5,
-    image: "/images/landingpage/Espresso.png",
-  },
-  {
-    name: "Caffe Latte",
-    price: 3.5,
-    image: "/images/landingpage/caffe-latte.png",
-  },
-  {
-    name: "Cold Coffee",
-    price: 3.5,
-    image: "/images/landingpage/caffe-latte.png",
-  },
-];
-
-export const teaOptions = [
-  {
-    name: "Tea",
-    price: 3.5,
-    image: "/images/landingpage/milktea.png",
-  },
-  {
-    name: "Masala Tea",
-    price: 3.5,
-    image: "/images/landingpage/tea.png",
-  },
-];
-
-export const lassiOptions = [
-  {
-    name: "Salted Lassi",
-    price: 5.5,
-    image: "/images/landingpage/Salted-lassi.png",
-  },
-  {
-    name: "Sweet Lassi",
-    price: 5.5,
-    image: "/images/landingpage/Sweet-lassi.png",
-  },
-];
-
-export const drinkOptions = [
-  { name: "Regular Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
-  { name: "Large Coca-Cola", price: 3.0, image: "/images/drinks/coke.png" },
-  {
-    name: "Regular Coke Zero Sugar",
-    price: 3.0,
-    image: "/images/drinks/coke-zero.png",
-  },
-  {
-    name: "Large Coke Zero Sugar",
-    price: 3.0,
-    image: "/images/drinks/coke-zero.png",
-  },
-  {
-    name: "Regular Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Large Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Coke",
-    price: 3.0,
-    image: "/images/drinks/coke.png",
-  },
-  {
-    name: "Diet Coke",
-    price: 3.0,
-    image: "/images/drinks/diet-coke.png",
-  },
-  {
-    name: "Sprite",
-    price: 3.0,
-    image: "/images/drinks/sprite.png",
-  },
-];
 
 export interface IncludedItem {
   id: string;
@@ -185,6 +111,7 @@ const MenuPage = () => {
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
   const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
   const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
+  const [itemCounts, setItemCounts] = useState<{ [key: string]: number }>({});
 
   const handleSize = (event: any, newSize: string | null) => {
     if (newSize !== null) {
@@ -372,7 +299,16 @@ const MenuPage = () => {
     >
       <CircularLodar isLoading={loading} />
 
-      <Grid container spacing={4} sx={{ width: "100%", margin: 0 }}>
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          width: "100%",
+          paddingLeft: "15px",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Grid item xs={12} md={6}>
           <Box sx={{ paddingLeft: "7%" }}>
             <Typography
@@ -599,7 +535,7 @@ const MenuPage = () => {
                         justifyContent: "center",
                         padding: "1rem",
                         backgroundColor: "white",
-                        border: "2px solid #87939f", // Updated border color
+                        border: "2px solid #87939f",
                         borderRadius: "8px",
                         textAlign: "center",
                         position: "relative",
@@ -607,7 +543,7 @@ const MenuPage = () => {
                         height: { xs: "220px", sm: "270px" },
                         width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem",
-                        boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
+                        boxShadow: "2px 2px 3px #4e5664",
                       }}
                     >
                       <CheckCircleIcon
@@ -626,9 +562,9 @@ const MenuPage = () => {
                         width={150}
                         height={150}
                         style={{
-                          width: "65%", // Set the width to 65% of the container
-                          height: "55%", // Set the height to 55% of the container
-                          objectFit: "contain", // Maintain the aspect ratio
+                          width: "65%",
+                          height: "55%",
+                          objectFit: "contain",
                         }}
                       />
                       <Typography variant="body1" color="textPrimary">
@@ -637,9 +573,37 @@ const MenuPage = () => {
                       <Typography variant="body2" color="textSecondary">
                         ${item.items[0].price.toFixed(2)}
                       </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginTop: "0.5rem",
+                        }}
+                      >
+                        <IconButton
+                          onClick={() => handleRemoveItem(item.items[0].name)}
+                          sx={{
+                            color: "#336195",
+                          }}
+                        >
+                          <RemoveCircleOutlineIcon />
+                        </IconButton>
+                        <Typography variant="body1" color="textPrimary">
+                          {itemCounts[item.items[0].name] || 1}
+                        </Typography>
+                        <IconButton
+                          onClick={() => handleAddItem(item.items[0].name)}
+                          sx={{
+                            color: "#336195",
+                          }}
+                        >
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Box>
                       <Button
                         variant="outlined"
-                        onClick={() => handleRemoveItem(item.id)}
+                        onClick={() => handleRemoveItem(item.items[0].name)}
                         sx={{
                           backgroundColor: "transparent",
                           color: "#336195",

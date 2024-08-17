@@ -16,9 +16,12 @@ import {
   Divider,
   styled,
   Badge,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuthContext, useMenuContext } from "@/context";
 import { auth } from "@/firebase";
 import { useRouter } from "next/navigation";
@@ -39,32 +42,32 @@ const NavButton = styled(Button)({
   margin: "0 8px",
 });
 
-const LocationButton = styled(Button)({
-  backgroundColor: "white",
-  color: "black",
-  borderRadius: "20px",
-  textTransform: "none",
-  "&:hover": {
-    backgroundColor: "#f5f5f5",
-  },
-});
-
-const OrderButton = styled(Button)({
-  backgroundColor: "#f39c12",
-  color: "white",
-  "&:hover": {
-    backgroundColor: "#e67e22",
-  },
-});
-
 const Navbar: React.FC = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { count } = useMenuContext(); // Fetch count from context
-  const {user,isLoggedIn} = useAuthContext()
+  const { count } = useMenuContext();
+  const { isLoggedIn } = useAuthContext();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    localStorage.removeItem('address')
+    localStorage.removeItem('instructions')
+    localStorage.removeItem('kulcha')
+    localStorage.removeItem('includedItems2')
+    router.push("/login");
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const drawer = (
@@ -74,37 +77,44 @@ const Navbar: React.FC = () => {
       </Typography>
       <Divider />
       <List>
-        {["Menu", "About"].map((text) => (
-          <ListItem key={text}>
-            <ListItemText primary={text} />
+        <Link href="/profile" passHref>
+          <ListItem button>
+            <ListItemText primary="My Profile" />
           </ListItem>
-        ))}
+        </Link>
+            <Link href={`/home`} passHref>
+            <ListItem button>
+              <ListItemText primary={'Menu'} />
+            </ListItem>
+          </Link>
+          <Link href={`/about`} passHref>
+            <ListItem button>
+              <ListItemText primary={'About'} />
+            </ListItem>
+          </Link>
       </List>
       <Divider />
       <List>
-        {/* <ListItem button>
-          <Link href="/createaccount" passHref>
+        {!isLoggedIn ? (
+          <ListItem button>
+            <Link href="/login" passHref>
+              <Button
+                sx={{ textTransform: "none", color: "black", width: "100%" }}
+              >
+                Log In
+              </Button>
+            </Link>
+          </ListItem>
+        ) : (
+          <ListItem button>
             <Button
               sx={{ textTransform: "none", color: "black", width: "100%" }}
+              onClick={handleLogout}
             >
-              Sign Up
+              Logout
             </Button>
-          </Link>
-        </ListItem> */}
-        <ListItem >
-          <Link href="login" passHref>
-            <Button
-              sx={{ textTransform: "none", color: "black", width: "100%" }}
-            >
-              Log In
-            </Button>
-          </Link>
-        </ListItem>
-        <ListItem button>
-          <Link href="cart" passHref>
-            <OrderButton fullWidth>Order Now</OrderButton>
-          </Link>
-        </ListItem>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
@@ -115,7 +125,7 @@ const Navbar: React.FC = () => {
         <StyledToolbar>
           <Typography
             sx={{
-              color: "#333333", // Adjust the color to match your site design
+              color: "#333333",
               fontWeight: "bold",
             }}
           >
@@ -131,58 +141,29 @@ const Navbar: React.FC = () => {
             <Link href="/home" passHref>
               <NavButton>Menu</NavButton>
             </Link>
-            <Link href="about-us" passHref>
+            <Link href="/about-us" passHref>
               <NavButton>About</NavButton>
             </Link>
           </Box>
-          <Box
-            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
-          >
-            {
-              isLoggedIn &&
-              <>
-                <Link href="checkout">
-                <IconButton
-                  edge="end"
-                  color="inherit"
-                  aria-label="cart"
-                  sx={{ ml: 2,mr:2 }}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {/* Cart Button is always visible */}
+            <Link href="/checkout" passHref>
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="cart"
+                sx={{ mr: 2 }}
+              >
+                <Badge
+                  badgeContent={count > 0 ? count : undefined}
+                  color="error"
+                  invisible={count === 0}
                 >
-                  <Badge
-                    badgeContent={count > 0 ? count : undefined}
-                    color="error"
-                    invisible={count === 0}
-                  >
-                    <ShoppingCartIcon />
-                  </Badge>
-                </IconButton>
-                </Link>
-                <Typography sx={{ mx: 1 }}>|</Typography>
-              </>
-            }
-            {/* <Link href="/createaccount" passHref>
-              <NavButton>Sign Up</NavButton>
-            </Link> */}
-            {
-              !isLoggedIn ?
-              <Link href="login" passHref>
-                <NavButton>Log In</NavButton>
-              </Link> : 
-              <>
-                <NavButton onClick={async () => {
-                  await auth.signOut()
-                  localStorage.removeItem('address')
-                  localStorage.removeItem('instructions')
-                  localStorage.removeItem('kulcha')
-                  localStorage.removeItem('includedItems2')
-                  router.push('/login')
-                }}>Logout</NavButton>
-
-              </>
-            }
-            <Link href={isLoggedIn ? "cart" : 'login'} passHref>
-              <OrderButton variant="contained">Order Now</OrderButton>
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
             </Link>
+            {/* Hamburger Menu for smaller screens */}
             <IconButton
               edge="start"
               color="inherit"
@@ -192,6 +173,65 @@ const Navbar: React.FC = () => {
             >
               <MenuIcon />
             </IconButton>
+            {/* Desktop Links */}
+            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+              {!isLoggedIn ? (
+                <Link href="/login" passHref>
+                  <NavButton>Log In</NavButton>
+                </Link>
+              ) : (
+                <>
+                  <IconButton
+                    onClick={handleMenuOpen}
+                    sx={{ color: "black" }}
+                  >
+                    <AccountCircleIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      style: {
+                        marginTop: "5px",
+                        marginRight:"10px"
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={handleMenuClose}>
+                      <Link href="/profile" passHref>
+                        <Typography>My Profile</Typography>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        handleLogout();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+              {/* Order Now button only visible if not logged in */}
+              {!isLoggedIn && (
+                <Box sx={{ display: { xs: "none", md: "block" } }}>
+                  <Link href="/login" passHref>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#f39c12",
+                        color: "white",
+                        "&:hover": { backgroundColor: "#e67e22" },
+                      }}
+                    >
+                      Order Now
+                    </Button>
+                  </Link>
+                </Box>
+              )}
+            </Box>
           </Box>
         </StyledToolbar>
       </StyledAppBar>

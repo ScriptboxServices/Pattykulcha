@@ -20,9 +20,18 @@ const OrdersPage = ({data} :  {data:any}) => {
 
   const { payment_id } = data
 
+  const delay = () => {
+    return new Promise((resolve,_) => {
+      setTimeout(() => {
+        resolve(true)
+      },5000)
+    })
+  }
+
   useEffect(() => {
     const init = async () => {
       setLoading(true)
+      await delay()
       try{
         const transactionRef = collection(db,"payments")
         const q = query(transactionRef, where("transactionId", "==", payment_id));
@@ -33,6 +42,8 @@ const OrdersPage = ({data} :  {data:any}) => {
           querySnapshot.forEach(doc => {
             transaction = doc.data()
           })
+
+          console.log(transaction);
           setPayment(transaction)
           const docRef = doc(db,'orders',transaction?.orderId)
           const docSnap = await getDoc(docRef)
@@ -49,8 +60,6 @@ const OrdersPage = ({data} :  {data:any}) => {
     }
     init()
   },[data])
-
-  console.log(user);
 
   return (
     <>
