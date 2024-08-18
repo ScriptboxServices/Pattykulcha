@@ -160,6 +160,7 @@ const VerificationPage: React.FC = () => {
               {verificationCode.map((code, index) => (
                 <TextField
                   key={index}
+                  type="tel"
                   variant="outlined"
                   value={code}
                   onChange={handleCodeChange(index)}

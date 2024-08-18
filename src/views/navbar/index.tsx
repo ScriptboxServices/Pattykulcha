@@ -100,18 +100,41 @@ const Navbar: React.FC = () => {
       <List>
         {!isLoggedIn ? (
           <ListItem button>
-            <Link href="/login" passHref>
               <Button
-                sx={{ textTransform: "none", color: "black", width: "100%" }}
+                onClick={(e) => router.push('/login')}
+                sx={{
+                  textTransform:'none',
+                  backgroundColor: "#ECAB21",
+                  color: "white",
+                  paddingX: 4,
+                  width:'100%',
+                  paddingY: 1,
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#FFC107",
+                    color: "white",
+                  },
+                }}
               >
                 Log In
               </Button>
-            </Link>
           </ListItem>
         ) : (
           <ListItem button>
             <Button
-              sx={{ textTransform: "none", color: "black", width: "100%" }}
+            sx={{
+              textTransform:'none',
+              backgroundColor: "#ECAB21",
+              color: "white",
+              paddingX: 4,
+              width:'100%',
+              paddingY: 1,
+              fontWeight: "bold",
+              "&:hover": {
+                backgroundColor: "#FFC107",
+                color: "white",
+              },
+            }}
               onClick={handleLogout}
             >
               Logout
@@ -149,24 +172,25 @@ const Navbar: React.FC = () => {
             </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {/* Cart Button is always visible */}
-            <Link href="/checkout" passHref>
-              <IconButton
-                edge="end"
-                color="inherit"
-                aria-label="cart"
-                sx={{ mr: 2 }}
-              >
-                <Badge
-                  badgeContent={count > 0 ? count : undefined}
-                  color="error"
-                  invisible={count === 0}
+            {
+              isLoggedIn &&
+              <Link href="/checkout" passHref>
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="cart"
+                  sx={{ mr: 2 }}
                 >
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton>
-            </Link>
-            {/* Hamburger Menu for smaller screens */}
+                  <Badge
+                    badgeContent={count > 0 ? count : undefined}
+                    color="error"
+                    invisible={count === 0}
+                  >
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+              </Link>
+            }
             <IconButton
               edge="start"
               color="inherit"
