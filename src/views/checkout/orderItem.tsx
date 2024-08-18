@@ -38,14 +38,15 @@ const isIncludedItem = (item: Kulcha | IncludedItem): item is IncludedItem => {
   return (item as IncludedItem).items !== undefined;
 };
 
-const OrderHome: React.FC = () => {
+interface Props {
+  setLoading : React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const OrderHome: React.FC<Props> = ( {setLoading}) => {
   const {
-    selectedkulchas,
-    includedItems1,
     instructions,
     address,
     setCount,
-    setQuantityForItem,
     grandTotal,
     setCarts,
     setGrandTotal,
@@ -58,7 +59,6 @@ const OrderHome: React.FC = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { user } = useAuthContext();
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   // const handleIncrease = (id: string) => {
@@ -106,23 +106,8 @@ const OrderHome: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        setLoading(true);
-        await getData(user?.uid);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      }
-    };
-    init();
-  }, [user]);
-
   return (
     <>
-      <CircularLodar isLoading={loading} />
       <Box
         sx={{
           width: "100%",

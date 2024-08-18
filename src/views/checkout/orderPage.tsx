@@ -19,7 +19,11 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SaveIcon from "@mui/icons-material/Save";
 import { useMenuContext } from "@/context";
 
-const OrderPage: React.FC = () => {
+interface Props {
+  setLoading : React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const OrderPage:React.FC<Props> = ({setLoading}) => {
   const { address, setAddress,instructions,setInstructions } = useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);

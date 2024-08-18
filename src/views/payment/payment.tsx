@@ -27,7 +27,7 @@ import {
   useMenuContext,
 } from "@/context";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -177,7 +177,15 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
   );
 };
 
-const CheckoutMain = () => {
+interface CheckoutProps {
+  setLoading : any,
+  clientSecret : string,
+  ephemeralKey : string,
+  payment_id : string,
+  customer : string
+}
+
+const CheckoutMain : React.FC<CheckoutProps> = ({setLoading,clientSecret,ephemeralKey,payment_id,customer}) => {
   const {
     control,
     handleSubmit,
@@ -186,73 +194,16 @@ const CheckoutMain = () => {
     resolver: yupResolver(validationSchema) as any,
   });
 
-  const [{ clientSecret, customer, ephemeralKey }, setStripeCred] = useState({
-    clientSecret: "",
-    customer: "",
-    ephemeralKey: "",
-    payment_id : ""
-  });
-
   const router = useRouter();
-  const { isLoggedIn, user } = useAuthContext();
-  const { instructions, address, count,grandTotal } = useMenuContext();
+  const { count,grandTotal } = useMenuContext();
   const [error,setError] = useState('')
-  const [loading,setLoading] = useState(false)
-
-  useEffect(() => {
-    const initPayment = async () => {
-      try{
-        setLoading(true)
-        await getPaymentSheet();
-        setLoading(false)
-      }catch(err) {
-        console.log(err)
-        setLoading(false)
-      }
-    }
-    initPayment()
-  }, [user]);
 
 const errorFunc = (error : string) => {
   setError(error)
 }
 
-  const getPaymentSheet = async () => {
-    if (!auth.currentUser && !isLoggedIn) return;
-
-    const token = await getIdToken(user);
-
-    const isValid = clientSecret && customer && ephemeralKey;
-    if (isValid) return;
-
-    return axios
-      .request({
-        method: "POST",
-        url: `/api/getPaymentSheet`,
-        headers: {
-          "x-token": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        data: {
-          address,
-          instructions,
-        },
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        console.log(error);
-        return undefined;
-      })
-      .then((result) => {
-        if (result.code != 1) return console.log(result.message);
-        const { paymentIntent, ephemeralKey, customer, payment_id } = result.data;
-        setStripeCred({ clientSecret: paymentIntent, customer, ephemeralKey, payment_id });
-      });
-  };
-
   return (
     <>
-      <CircularLodar isLoading={loading} />
       <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Card

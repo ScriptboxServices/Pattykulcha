@@ -101,7 +101,15 @@ const VerificationPage: React.FC = () => {
             profile:'',
             email:'',
             name : '',
-            address : ''
+            address: {
+              raw : '',
+              seperate : {
+                state: '',
+                city: '',
+                postal_code:'',
+                line1:'',
+              }
+            }
           })
         }
         setConfirmationResult(null)
