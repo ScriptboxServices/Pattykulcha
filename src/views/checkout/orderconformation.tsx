@@ -11,11 +11,9 @@ import { formatTimestampToDDMMYYYY } from '@/utils/commonFunctions';
 const OrdersPage = ({data} :  {data:any}) => {
   const { setCount } = useMenuContext();
   const [loading,setLoading] = useState(false)
-  const name = 'Jane Smith';
 
   const [orderData,setOrderData] = useState<any>()
   const [payment,setPayment] = useState<any>()
-
   const {user} = useAuthContext()
 
   const { payment_id } = data
@@ -43,7 +41,6 @@ const OrdersPage = ({data} :  {data:any}) => {
             transaction = doc.data()
           })
 
-          console.log(transaction);
           setPayment(transaction)
           const docRef = doc(db,'orders',transaction?.orderId)
           const docSnap = await getDoc(docRef)
@@ -86,7 +83,7 @@ const OrdersPage = ({data} :  {data:any}) => {
               <Typography variant="h6" gutterBottom>
                 Billing Address
               </Typography>
-              <Typography variant="body1">Name: {name}</Typography>
+              <Typography variant="body1">Name: {orderData?.customer?.name}</Typography>
               <Typography variant="body1">Address: {payment?.address}</Typography>
               <Typography variant="body1">Phone: {user?.phoneNumber}</Typography>
             </Grid>
@@ -140,10 +137,10 @@ const OrdersPage = ({data} :  {data:any}) => {
                           additional.map((item :any, i : number) => (
                             <Box key={i} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                               <Typography variant="body2" color="text.secondary">
-                                {item.items[0].name}
+                                {item.items[0].name} (quantity : {item.items[0].quantity})
                               </Typography>
                               <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
-                                +${item.items[0].price.toFixed(2)}
+                                +${item.items[0].price.toFixed(2)} x {item.items[0].quantity}
                               </Typography>
                             </Box>
                           ))}

@@ -39,8 +39,8 @@ interface MenuContextType {
   setSelectedKulchas: any;
   includedItems1: IncludedItem[];
   setIncludedItems1: (items: IncludedItem[]) => void;
-  includedItems2: IncludedItem[];
-  setIncludedItems2: (items: IncludedItem[]) => void;
+  includedItems2: any[];
+  setIncludedItems2: (items: any[]) => void;
   quantities: { [key: string]: number };
   setQuantityForItem: (itemName: string, quantity: number) => void;
   extraItems: string[];
@@ -122,7 +122,7 @@ export const calculateGrandTotal = (carts : any[]) => {
     const { kulcha, additional } = order;
 
     const total = additional?.reduce((acc: any, value: any) => {
-      return (acc = acc + Number(value?.items?.[0]?.price));
+      return (acc = acc + (Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity)));
     }, Number(kulcha?.price));
     let tax = Number(total) * 0.13
     return (acc = acc + (Number(total) + Number(tax)));
@@ -180,7 +180,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       items: [{ name: "Amul Butter", price: 1.50 }],
     },
   ]);
-  const [includedItems2, setIncludedItems2] = useState<IncludedItem[]>([]);
+  const [includedItems2, setIncludedItems2] = useState<any[]>([]);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [extraItems, setExtraItems] = useState<string[]>([
     "Chana",

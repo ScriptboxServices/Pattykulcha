@@ -16,7 +16,7 @@ import { useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { auth, db } from "@/firebase";
-import { doc , setDoc } from "firebase/firestore"
+import { doc , getDoc, setDoc } from "firebase/firestore"
 import CircularLodar from "@/components/CircularLodar";
 const StyledRoot = styled(Box)({
   display: "flex",
@@ -96,21 +96,25 @@ const VerificationPage: React.FC = () => {
         const {user} = result
         if(user){
           const docRef = doc(db,'users',user.uid)
-          await setDoc(docRef,{
-            phoneNumber : user?.phoneNumber,
-            profile:'',
-            email:'',
-            name : '',
-            address: {
-              raw : '',
-              seperate : {
-                state: '',
-                city: '',
-                postal_code:'',
-                line1:'',
+
+          const find = await getDoc(docRef)
+          if(!find.exists()){
+            await setDoc(docRef,{
+              phoneNumber : user?.phoneNumber,
+              profile:'',
+              email:'',
+              name : '',
+              address: {
+                raw : '',
+                seperate : {
+                  state: '',
+                  city: '',
+                  postal_code:'',
+                  line1:'',
+                }
               }
-            }
-          })
+            })
+          }
         }
         setConfirmationResult(null)
         setLoading(false)

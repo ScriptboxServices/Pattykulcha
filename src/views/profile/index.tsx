@@ -143,6 +143,7 @@ const ProfilePage: React.FC = () => {
     try {
       const user = await getDoc(docRef);
       if (user.exists()) {
+        console.log(user.data(),"zzzzzzzzzzzzzzzzzzzzz");
         const { name, email, profile, phoneNumber ,address} = user.data();
         setMe({
           name,

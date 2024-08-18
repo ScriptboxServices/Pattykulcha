@@ -28,7 +28,7 @@ export const POST = async (req, res) => {
   try {
     if (event.type === "payment_intent.succeeded") {
       const data = event.data.object;
-      const { id, metadata, latest_charge } = data;
+      const { id, metadata, latest_charge, customer } = data;
 
       const batch = db.batch()
       const cartResult = await db
@@ -37,7 +37,7 @@ export const POST = async (req, res) => {
         .get();
       let cart = [];
       if (!cartResult.empty) {
-        cartResult.forEach((doc, index) => {
+        cartResult.forEach((doc) => {
           cart.push({ _id: doc.id, ...doc.data()});
         });
       }
@@ -62,6 +62,10 @@ export const POST = async (req, res) => {
               message : 'Not Delivered',
               status : false
             },
+            customer:{
+              _id : customer,
+              name : metadata.name
+            },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({
@@ -74,6 +78,10 @@ export const POST = async (req, res) => {
             transactionId : id,
             card:{
                 brand, last4, exp_month, exp_year
+            },
+            customer:{
+              _id : customer,
+              name : metadata.name
             },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           })

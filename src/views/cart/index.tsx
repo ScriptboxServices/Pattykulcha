@@ -112,7 +112,6 @@ const MenuPage = () => {
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
   const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
   const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
-  const [itemCounts, setItemCounts] = useState<{ [key: string]: number }>({});
 
   const handleSize = (event: any, newSize: string | null) => {
     if (newSize !== null) {
@@ -159,7 +158,7 @@ const MenuPage = () => {
 
     if (
       !includedItems2.some((includedItem) =>
-        includedItem.items.some((item) => item.name == itemName)
+        includedItem.items.some((item : any) => item.name == itemName)
       )
     ) {
       setIncludedItems2([...includedItems2, newItem]);
@@ -189,6 +188,36 @@ const MenuPage = () => {
     const coffeeItem = coffeeOptions.find((c) => c.name == coffee);
     handleAddItem(coffeeItem!.name);
   };
+
+  const handleDecreaseQTY = (_id : string) => {
+    const arr = [...includedItems2]
+    arr.forEach(item => {
+      if(item.id === _id){
+        item.items[0].quantity = item.items[0].quantity - 1 
+      }
+    })
+
+    setIncludedItems2([...arr])
+    localStorage.setItem(
+      "includedItems2",
+      JSON.stringify([...arr])
+    );
+  }
+
+  const handleIncreaseQTY = (_id : string) => {
+    const arr = [...includedItems2]
+    arr.forEach(item => {
+      if(item.id === _id){
+        item.items[0].quantity = item.items[0].quantity + 1 
+      }
+    })
+
+    setIncludedItems2([...arr])
+    localStorage.setItem(
+      "includedItems2",
+      JSON.stringify([...arr])
+    );
+  }
 
   const handleRemoveItem = (itemId: string) => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
@@ -232,7 +261,6 @@ const MenuPage = () => {
     setIsCoffeeDialogOpen(false);
   };
 
-  console.log(includedItems2);
   const handleAddToCart = async () => {
     try {
       setLoading(true);
@@ -584,7 +612,7 @@ const MenuPage = () => {
                         }}
                       >
                         <IconButton
-                          onClick={() => handleRemoveItem(item.items[0].name)}
+                          onClick={() => handleDecreaseQTY(item.id)}
                           sx={{
                             color: "#336195",
                           }}
@@ -592,10 +620,10 @@ const MenuPage = () => {
                           <RemoveCircleOutlineIcon />
                         </IconButton>
                         <Typography variant="body1" color="textPrimary">
-                          {itemCounts[item.items[0].name] || 1}
+                          {item.items[0].quantity || 1}
                         </Typography>
                         <IconButton
-                          onClick={() => handleAddItem(item.items[0].name)}
+                          onClick={() => handleIncreaseQTY(item.id)}
                           sx={{
                             color: "#336195",
                           }}
@@ -930,7 +958,7 @@ const MenuPage = () => {
                   onClick={() => handleDrinkSelect(drink.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i) => i.name === drink.name)
+                      item.items.some((i : any) => i.name === drink.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -964,7 +992,7 @@ const MenuPage = () => {
                       ${drink.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i) => i.name === drink.name)
+                      item.items.some((i : any) => i.name === drink.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1007,7 +1035,7 @@ const MenuPage = () => {
                   onClick={() => handleLassiSelect(lassi.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i) => i.name === lassi.name)
+                      item.items.some((i : any) => i.name === lassi.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1048,7 +1076,7 @@ const MenuPage = () => {
                       ${lassi.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i) => i.name === lassi.name)
+                      item.items.some((i : any) => i.name === lassi.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1091,7 +1119,7 @@ const MenuPage = () => {
                   onClick={() => handleTeaSelect(tea.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i) => i.name === tea.name)
+                      item.items.some((i : any) => i.name === tea.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1132,7 +1160,7 @@ const MenuPage = () => {
                       ${tea.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i) => i.name === tea.name)
+                      item.items.some((i : any) => i.name === tea.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1175,7 +1203,7 @@ const MenuPage = () => {
                   onClick={() => handleCoffeeSelect(coffee.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i) => i.name === coffee.name)
+                      item.items.some((i : any) => i.name === coffee.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1216,7 +1244,7 @@ const MenuPage = () => {
                       ${coffee.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i) => i.name === coffee.name)
+                      item.items.some((i : any) => i.name === coffee.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{

@@ -12,7 +12,7 @@ const calculateGrandTotal = (_cart) => {
     const { kulcha, additional } = order;
 
     const total = additional?.reduce((acc, value) => {
-      return (acc = acc + Number(value?.items?.[0]?.price));
+      return (acc = acc + (Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity)));
     }, Number(kulcha?.price));
 
     let tax = Number(total) * 0.13;
@@ -26,7 +26,7 @@ const calculateGrandTotal = (_cart) => {
 };
 
 export const POST = async (req, res) => {
-  const { address, instructions } = await req.json();
+  const { address, instructions, name } = await req.json();
 
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
@@ -40,7 +40,6 @@ export const POST = async (req, res) => {
     });
 
     const decodeToken = await admin.auth().verifyIdToken(xToken);
-
     const { uid, phone_number } = decodeToken;
     const { city, state, line1, postal_code } = address.seperate;
 
@@ -81,7 +80,8 @@ export const POST = async (req, res) => {
       total_tax,
       basic_amount: sub_total,
       instructions,
-      address: address.raw
+      address: address.raw,
+      name
     };
 
     const _address = {
@@ -102,10 +102,10 @@ export const POST = async (req, res) => {
         shipping: {
           phone: phone_number,
           address: _address,
-          name: `Customer_${uid}`,
+          name: name ? `${name}_${uid}` : `Customer_${uid}`,
         },
         address: _address,
-        name: `Customer_${uid}`,
+        name: name ? `${name}_${uid}` : `Customer_${uid}`,
       });
     }
 
@@ -123,7 +123,7 @@ export const POST = async (req, res) => {
       shipping: {
         phone: phone_number,
         address: _address,
-        name: `Customer_${uid}`,
+        name: name ? `${name}_${uid}` : `Customer_${uid}`,
       },
     });
 

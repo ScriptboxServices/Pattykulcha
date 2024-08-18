@@ -71,7 +71,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
 
   const calculateTotal = (item: any, addon: any[]) => {
     const additionalTotal = addon?.reduce((acc, value) => {
-      return (acc = acc + Number(value?.items?.[0]?.price));
+      return (acc = acc + (Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity)));
     }, Number(item));
     return Number(additionalTotal.toFixed(2));
   };
@@ -231,7 +231,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                                 fontSize: "14px",
                                 mr: 2,
                               }}>
-                              {add?.items?.[0]?.name}
+                              {add?.items?.[0]?.name} (quantity : {add?.items?.[0]?.quantity})
                             </Typography>
                             <Typography
                               variant='body1'
@@ -241,7 +241,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                                 fontSize: "14px",
                                 mr: 2,
                               }}>
-                              ${add?.items?.[0]?.price}
+                              ${add?.items?.[0]?.price} x {add?.items?.[0]?.quantity}
                             </Typography>
                           </Box>
                         );
