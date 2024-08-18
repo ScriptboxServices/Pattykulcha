@@ -235,7 +235,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setAddress(getStoredData("address", {
       raw :"",
       seperate:{}
-    })); 
+    }));
     setIncludedItems1(getStoredData("includedItems1", []));
     setIncludedItems2(getStoredData("includedItems2", []));
     // setQuantities(getStoredData("quantities", {}));

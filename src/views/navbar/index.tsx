@@ -73,21 +73,24 @@ const Navbar: React.FC = () => {
   const drawer = (
     <Box sx={{ width: 250 }}>
       <Typography variant="h6" sx={{ p: 2 }}>
-        LOGO
+        PATTYKULCHA
       </Typography>
       <Divider />
       <List>
-        <Link href="/profile" passHref>
-          <ListItem button>
-            <ListItemText primary="My Profile" />
-          </ListItem>
-        </Link>
+        {
+          isLoggedIn &&
+          <Link href="/profile" passHref>
+            <ListItem button>
+              <ListItemText primary="My Profile" />
+            </ListItem>
+          </Link>
+        }
             <Link href={`/home`} passHref>
             <ListItem button>
               <ListItemText primary={'Menu'} />
             </ListItem>
           </Link>
-          <Link href={`/about`} passHref>
+          <Link href={`/about-us`} passHref>
             <ListItem button>
               <ListItemText primary={'About'} />
             </ListItem>

@@ -432,7 +432,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                 </Box>
                 <Button
                   onClick={() => {
-                    if (!address?.raw || !instructions) {
+                    if (!address?.raw) {
                       setError(true)
                       return 
                     } 
@@ -458,7 +458,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                 {
                   error &&
                 <Alert sx={{mt:2}} variant="outlined" severity="error">
-                  Before proceeding, please update address and delivery instructions.  
+                  Before proceeding, please update address.  
                 </Alert>
                 }
               </Paper>

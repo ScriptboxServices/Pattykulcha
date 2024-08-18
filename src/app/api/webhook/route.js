@@ -1,7 +1,6 @@
 import { stripe } from "@/stripe/config";
 import { NextRequest, NextResponse } from "next/server";
 import { admin } from "@/firebaseAdmin/config";
-import { v4 as uuid } from 'uuid';
 const db = admin.firestore();
 
 export const POST = async (req, res) => {
@@ -16,7 +15,7 @@ export const POST = async (req, res) => {
     );
   } catch (err) {
     console.log(err);
-    return new NextResponse.json(
+    return NextResponse.json(
       {
         code: 0,
         message: "Unauthorized Request.",
@@ -39,7 +38,6 @@ export const POST = async (req, res) => {
       let cart = [];
       if (!cartResult.empty) {
         cartResult.forEach((doc, index) => {
-          const {order} = doc.data()
           cart.push({ _id: doc.id, ...doc.data()});
         });
       }

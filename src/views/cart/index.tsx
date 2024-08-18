@@ -75,6 +75,7 @@ export interface IncludedItem {
   items: Array<{
     name: string;
     price: number;
+    quantity : number
   }>;
 }
 
@@ -153,7 +154,7 @@ const MenuPage = () => {
 
     const newItem = {
       id: itemId,
-      items: [{ name: itemName, price }],
+      items: [{ name: itemName, price,quantity : 1 }],
     };
 
     if (
@@ -231,6 +232,7 @@ const MenuPage = () => {
     setIsCoffeeDialogOpen(false);
   };
 
+  console.log(includedItems2);
   const handleAddToCart = async () => {
     try {
       setLoading(true);
@@ -603,7 +605,7 @@ const MenuPage = () => {
                       </Box>
                       <Button
                         variant="outlined"
-                        onClick={() => handleRemoveItem(item.items[0].name)}
+                        onClick={() => handleRemoveItem(item.id)}
                         sx={{
                           backgroundColor: "transparent",
                           color: "#336195",
@@ -907,9 +909,6 @@ const MenuPage = () => {
               variant="contained"
               color="warning"
               onClick={handleAddToCart}
-              disabled={
-                includedItems1.length == 0 && includedItems2.length == 0
-              }
             >
               Add to cart
             </Button>

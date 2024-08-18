@@ -184,8 +184,6 @@ const ProfilePage: React.FC = () => {
     }
   }
 
-  console.log(orders,"Poddar Poddar");
-
   useEffect(() => {
     const init = async () => {
       try{
