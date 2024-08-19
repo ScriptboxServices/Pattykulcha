@@ -31,6 +31,7 @@ interface MenuItem {
   desc: string;
   image: string;
   price: number;
+  quantity : number;
 }
 
 const MenuSection = () => {
@@ -65,9 +66,10 @@ const MenuSection = () => {
     itemName: string,
     desc: string,
     image: string,
-    price: number
+    price: number,
+    quantity : number
   ) => {
-    const newKulcha = { name: itemName, desc, image, price };
+    const newKulcha = { name: itemName, desc, image, price, quantity};
     setKulcha(newKulcha);
     localStorage.setItem("kulcha", JSON.stringify(newKulcha));
     setSelectedKulchas((prevKulchas: MenuItem[]) => [
@@ -75,8 +77,6 @@ const MenuSection = () => {
       newKulcha,
     ]);
   };
-
-  console.log(kulcha, "Abhishek");
 
   useEffect(() => {
     localStorage.removeItem("includedItems2");
@@ -237,7 +237,8 @@ const MenuSection = () => {
                           item.name,
                           item.desc,
                           item.image,
-                          item.price
+                          item.price,
+                          item.quantity
                         );
                         router.push("/cart");
                       }}

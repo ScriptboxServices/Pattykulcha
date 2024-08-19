@@ -199,10 +199,9 @@ const MenuPage = () => {
     const arr = [...includedItems2];
     arr.forEach((item) => {
       if (item.id === _id) {
-        item.items[0].quantity = item.items[0].quantity - 1;
+        if(item.items[0].quantity > 1) item.items[0].quantity = item.items[0].quantity - 1;
       }
     });
-
     setIncludedItems2([...arr]);
     localStorage.setItem("includedItems2", JSON.stringify([...arr]));
   };

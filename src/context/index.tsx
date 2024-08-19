@@ -26,6 +26,7 @@ export interface Kulcha {
   desc: string;
   image: string;
   price: number;
+  quantity: number;
 }
 
 interface MenuContextType {

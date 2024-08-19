@@ -203,7 +203,8 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name}
+                        {kulcha?.name} (quantity :{" "}
+                          {kulcha?.quantity})
                         <Typography
                           variant="body1"
                           sx={{
@@ -212,58 +213,64 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                             mr: 2,
                           }}
                         >
-                          ${kulcha?.price}
+                          ${kulcha?.price} x {kulcha?.quantity}
                         </Typography>
                       </Typography>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontSize: "12px",
-                          color: "#1F2937",
-                          paddingBottom: "4px",
-                        }}
-                      >
-                        Add on items :
-                      </Typography>
-                      {additional?.map((add: any) => {
-                        return (
-                          <Box
-                            key={add?.id}
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mt: isSmallScreen ? 2 : 0,
-                              justifyContent: "space-between",
-                              width: isSmallScreen ? "100%" : "auto",
-                            }}
-                          >
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                color: "#1F2937",
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                mr: 2,
-                              }}
-                            >
-                              {add?.items?.[0]?.name} (quantity :{" "}
-                              {add?.items?.[0]?.quantity})
-                            </Typography>
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                color: "#1F2937",
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                mr: 2,
-                              }}
-                            >
-                              ${add?.items?.[0]?.price} x{" "}
-                              {add?.items?.[0]?.quantity}
-                            </Typography>
-                          </Box>
-                        );
-                      })}
+                        {
+                          additional?.length !== 0 && (
+                            <>
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontSize: "12px",
+                                  color: "#1F2937",
+                                  paddingBottom: "4px",
+                                }}
+                              >
+                                Add on items :
+                              </Typography>
+                              {additional?.map((add: any) => {
+                                return (
+                                  <Box
+                                    key={add?.id}
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      mt: isSmallScreen ? 2 : 0,
+                                      justifyContent: "space-between",
+                                      width: isSmallScreen ? "100%" : "auto",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        color: "#1F2937",
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        mr: 2,
+                                      }}
+                                    >
+                                      {add?.items?.[0]?.name} (quantity :{" "}
+                                      {add?.items?.[0]?.quantity})
+                                    </Typography>
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        color: "#1F2937",
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        mr: 2,
+                                      }}
+                                    >
+                                      ${add?.items?.[0]?.price} x{" "}
+                                      {add?.items?.[0]?.quantity}
+                                    </Typography>
+                                  </Box>
+                                );
+                              })}
+                            </>
+                          ) 
+                        }
                       <hr style={{ margin: "3px 0" }}></hr>
                       <Box
                         sx={{

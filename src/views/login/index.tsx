@@ -57,12 +57,18 @@ const filterOptions = (options: CountryCode[], state: any) =>
   );
 
 const Login: React.FC = () => {
+  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
+    null
+  );
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
+    defaultValues : {
+      countryCode : countryCodes.find((country) => country.name == "Canada")?.phone.toString()
+    }
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,9 +77,6 @@ const Login: React.FC = () => {
     useState<RecaptchaVerifier | null>(null);
   const router = useRouter();
   const { confirmationResult, setConfirmationResult } = useMenuContext();
-  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
-    null
-  );
 
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
@@ -97,7 +100,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     setDefaultCountry(
-      countryCodes.find((country) => country.name == "Canada") || null
+      countryCodes.find((country) => country.name == "India") || null
     );
   }, []);
 
