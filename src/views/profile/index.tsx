@@ -380,9 +380,9 @@ const ProfilePage: React.FC = () => {
                           sx={{ ml: 2 }}
                         />
                       )}
-                      {selectedAddress === "primary" && (
+                      {/* {selectedAddress === "primary" && (
                         <CheckCircle sx={{ color: "green", ml: 2 }} />
-                      )}
+                      )} */}
                       <IconButton onClick={handleAddressEdit} sx={{ ml: 1 }}>
                         {isEditingAddress ? <Save /> : <Edit />}
                       </IconButton>
