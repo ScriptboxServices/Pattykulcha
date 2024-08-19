@@ -138,8 +138,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                     key={item.id}
                     sx={{
                       display: "flex",
-                      alignItems: "flex-start",
-                      p: 4,
+                      alignItems: {xs:'center',lg:'flex-start'},
+                      p: {xs:2,lg:4},
                       backgroundColor: "#FFFFFF",
                       width: isSmallScreen ? "100%" : "57%",
                       boxShadow: "none",

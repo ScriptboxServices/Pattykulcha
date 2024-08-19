@@ -19,65 +19,31 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import TableHead from '@mui/material/TableHead';
 import { Typography } from '@mui/material';
 
-function CustomPaginationActionsTable() {
-  const theme = useTheme();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+// Define the row type
+interface Row {
+  orderName: string;
+  orderId: string;
+  date: string;
+  tax: string;
+  discount: string;
+}
 
-  const rows = [
-    {
-      orderName: 'Amritsari Kulcha',
-      addon: 'Add-ons: Coke, Extra Chutney',
-      dateTime: '28/06/2024, 04:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Paneer Kulcha',
-      addon: 'Add-ons: Dollar Channa, Extra Chutney',
-      dateTime: '28/06/2024, 06:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Amritsari Kulcha',
-      addon: 'Add-ons: Coke, Extra Chutney',
-      dateTime: '28/06/2024, 04:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Paneer Kulcha',
-      addon: 'Add-ons: Dollar Channa, Extra Chutney',
-      dateTime: '28/06/2024, 06:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Amritsari Kulcha',
-      addon: 'Add-ons: Coke, Extra Chutney',
-      dateTime: '28/06/2024, 04:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Paneer Kulcha',
-      addon: 'Add-ons: Dollar Channa, Extra Chutney',
-      dateTime: '28/06/2024, 06:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
-    {
-      orderName: 'Amritsari Kulcha',
-      addon: 'Add-ons: Coke, Extra Chutney',
-      dateTime: '28/06/2024, 04:30 PM',
-      address: '4417 Shaughnessy St,Port Coquitlam, BC',
-      payment: 'Received',
-    },
+function PaymentDetailsTable() {
+  const theme = useTheme();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+
+  const rows: Row[] = [
+    { orderName: 'Amritsari Kulcha', orderId: '#351', date: '28/06/2024, 04:30 PM', tax: '$3.5', discount: '$2.5' },
+    { orderName: 'Paneer Kulcha', orderId: '#352', date: '28/06/2024, 06:30 PM', tax: '$3.5', discount: '$2.5' },
+    { orderName: 'Amritsari Kulcha', orderId: '#353', date: '28/06/2024, 04:30 PM', tax: '$1.5', discount: '$2.5' },
+    { orderName: 'Paneer Kulcha', orderId: '#354', date: '28/06/2024, 06:30 PM', tax: '$3.5', discount: '$2.5' },
+    { orderName: 'Amritsari Kulcha', orderId: '#355', date: '28/06/2024, 04:30 PM', tax: '$2.5', discount: '$2.5' },
+    { orderName: 'Paneer Kulcha', orderId: '#356', date: '28/06/2024, 06:30 PM', tax: '$4.5', discount: '$2.5' },
+    { orderName: 'Amritsari Kulcha', orderId: '#357', date: '28/06/2024, 04:30 PM', tax: '$3.5', discount: '$2.5' }
   ];
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setPage(0);
@@ -95,7 +61,7 @@ function CustomPaginationActionsTable() {
     setPage(Math.max(0, Math.ceil(rows.length / rowsPerPage) - 1));
   };
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -105,18 +71,18 @@ function CustomPaginationActionsTable() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ borderRadius: 2 ,padding:4}}>
+    <TableContainer  sx={{ borderRadius: 2, bgcolor: "white",padding:4 }}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2, pl: 2, pt: 2 }}>
-        Order Details
+        Payment Details
       </Typography>
-      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+      <Table sx={{ minWidth: 500,border:"1px solid #e0e0e0",borderRadius:13 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Order Name</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Add-on</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Date & Time</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Address</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Payment</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Order ID</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Date</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Tax</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Discount</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -124,14 +90,14 @@ function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row, index) => (
-            <TableRow key={index}>
+            <TableRow key={index} sx={{ borderBottom: '1px solid #e0e0e0' }}>
               <TableCell component="th" scope="row" sx={{ paddingY: 2 }}>
                 {row.orderName}
               </TableCell>
-              <TableCell sx={{ paddingY: 2 }}>{row.addon}</TableCell>
-              <TableCell sx={{ paddingY: 2 }}>{row.dateTime}</TableCell>
-              <TableCell sx={{ paddingY: 2 }}>{row.address}</TableCell>
-              <TableCell sx={{ paddingY: 2 }}>{row.payment}</TableCell>
+              <TableCell sx={{ paddingY: 2 }}>{row.orderId}</TableCell>
+              <TableCell sx={{ paddingY: 2 }}>{row.date}</TableCell>
+              <TableCell sx={{ paddingY: 2 }}>{row.tax}</TableCell>
+              <TableCell sx={{ paddingY: 2 }}>{row.discount}</TableCell>
             </TableRow>
           ))}
 
@@ -149,14 +115,6 @@ function CustomPaginationActionsTable() {
               count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
-                },
-              }}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={() => (
@@ -199,4 +157,4 @@ function CustomPaginationActionsTable() {
   );
 }
 
-export default CustomPaginationActionsTable;
+export default PaymentDetailsTable;

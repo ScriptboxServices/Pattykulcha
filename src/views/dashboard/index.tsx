@@ -1,26 +1,19 @@
 "use client";
 
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import HomeIcon from "@mui/icons-material/Home";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import MenuIcon from "@mui/icons-material/Menu";
 import CustomPaginationActionsTable from "./orderlist";
+import PaymentDetailsTable from "./paymentdetails";
+import Image from 'next/image';
+import ViewOrders from "./ViewOrders";
+import DashboardProfile from "./Profile";
 
 const drawerWidth = 240;
 
@@ -28,11 +21,8 @@ interface Props {
   window?: () => Window;
 }
 
-// Define the components for each tab
 const Home = () => <Typography variant="h6">Home Component</Typography>;
-const OrderDetail = () => <Typography variant="h6">Order Detail Component</Typography>;
-const OrderList = () => <Typography variant="h6">Order List Component</Typography>;
-const Profile = () => <Typography variant="h6">Profile Component</Typography>;
+
 const Settings = () => <Typography variant="h6">Settings Component</Typography>;
 
 export default function ResponsiveDrawer(props: Props) {
@@ -45,31 +35,53 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   const drawerItems = [
-    { text: "Home", icon: <HomeIcon />, component: <Home /> },
-    { text: "Order Detail", icon: <AssignmentTurnedInIcon />, component: <OrderDetail /> },
-    { text: "Order List", icon: <ListAltIcon />, component: <CustomPaginationActionsTable /> },
-    { text: "Profile", icon: <PersonIcon />, component: <Profile /> },
-    { text: "Settings", icon: <SettingsIcon />, component: <Settings /> },
+    { text: "Home", icon: '/images/dashboard/home.png', component: <Home /> },
+    {
+      text: "Order Detail",
+      icon: '/images/dashboard/orderdetail.png',
+      component:<ViewOrders />,
+    },
+    {
+      text: "Order List",
+      icon: '/images/dashboard/orderlist.png',
+      component: <CustomPaginationActionsTable />,
+    },
+    {
+      text: "Payment details",
+      icon: '/images/dashboard/payment_details.png',
+      component: <PaymentDetailsTable />,
+    },
+    { text: "Profile", icon: '/images/dashboard/profile.png', component: <DashboardProfile /> },
+    { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
   ];
 
   const drawer = (
     <div>
-      <Toolbar />
-      <Divider />
       <List>
         {drawerItems.map((item, index) => (
-          <ListItem disablePadding key={item.text}>
+          <ListItem disablePadding key={item.text} sx={{ marginTop: 4 }}>
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
-                backgroundColor: activeTab === item.text ? "black" : "transparent",
-                color: activeTab === item.text ? "white" : "inherit",
+                backgroundColor: activeTab == item.text ? "black" : "transparent",
+                color: activeTab == item.text ? "white" : "inherit",
+                "&:hover": {
+                  backgroundColor: activeTab == item.text ? "black" : "transparent", // Prevent hover background change
+                  color: activeTab == item.text ? "white" : "inherit", // Prevent hover text color change
+                },
               }}
             >
               <ListItemIcon
-                sx={{ color: activeTab === item.text ? "white" : "inherit" }}
+                sx={{
+                  backgroundColor: activeTab == item.text ? "white" : "white",
+                  minWidth: "auto",
+                  color: activeTab == item.text ? "white" : "inherit",
+                  borderRadius: '20%',
+                  padding: '4px',
+                  marginRight: '12px', // This adds space between the image and text
+                }}
               >
-                {item.icon}
+                <Image src={item.icon} alt={`${item.text} icon`} width={24} height={24} />
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -79,20 +91,23 @@ export default function ResponsiveDrawer(props: Props) {
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   const renderContent = () => {
-    const activeItem = drawerItems.find((item) => item.text === activeTab);
+    const activeItem = drawerItems.find((item) => item.text == activeTab);
     return activeItem?.component;
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      
+    <Box sx={{ display: "flex", bgcolor: "white", height: "100vh" }}>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { sm: drawerWidth },
+          flexShrink: { sm: 0 },
+          bgcolor: "white",
+        }}
         aria-label="sidebar options"
       >
         <Drawer
@@ -105,7 +120,11 @@ export default function ResponsiveDrawer(props: Props) {
           }}
           sx={{
             display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              bgcolor: "white", // Sidebar background color for mobile view
+            },
           }}
         >
           {drawer}
@@ -114,7 +133,11 @@ export default function ResponsiveDrawer(props: Props) {
           variant="permanent"
           sx={{
             display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              bgcolor: "white", // Sidebar background color for permanent drawer
+            },
           }}
           open
         >
@@ -123,9 +146,12 @@ export default function ResponsiveDrawer(props: Props) {
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          bgcolor: "white",
+          paddingRight: 0, // Remove or minimize the right padding
+        }}
       >
-        <Toolbar />
         {renderContent()}
       </Box>
     </Box>
