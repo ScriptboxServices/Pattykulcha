@@ -192,7 +192,7 @@ const AboutUs: React.FC = () => {
                 <CardTitle variant="h6">Explore Our Menu</CardTitle>
                 <CardDescription variant="body1" textAlign="justify">
                   Discover the rich flavors of Punjab with our diverse
-                  PattyKulcha menu. From classic Aloo to spicy Chana, each dish
+                  Patty Kulcha menu. From classic Aloo to spicy Chana, each dish
                   is freshly made to order. We also offer unique fusion options
                   that blend traditional flavors with contemporary tastes,
                   making every meal an adventure. Whether you&apos;re in the
@@ -216,7 +216,7 @@ const AboutUs: React.FC = () => {
                   Quality and authenticity are at the heart of everything we do.
                   We stay true to the roots of Punjabi cuisine while adding a
                   contemporary touch, delivering a perfect balance of flavors in
-                  every bite. Every PattyKulcha is hand-crafted with care,
+                  every bite. Every Patty Kulcha is hand-crafted with care,
                   ensuring that each bite is a perfect balance of flavors and
                   textures, designed to bring you the comforting taste of home,
                   no matter where you are.

@@ -7,7 +7,8 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "PattyKulcha",
-  description: "PattyKulcha - Authentic Jamaican patties and deliciously stuffed kulchas delivered right to your doorstep. Experience a fusion of vibrant flavors, freshly made and served with love. Perfect for any occasion – breakfast, lunch, dinner, or a tasty snack!",
+  description:
+    "PattyKulcha - Authentic Jamaican patties and deliciously stuffed kulchas delivered right to your doorstep. Experience a fusion of vibrant flavors, freshly made and served with love. Perfect for any occasion – breakfast, lunch, dinner, or a tasty snack!",
 };
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,13 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
         <Script
           async
-          src='https://www.googletagmanager.com/gtag/js?id=G-TZBK3DHJXT'
+          src="https://www.googletagmanager.com/gtag/js?id=G-TZBK3DHJXT"
         />
-        <Script id='google-analytics'>
+        <Script id="google-analytics">
           {`window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());

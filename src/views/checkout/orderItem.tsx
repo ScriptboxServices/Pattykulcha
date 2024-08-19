@@ -1,50 +1,29 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Paper,
-  IconButton,
   Button,
   Container,
   useMediaQuery,
   useTheme,
-  Alert
+  Alert,
 } from "@mui/material";
-import { Remove, Add } from "@mui/icons-material";
-import { getCartData, calculateGrandTotal } from "@/context";
 import Image from "next/image";
-import {
-  IncludedItem,
-  Kulcha,
-  useAuthContext,
-  useMenuContext,
-} from "@/context";
+import { calculateGrandTotal, getCartData, useAuthContext, useMenuContext } from "@/context";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
-import CircularLodar from "@/components/CircularLodar";
-
-// Type guard to check if the item is an IncludedItem
-const isIncludedItem = (item: Kulcha | IncludedItem): item is IncludedItem => {
-  return (item as IncludedItem).items !== undefined;
-};
+import Link from "next/link";
 
 interface Props {
-  setLoading : React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const OrderHome: React.FC<Props> = ( {setLoading}) => {
+const OrderHome: React.FC<Props> = ({ setLoading }) => {
   const {
-    instructions,
     address,
     setCount,
     grandTotal,
@@ -61,17 +40,11 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
 
   const [error, setError] = useState(false);
 
-  // const handleIncrease = (id: string) => {
-  //   setQuantityForItem(id, (quantities[id] || 1) + 1);
-  // };
-
-  // const handleDecrease = (id: string) => {
-  //   setQuantityForItem(id, quantities[id] > 1 ? quantities[id] - 1 : 1);
-  // };
-
   const calculateTotal = (item: any, addon: any[]) => {
     const additionalTotal = addon?.reduce((acc, value) => {
-      return (acc = acc + (Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity)));
+      return (acc =
+        acc +
+        Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity));
     }, Number(item));
     return Number(additionalTotal.toFixed(2));
   };
@@ -118,16 +91,60 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
           backgroundColor: "#FAF3E0",
           flexDirection: "column",
           p: 4,
-          position: "relative", // Ensure the background images are placed correctly
+          position: "relative",
           backgroundImage:
             "url('/images/small/chana.png'), url('/images/small/chilli.png')",
-          backgroundPosition: "left top 25%, right top 25%", // Place one image on the left and the other on the right
-          backgroundSize: "200px 200px, 200px 200px", // Maintain the size of the images
+          backgroundPosition: "left top 25%, right top 25%",
+          backgroundSize: "200px 200px, 200px 200px",
           backgroundRepeat: "no-repeat, no-repeat",
           zIndex: 1,
-        }}>
-        <Container maxWidth='xl'>
-          {carts?.length !== 0 ? (
+        }}
+      >
+        <Container maxWidth="xl">
+          {carts?.length === 0 ? (
+            <Paper
+              sx={{
+                width: "100%",
+                padding: "24px",
+                backgroundColor: "#FFFFFF",
+                textAlign: "center",
+                margin: "0 auto",
+                maxWidth: "400px",
+                borderRadius: "12px",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  paddingBottom: "4px",
+                  fontWeight: 700,
+                  color: "#162548",
+                  my: 3,
+                }}
+              >
+                Your cart is empty.
+              </Typography>
+              <Link href="/home">
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    borderRadius: 20,
+                    paddingX: 4,
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Order Now
+                </Button>
+              </Link>
+            </Paper>
+          ) : (
             <>
               {carts?.map((item) => {
                 const { order } = item;
@@ -138,8 +155,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                     key={item.id}
                     sx={{
                       display: "flex",
-                      alignItems: {xs:'center',lg:'flex-start'},
-                      p: {xs:2,lg:4},
+                      alignItems: { xs: "center", lg: "flex-start" },
+                      p: { xs: 2, lg: 4 },
                       backgroundColor: "#FFFFFF",
                       width: isSmallScreen ? "100%" : "57%",
                       boxShadow: "none",
@@ -149,7 +166,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                       border: "1px solid #E5E7EB",
                       margin: "0 auto",
                       marginTop: "14px",
-                    }}>
+                    }}
+                  >
                     <Box
                       sx={{
                         display: "flex",
@@ -158,7 +176,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                         height: "auto",
                         justifyContent: "center",
                         mb: isSmallScreen ? 2 : 0,
-                      }}>
+                      }}
+                    >
                       <Image
                         src={kulcha?.image}
                         style={{
@@ -174,7 +193,7 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                     </Box>
                     <Box sx={{ ml: isSmallScreen ? 0 : 3, flex: 1 }}>
                       <Typography
-                        variant='h6'
+                        variant="h6"
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -182,34 +201,28 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                           fontWeight: "bold",
                           color: "#1F2937",
                           paddingBottom: "4px",
-                        }}>
+                        }}
+                      >
                         {kulcha?.name}
-
-                        {/* Conditionally render price */}
-                        {!(
-                          item.quantity == 1 &&
-                          (item.name == "Chana" ||
-                            item.name == "Imli Pyaz Chutney" ||
-                            item.name == "Amul Butter")
-                        ) && (
-                          <Typography
-                            variant='body1'
-                            sx={{
-                              color: "#1F2937",
-                              fontWeight: "bold",
-                              mr: 2,
-                            }}>
-                            ${kulcha?.price}
-                          </Typography>
-                        )}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            color: "#1F2937",
+                            fontWeight: "bold",
+                            mr: 2,
+                          }}
+                        >
+                          ${kulcha?.price}
+                        </Typography>
                       </Typography>
                       <Typography
-                        variant='h6'
+                        variant="h6"
                         sx={{
                           fontSize: "12px",
                           color: "#1F2937",
                           paddingBottom: "4px",
-                        }}>
+                        }}
+                      >
                         Add on items :
                       </Typography>
                       {additional?.map((add: any) => {
@@ -222,26 +235,31 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                               mt: isSmallScreen ? 2 : 0,
                               justifyContent: "space-between",
                               width: isSmallScreen ? "100%" : "auto",
-                            }}>
+                            }}
+                          >
                             <Typography
-                              variant='body1'
+                              variant="body1"
                               sx={{
                                 color: "#1F2937",
                                 fontWeight: "bold",
                                 fontSize: "14px",
                                 mr: 2,
-                              }}>
-                              {add?.items?.[0]?.name} (quantity : {add?.items?.[0]?.quantity})
+                              }}
+                            >
+                              {add?.items?.[0]?.name} (quantity :{" "}
+                              {add?.items?.[0]?.quantity})
                             </Typography>
                             <Typography
-                              variant='body1'
+                              variant="body1"
                               sx={{
                                 color: "#1F2937",
                                 fontWeight: "bold",
                                 fontSize: "14px",
                                 mr: 2,
-                              }}>
-                              ${add?.items?.[0]?.price} x {add?.items?.[0]?.quantity}
+                              }}
+                            >
+                              ${add?.items?.[0]?.price} x{" "}
+                              {add?.items?.[0]?.quantity}
                             </Typography>
                           </Box>
                         );
@@ -254,25 +272,28 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                           mt: isSmallScreen ? 2 : 0,
                           justifyContent: "space-between",
                           width: isSmallScreen ? "100%" : "auto",
-                        }}>
+                        }}
+                      >
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           Sub Total
                         </Typography>
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           ${total}
                         </Typography>
                       </Box>
@@ -283,25 +304,28 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                           mt: isSmallScreen ? 2 : 0,
                           justifyContent: "space-between",
                           width: isSmallScreen ? "100%" : "auto",
-                        }}>
+                        }}
+                      >
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           Tax
                         </Typography>
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           ${(total * 0.13).toFixed(2)}
                         </Typography>
                       </Box>
@@ -312,25 +336,28 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                           mt: isSmallScreen ? 2 : 0,
                           justifyContent: "space-between",
                           width: isSmallScreen ? "100%" : "auto",
-                        }}>
+                        }}
+                      >
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           Total
                         </Typography>
                         <Typography
-                          variant='body1'
+                          variant="body1"
                           sx={{
                             color: "#1F2937",
                             fontWeight: "bold",
                             fontSize: "14px",
                             mr: 2,
-                          }}>
+                          }}
+                        >
                           ${(total * 0.13 + total)?.toFixed(2)}
                         </Typography>
                       </Box>
@@ -342,23 +369,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                             : "flex-start",
                           width: "100%",
                           mt: 2,
-                        }}>
-                        {/* <Button
-                          onClick={() => router.push(/cart)}
-                          sx={{
-                            textTransform: "none",
-                            color: "#1F2937",
-                            fontWeight: "bold",
-                            mr: 1,
-                            backgroundColor: "#F3F4F6",
-                            borderRadius: "5px",
-                            px: 2,
-                            "&:hover": {
-                              backgroundColor: "#E5E7EB",
-                            },
-                          }}>
-                          Edit
-                        </Button> */}
+                        }}
+                      >
                         <Button
                           onClick={() => handleRemove(item.id)}
                           sx={{
@@ -371,7 +383,8 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                             "&:hover": {
                               backgroundColor: "#FECACA",
                             },
-                          }}>
+                          }}
+                        >
                           Remove
                         </Button>
                       </Box>
@@ -380,40 +393,17 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                 );
               })}
             </>
-          ) : (
-            <>
-              <Box alignItems={"center"}>
-                <Typography
-                  variant='h6'
-                  sx={{
-                    paddingBottom: "4px",
-                    textAlign: "center",
-                    fontWeight: 700,
-                    color: "#162548",
-                    my: 3,
-                  }}>
-                  Your cart is empty.
-                </Typography>
-              </Box>
-            </>
           )}
-          {/* <Box
-            sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-            <Typography
-              variant='h6'
-              sx={{ mt: 4, fontWeight: "bold", color: "#1F2937" }}>
-              Total: ${calculateGrandTotal()}
-            </Typography>
-          </Box> */}
           {pathName !== "/payment" && carts?.length !== 0 && (
             <Box
-              display='flex'
-              justifyContent='center'
-              alignItems='center'
-              minHeight='60vh'
-              bgcolor='#FAF3E0'
-              width='100%'
-              padding={2}>
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="60vh"
+              bgcolor="#FAF3E0"
+              width="100%"
+              padding={2}
+            >
               <Paper
                 elevation={3}
                 style={{
@@ -421,26 +411,27 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                   width: "100%",
                   maxWidth: "500px",
                   margin: "0",
-                }}>
-                <Box display='flex' justifyContent='space-between' gap={2}>
-                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                }}
+              >
+                <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Total
                   </Typography>
-                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
                     ${grandTotal}
                   </Typography>
                 </Box>
                 <Button
                   onClick={() => {
                     if (!address?.raw) {
-                      setError(true)
-                      return 
-                    } 
-                    setError(false)
+                      setError(true);
+                      return;
+                    }
+                    setError(false);
                     return router.push("/payment");
                   }}
                   fullWidth
-                  variant='contained'
+                  variant="contained"
                   sx={{
                     backgroundColor: "#ECAB21",
                     color: "white",
@@ -452,15 +443,15 @@ const OrderHome: React.FC<Props> = ( {setLoading}) => {
                       backgroundColor: "#FFC107",
                       color: "white",
                     },
-                  }}>
+                  }}
+                >
                   Proceed to Payment
                 </Button>
-                {
-                  error &&
-                <Alert sx={{mt:2}} variant="outlined" severity="error">
-                  Before proceeding, please update address.  
-                </Alert>
-                }
+                {error && (
+                  <Alert sx={{ mt: 2 }} variant="outlined" severity="error">
+                    Before proceeding, please update address.
+                  </Alert>
+                )}
               </Paper>
             </Box>
           )}

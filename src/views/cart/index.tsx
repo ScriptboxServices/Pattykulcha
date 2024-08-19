@@ -17,6 +17,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,7 +32,6 @@ import CircularLodar from "@/components/CircularLodar";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-
 
 import {
   drinkOptions,
@@ -75,7 +75,7 @@ export interface IncludedItem {
   items: Array<{
     name: string;
     price: number;
-    quantity : number
+    quantity: number;
   }>;
 }
 
@@ -127,40 +127,43 @@ const MenuPage = () => {
   };
 
   const handleAddItem = (itemName: string) => {
-    const itemId = uuidv4();
-    // Determine the price for the item
-    const drink = drinkOptions.find((drink) => drink.name == itemName);
-    const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
-    const tea = teaOptions.find((tea) => tea.name == itemName);
-    const coffee = coffeeOptions.find((coffee) => coffee.name == itemName);
+    const existingItem = includedItems2.find((includedItem) =>
+      includedItem.items.some((item: any) => item.name === itemName)
+    );
 
-    const price =
-      drink?.price ||
-      lassi?.price ||
-      tea?.price ||
-      coffee?.price ||
-      (itemName == "Chana"
-        ? 1.5
-        : itemName == "Imli Pyaz Chutney"
-        ? 1.5
-        : itemName == "Amul Butter"
-        ? 2.5
-        : itemName == "Normal Butter"
-        ? 1.5
-        : itemName == "Pickle"
-        ? 1 // Assuming the price for Pickle is 1.5
-        : 0); // Default price if item is not in the above lists
+    if (existingItem) {
+      // If item already exists, remove it
+      handleRemoveItem(existingItem.id);
+    } else {
+      // Otherwise, add it
+      const itemId = uuidv4();
+      const drink = drinkOptions.find((drink) => drink.name == itemName);
+      const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
+      const tea = teaOptions.find((tea) => tea.name == itemName);
+      const coffee = coffeeOptions.find((coffee) => coffee.name == itemName);
 
-    const newItem = {
-      id: itemId,
-      items: [{ name: itemName, price,quantity : 1 }],
-    };
+      const price =
+        drink?.price ||
+        lassi?.price ||
+        tea?.price ||
+        coffee?.price ||
+        (itemName == "Chana"
+          ? 1.5
+          : itemName == "Imli Pyaz Chutney"
+          ? 1.5
+          : itemName == "Amul Butter"
+          ? 2.5
+          : itemName == "Normal Butter"
+          ? 1.5
+          : itemName == "Pickle"
+          ? 1 // Assuming the price for Pickle is 1.5
+          : 0); // Default price if item is not in the above lists
 
-    if (
-      !includedItems2.some((includedItem) =>
-        includedItem.items.some((item : any) => item.name == itemName)
-      )
-    ) {
+      const newItem = {
+        id: itemId,
+        items: [{ name: itemName, price, quantity: 1 }],
+      };
+
       setIncludedItems2([...includedItems2, newItem]);
       localStorage.setItem(
         "includedItems2",
@@ -189,35 +192,29 @@ const MenuPage = () => {
     handleAddItem(coffeeItem!.name);
   };
 
-  const handleDecreaseQTY = (_id : string) => {
-    const arr = [...includedItems2]
-    arr.forEach(item => {
-      if(item.id === _id){
-        item.items[0].quantity = item.items[0].quantity - 1 
+  const handleDecreaseQTY = (_id: string) => {
+    const arr = [...includedItems2];
+    arr.forEach((item) => {
+      if (item.id === _id) {
+        item.items[0].quantity = item.items[0].quantity - 1;
       }
-    })
+    });
 
-    setIncludedItems2([...arr])
-    localStorage.setItem(
-      "includedItems2",
-      JSON.stringify([...arr])
-    );
-  }
+    setIncludedItems2([...arr]);
+    localStorage.setItem("includedItems2", JSON.stringify([...arr]));
+  };
 
-  const handleIncreaseQTY = (_id : string) => {
-    const arr = [...includedItems2]
-    arr.forEach(item => {
-      if(item.id === _id){
-        item.items[0].quantity = item.items[0].quantity + 1 
+  const handleIncreaseQTY = (_id: string) => {
+    const arr = [...includedItems2];
+    arr.forEach((item) => {
+      if (item.id === _id) {
+        item.items[0].quantity = item.items[0].quantity + 1;
       }
-    })
+    });
 
-    setIncludedItems2([...arr])
-    localStorage.setItem(
-      "includedItems2",
-      JSON.stringify([...arr])
-    );
-  }
+    setIncludedItems2([...arr]);
+    localStorage.setItem("includedItems2", JSON.stringify([...arr]));
+  };
 
   const handleRemoveItem = (itemId: string) => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
@@ -363,33 +360,6 @@ const MenuPage = () => {
             >
               {kulcha?.desc}
             </Typography>
-            <Box sx={{ marginTop: "3.2rem" }}>
-              <ToggleButtonGroup
-                value={size}
-                exclusive
-                onChange={handleSize}
-                aria-label="size"
-              >
-                <Button
-                  value="regular"
-                  aria-label="regular"
-                  sx={{
-                    color: "black",
-                    // backgroundColor: "black",
-                    border: "2px solid black",
-                    borderRadius: "12px",
-                    padding: { xs: "6px 12px", sm: "8px 20px" }, // Adjust padding as needed
-                    "&:hover": {
-                      color: "black",
-
-                      // backgroundColor: "black",
-                    },
-                  }}
-                >
-                  Regular Size
-                </Button>
-              </ToggleButtonGroup>
-            </Box>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -523,13 +493,15 @@ const MenuPage = () => {
                 ))
               )}
             </Grid>
-            <Typography
-              variant="h4"
-              gutterBottom
-              sx={{ color: "#021e3a", marginTop: 4 }}
-            >
-              Additional items
-            </Typography>
+            {includedItems2.length > 0 && (
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{ color: "#021e3a", marginTop: 4 }}
+              >
+                Additional items
+              </Typography>
+            )}
             <Grid container spacing={2} justifyContent="center">
               {includedItems2.length == 0 ? (
                 <Grid item>
@@ -949,7 +921,21 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add a Drink</DialogTitle>
+        <DialogTitle>
+          Add a Drink{" "}
+          <IconButton
+            aria-label="close"
+            onClick={handleDrinkDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             {drinkOptions.map((drink) => (
@@ -958,7 +944,7 @@ const MenuPage = () => {
                   onClick={() => handleDrinkSelect(drink.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === drink.name)
+                      item.items.some((i: any) => i.name === drink.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -992,7 +978,7 @@ const MenuPage = () => {
                       ${drink.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === drink.name)
+                      item.items.some((i: any) => i.name === drink.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1026,7 +1012,21 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add a Lassi</DialogTitle>
+        <DialogTitle>
+          Add a Lassi
+          <IconButton
+            aria-label="close"
+            onClick={handleLassiDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             {lassiOptions.map((lassi) => (
@@ -1035,7 +1035,7 @@ const MenuPage = () => {
                   onClick={() => handleLassiSelect(lassi.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === lassi.name)
+                      item.items.some((i: any) => i.name === lassi.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1076,7 +1076,7 @@ const MenuPage = () => {
                       ${lassi.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === lassi.name)
+                      item.items.some((i: any) => i.name === lassi.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1110,7 +1110,21 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add a Tea</DialogTitle>
+        <DialogTitle>
+          Add a Tea
+          <IconButton
+            aria-label="close"
+            onClick={handleTeaDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             {teaOptions.map((tea) => (
@@ -1119,7 +1133,7 @@ const MenuPage = () => {
                   onClick={() => handleTeaSelect(tea.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === tea.name)
+                      item.items.some((i: any) => i.name === tea.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1160,7 +1174,7 @@ const MenuPage = () => {
                       ${tea.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === tea.name)
+                      item.items.some((i: any) => i.name === tea.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
@@ -1194,7 +1208,21 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add a Coffee</DialogTitle>
+        <DialogTitle>
+          Add a Coffee
+          <IconButton
+            aria-label="close"
+            onClick={handleCoffeeDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             {coffeeOptions.map((coffee) => (
@@ -1203,7 +1231,7 @@ const MenuPage = () => {
                   onClick={() => handleCoffeeSelect(coffee.name)}
                   sx={{
                     border: includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === coffee.name)
+                      item.items.some((i: any) => i.name === coffee.name)
                     )
                       ? "2px solid green"
                       : "1px solid #ddd",
@@ -1244,7 +1272,7 @@ const MenuPage = () => {
                       ${coffee.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
-                      item.items.some((i : any) => i.name === coffee.name)
+                      item.items.some((i: any) => i.name === coffee.name)
                     ) && (
                       <CheckCircleIcon
                         sx={{
