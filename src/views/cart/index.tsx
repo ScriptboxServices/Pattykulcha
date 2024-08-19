@@ -84,19 +84,14 @@ export interface IncludedItem {
 
 const MenuPage = () => {
   const {
-    size,
     setSize,
-    price,
     setPrice,
-    cal,
     kulcha,
     setCal,
     includedItems2,
     setIncludedItems2,
     includedItems1,
     extraItems,
-    setPlasticware,
-    selectedkulchas,
     count,
     setCount,
     selectedDrinks,
