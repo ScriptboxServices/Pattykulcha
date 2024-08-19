@@ -271,7 +271,7 @@ const ProfilePage: React.FC = () => {
                       alignItems: "center",
                       mb: 2,
                     }}>
-                    <Box sx={{ position: "relative" }}>
+                    {/* <Box sx={{ position: "relative" }}>
                       <Avatar
                         sx={{ width: 80, height: 80, mb: 2 }}
                         src={uploadedImage ? uploadedImage : undefined}>
@@ -305,7 +305,7 @@ const ProfilePage: React.FC = () => {
                           <Edit />
                         </IconButton>
                       )}
-                    </Box>
+                    </Box> */}
                     <Typography variant='h5' component='h2' gutterBottom>
                       User Profile
                     </Typography>

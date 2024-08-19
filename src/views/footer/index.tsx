@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
             <Link href="https://www.facebook.com/people/PattyKulcha/61564745060670/" target="_blank" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><FacebookIcon /></Link>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><TwitterIcon /></Link>
             <Link href="https://www.instagram.com/pattykulcha/?utm_source=ig_web_button_share_sheet" target="_blank" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><InstagramIcon /></Link>
-            <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><LinkedInIcon /></Link>
+            <Link href="https://www.linkedin.com/in/patty-kulcha-ba6377323/" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><LinkedInIcon /></Link>
             <Link href="#" color="inherit" sx={{ mx: 1, fontSize: '1.5rem' }}><TikTokIcon /></Link>
           </Box>
         </Box>

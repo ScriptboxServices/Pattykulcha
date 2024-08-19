@@ -91,10 +91,10 @@ const MenuSection = () => {
   return (
     <Box
       sx={{
-        padding: 4,
+        paddingLeft: {xs:1.5,sm:3,md:4,lg:4},
         backgroundColor: "#FFF8E1",
         position: "relative",
-        paddingTop: 12,
+        paddingTop: 10,
       }}
     >
       <Box sx={{ textAlign: "center" }}>
@@ -106,8 +106,6 @@ const MenuSection = () => {
           OUR MENU
         </Typography>
       </Box>
-
-      
 
       <Container sx={{ marginTop: 12, textAlign: "center" }}>
         <Grid container spacing={7}>
@@ -122,7 +120,7 @@ const MenuSection = () => {
             >
               <Card
                 sx={{
-                  maxWidth: 345,
+                  maxWidth: { xs: "100%", sm: 345, md: 345 },
                   height: "100%",
                   margin: "0 auto",
                   borderRadius: "20px",

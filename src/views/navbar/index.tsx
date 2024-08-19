@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   IconButton,
   Box,
@@ -18,6 +18,7 @@ import {
   Badge,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -55,10 +56,10 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     await auth.signOut();
-    localStorage.removeItem('address')
-    localStorage.removeItem('instructions')
-    localStorage.removeItem('kulcha')
-    localStorage.removeItem('includedItems2')
+    localStorage.removeItem("address");
+    localStorage.removeItem("instructions");
+    localStorage.removeItem("kulcha");
+    localStorage.removeItem("includedItems2");
     router.push("/login");
   };
 
@@ -70,72 +71,87 @@ const Navbar: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleLinkClick = () => {
+    setMobileOpen(false);
+  };
+
   const drawer = (
     <Box sx={{ width: 250 }}>
-      <Typography variant="h6" sx={{ p: 2 }}>
-        PATTYKULCHA
-      </Typography>
+      <Link href="/home" passHref>
+        <Image
+          src="/images/logo.jpg"
+          alt="Logo"
+          width={120} // Adjust width as needed
+          height={40} // Adjust height as needed
+          style={{ cursor: "pointer" }}
+        />
+      </Link>
       <Divider />
       <List>
-        {
-          isLoggedIn &&
+        {isLoggedIn && (
           <Link href="/profile" passHref>
-            <ListItem button>
+            <ListItem button onClick={handleLinkClick}>
               <ListItemText primary="My Profile" />
             </ListItem>
           </Link>
-        }
-            <Link href={`/home`} passHref>
-            <ListItem button>
-              <ListItemText primary={'Menu'} />
-            </ListItem>
-          </Link>
-          <Link href={`/about-us`} passHref>
-            <ListItem button>
-              <ListItemText primary={'About'} />
-            </ListItem>
-          </Link>
+        )}
+        <Link href="/home" passHref>
+          <ListItem button onClick={handleLinkClick}>
+            <ListItemText primary="Menu" />
+          </ListItem>
+        </Link>
+        <Link href="/about-us" passHref>
+          <ListItem button onClick={handleLinkClick}>
+            <ListItemText primary="About" />
+          </ListItem>
+        </Link>
       </List>
       <Divider />
       <List>
         {!isLoggedIn ? (
           <ListItem button>
-              <Button
-                onClick={(e) => router.push('/login')}
-                sx={{
-                  textTransform:'none',
-                  backgroundColor: "#ECAB21",
+            <Button
+              onClick={(e) => {
+                handleLinkClick();
+                router.push("/login");
+              }}
+              sx={{
+                textTransform: "none",
+                backgroundColor: "#ECAB21",
+                color: "white",
+                paddingX: 4,
+                width: "100%",
+                paddingY: 1,
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#FFC107",
                   color: "white",
-                  paddingX: 4,
-                  width:'100%',
-                  paddingY: 1,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
-                    color: "white",
-                  },
-                }}
-              >
-                Log In
-              </Button>
+                },
+              }}
+            >
+              Log In
+            </Button>
           </ListItem>
         ) : (
           <ListItem button>
             <Button
-            sx={{
-              textTransform:'none',
-              backgroundColor: "#ECAB21",
-              color: "white",
-              paddingX: 4,
-              width:'100%',
-              paddingY: 1,
-              fontWeight: "bold",
-              "&:hover": {
-                backgroundColor: "#FFC107",
+              sx={{
+                textTransform: "none",
+                backgroundColor: "#ECAB21",
                 color: "white",
-              },
-            }}
-              onClick={handleLogout}
+                paddingX: 4,
+                width: "100%",
+                paddingY: 1,
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#FFC107",
+                  color: "white",
+                },
+              }}
+              onClick={() => {
+                handleLinkClick();
+                handleLogout();
+              }}
             >
               Logout
             </Button>
@@ -149,14 +165,17 @@ const Navbar: React.FC = () => {
     <>
       <StyledAppBar position="static">
         <StyledToolbar>
-          <Typography
-            sx={{
-              color: "#333333",
-              fontWeight: "bold",
-            }}
-          >
-            PATTYKULCHA
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Link href="/home" passHref>
+              <Image
+                src="/images/logo.jpg"
+                alt="Logo"
+                width={120} // Adjust width as needed
+                height={40} // Adjust height as needed
+                style={{ cursor: "pointer" }}
+              />
+            </Link>
+          </Box>
           <Box
             sx={{
               flexGrow: 1,
@@ -172,8 +191,7 @@ const Navbar: React.FC = () => {
             </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {
-              isLoggedIn &&
+            {isLoggedIn && (
               <Link href="/checkout" passHref>
                 <IconButton
                   edge="end"
@@ -190,7 +208,7 @@ const Navbar: React.FC = () => {
                   </Badge>
                 </IconButton>
               </Link>
-            }
+            )}
             <IconButton
               edge="start"
               color="inherit"
@@ -201,17 +219,16 @@ const Navbar: React.FC = () => {
               <MenuIcon />
             </IconButton>
             {/* Desktop Links */}
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+            <Box
+              sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+            >
               {!isLoggedIn ? (
                 <Link href="/login" passHref>
                   <NavButton>Log In</NavButton>
                 </Link>
               ) : (
                 <>
-                  <IconButton
-                    onClick={handleMenuOpen}
-                    sx={{ color: "black" }}
-                  >
+                  <IconButton onClick={handleMenuOpen} sx={{ color: "black" }}>
                     <AccountCircleIcon />
                   </IconButton>
                   <Menu
@@ -221,7 +238,7 @@ const Navbar: React.FC = () => {
                     PaperProps={{
                       style: {
                         marginTop: "5px",
-                        marginRight:"10px"
+                        marginRight: "10px",
                       },
                     }}
                   >

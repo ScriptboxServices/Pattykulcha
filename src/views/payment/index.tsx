@@ -89,8 +89,8 @@ const PaymentPage = () => {
   return (
     <>
         <CircularLodar isLoading={loading} />
-        <OrderPage setLoading = {setLoading}/>
-        <OrderHome setLoading = {setLoading}/>
+        {/* <OrderPage setLoading = {setLoading}/>
+        <OrderHome setLoading = {setLoading}/> */}
         <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading}/>
     </>
   )

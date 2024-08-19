@@ -13,7 +13,7 @@ const BackgroundContainer = styled(Box)`
   color: #000000;
 
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 0.2em;
   }
 `;
 
@@ -35,7 +35,8 @@ const TitleImage = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 70%;
+    margin-top: 6;
+    width: 40%;
   }
 `;
 
@@ -59,7 +60,7 @@ const Card = styled(Box)`
   }
 
   @media (max-width: 768px) {
-    max-width: 100%;
+    max-width: 130%;
   }
 `;
 
@@ -80,14 +81,6 @@ const CardTitle = styled(Typography)`
 const CardDescription = styled(Typography)`
   color: #000000;
 `;
-
-const OrderButton = styled(Button)({
-  backgroundColor: "#f39c12",
-  color: "white",
-  "&:hover": {
-    backgroundColor: "#e67e22",
-  },
-});
 
 const AboutUs: React.FC = () => {
   return (
@@ -129,9 +122,9 @@ const AboutUs: React.FC = () => {
             We Champion Restaurants from Coast to Coast
           </Typography>
           <Typography variant="body1" paragraph>
-            Restaurants sit at the heart of communities. It &apos; our mission to
-            strengthen their roots, deepen their connections, and increase the
-            positive impact they have on people and society.
+            Restaurants sit at the heart of communities. It &apos; our mission
+            to strengthen their roots, deepen their connections, and increase
+            the positive impact they have on people and society.
           </Typography>
           <Link href="/home" passHref>
             <Button
@@ -155,7 +148,15 @@ const AboutUs: React.FC = () => {
           </Link>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ position: "relative", height: { xs: 300, sm: 400, md: 630 }, width: "100%" }}>
+          <Box
+            sx={{
+              position: "relative",
+              height: { xs: 0, sm: 400, md: 630 }, // Set height to 0 for mobile sizes to effectively hide it
+              width: { xs: 0, sm: "100%", md: "70%" }, // Set width to 0 for mobile sizes
+              display: { xs: "none", sm: "block" }, // Hide on mobile and show on larger screens
+              overflow: "hidden", // Optional: hides any overflow content
+            }}
+          >
             <Image
               src="/images/about-us/img.webp"
               alt="Restaurant delivery scene"
@@ -189,7 +190,7 @@ const AboutUs: React.FC = () => {
                   />
                 </CardImage>
                 <CardTitle variant="h6">Explore Our Menu</CardTitle>
-                <CardDescription variant="body1">
+                <CardDescription variant="body1" textAlign="justify">
                   Discover the rich flavors of Punjab with our diverse
                   PattyKulcha menu. From classic Aloo to spicy Chana, each dish
                   is freshly made to order. We also offer unique fusion options
@@ -211,7 +212,7 @@ const AboutUs: React.FC = () => {
                   />
                 </CardImage>
                 <CardTitle variant="h6">Our Food</CardTitle>
-                <CardDescription variant="body1">
+                <CardDescription variant="body1" textAlign="justify">
                   Quality and authenticity are at the heart of everything we do.
                   We stay true to the roots of Punjabi cuisine while adding a
                   contemporary touch, delivering a perfect balance of flavors in

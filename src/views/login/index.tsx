@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
+import Image from "next/image";
 import * as yup from "yup";
 import {
   Box,
@@ -10,18 +12,21 @@ import {
   Container,
   TextField,
   Typography,
-  Link,
   CssBaseline,
   Grid,
   Autocomplete,
   InputAdornment,
   CircularProgress,
-  Alert
+  Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Icon, IconifyIcon } from "@iconify/react";
 import { countryCodes } from "@/utils/constants";
-import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
 import { auth } from "@/firebase";
 import { useMenuContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
@@ -61,15 +66,23 @@ const Login: React.FC = () => {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
+  const [error, setError] = useState<string>("");
+  const [recaptchaVerifier, setRecaptchaVerifier] =
+    useState<RecaptchaVerifier | null>(null);
   const router = useRouter();
   const { confirmationResult, setConfirmationResult } = useMenuContext();
+  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
+    null
+  );
 
   useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-      size: 'invisible'
-    });
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+      }
+    );
 
     setRecaptchaVerifier(recaptchaVerifier);
     return () => {
@@ -82,23 +95,33 @@ const Login: React.FC = () => {
     router.push("/verification");
   }, [confirmationResult]);
 
+  useEffect(() => {
+    setDefaultCountry(
+      countryCodes.find((country) => country.name == "Canada") || null
+    );
+  }, []);
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setError('');
+    setError("");
     if (!recaptchaVerifier) return;
 
     try {
       setLoading(true);
-      const confirmation = await signInWithPhoneNumber(auth, `+${data?.countryCode}${data?.phoneNumber}`, recaptchaVerifier);
+      const confirmation = await signInWithPhoneNumber(
+        auth,
+        `+${data?.countryCode}${data?.phoneNumber}`,
+        recaptchaVerifier
+      );
       setLoading(false);
 
       setConfirmationResult(confirmation);
     } catch (err: any) {
       console.log(err.code);
       setLoading(false);
-      if (err.code == 'auth/invalid-phone-number') {
-        setError('Invalid phone number.');
+      if (err.code == "auth/invalid-phone-number") {
+        setError("Invalid phone number.");
       } else {
-        setError('Failed to send otp.');
+        setError("Failed to send otp.");
       }
     }
   };
@@ -137,16 +160,22 @@ const Login: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Typography component="h1" variant="h5">
-              Pattykulcha
-            </Typography>
+            <Link href="/home" passHref>
+              <Image
+                src="/images/logo.jpg"
+                alt="Logo"
+                width={160} // Adjust width as needed
+                height={70} // Adjust height as needed
+                style={{ cursor: "pointer" }}
+              />
+            </Link>
             <Typography
               component="h2"
               variant="subtitle1"
               align="left"
               sx={{ width: "100%", mt: 3 }}
             >
-              Welcome to Pattykulcha!
+              Welcome to Patty kulcha!
             </Typography>
             <Typography
               variant="body2"
@@ -159,7 +188,7 @@ const Login: React.FC = () => {
             <Box
               component="form"
               noValidate
-              sx={{ mt: 1, width: '100%' }}
+              sx={{ mt: 1, width: "100%" }}
               onSubmit={handleSubmit(onSubmit)}
             >
               <Grid container spacing={1}>
@@ -170,7 +199,6 @@ const Login: React.FC = () => {
                     render={({ field: { value, onChange } }) => (
                       <Autocomplete
                         fullWidth
-                        defaultValue={countryCodes[0]}
                         options={countryCodes}
                         filterOptions={filterOptions}
                         getOptionLabel={(option: CountryCode) =>
@@ -178,14 +206,18 @@ const Login: React.FC = () => {
                         }
                         renderOption={(props, option: CountryCode) => (
                           <Box component="li" {...props}>
-                            <Icon icon={option.icon} width={20} height={20} />
+                            <Icon
+                              icon={option.icon as IconifyIcon}
+                              width={20}
+                              height={20}
+                            />
                             {option.name} ({option.phone})
                           </Box>
                         )}
                         value={
                           countryCodes.find(
                             (code) => code.phone == Number(value)
-                          ) || null
+                          ) || defaultCountry
                         }
                         onChange={(event, newValue) =>
                           onChange(newValue?.phone ?? "")
@@ -204,10 +236,11 @@ const Login: React.FC = () => {
                                   <InputAdornment position="start">
                                     <Icon
                                       icon={
-                                        countryCodes.find(
+                                        (countryCodes.find(
                                           (option) =>
                                             option.phone == Number(value)
-                                        )?.icon || ""
+                                        )?.icon ||
+                                          defaultCountry?.icon) as IconifyIcon
                                       }
                                     />
                                   </InputAdornment>
@@ -248,8 +281,8 @@ const Login: React.FC = () => {
                         }}
                         InputLabelProps={{ style: { color: "black" } }}
                         sx={{
-                          '@media (max-width: 600px)': {
-                            marginTop: '16px',
+                          "@media (max-width: 600px)": {
+                            marginTop: "16px",
                           },
                         }}
                         onKeyDown={(e) => {

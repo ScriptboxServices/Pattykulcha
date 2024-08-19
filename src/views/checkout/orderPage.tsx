@@ -20,11 +20,12 @@ import SaveIcon from "@mui/icons-material/Save";
 import { useMenuContext } from "@/context";
 
 interface Props {
-  setLoading : React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const OrderPage:React.FC<Props> = ({setLoading}) => {
-  const { address, setAddress,instructions,setInstructions } = useMenuContext();
+const OrderPage: React.FC<Props> = ({ setLoading }) => {
+  const { address, setAddress, instructions, setInstructions } =
+    useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
@@ -56,7 +57,7 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
       );
       setIsEditingAddress(false);
     } else if (field == "instructions") {
-      localStorage.setItem('instructions',instructions)
+      localStorage.setItem("instructions", instructions);
       setIsEditingInstructions(false);
     }
   };
@@ -96,7 +97,7 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
         >
           <Box sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}>
             <Link
-              href="#"
+              href="/home"
               underline="none"
               sx={{ display: "flex", alignItems: "center", mb: 3 }}
             >
@@ -148,13 +149,22 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
           </Box>
 
           <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body1" color="text.secondary">
+                Delivery Time: 30 To 45 Minutes
+              </Typography>
+            </Box>
             {selectedOption == "delivery" && (
               <Box>
                 <Box sx={{ mb: 2 }}>
                   {isEditingAddress ? (
-                    <Box display="flex" sx={{gap:'17px'}} alignItems="center">
+                    <Box
+                      display="flex"
+                      sx={{ gap: "17px" }}
+                      alignItems="center"
+                    >
                       <Autocomplete
-                        apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY }
+                        apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
                         style={{
                           outline: "none",
                           color: "#8F8996",
@@ -168,8 +178,7 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
                         // required={true}
                         // placeholder='Search the address'
                         onPlaceSelected={(place) => {
-
-                          if(!place) return 
+                          if (!place) return;
 
                           let zipCode: string;
                           let city: string;
@@ -181,14 +190,16 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
                           ) {
                             for (
                               let j = 0;
-                              j < (place.address_components![i].types.length ?? 0 );
+                              j <
+                              (place.address_components![i].types.length ?? 0);
                               j++
                             ) {
                               if (
                                 place.address_components![i].types[j] ==
                                 "postal_code"
                               ) {
-                                zipCode = place.address_components![i].long_name;
+                                zipCode =
+                                  place.address_components![i].long_name;
                               }
                               if (
                                 place?.address_components![i].types[j] ==
@@ -206,11 +217,14 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
                           }
 
                           const geocoder = new window.google.maps.Geocoder();
-                          const post = place.geometry?.location
+                          const post = place.geometry?.location;
 
-                          if(!post) return
+                          if (!post) return;
 
-                          const latlng = new window.google.maps.LatLng(post.lat(),post.lng());
+                          const latlng = new window.google.maps.LatLng(
+                            post.lat(),
+                            post.lng()
+                          );
                           geocoder.geocode(
                             { location: latlng },
                             (results: any, status: any) => {
@@ -293,12 +307,6 @@ const OrderPage:React.FC<Props> = ({setLoading}) => {
                       </IconButton>
                     </Typography>
                   )}
-                </Box>
-
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body1" color="text.secondary">
-                    Delivery Time: 30 To 45 Minutes
-                  </Typography>
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
