@@ -9,133 +9,145 @@ import {
   Alert,
   styled,
   Container,
-  CircularProgress
 } from "@mui/material";
 import Link from "next/link";
 import { useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
-import { auth, db } from "@/firebase";
-import { doc , getDoc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
-const StyledRoot = styled(Box)({
+import { auth, db } from "@/firebase";
+
+const StyledRoot = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
   height: "100vh",
   margin: "0 auto",
-  width: "30%",
-});
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    width: "80%",
+  },
+  [theme.breakpoints.up("md")]: {
+    width: "60%",
+  },
+  [theme.breakpoints.up("lg")]: {
+    width: "40%",
+  },
+}));
 
 const StyledForm = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  padding: theme.spacing(4),
+  padding: theme.spacing(2),
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[6],
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    padding: theme.spacing(3),
+  },
+  [theme.breakpoints.up("md")]: {
+    padding: theme.spacing(4),
+  },
 }));
 
 const StyledCodeInput = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   "& > *": {
-    margin: theme.spacing(0, 1),
+    margin: theme.spacing(0.5),
+    width: "40px",
+    [theme.breakpoints.up("sm")]: {
+      width: "50px",
+    },
   },
 }));
 
 const VerificationPage: React.FC = () => {
-  const [verificationCode, setVerificationCode] = useState<string[]>(
-    Array(6).fill("")
-  );
-
+  const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const {confirmationResult,setConfirmationResult} = useMenuContext()
-  const [loading,setLoading] = useState<boolean>(false) 
-  const [error,setError] = useState<string>('') 
+  const { confirmationResult, setConfirmationResult } = useMenuContext();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
-  const handleCodeChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newCode = [...verificationCode];
-      newCode[index] = event.target.value;
-      setVerificationCode(newCode);
+  const handleCodeChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newCode = [...verificationCode];
+    newCode[index] = event.target.value;
+    setVerificationCode(newCode);
 
-      // Automatically focus the next input if the current input has a value and it's not the last input
-      if (event.target.value && index < verificationCode.length - 1) {
-        inputRefs.current[index + 1]?.focus();
-      }
-    };
+    if (event.target.value && index < verificationCode.length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
 
-  const handleKeyDown =
-    (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Backspace" && !verificationCode[index] && index > 0) {
-        // If backspace is pressed and the current input is empty, move focus to the previous input
-        inputRefs.current[index - 1]?.focus();
-      }
-    };
+  const handleKeyDown = (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Backspace" && !verificationCode[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
 
-    useEffect(() => {
-      if(verificationCode.join('').length === 6){
-        submitOtp()
-      }
-    },[verificationCode])
+  useEffect(() => {
+    if (verificationCode.join("").length === 6) {
+      submitOtp();
+    }
+  }, [verificationCode]);
 
-    const submitOtp = async  () => {
-      if(verificationCode.join('').length !== 6){
-        setError('Please enter complete otp.')
-        return
-      }
-      
-      if(!confirmationResult){
-        return router.push("/login");
-      }
-      
-      try{
-        setLoading(true)
-        const result = await confirmationResult?.confirm(verificationCode?.join(''))
-        const {user} = result
-        if(user){
-          const docRef = doc(db,'users',user.uid)
+  const submitOtp = async () => {
+    if (verificationCode.join("").length !== 6) {
+      setError("Please enter complete OTP.");
+      return;
+    }
 
-          const find = await getDoc(docRef)
-          if(!find.exists()){
-            await setDoc(docRef,{
-              phoneNumber : user?.phoneNumber,
-              profile:'',
-              email:'',
-              name : '',
-              address: {
-                raw : '',
-                seperate : {
-                  state: '',
-                  city: '',
-                  postal_code:'',
-                  line1:'',
-                }
-              }
-            })
-          }
-        }
-        setConfirmationResult(null)
-        setLoading(false)
-        router.push("/home")
-      }catch(err : any) {
-        console.log(err.code);
-        setLoading(false)
-        if(err.code === 'auth/invalid-verification-code'){
-          setError('Invalid verification code.')
+    if (!confirmationResult) {
+      return router.push("/login");
+    }
+
+    try {
+      setLoading(true);
+      const result = await confirmationResult?.confirm(verificationCode?.join(""));
+      const { user } = result;
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+
+        const find = await getDoc(docRef);
+        if (!find.exists()) {
+          await setDoc(docRef, {
+            phoneNumber: user?.phoneNumber,
+            profile: "",
+            email: "",
+            name: "",
+            address: {
+              raw: "",
+              separate: {
+                state: "",
+                city: "",
+                postal_code: "",
+                line1: "",
+              },
+            },
+          });
         }
       }
-    } 
+      setConfirmationResult(null);
+      setLoading(false);
+      router.push("/home");
+    } catch (err: any) {
+      console.log(err.code);
+      setLoading(false);
+      if (err.code === "auth/invalid-verification-code") {
+        setError("Invalid verification code.");
+      }
+    }
+  };
 
-  const handleVerify = (e:any) => {
-    e.preventDefault()
-    submitOtp()
+  const handleVerify = (e: any) => {
+    e.preventDefault();
+    submitOtp();
   };
 
   return (
     <>
-      <CircularLodar isLoading={loading} />    
+      <CircularLodar isLoading={loading} />
       <Container
         component="main"
         maxWidth="xl"
@@ -146,7 +158,8 @@ const VerificationPage: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
-          padding: 2,
+          padding: { xs: 2, sm: 4, md: 4 },
+          overflow: "hidden",
         }}
       >
         <StyledRoot>
@@ -172,7 +185,6 @@ const VerificationPage: React.FC = () => {
                   inputProps={{ maxLength: 1 }}
                   inputRef={(el) => (inputRefs.current[index] = el)}
                   sx={{
-                    width: "50px",
                     margin: 0.5,
                     border: "1px solid black",
                     borderRadius: 1,
@@ -192,9 +204,7 @@ const VerificationPage: React.FC = () => {
                 />
               ))}
             </StyledCodeInput>
-            <Link href='/home'>
             <Box mt={2}>
-      
               <Button
                 variant="contained"
                 color="primary"
@@ -214,11 +224,8 @@ const VerificationPage: React.FC = () => {
               >
                 Confirm
               </Button>
-        {
-                  error && <Alert sx={{mt:2}} severity="error">{error}</Alert>
-                }
+              {error && <Alert sx={{ mt: 2 }} severity="error">{error}</Alert>}
             </Box>
-            </Link>
           </StyledForm>
         </StyledRoot>
       </Container>

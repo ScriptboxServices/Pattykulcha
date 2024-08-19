@@ -399,10 +399,9 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              minHeight="60vh"
+              minHeight="40vh"
               bgcolor="#FAF3E0"
-              width="100%"
-              padding={2}
+              width="100%"              
             >
               <Paper
                 elevation={3}

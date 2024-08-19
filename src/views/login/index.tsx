@@ -320,7 +320,7 @@ const Login: React.FC = () => {
               >
                 Login
               </Button>
-              {error && <Alert severity="error">{error}</Alert>}
+              {error && <Alert severity="error" className=" mt-2">{error}</Alert>}
               {/* <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                 New on our platform?{" "}
                 <Link
