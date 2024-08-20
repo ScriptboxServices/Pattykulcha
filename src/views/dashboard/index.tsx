@@ -52,7 +52,7 @@ export default function ResponsiveDrawer(props: Props) {
       component: <PaymentDetailsTable />,
     },
     { text: "Profile", icon: '/images/dashboard/profile.png', component: <DashboardProfile /> },
-    { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
+    // { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
   ];
 
   const drawer = (

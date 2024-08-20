@@ -419,8 +419,8 @@ const MenuPage = () => {
                       height: {
                         xs: "200px",
                         sm: "220px",
-                        md: "250px",
-                        lg: "250px",
+                        md: "230px",
+                        lg: "230px",
                       },
                       width: { xs: "150px", sm: "175px" },
                       margin: "1rem",
@@ -451,10 +451,10 @@ const MenuPage = () => {
                         position: "relative", // Maintain position relative
                         cursor: "pointer", // Pointer cursor
                         height: {
-                          xs: "200px",
-                          sm: "220px",
-                          md: "250px",
-                          lg: "250px",
+                          xs: "180px",
+                          sm: "200px",
+                          md: "230px",
+                          lg: "230px",
                         },
                         width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem", // Updated margin
@@ -539,7 +539,7 @@ const MenuPage = () => {
                         textAlign: "center",
                         position: "relative",
                         cursor: "pointer",
-                        height: { xs: "220px", sm: "270px" },
+                        height: { xs: "270px", sm: "270px" },
                         width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem",
                         boxShadow: "2px 2px 3px #4e5664",
