@@ -10,27 +10,29 @@ import {
   useMediaQuery,
   useTheme,
   Alert,
+  IconButton,
 } from "@mui/material";
 import Image from "next/image";
-import { calculateGrandTotal, getCartData, useAuthContext, useMenuContext } from "@/context";
+import {
+  calculateGrandTotal,
+  getCartData,
+  useAuthContext,
+  useMenuContext,
+} from "@/context";
 import { usePathname, useRouter } from "next/navigation";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 import Link from "next/link";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OrderHome: React.FC<Props> = ({ setLoading }) => {
-  const {
-    address,
-    setCount,
-    grandTotal,
-    setCarts,
-    setGrandTotal,
-    carts,
-  } = useMenuContext();
+  const { address, setCount, grandTotal, setCarts, setGrandTotal, carts } =
+    useMenuContext();
 
   const router = useRouter();
   const pathName = usePathname();
@@ -203,8 +205,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name} (quantity :{" "}
-                          {kulcha?.quantity})
+                        {kulcha?.name} (quantity : {kulcha?.quantity})
                         <Typography
                           variant="body1"
                           sx={{
@@ -216,61 +217,59 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           ${kulcha?.price} x {kulcha?.quantity}
                         </Typography>
                       </Typography>
-                        {
-                          additional?.length !== 0 && (
-                            <>
-                              <Typography
-                                variant="h6"
+                      {additional?.length !== 0 && (
+                        <>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontSize: "12px",
+                              color: "#1F2937",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Add on items :
+                          </Typography>
+                          {additional?.map((add: any) => {
+                            return (
+                              <Box
+                                key={add?.id}
                                 sx={{
-                                  fontSize: "12px",
-                                  color: "#1F2937",
-                                  paddingBottom: "4px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mt: isSmallScreen ? 2 : 0,
+                                  justifyContent: "space-between",
+                                  width: isSmallScreen ? "100%" : "auto",
                                 }}
                               >
-                                Add on items :
-                              </Typography>
-                              {additional?.map((add: any) => {
-                                return (
-                                  <Box
-                                    key={add?.id}
-                                    sx={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      mt: isSmallScreen ? 2 : 0,
-                                      justifyContent: "space-between",
-                                      width: isSmallScreen ? "100%" : "auto",
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        color: "#1F2937",
-                                        fontWeight: "bold",
-                                        fontSize: "14px",
-                                        mr: 2,
-                                      }}
-                                    >
-                                      {add?.items?.[0]?.name} (quantity :{" "}
-                                      {add?.items?.[0]?.quantity})
-                                    </Typography>
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        color: "#1F2937",
-                                        fontWeight: "bold",
-                                        fontSize: "14px",
-                                        mr: 2,
-                                      }}
-                                    >
-                                      ${add?.items?.[0]?.price} x{" "}
-                                      {add?.items?.[0]?.quantity}
-                                    </Typography>
-                                  </Box>
-                                );
-                              })}
-                            </>
-                          ) 
-                        }
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    color: "#1F2937",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                    mr: 2,
+                                  }}
+                                >
+                                  {add?.items?.[0]?.name} (quantity :{" "}
+                                  {add?.items?.[0]?.quantity})
+                                </Typography>
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    color: "#1F2937",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                    mr: 2,
+                                  }}
+                                >
+                                  ${add?.items?.[0]?.price} x{" "}
+                                  {add?.items?.[0]?.quantity}
+                                </Typography>
+                              </Box>
+                            );
+                          })}
+                        </>
+                      )}
                       <hr style={{ margin: "3px 0" }}></hr>
                       <Box
                         sx={{
@@ -373,7 +372,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           display: "flex",
                           justifyContent: isSmallScreen
                             ? "center"
-                            : "flex-start",
+                            : "space-between",
                           width: "100%",
                           mt: 2,
                         }}
@@ -394,6 +393,32 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                         >
                           Remove
                         </Button>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginTop: "0.5rem",
+                          }}
+                        >
+                          <IconButton
+                            sx={{
+                              color: "#336195",
+                            }}
+                          >
+                            <RemoveCircleOutlineIcon />
+                          </IconButton>
+                          <Typography variant="body1" color="textPrimary">
+                            {1}
+                          </Typography>
+                          <IconButton
+                            sx={{
+                              color: "#336195",
+                            }}
+                          >
+                            <AddCircleOutlineIcon />
+                          </IconButton>
+                        </Box>
                       </Box>
                     </Box>
                   </Paper>
@@ -408,7 +433,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
               alignItems="center"
               minHeight="40vh"
               bgcolor="#FAF3E0"
-              width="100%"              
+              width="100%"
             >
               <Paper
                 elevation={3}
