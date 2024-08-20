@@ -93,7 +93,7 @@ export const drinkOptions = [
     name: "Diet Coke",
     desc: "Diet Coke – The Classic You Love, with a Lighter Twist for Any Occasion." ,
     price: 3,
-    image: "/images/PK/SoftDrinks/Diet_Coke.png"
+    image: "/images/PK/SoftDrinks/Coke.png"
   },
   {
     name: "Sprite",
