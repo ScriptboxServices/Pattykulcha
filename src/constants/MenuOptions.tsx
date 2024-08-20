@@ -93,7 +93,7 @@ export const drinkOptions = [
     name: "Diet Coke",
     desc: "Diet Coke – The Classic You Love, with a Lighter Twist for Any Occasion." ,
     price: 3,
-    image: "/images/PK/SoftDrinks/Diet Coke.png"
+    image: "/images/PK/SoftDrinks/Diet_Coke.png"
   },
   {
     name: "Sprite",
@@ -105,7 +105,7 @@ export const drinkOptions = [
     name: "Mountain Dew",
     desc: "Unleash the Energy – Mountain Dew, The Bold Citrus Blast You Crave.",
     price: 3,
-    image: "/images/PK/SoftDrinks/Mountain Dew.png"
+    image: "/images/PK/SoftDrinks/Mountain_Dew.png"
   },
   {
     name: "Minute Maid Lemonade",

@@ -80,7 +80,7 @@ const Navbar: React.FC = () => {
   const drawer = (
     <Box sx={{ width: 250 }}>
       <Link href="/home" passHref>
-      <Typography variant="h6" sx={{fontWeight:'bold',m:2}}>PATTY KULCHA</Typography>
+      <Typography variant="h6" sx={{fontWeight:'bold',m:2,color:'#ECAB21'}}>PATTY KULCHA</Typography>
       </Link>
       <Divider />
       <List>
@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
       <StyledAppBar position="static">
         <StyledToolbar>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="h6" sx={{fontWeight:'bold'}}>PATTY KULCHA</Typography>
+            <Typography variant="h6" sx={{fontWeight:'bold',color:'#ECAB21'}}>PATTY KULCHA</Typography>
           </Box>
           <Box
             sx={{
