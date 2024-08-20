@@ -201,8 +201,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name} (x
-                          {kulcha?.quantity})
+                        {kulcha?.name}: x{kulcha?.quantity}
                         <Typography
                           variant="body1"
                           sx={{
@@ -247,8 +246,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                                         mr: 2,
                                       }}
                                     >
-                                      {add?.items?.[0]?.name} (x
-                                      {add?.items?.[0]?.quantity})
+                                      {add?.items?.[0]?.name}: x{add?.items?.[0]?.quantity}
                                     </Typography>
                                     <Typography
                                       variant="body1"

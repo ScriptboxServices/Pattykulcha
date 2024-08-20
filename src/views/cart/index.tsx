@@ -45,6 +45,7 @@ export const getImageSrc = (item: string) => {
     Chana: "/images/landingpage/Chana.svg",
     "Imli Pyaz Chutney": "/images/landingpage/Chutney.svg",
     "Amul Butter": "/images/landingpage/butter_6587237.svg",
+    "Butter": "/images/landingpage/butter_6587237.svg",
     "Normal Butter": "/images/landingpage/butter_6587237.svg",
     Pickle: "/images/landingpage/pickle.svg",
     "Regular Coca-Cola": "/images/drinks/coke.png",
@@ -418,10 +419,10 @@ const MenuPage = () => {
                         position: "relative", 
                         cursor: "pointer", 
                         height: {
-                          xs: "200px",
-                          sm: "220px",
-                          md: "250px",
-                          lg: "250px",
+                          xs: "160px",
+                          sm: "120px",
+                          md: "150px",
+                          lg: "150px",
                         },
                         width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem", // Updated margin
@@ -450,7 +451,7 @@ const MenuPage = () => {
                           marginTop:1
                         }}
                       />
-                      <Typography variant="body1" color="textPrimary" sx={{mt:3}}>
+                      <Typography variant="body1" color="textPrimary" sx={{mt:2}}>
                         {item.items[0].name}
                       </Typography>
                     </Box>

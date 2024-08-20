@@ -178,7 +178,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     },
     {
       id: "amul-butter",
-      items: [{ name: "Amul Butter", price: 1.50 }],
+      items: [{ name: "Butter", price: 1.50 }],
     },
   ]);
   const [includedItems2, setIncludedItems2] = useState<any[]>([]);

@@ -102,7 +102,7 @@ const CheckoutForm = ({
           payment_method_data: {
             billing_details: {
               phone: user?.phoneNumber,
-              name: "Abhishek Poddar",
+              name: user?.displayName || 'Customer',
             },
           },
         },
