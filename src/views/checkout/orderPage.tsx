@@ -75,12 +75,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
   return (
     <Box
       sx={{
-        backgroundImage: "url('/images/checkout/Frame3.png')",
-        minHeight: "80vh",
+        background:'#FAF3E0',
+        minHeight: "60vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         px: 2,
+        pt:4
       }}
     >
       <Container maxWidth="md">

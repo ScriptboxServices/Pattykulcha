@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
 import { auth, db } from "@/firebase";
+import { Padding } from "@mui/icons-material";
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -32,7 +33,7 @@ const StyledRoot = styled(Box)(({ theme }) => ({
     width: "60%",
   },
   [theme.breakpoints.up("lg")]: {
-    width: "40%",
+    width: "28%",
   },
 }));
 
@@ -52,12 +53,13 @@ const StyledForm = styled(Box)(({ theme }) => ({
 
 const StyledCodeInput = styled(Box)(({ theme }) => ({
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "space-evenly",
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
     [theme.breakpoints.up("sm")]: {
       width: "50px",
+      
     },
   },
 }));
@@ -85,6 +87,10 @@ const VerificationPage: React.FC = () => {
       inputRefs.current[index - 1]?.focus();
     }
   };
+
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
 
   useEffect(() => {
     if (verificationCode.join("").length === 6) {
@@ -152,13 +158,12 @@ const VerificationPage: React.FC = () => {
         component="main"
         maxWidth="xl"
         sx={{
-          backgroundImage: "url(/images/bgimage.png)",
           height: "100vh",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
-          padding: { xs: 2, sm: 4, md: 4 },
+          padding: { xs: 1, sm: 4, md: 4 },
           overflow: "hidden",
         }}
       >

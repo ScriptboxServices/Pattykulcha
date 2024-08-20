@@ -41,6 +41,8 @@ const NavButton = styled(Button)({
   color: "black",
   textTransform: "none",
   margin: "0 8px",
+  fontSize:'16px',
+  fontWeight:'600'
 });
 
 const Navbar: React.FC = () => {
@@ -78,13 +80,7 @@ const Navbar: React.FC = () => {
   const drawer = (
     <Box sx={{ width: 250 }}>
       <Link href="/home" passHref>
-        <Image
-          src="/images/logo.jpg"
-          alt="Logo"
-          width={120} // Adjust width as needed
-          height={40} // Adjust height as needed
-          style={{ cursor: "pointer" }}
-        />
+      <Typography variant="h6" sx={{fontWeight:'bold',m:2}}>PATTY KULCHA</Typography>
       </Link>
       <Divider />
       <List>
@@ -166,15 +162,7 @@ const Navbar: React.FC = () => {
       <StyledAppBar position="static">
         <StyledToolbar>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Link href="/home" passHref>
-              <Image
-                src="/images/logo.jpg"
-                alt="Logo"
-                width={120} // Adjust width as needed
-                height={40} // Adjust height as needed
-                style={{ cursor: "pointer" }}
-              />
-            </Link>
+            <Typography variant="h6" sx={{fontWeight:'bold'}}>PATTY KULCHA</Typography>
           </Box>
           <Box
             sx={{

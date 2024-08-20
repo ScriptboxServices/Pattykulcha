@@ -66,9 +66,10 @@ const Login: React.FC = () => {
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
-    defaultValues : {
-      countryCode : countryCodes.find((country) => country.name == "Canada")?.phone.toString()
-    }
+    defaultValues: {
+      countryCode: countryCodes.find((country) => country.name == "Canada")
+        ?.phone.toString(),
+    },
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -136,14 +137,12 @@ const Login: React.FC = () => {
       <CssBaseline />
       <Box
         sx={{
-          backgroundImage: "url(/images/bgimage.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           backgroundColor: "white",
           height: "100vh",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden", // Prevent overflow issues
         }}
       >
         <Container
@@ -154,6 +153,7 @@ const Login: React.FC = () => {
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
+            overflow: "hidden", // Prevent content overflow
           }}
         >
           <Box
@@ -161,22 +161,17 @@ const Login: React.FC = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              width: "100%",
             }}
           >
             <Link href="/home" passHref>
-              <Image
-                src="/images/logo.jpg"
-                alt="Logo"
-                width={160} // Adjust width as needed
-                height={70} // Adjust height as needed
-                style={{ cursor: "pointer" }}
-              />
+              <Typography variant="h5" sx={{fontWeight:'bold'}}>PATTY KULCHA</Typography>
             </Link>
             <Typography
               component="h2"
               variant="subtitle1"
               align="left"
-              sx={{ width: "100%", mt: 3 }}
+              sx={{ width: "100%", mt: 3,fontWeight:'bold' }}
             >
               Welcome to Patty kulcha!
             </Typography>
@@ -194,8 +189,8 @@ const Login: React.FC = () => {
               sx={{ mt: 1, width: "100%" }}
               onSubmit={handleSubmit(onSubmit)}
             >
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={5}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
                   <Controller
                     name="countryCode"
                     control={control}
@@ -256,7 +251,7 @@ const Login: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={7}>
+                <Grid item xs={12}>
                   <Controller
                     name="phoneNumber"
                     control={control}
@@ -285,7 +280,7 @@ const Login: React.FC = () => {
                         InputLabelProps={{ style: { color: "black" } }}
                         sx={{
                           "@media (max-width: 600px)": {
-                            marginTop: "16px",
+                            marginTop: "7px",
                           },
                         }}
                         onKeyDown={(e) => {
@@ -323,22 +318,11 @@ const Login: React.FC = () => {
               >
                 Login
               </Button>
-              {error && <Alert severity="error" className=" mt-2">{error}</Alert>}
-              {/* <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                New on our platform?{" "}
-                <Link
-                  href="/createaccount"
-                  variant="body2"
-                  sx={{
-                    color: "black",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    "&:hover": { textDecoration: "underline" },
-                  }}
-                >
-                  Create An Account
-                </Link>
-              </Typography> */}
+              {error && (
+                <Alert severity="error" className=" mt-2">
+                  {error}
+                </Alert>
+              )}
             </Box>
           </Box>
         </Container>

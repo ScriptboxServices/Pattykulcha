@@ -1,12 +1,6 @@
 export const coffeeOptions = [
   {
-    name: "Espresso",
-    price: 3.5,
-    image: "/images/PK/Coffee/Espresso.png",
-    desc: "A strong and bold coffee brewed by forcing hot water through finely-ground coffee beans.",
-  },
-  {
-    name: "Caffe Latte",
+    name: "Hot Coffee",
     price: 3.5,
     image: "/images/PK/Coffee/caffe-latte.png",
     desc: "A smooth and creamy coffee made with steamed milk and a shot of espresso.",
@@ -124,7 +118,7 @@ export const drinkOptions = [
 export const menuItems = [
   {
     name: "Mix Kulcha",
-    image: "/images/Img/1.jpg",
+    image: "/images/Img/5.jpg",
     desc: "Crisp Indian bread filled with potato, cauliflower, peas, onion, corn, coriander, carrot, ginger, green chilli and beetroot, delivering a savoury taste.",
     price: 12.99,
     quantity : 1
@@ -138,30 +132,23 @@ export const menuItems = [
   },
   {
     name: "Onion Kulcha",
-    image: "/images/Img/8.jpg",
+    image: "/images/Img/5.jpg",
     desc: "A warm, flavorful Indian bread stuffed with onion, and topped with rich masala, giving a satisfying taste.",
     price: 12.99,
     quantity : 1
   },
   {
     name: "Gobi Kulcha",
-    image: "/images/Img/11.jpg",
+    image: "/images/Img/5.jpg",
     desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
     price: 12.99,
     quantity : 1
   },
   {
     name: "Paneer Kulcha",
-    image: "/images/Img/9.jpg",
+    image: "/images/Img/5.jpg",
     desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
     price: 15.99,
-    quantity : 1
-  },
-  {
-    name: "Hot & Spicy Mix Kulcha",
-    image: "/images/Img/10.jpg",
-    desc: "A golden and flaky Indian bread filled with potato, cauliflower, onion, carrot, ginger, beetroot, corn, coriander, peas, and green chilli, having a tempting taste.",
-    price: 12.99,
     quantity : 1
   },
 ];

@@ -10,7 +10,7 @@ import { getCartData,calculateGrandTotal } from "@/context";
 const Checkout = () => {
 
   const {user} = useAuthContext()
-  const {setGrandTotal,setCarts,setCount} = useMenuContext()
+  const {setGrandTotal,setCarts,setCount,carts} = useMenuContext()
 
   const [loading,setLoading] = useState(false)
   const getData = async (_id: string) => {
@@ -49,7 +49,9 @@ const Checkout = () => {
   return (
     <>
       <CircularLodar isLoading={loading}/>
+      {carts?.length != 0 &&
       <OrderPage  setLoading = {setLoading}/>
+      }
       <OrderHome  setLoading = {setLoading}/>
       {/* <RecommendationSlider /> */}
       {/* <AddCouponComponent /> */}

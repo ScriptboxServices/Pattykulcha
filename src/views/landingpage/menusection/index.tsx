@@ -99,7 +99,7 @@ const MenuSection = () => {
     >
       <Box sx={{ textAlign: "center" }}>
         <Typography
-          variant="h4"
+          variant="h3"
           component="h2"
           sx={{ color: "#333333", fontWeight: "bold" }}
         >
