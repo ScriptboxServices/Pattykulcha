@@ -40,7 +40,7 @@ import axios from "axios";
 import { getIdToken } from "firebase/auth";
 import { auth } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
-import {encrypt} from "@/utils/commonFunctions"
+import { encrypt } from "@/utils/commonFunctions";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
 
@@ -51,7 +51,7 @@ interface FormValues {
   cvv: string;
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK ?? '');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK ?? "");
 
 const validationSchema = Yup.object().shape({
   paymentMethod: Yup.string().required("Payment method is required"),
@@ -60,24 +60,30 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
-const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) => void, setLoading : any }) => {
+const CheckoutForm = ({
+  errorFunc,
+  setLoading,
+}: {
+  errorFunc: (message: string) => void;
+  setLoading: any;
+}) => {
   const stripe = useStripe();
-  const router = useRouter()
+  const router = useRouter();
   const elements = useElements();
   const { user } = useAuthContext();
-  const [isPaymentReady,setIsPaymentReady] = useState(false)
+  const [isPaymentReady, setIsPaymentReady] = useState(false);
 
   useEffect(() => {
     if (!elements) return;
 
-    const paymentElement : any = elements.getElement(PaymentElement);
+    const paymentElement: any = elements.getElement(PaymentElement);
     if (paymentElement) {
       const handleChange = (event: any) => {
         setIsPaymentReady(event.complete);
       };
-      paymentElement.on('change', handleChange);
+      paymentElement.on("change", handleChange);
       return () => {
-        paymentElement.off('change', handleChange);
+        paymentElement.off("change", handleChange);
       };
     }
   }, [elements]);
@@ -86,7 +92,7 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
     try {
       event.preventDefault();
       if (!stripe || !elements) return;
-      setLoading(true)
+      setLoading(true);
       const result = await stripe.confirmPayment({
         elements,
         redirect: "if_required",
@@ -96,31 +102,41 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
           payment_method_data: {
             billing_details: {
               phone: user?.phoneNumber,
-              name:'Abhishek Poddar'
+              name: "Abhishek Poddar",
             },
           },
         },
       });
-      if(result.error){
-        throw result.error
-      }else{
-        const { id } = result.paymentIntent
-        router.replace(`/orderconformation/${encodeURIComponent(encrypt({payment_id : id}))}`)
-        setLoading(false)
+      if (result.error) {
+        throw result.error;
+      } else {
+        const { id } = result.paymentIntent;
+        router.replace(
+          `/orderconformation/${encodeURIComponent(
+            encrypt({ payment_id: id })
+          )}`
+        );
+        setLoading(false);
       }
-    } catch (err :any) {
+    } catch (err: any) {
       console.error(err.type);
-      if (err.type === 'StripeCardError') {
-        console.error('Your card was declined:', err.message);
-        errorFunc('Your card was declined. Please check your card details and try again.');
-      } else if (err.type === 'StripeInvalidRequestError') {
-        console.error('Invalid request:', err.message);
-        errorFunc('There was an error with your payment request. Please try again.');
-      } else{
-        console.error('An unexpected error occurred:', err.message);
-        errorFunc('An unexpected error occurred. Please try again or contact support.');
+      if (err.type === "StripeCardError") {
+        console.error("Your card was declined:", err.message);
+        errorFunc(
+          "Your card was declined. Please check your card details and try again."
+        );
+      } else if (err.type === "StripeInvalidRequestError") {
+        console.error("Invalid request:", err.message);
+        errorFunc(
+          "There was an error with your payment request. Please try again."
+        );
+      } else {
+        console.error("An unexpected error occurred:", err.message);
+        errorFunc(
+          "An unexpected error occurred. Please try again or contact support."
+        );
       }
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -159,8 +175,8 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
           backgroundColor: "#ECAB21",
           color: "white",
           borderRadius: 2,
-          py: 1.5, 
-          mt: 3 ,
+          py: 1.5,
+          mt: 3,
           paddingX: 4,
           paddingY: 1,
           fontWeight: "bold",
@@ -178,14 +194,20 @@ const CheckoutForm = ({errorFunc ,setLoading } : { errorFunc: (message: string) 
 };
 
 interface CheckoutProps {
-  setLoading : any,
-  clientSecret : string,
-  ephemeralKey : string,
-  payment_id : string,
-  customer : string
+  setLoading: any;
+  clientSecret: string;
+  ephemeralKey: string;
+  payment_id: string;
+  customer: string;
 }
 
-const CheckoutMain : React.FC<CheckoutProps> = ({setLoading,clientSecret,ephemeralKey,payment_id,customer}) => {
+const CheckoutMain: React.FC<CheckoutProps> = ({
+  setLoading,
+  clientSecret,
+  ephemeralKey,
+  payment_id,
+  customer,
+}) => {
   const {
     control,
     handleSubmit,
@@ -195,128 +217,123 @@ const CheckoutMain : React.FC<CheckoutProps> = ({setLoading,clientSecret,ephemer
   });
 
   const router = useRouter();
-  const { count,grandTotal } = useMenuContext();
-  const [error,setError] = useState('')
+  const { count, grandTotal } = useMenuContext();
+  const [error, setError] = useState("");
 
-const errorFunc = (error : string) => {
-  setError(error)
-}
+  const errorFunc = (error: string) => {
+    setError(error);
+  };
 
   return (
     <>
       <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Card
-            sx={{
-              width: { xs: "100%", sm: "90%", md: "75%", lg: "70%" },
-              boxShadow: 3,
-              borderRadius: 2,
-              overflow: "hidden",
-            }}
-          >
-            <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
-              <Typography variant="h4" mb={2} textAlign="center">
-                Checkout
-              </Typography>
-              <form>
-                <Grid container spacing={4}>
-                  <Grid item xs={12} md={5}>
-                    <Box
-                      p={3}
-                      bgcolor="background.paper"
-                      borderRadius={2}
-                      sx={{ boxShadow: 2 }}
-                    >
-                      <Typography variant="h6" mb={2}>
-                        Payment Method
-                      </Typography>
-                      <Controller
-                        name="paymentMethod"
-                        control={control}
-                        defaultValue="VisaCard"
-                        render={({ field }) => (
-                          <RadioGroup row {...field}>
-                            <FormControlLabel
-                              value="VisaCard"
-                              control={<Radio />}
-                              label={
-                                <Image
-                                  src="https://img.icons8.com/color/48/000000/visa.png"
-                                  alt="Visa"
-                                  width={48}
-                                  height={30}
-                                  style={{ maxWidth: "48px" }}
-                                />
-                              }
-                            />
-                          </RadioGroup>
-                        )}
-                      />
-                      <Divider sx={{ my: 3 }} />
-                      <Typography variant="h5" mb={3} textAlign="center">
-                        Order Summary
-                      </Typography>
-
-                      <Box display="flex" justifyContent="space-between" mb={2}>
-                        <Typography>Number of Items</Typography>
-                        <Typography>{count}</Typography>
-                      </Box>
-                      <Divider sx={{ my: 3 }} />
-                      <Box display="flex" justifyContent="space-between" mb={3}>
-                        <Typography variant="h6">Total</Typography>
-                        <Typography variant="h6">${grandTotal}</Typography>
-                      </Box>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        align="center"
-                        mt={2}
-                      >
-                        By continuing, you accept to our Terms of Services and
-                        Privacy Policy. Please note that payments are
-                        non-refundable.
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={7}>
-                    <Box
-                      p={3}
-                      bgcolor="background.paper"
-                      borderRadius={2}
-                      sx={{ boxShadow: 2 }}
-                    >
-                      <Typography variant="h6" mb={2}>
-                        Credit Card Info
-                      </Typography>
-                      {clientSecret && (
-                        <Elements
-                          stripe={stripePromise}
-                          options={{
-                            clientSecret,
-                            customerOptions: { customer, ephemeralKey },
-                            fonts: [
-                              {
-                                cssSrc:
-                                  "https://fonts.googleapis.com/css?family=Roboto",
-                              },
-                            ],
-                          }}
-                        >
-                          <CheckoutForm errorFunc={errorFunc} setLoading={setLoading} />
-                        </Elements>
+          <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
+            <Typography variant="h4" mb={2} textAlign="center">
+              Checkout
+            </Typography>
+            <form>
+              <Grid container spacing={4}>
+                <Grid item xs={12} md={5}>
+                  <Box
+                    p={3}
+                    bgcolor="background.paper"
+                    borderRadius={2}
+                    sx={{ boxShadow: 2 }}
+                  >
+                    <Typography variant="h6" mb={2}>
+                      Payment Method
+                    </Typography>
+                    <Controller
+                      name="paymentMethod"
+                      control={control}
+                      defaultValue="VisaCard"
+                      render={({ field }) => (
+                        <RadioGroup row {...field}>
+                          <FormControlLabel
+                            value="VisaCard"
+                            control={<Radio />}
+                            label={
+                              <Image
+                                src="https://img.icons8.com/color/48/000000/visa.png"
+                                alt="Visa"
+                                width={48}
+                                height={30}
+                                style={{ maxWidth: "48px" }}
+                              />
+                            }
+                          />
+                        </RadioGroup>
                       )}
+                    />
+                    <Divider sx={{ my: 3 }} />
+                    <Typography variant="h5" mb={3} textAlign="center">
+                      Order Summary
+                    </Typography>
+
+                    <Box display="flex" justifyContent="space-between" mb={2}>
+                      <Typography>Number of Items</Typography>
+                      <Typography>{count}</Typography>
                     </Box>
-                  </Grid>
-                </Grid>
-                {
-                  error &&
-                  <Box>
-                    <Alert sx={{mt:4}} severity="error">{error}</Alert>
+                    <Divider sx={{ my: 3 }} />
+                    <Box display="flex" justifyContent="space-between" mb={3}>
+                      <Typography variant="h6">Total</Typography>
+                      <Typography variant="h6">${grandTotal}</Typography>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                      mt={2}
+                    >
+                      By continuing, you accept to our Terms of Services and
+                      Privacy Policy. Please note that payments are
+                      non-refundable.
+                    </Typography>
                   </Box>
-                }
-              </form>
-            </CardContent>
-          </Card>
+                </Grid>
+                <Grid item xs={12} md={7}>
+                  <Box
+                    p={3}
+                    bgcolor="background.paper"
+                    borderRadius={2}
+                    sx={{ boxShadow: 2 }}
+                  >
+                    <Typography variant="h6" mb={2}>
+                      Credit Card Info
+                    </Typography>
+                    {clientSecret && (
+                      <Elements
+                        stripe={stripePromise}
+                        options={{
+                          clientSecret,
+                          customerOptions: { customer, ephemeralKey },
+                          fonts: [
+                            {
+                              cssSrc:
+                                "https://fonts.googleapis.com/css?family=Roboto",
+                            },
+                          ],
+                        }}
+                      >
+                        <CheckoutForm
+                          errorFunc={errorFunc}
+                          setLoading={setLoading}
+                        />
+                      </Elements>
+                    )}
+                  </Box>
+                </Grid>
+              </Grid>
+              {error && (
+                <Box>
+                  <Alert sx={{ mt: 4 }} severity="error">
+                    {error}
+                  </Alert>
+                </Box>
+              )}
+            </form>
+          </CardContent>
         </Box>
       </Container>
     </>
