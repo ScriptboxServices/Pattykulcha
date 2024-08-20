@@ -82,6 +82,21 @@ export interface IncludedItem {
   }>;
 }
 
+const FIXED_INCLUDE_ITEMS = [
+  {
+    id: "chana",
+    items: [{ name: "Chana", price: 1.50 }],
+  },
+  {
+    id: "imli-pyaz-chutney",
+    items: [{ name: "Imli Pyaz Chutney", price: 1.50 }],
+  },
+  {
+    id: "amul-butter",
+    items: [{ name: "Butter", price: 1.50 }],
+  },
+]
+
 const MenuPage = () => {
   const {
     setSize,
@@ -263,7 +278,7 @@ const MenuPage = () => {
         userId: user?.uid,
         order: {
           kulcha: kulcha,
-          withKulcha: [...includedItems1],
+          withKulcha: [...FIXED_INCLUDE_ITEMS],
           additional: [...includedItems2],
         },
         createdAt: Timestamp.now(),
@@ -371,7 +386,7 @@ const MenuPage = () => {
               What&apos;s Included
             </Typography>
             <Grid container spacing={2} justifyContent="center">
-              {includedItems1.length == 0 ? (
+              {FIXED_INCLUDE_ITEMS.length == 0 ? (
                 <Grid item>
                   <Box
                     sx={{
@@ -403,7 +418,7 @@ const MenuPage = () => {
                   </Box>
                 </Grid>
               ) : (
-                includedItems1.map((item) => (
+                FIXED_INCLUDE_ITEMS.map((item) => (
                   <Grid item xs={6} sm={4} md={1.6} key={item.id}>
                     <Box
                       sx={{

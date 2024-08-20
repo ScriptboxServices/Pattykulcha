@@ -38,8 +38,8 @@ interface MenuContextType {
   setCal: (cal: number) => void;
   selectedkulchas: Kulcha[];
   setSelectedKulchas: any;
-  includedItems1: IncludedItem[];
-  setIncludedItems1: (items: IncludedItem[]) => void;
+  includedItems1: any[];
+  setIncludedItems1: (items: any[]) => void;
   includedItems2: any[];
   setIncludedItems2: (items: any[]) => void;
   quantities: { [key: string]: number };
@@ -167,7 +167,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [selectedkulchas, setSelectedKulchas] = useState<Kulcha[]>([]);
   const [kulcha, setKulcha] = useState({});
   const [carts, setCarts] = useState<any[]>([]);
-  const [includedItems1, setIncludedItems1] = useState<IncludedItem[]>([
+  const [includedItems1, setIncludedItems1] = useState<any[]>([
     {
       id: "chana",
       items: [{ name: "Chana", price: 1.50 }],
@@ -236,7 +236,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       raw :"",
       seperate:{}
     }));
-    setIncludedItems1(getStoredData("includedItems1",includedItems1));
+    // setIncludedItems1(getStoredData("includedItems1",includedItems1));
     setIncludedItems2(getStoredData("includedItems2", []));
     // setQuantities(getStoredData("quantities", {}));
     // setExtraItems(getStoredData("extraItems", [
@@ -252,42 +252,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     // setSelectedLassis(getStoredData("selectedLassis", []));
     // setTotal(getStoredData("total", 0));
   }, [user]);
-
-
-  useEffect(() => {
-    // localStorage.setItem("size", JSON.stringify(size));
-    // localStorage.setItem("price", JSON.stringify(price));
-    // localStorage.setItem("cal", JSON.stringify(cal));
-    // localStorage.setItem("selectedkulchas", JSON.stringify(selectedkulchas));
-    localStorage.setItem("includedItems1", JSON.stringify(includedItems1));
-    // localStorage.setItem("includedItems2", JSON.stringify(includedItems2));
-    // localStorage.setItem("quantities", JSON.stringify(quantities));
-    // localStorage.setItem("extraItems", JSON.stringify(extraItems));
-    // localStorage.setItem("plasticware", JSON.stringify(plasticware));
-    // localStorage.setItem("instructions", JSON.stringify(instructions));
-    // localStorage.setItem("quantity", JSON.stringify(quantity));
-    // localStorage.setItem("selectedDrinks", JSON.stringify(selectedDrinks));
-    // localStorage.setItem("selectedLassis", JSON.stringify(selectedLassis));
-    // localStorage.setItem("total", JSON.stringify(total));
-    // localStorage.setItem("count", JSON.stringify(count));
-  }, [
-    size,
-    price,
-    cal,
-    selectedkulchas,
-    includedItems1,
-    includedItems2,
-    quantities,
-    extraItems,
-    plasticware,
-    instructions,
-    quantity,
-    selectedDrinks,
-    selectedLassis,
-    total,
-    user,
-    count, // New state
-  ]);
 
   const setQuantityForItem = (itemName: string, quantity: number) => {
     setQuantities((prev) => ({
