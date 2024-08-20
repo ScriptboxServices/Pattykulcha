@@ -225,8 +225,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
   };
 
   return (
-    <>
-      <Container maxWidth="xl" sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8 }}>
+      <Box sx={{ bgcolor: "#FAF3E0", py: 4, pb: 8,backgroundSize:'cover',minHeight: {xs:'40vh',md:'50vh',lg:'60vh',xl:'75vh'} }}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <CardContent sx={{ px: { xs: 3, sm: 6 }, py: 4 }}>
             <Typography variant="h4" mb={2} textAlign="center">
@@ -335,8 +334,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
             </form>
           </CardContent>
         </Box>
-      </Container>
-    </>
+      </Box>
   );
 };
 

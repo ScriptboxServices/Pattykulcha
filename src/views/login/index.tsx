@@ -137,9 +137,6 @@ const Login: React.FC = () => {
       <CssBaseline />
       <Box
         sx={{
-          backgroundImage: "url(/images/bgimage.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           backgroundColor: "white",
           height: "100vh",
           display: "flex",
@@ -168,19 +165,13 @@ const Login: React.FC = () => {
             }}
           >
             <Link href="/home" passHref>
-              <Image
-                src="/images/logo.jpg"
-                alt="Logo"
-                width={160} // Adjust width as needed
-                height={70} // Adjust height as needed
-                style={{ cursor: "pointer" }}
-              />
+              <Typography variant="h5" sx={{fontWeight:'bold'}}>PATTY KULCHA</Typography>
             </Link>
             <Typography
               component="h2"
               variant="subtitle1"
               align="left"
-              sx={{ width: "100%", mt: 3 }}
+              sx={{ width: "100%", mt: 3,fontWeight:'bold' }}
             >
               Welcome to Patty kulcha!
             </Typography>

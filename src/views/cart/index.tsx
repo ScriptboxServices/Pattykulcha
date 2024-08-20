@@ -63,7 +63,6 @@ export const getImageSrc = (item: string) => {
     "Onion Kulcha": "/images/landingpage/menu3.png",
     "Gobi Kulcha": "/images/landingpage/image5.jpg",
     "Paneer Kulcha": "/images/landingpage/menu5.png",
-    "Hot & Spicy Mix Kulcha": "/images/landingpage/menu6.png",
     Tea: "/images/landingpage/milktea.png",
     "Masala Tea": "/images/landingpage/tea.png",
     Espresso: "/images/landingpage/Espresso.png",
@@ -287,38 +286,6 @@ const MenuPage = () => {
       sx={{
         backgroundColor: "#fffaeb",
         padding: { xs: "1rem", sm: "2rem" },
-        backgroundImage: `
-        url('/images/small/chana.png'), 
-        url('/images/small/chilli.png'), 
-        url('/images/small/bowl.png'), 
-        url('/images/small/bowl2.png'), 
-        url('/images/small/bucket.png'), 
-        url('/images/small/butter.png'),
-        url('/images/small/drink.png'),
-        url('/images/small/plate.png')
-      `,
-        backgroundPosition: `
-      left bottom 20%,   
-      right bottom 20%,  
-      left bottom 40%,  
-      right bottom 40%,  
-      left bottom 60%,   
-      right bottom 60%, 
-      center bottom 30%, 
-      center bottom 50%  
-    `,
-        backgroundSize: `
-        150px 150px, 
-        150px 150px, 
-        150px 150px, 
-        150px 150px, 
-        150px 150px, 
-        150px 150px, 
-        150px 150px, 
-        150px 150px
-      `,
-        backgroundRepeat:
-          "no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat",
       }}
     >
       <CircularLodar isLoading={loading} />
@@ -364,18 +331,18 @@ const MenuPage = () => {
             sx={{
               textAlign: { xs: "center", md: "right" },
               marginLeft: { md: 13 },
+              paddingLeft: "20%",
               paddingRight: "10%",
             }}
           >
             <Image
               src={kulcha?.image}
-              alt="Amritsari Kulcha"
-              layout="responsive"
+              alt="Amritsari Kulcha"            
               width={500}
               height={500}
               style={{
-                maxWidth: "100%",
-                height: "auto",
+                maxWidth: "90%",
+                height: "20%",
                 borderRadius: "5%", // This makes the image round
                 objectFit: "cover",
               }}
@@ -395,11 +362,11 @@ const MenuPage = () => {
                 width: "60%",
                 height: "1px",
                 backgroundColor: "#dcdcdc",
-                margin: "0 auto", // Center the line horizontally
-                marginBottom: "23px", // Add space between the line and the text
+                margin: "0 auto",
+                marginBottom: "23px", 
               }}
             />
-            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" , fontWeight:'bold'}}>
               What&apos;s Included
             </Typography>
             <Grid container spacing={2} justifyContent="center">
@@ -445,16 +412,16 @@ const MenuPage = () => {
                         justifyContent: "flex-start",
                         padding: "1rem",
                         backgroundColor: "white",
-                        border: "2px solid #87939f", // Updated border color
-                        borderRadius: "8px", // Updated border-radius
-                        textAlign: "center", // Center text alignment
-                        position: "relative", // Maintain position relative
-                        cursor: "pointer", // Pointer cursor
+                        border: "2px solid #87939f", 
+                        borderRadius: "8px", 
+                        textAlign: "center", 
+                        position: "relative", 
+                        cursor: "pointer", 
                         height: {
-                          xs: "180px",
-                          sm: "200px",
-                          md: "230px",
-                          lg: "230px",
+                          xs: "200px",
+                          sm: "220px",
+                          md: "250px",
+                          lg: "250px",
                         },
                         width: { xs: "150px", sm: "175px" },
                         margin: "0.5rem", // Updated margin
@@ -477,12 +444,13 @@ const MenuPage = () => {
                         width={150}
                         height={150}
                         style={{
-                          width: "65%", // Set the width to 65% of the container
-                          height: "65%", // Set the height to 55% of the container
+                          width: "50%", // Set the width to 65% of the container
+                          height: "50%", // Set the height to 55% of the container
                           objectFit: "contain",
+                          marginTop:1
                         }}
                       />
-                      <Typography variant="body1" color="textPrimary">
+                      <Typography variant="body1" color="textPrimary" sx={{mt:3}}>
                         {item.items[0].name}
                       </Typography>
                     </Box>
@@ -501,28 +469,7 @@ const MenuPage = () => {
             )}
             <Grid container spacing={2} justifyContent="center">
               {includedItems2.length == 0 ? (
-                <Grid item>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "center",
-                      height: { xs: "200px", sm: "270px" },
-                      width: { xs: "150px", sm: "175px" },
-                      margin: "1rem",
-                    }}
-                  >
-                    <Typography variant="body1" color="textSecondary">
-                      Add items will be shown here
-                    </Typography>
-                  </Box>
-                </Grid>
+                <></>
               ) : (
                 includedItems2.map((item) => (
                   <Grid item xs={6} sm={4} md={1.6} key={item.id}>
@@ -635,11 +582,11 @@ const MenuPage = () => {
                 width: "65%",
                 height: "1px",
                 backgroundColor: "#dcdcdc",
-                margin: "0 auto", // Center the line horizontally
-                marginBottom: "23px", // Add space between the line and the text
+                margin: "0 auto", 
+                marginBottom: "23px", 
               }}
             />
-            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a", fontWeight:'bold' }}>
               Would you like to add extra items?
             </Typography>
             <Grid container spacing={1} justifyContent="center">
@@ -714,7 +661,7 @@ const MenuPage = () => {
                 marginBottom: "23px", // Add space between the line and the text
               }}
             />
-            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a" }}>
+            <Typography variant="h4" gutterBottom sx={{ color: "#021e3a", fontWeight:'bold' }}>
               Make it a Meal
             </Typography>
             <Grid container spacing={1} justifyContent="center">
@@ -918,7 +865,7 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>
+        <DialogTitle sx={{fontWeight:'bold'}}>
           Add a Drink{" "}
           <IconButton
             aria-label="close"
@@ -968,7 +915,7 @@ const MenuPage = () => {
                     }}
                   />
                   <CardContent sx={{ textAlign: "center" }}>
-                    <Typography variant="body1" color="textPrimary">
+                    <Typography variant="body1" color="textPrimary" sx={{fontSize:'18px'}}>
                       {drink.name}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
@@ -1009,7 +956,7 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>
+        <DialogTitle sx={{fontWeight:'bold'}}>
           Add a Lassi
           <IconButton
             aria-label="close"
@@ -1062,6 +1009,7 @@ const MenuPage = () => {
                       variant="body1"
                       color="textPrimary"
                       align="center"
+                      sx={{fontSize:'18px'}}
                     >
                       {lassi.name}
                     </Typography>
@@ -1107,7 +1055,7 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>
+        <DialogTitle sx={{fontWeight:'bold'}}>
           Add a Tea
           <IconButton
             aria-label="close"
@@ -1160,6 +1108,7 @@ const MenuPage = () => {
                       variant="body1"
                       color="textPrimary"
                       align="center"
+                      sx={{fontSize:'18px'}}
                     >
                       {tea.name}
                     </Typography>
@@ -1205,7 +1154,7 @@ const MenuPage = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>
+        <DialogTitle sx={{fontWeight:'bold'}}>
           Add a Coffee
           <IconButton
             aria-label="close"
@@ -1246,10 +1195,10 @@ const MenuPage = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 65% of the container
-                      height: "55%", // Set the height to 55% of the container
+                      width: "65%", 
+                      height: "55%", 
                       objectFit: "contain",
-                      display: "block", // Ensures the image is treated as a block-level element
+                      display: "block", 
                       margin: "0 auto",
                     }}
                   />
@@ -1258,6 +1207,7 @@ const MenuPage = () => {
                       variant="body1"
                       color="textPrimary"
                       align="center"
+                      sx={{fontSize:'18px'}}
                     >
                       {coffee.name}
                     </Typography>

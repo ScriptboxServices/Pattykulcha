@@ -174,11 +174,17 @@ const ProfilePage: React.FC = () => {
         sx={{
           display: "flex",
           justifyContent: "center",
+          alignItem:'center',
           pt: 4,
           pb: 4,
           background: "#FAF3E0",
+          minHeight: {xs:'60vh',md:'70vh',lg:'70vh',xl:'80vh'}
         }}>
-        <Grid container spacing={4} maxWidth="md">
+        <Grid container spacing={4} maxWidth="md" sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -256,7 +262,6 @@ const ProfilePage: React.FC = () => {
                         {isEditingEmail ? <Save /> : <Edit />}
                       </IconButton>
                     </ListItem>
-                    <Typography variant="subtitle1" textAlign="center">Delivery address</Typography>
                     {/* Primary Address */}
                     <ListItem onClick={() => handleAddressSelection("primary")} sx={{ cursor: "pointer" }}>
                       <Home />

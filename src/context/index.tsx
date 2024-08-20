@@ -188,7 +188,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     "Imli Pyaz Chutney",
     "Amul Butter",
     "Normal Butter",
-    "Pickle",
   ]);
   const [plasticware, setPlasticware] = useState("no");
   const [quantity, setQuantity] = useState(1);

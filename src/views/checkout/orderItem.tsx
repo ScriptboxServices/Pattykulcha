@@ -86,23 +86,18 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
       <Box
         sx={{
           width: "100%",
-          minHeight: "10vh",
+          minHeight: {xs:'60vh',md:'70vh',lg:'70vh',xl:'80vh'},
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#FAF3E0",
           flexDirection: "column",
-          p: 4,
+          paddingTop: 5,
+          p: "1rem",
           position: "relative",
-          backgroundImage:
-            "url('/images/small/chana.png'), url('/images/small/chilli.png')",
-          backgroundPosition: "left top 25%, right top 25%",
-          backgroundSize: "200px 200px, 200px 200px",
-          backgroundRepeat: "no-repeat, no-repeat",
-          zIndex: 1,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" >
           {carts?.length === 0 ? (
             <Paper
               sx={{
@@ -113,6 +108,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 margin: "0 auto",
                 maxWidth: "400px",
                 borderRadius: "12px",
+
               }}
             >
               <Typography
@@ -193,7 +189,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                         height={80}
                       />
                     </Box>
-                    <Box sx={{ ml: isSmallScreen ? 0 : 3, flex: 1 }}>
+                    <Box sx={{ ml: isSmallScreen ? 0 : 3, flex: 1 ,width:'90%'}}>
                       <Typography
                         variant="h6"
                         sx={{
@@ -205,7 +201,8 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name} (quantity : {kulcha?.quantity})
+                        {kulcha?.name} (x
+                          {kulcha?.quantity})
                         <Typography
                           variant="body1"
                           sx={{
@@ -229,47 +226,48 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           >
                             Add on items :
                           </Typography>
-                          {additional?.map((add: any) => {
-                            return (
-                              <Box
-                                key={add?.id}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  mt: isSmallScreen ? 2 : 0,
-                                  justifyContent: "space-between",
-                                  width: isSmallScreen ? "100%" : "auto",
-                                }}
-                              >
-                                <Typography
-                                  variant="body1"
-                                  sx={{
-                                    color: "#1F2937",
-                                    fontWeight: "bold",
-                                    fontSize: "14px",
-                                    mr: 2,
-                                  }}
-                                >
-                                  {add?.items?.[0]?.name} (quantity :{" "}
-                                  {add?.items?.[0]?.quantity})
-                                </Typography>
-                                <Typography
-                                  variant="body1"
-                                  sx={{
-                                    color: "#1F2937",
-                                    fontWeight: "bold",
-                                    fontSize: "14px",
-                                    mr: 2,
-                                  }}
-                                >
-                                  ${add?.items?.[0]?.price} x{" "}
-                                  {add?.items?.[0]?.quantity}
-                                </Typography>
-                              </Box>
-                            );
-                          })}
-                        </>
-                      )}
+                              {additional?.map((add: any) => {
+                                return (
+                                  <Box
+                                    key={add?.id}
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      mt: isSmallScreen ? 2 : 0,
+                                      justifyContent: "space-between",
+                                      width: isSmallScreen ? "100%" : "auto",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        color: "#1F2937",
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        mr: 2,
+                                      }}
+                                    >
+                                      {add?.items?.[0]?.name} (x
+                                      {add?.items?.[0]?.quantity})
+                                    </Typography>
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        color: "#1F2937",
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        mr: 2,
+                                      }}
+                                    >
+                                      ${add?.items?.[0]?.price} x{" "}
+                                      {add?.items?.[0]?.quantity}
+                                    </Typography>
+                                  </Box>
+                                );
+                              })}
+                            </>
+                          ) 
+                        }
                       <hr style={{ margin: "3px 0" }}></hr>
                       <Box
                         sx={{

@@ -53,12 +53,13 @@ const StyledForm = styled(Box)(({ theme }) => ({
 
 const StyledCodeInput = styled(Box)(({ theme }) => ({
   display: "flex",
-  justifyContent: "space-around",
+  justifyContent: "space-evenly",
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
     [theme.breakpoints.up("sm")]: {
       width: "50px",
+      
     },
   },
 }));
@@ -86,6 +87,10 @@ const VerificationPage: React.FC = () => {
       inputRefs.current[index - 1]?.focus();
     }
   };
+
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
 
   useEffect(() => {
     if (verificationCode.join("").length === 6) {
@@ -153,7 +158,6 @@ const VerificationPage: React.FC = () => {
         component="main"
         maxWidth="xl"
         sx={{
-          backgroundImage: "url(/images/bgimage.png)",
           height: "100vh",
           display: "flex",
           justifyContent: "center",
