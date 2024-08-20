@@ -285,6 +285,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     selectedDrinks,
     selectedLassis,
     total,
+    user,
     count, // New state
   ]);
 
