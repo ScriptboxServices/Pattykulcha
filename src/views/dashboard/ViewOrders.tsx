@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +12,15 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility } from "@mui/icons-material"; // Importing the eye icon
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import NewOrders from "@/components/NewOrders";
+import { collection, onSnapshot } from "firebase/firestore";
+import { useAuthContext } from "@/context";
+import { db } from "@/firebase";
+import OutForDelivery from "@/components/OutForDelivery";
+import DeliveredOrder from "@/components/DeliveredOrder";
 
 const orders = [
   {
@@ -109,6 +118,14 @@ const orders = [
 ];
 
 const ViewOrders = () => {
+
+  const {user} = useAuthContext()
+ 
+  const [value,setValue] = useState(1)
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <Box sx={{ padding: 5, height: "auto", bgcolor: "white" }}>
       {/* Search and Title */}
@@ -146,107 +163,29 @@ const ViewOrders = () => {
       </Box>
 
       {/* Status Filters */}
-      <Box sx={{ display: "flex", justifyContent: "start", mb: 3 }}>
-        <Chip label="#346" variant="outlined" color="success" sx={{ mx: 1 }} />
-        <Chip label="#347" variant="outlined" color="error" sx={{ mx: 1 }} />
-        <Chip label="#348" variant="outlined" color="success" sx={{ mx: 1 }} />
-        {/* Add more status chips as needed */}
+      <Box sx={{ width: '100%',mb:4}}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="primary"
+          indicatorColor="primary"
+          aria-label="secondary tabs example"
+        >
+          <Tab value={1} label="Today's New Orders" />
+          <Tab value={2} label="Out for Delivery" />
+          <Tab value={3} label="Delivered Orders" />
+        </Tabs>
       </Box>
 
-      {/* Orders Grid */}
-      <Grid container spacing={3}>
-        {orders.map((order, index) => (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            key={index}
-            sx={{ display: "flex", justifyContent: "center" }}
-          >
-            <Card
-              sx={{
-                width: 380,
-                minHeight: 280,
-                borderRadius: 2,
-                boxShadow: 3,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                padding: 2,
-              }}
-            >
-              <CardContent sx={{ padding: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 2,
-                  }}
-                >
-                  <Box>
-                    <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-                      Order {order.orderId}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {order.date}
-                    </Typography>
-                  </Box>
-                  {/* View More Details Icon */}
-                  <IconButton size="small">
-                    <Visibility />
-                  </IconButton>
-                </Box>
-
-                {order.items.map((item, idx) => (
-                  <Box
-                    key={idx}
-                    sx={{ display: "flex", alignItems: "center", mt: 2 }}
-                  >
-                    <Avatar
-                      src={"/images/landingpage/menu1.png"}
-                      sx={{ width: 50, height: 50, mr: 2 }}
-                    />
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="body1">{item.name}</Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        {item.addons}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography variant="body1">{item.price}</Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Qty: {item.quantity}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </CardContent>
-              <Box>
-                <Divider sx={{ my: 2 }} />
-                <Box
-                  sx={{
-                    px: 2,
-                    pb: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="body2" color="textSecondary">
-                    X{order.items.length} Items
-                  </Typography>
-                  <Chip
-                    label={order.status}
-                    color={order.status == "Delivered" ? "success" : "warning"}
-                    sx={{ borderRadius: "50px", textTransform: "none" }}
-                  />
-                </Box>
-              </Box>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {
+        value === 1 && <NewOrders />
+      }
+      {
+        value === 2 && <OutForDelivery />
+      }
+      {
+        value === 3 && <DeliveredOrder />
+      }
     </Box>
   );
 };

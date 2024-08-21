@@ -59,7 +59,7 @@ export const POST = async (req, res) => {
             total_tax: metadata.total_tax,
             paymentId: paymentDocRef.id,
             delivery : {
-              message : 'New',
+              message : 'New Order',
               status : false
             },
             canceled : false,

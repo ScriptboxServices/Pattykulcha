@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -11,9 +11,15 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
-import Image from 'next/image';
+import Image from "next/image";
 import ViewOrders from "./ViewOrders";
 import DashboardProfile from "./Profile";
+import { useAuthContext } from "@/context";
+import {
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "@/firebase";
 
 const drawerWidth = 240;
 
@@ -21,7 +27,7 @@ interface Props {
   window?: () => Window;
 }
 
-const Home = () => <Typography variant="h6">Home Component</Typography>;
+const Home = () => <Typography variant="h6">Home</Typography>;
 
 const Settings = () => <Typography variant="h6">Settings Component</Typography>;
 
@@ -29,29 +35,49 @@ export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("Home");
-
+  const { user } = useAuthContext();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  useEffect(() => {
+    const colRef = collection(db, "orders");
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const audio = new Audio('/mp3/message.mp3');
+          audio.play();     
+        }
+      }); 
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
   const drawerItems = [
-    { text: "Home", icon: '/images/dashboard/home.png', component: <Home /> },
+    { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
     {
       text: "Order Detail",
-      icon: '/images/dashboard/orderdetail.png',
-      component:<ViewOrders />,
+      icon: "/images/dashboard/orderdetail.png",
+      component: <ViewOrders />,
     },
     {
       text: "Order List",
-      icon: '/images/dashboard/orderlist.png',
+      icon: "/images/dashboard/orderlist.png",
       component: <CustomPaginationActionsTable />,
     },
     {
       text: "Payment details",
-      icon: '/images/dashboard/payment_details.png',
+      icon: "/images/dashboard/payment_details.png",
       component: <PaymentDetailsTable />,
     },
-    { text: "Profile", icon: '/images/dashboard/profile.png', component: <DashboardProfile /> },
+    {
+      text: "Profile",
+      icon: "/images/dashboard/profile.png",
+      component: <DashboardProfile />,
+    },
     // { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
   ];
 
@@ -63,10 +89,12 @@ export default function ResponsiveDrawer(props: Props) {
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
-                backgroundColor: activeTab == item.text ? "black" : "transparent",
+                backgroundColor:
+                  activeTab == item.text ? "black" : "transparent",
                 color: activeTab == item.text ? "white" : "inherit",
                 "&:hover": {
-                  backgroundColor: activeTab == item.text ? "black" : "transparent", // Prevent hover background change
+                  backgroundColor:
+                    activeTab == item.text ? "black" : "transparent", // Prevent hover background change
                   color: activeTab == item.text ? "white" : "inherit", // Prevent hover text color change
                 },
               }}
@@ -76,12 +104,17 @@ export default function ResponsiveDrawer(props: Props) {
                   backgroundColor: activeTab == item.text ? "white" : "white",
                   minWidth: "auto",
                   color: activeTab == item.text ? "white" : "inherit",
-                  borderRadius: '20%',
-                  padding: '4px',
-                  marginRight: '12px', // This adds space between the image and text
+                  borderRadius: "20%",
+                  padding: "4px",
+                  marginRight: "12px", // This adds space between the image and text
                 }}
               >
-                <Image src={item.icon} alt={`${item.text} icon`} width={24} height={24} />
+                <Image
+                  src={item.icon}
+                  alt={`${item.text} icon`}
+                  width={24}
+                  height={24}
+                />
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
