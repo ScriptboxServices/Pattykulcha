@@ -126,7 +126,7 @@ const OrdersPage = ({ data }: { data: any }) => {
                   Address: {orderData?.address}
                 </Typography>
                 <Typography variant="body1">
-                  Phone: {user?.phoneNumber}
+                  Phone: {orderData?.customer?.phoneNumber}
                 </Typography>
               </Grid>
 

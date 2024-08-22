@@ -359,13 +359,13 @@ const ProfilePage: React.FC = () => {
                                         }
                                       }
                                     }
+
                                     setAddress({
                                       raw: place.formatted_address,
                                       separate: {
                                         state: state,
                                         city: city,
-                                        postal_code:
-                                          postalCode || plusCode || zipCode,
+                                        postal_code: zipCode || plusCode || postalCode,
                                         line1:
                                           place.formatted_address?.split(",")[0],
                                       },

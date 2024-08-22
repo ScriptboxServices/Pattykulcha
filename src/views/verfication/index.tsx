@@ -131,7 +131,10 @@ const VerificationPage: React.FC = () => {
                 line1: "",
               },
             },
-            role: 'customer'
+            role: 'customer',
+            isKitchen : false,
+            foodTruckId : '',
+            enable: true 
           });
         }
       }

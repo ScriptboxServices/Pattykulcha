@@ -190,7 +190,7 @@ const NewOrders: React.FC = () => {
                 Address: {order?.address}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Phone: {user?.phoneNumber}
+                Phone: {order?.customer?.phoneNumber}
               </Typography>
           </Box>
         </Box>

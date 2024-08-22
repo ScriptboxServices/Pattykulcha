@@ -81,7 +81,8 @@ export const POST = async (req, res) => {
       basic_amount: sub_total,
       instructions,
       address: address.raw,
-      name : name ? name : `Customer_${uid}`
+      name : name ? name : `Customer_${uid}`,
+      phoneNumber : phone_number
     };
 
     const _address = {

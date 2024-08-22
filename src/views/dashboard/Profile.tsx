@@ -122,22 +122,10 @@ const DashboardProfile: React.FC = () => {
         <Grid container spacing={2} alignItems="center" padding={3}>
           <Grid item xs={12} sm={4}>
             <Typography variant="subtitle2" gutterBottom>
-              First Name
+              Kitchen Name
             </Typography>
             <Controller
               name="firstName"
-              control={control}
-              render={({ field }) => (
-                <StyledTextField {...field} fullWidth placeholder="Type here" variant="outlined" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4} >
-            <Typography variant="subtitle2" gutterBottom>
-              Last Name
-            </Typography>
-            <Controller
-              name="lastName"
               control={control}
               render={({ field }) => (
                 <StyledTextField {...field} fullWidth placeholder="Type here" variant="outlined" />
@@ -174,18 +162,6 @@ const DashboardProfile: React.FC = () => {
             </Typography>
             <Controller
               name="addressLine1"
-              control={control}
-              render={({ field }) => (
-                <StyledTextField {...field} fullWidth placeholder="Type here" variant="outlined" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="subtitle2" gutterBottom>
-              Address line 2
-            </Typography>
-            <Controller
-              name="addressLine2"
               control={control}
               render={({ field }) => (
                 <StyledTextField {...field} fullWidth placeholder="Type here" variant="outlined" />
@@ -244,54 +220,8 @@ const DashboardProfile: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Email Address Section */}
-        <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="h6" gutterBottom>
-              My email Address
-            </Typography>
-            <EmailBox>
-              <EmailIcon sx={{ mr: 1, color: '#1a73e8' }} />
-              <Box>
-                <Typography variant="body1">abcde@gmail.com</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  1 month ago
-                </Typography>
-              </Box>
-            </EmailBox>
-          </Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{
-              ml: 3,
-              backgroundColor: '#f0f4ff',
-              color: '#1a73e8',
-              fontWeight: 500,
-              height: 'fit-content',
-              padding: '8px 16px',
-              textTransform: 'none',
-            }}
-          >
-            + Add Email Address
-          </Button>
-        </Box>
-
         {/* Buttons Section */}
         <Box sx={{ mt: 2, textAlign: 'right' }}>
-          <StyledButton
-            variant="outlined"
-            sx={{
-              color: '#000',
-              borderColor: '#dcdcdc',
-              mr: 2,
-              '&:hover': {
-                borderColor: '#000',
-              },
-            }}
-          >
-            Cancel
-          </StyledButton>
           <StyledButton
             variant="contained"
             sx={{

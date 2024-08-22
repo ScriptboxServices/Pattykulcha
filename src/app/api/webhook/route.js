@@ -65,7 +65,8 @@ export const POST = async (req, res) => {
             canceled : false,
             customer:{
               _id : customer,
-              name : metadata.name
+              name : metadata.name,
+              phoneNumber : metadata.phoneNumber
             },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
