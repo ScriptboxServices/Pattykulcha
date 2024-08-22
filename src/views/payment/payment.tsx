@@ -36,10 +36,6 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import axios from "axios";
-import { getIdToken } from "firebase/auth";
-import { auth } from "@/firebase";
-import CircularLodar from "@/components/CircularLodar";
 import { encrypt } from "@/utils/commonFunctions";
 
 type PaymentMethod = "VisaCard" | "upi" | "masterCard";
@@ -60,12 +56,16 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required("CVV is required"),
 });
 
-const CheckoutForm = ({
+interface CheckoutFormProps {
+  errorFunc : (message: string) => void,
+  setLoading : React.Dispatch<React.SetStateAction<boolean>>,
+  paymentId : string
+}
+
+const CheckoutForm :React.FC<CheckoutFormProps> = ({
   errorFunc,
   setLoading,
-}: {
-  errorFunc: (message: string) => void;
-  setLoading: any;
+  paymentId
 }) => {
   const stripe = useStripe();
   const router = useRouter();
@@ -88,7 +88,16 @@ const CheckoutForm = ({
     }
   }, [elements]);
 
+  const delay = () => {
+    return new Promise((resolve, _) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 5000);
+    });
+  };
+
   const handleSubmit = async (event: any) => {
+    const return_url = `https://pattykulcha.com/orderconformation/${encodeURIComponent(encrypt({ payment_id: paymentId }))}`
     try {
       event.preventDefault();
       if (!stripe || !elements) return;
@@ -97,7 +106,7 @@ const CheckoutForm = ({
         elements,
         redirect: "if_required",
         confirmParams: {
-          return_url: "https://tiffinhub.ca/myPlans/orderConfirmed",
+          return_url: return_url,
           save_payment_method: true,
           payment_method_data: {
             billing_details: {
@@ -111,6 +120,7 @@ const CheckoutForm = ({
         throw result.error;
       } else {
         const { id } = result.paymentIntent;
+        await delay()
         router.replace(
           `/orderconformation/${encodeURIComponent(
             encrypt({ payment_id: id })
@@ -318,6 +328,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                         <CheckoutForm
                           errorFunc={errorFunc}
                           setLoading={setLoading}
+                          paymentId = {payment_id}
                         />
                       </Elements>
                     )}

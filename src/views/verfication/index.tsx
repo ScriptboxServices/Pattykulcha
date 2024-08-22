@@ -131,6 +131,7 @@ const VerificationPage: React.FC = () => {
                 line1: "",
               },
             },
+            role: 'customer'
           });
         }
       }

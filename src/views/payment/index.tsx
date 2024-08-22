@@ -1,14 +1,14 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import OrderHome from "../checkout/orderItem"
 import OrderPage from "../checkout/orderPage"
 import CheckoutMain from "./payment"
 import CircularLodar from "@/components/CircularLodar"
-import { useAuthContext, useMenuContext } from "@/context"
+import { getUserMetaData, useAuthContext, useMenuContext } from "@/context"
 import axios from "axios"
 import { auth } from "@/firebase"
 import { getIdToken } from "firebase/auth"
-import { getCartData,calculateGrandTotal } from "@/context"
+
 const PaymentPage = () => {
   const [loading,setLoading] = useState(false)
   const [{ clientSecret, customer, ephemeralKey,payment_id }, setStripeCred] = useState({
@@ -18,15 +18,20 @@ const PaymentPage = () => {
     payment_id : ""
   });
 
-  const {user,isLoggedIn} = useAuthContext()
+  const {user,isLoggedIn,metaData} = useAuthContext()
 
-  const {address,instructions,setCarts,setGrandTotal,setCount} = useMenuContext()
+  const {instructions} = useMenuContext()
+  const paymentInitialize = useRef(true)
 
   useEffect(() => {
     const init = async () => {
       try{
         setLoading(true)
-        await Promise.allSettled([getPaymentSheet(),getData(user?.uid)])
+        if(user && metaData){
+          if(!paymentInitialize.current) return
+          paymentInitialize.current = false 
+          await Promise.allSettled([getPaymentSheet(metaData)])
+        } 
         setLoading(false)
       }catch(err) {
         console.log(err)
@@ -34,32 +39,16 @@ const PaymentPage = () => {
       }
     }
     init()
-  }, [user]);
+  }, [user,metaData]);
 
-  const getData = async (_id: string) => {
-    try {
-      if (_id) {
-        const result = await getCartData(_id);
-        if (result) {
-          setGrandTotal(calculateGrandTotal(result || []));
-          setCarts([...result] || []);
-          setCount(result.length);
-        }
-        return;
-      }
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
-  };
+  const getPaymentSheet = async (metaData : any) => {
 
-  const getPaymentSheet = async () => {
-    if (!auth.currentUser && !isLoggedIn) return;
+    if (!auth.currentUser && !isLoggedIn && !metaData) return;
+
     const token = await getIdToken(user);
 
     const isValid = clientSecret && customer && ephemeralKey;
     if (isValid) return;
-
     return axios
       .request({
         method: "POST",
@@ -69,7 +58,7 @@ const PaymentPage = () => {
           "Content-Type": "application/json",
         },
         data: {
-          address,
+          address : metaData?.address,
           instructions,
           name : user?.displayName
         },

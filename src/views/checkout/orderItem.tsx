@@ -31,14 +31,14 @@ interface Props {
 }
 
 const OrderHome: React.FC<Props> = ({ setLoading }) => {
-  const { address, setCount, grandTotal, setCarts, setGrandTotal, carts } =
+  const { setCount, grandTotal, setCarts, setGrandTotal, carts } =
     useMenuContext();
 
   const router = useRouter();
   const pathName = usePathname();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const { user } = useAuthContext();
+  const { user ,metaData } = useAuthContext();
 
   const [error, setError] = useState(false);
 
@@ -450,12 +450,12 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 </Box>
                 <Button
                   onClick={() => {
-                    if (!address?.raw) {
+                    if (!metaData?.address?.raw) {
                       setError(true);
                       return;
                     }
                     setError(false);
-                    return router.push("/payment");
+                    router.push("/payment");
                   }}
                   fullWidth
                   variant="contained"

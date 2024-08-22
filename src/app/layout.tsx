@@ -6,7 +6,7 @@ import ReduxProvider from "@/redux-store/ReduxProvider";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "PattyKulcha",
+  title: "Patty Kulcha",
   description:
     "PattyKulcha - Authentic Jamaican patties and deliciously stuffed kulchas delivered right to your doorstep. Experience a fusion of vibrant flavors, freshly made and served with love. Perfect for any occasion – breakfast, lunch, dinner, or a tasty snack!",
 };

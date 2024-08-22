@@ -27,9 +27,9 @@ const calculateGrandTotal = (_cart) => {
 
 export const POST = async (req, res) => {
   const { address, instructions, name } = await req.json();
-
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
+    console.log("hit api")
 
     if (!xToken)
       return NextResponse.json({
@@ -41,7 +41,7 @@ export const POST = async (req, res) => {
 
     const decodeToken = await admin.auth().verifyIdToken(xToken);
     const { uid, phone_number } = decodeToken;
-    const { city, state, line1, postal_code } = address.seperate;
+    const { city, state, line1, postal_code } = address.separate;
 
     const cartResult = await db
       .collection("carts")
@@ -81,7 +81,7 @@ export const POST = async (req, res) => {
       basic_amount: sub_total,
       instructions,
       address: address.raw,
-      name
+      name : name ? name : `Customer_${uid}`
     };
 
     const _address = {
@@ -102,10 +102,10 @@ export const POST = async (req, res) => {
         shipping: {
           phone: phone_number,
           address: _address,
-          name: name ? `${name}_${uid}` : `Customer_${uid}`,
+          name: name ? `${name}` : `Customer_${uid}`,
         },
         address: _address,
-        name: name ? `${name}_${uid}` : `Customer_${uid}`,
+        name: name ? `${name}` : `Customer_${uid}`,
       });
     }
 
@@ -119,11 +119,14 @@ export const POST = async (req, res) => {
       description,
       currency: "cad",
       customer: customer.id,
+      automatic_payment_methods: {
+        enabled: true
+      },
       metadata,
       shipping: {
         phone: phone_number,
         address: _address,
-        name: name ? `${name}_${uid}` : `Customer_${uid}`,
+        name: name ? `${name}` : `Customer_${uid}`,
       },
     });
 

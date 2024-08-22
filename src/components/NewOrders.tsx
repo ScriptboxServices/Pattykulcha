@@ -59,8 +59,6 @@ const NewOrders: React.FC = () => {
     };
   }, [user]);
 
-  console.log(newOrders);
-
   return(
     <Grid container spacing={3}>
   {newOrders?.map((order, index) => (
@@ -149,7 +147,6 @@ const NewOrders: React.FC = () => {
           <Box
             sx={{
               px: 2,
-              pb: 2,
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -178,6 +175,23 @@ const NewOrders: React.FC = () => {
             <Typography variant="body2" color="textSecondary">
               ${Number(order?.grand_total).toFixed(2)}
             </Typography>
+          </Box>
+        </Box>
+        <Box>
+          <Divider sx={{ my: 1 }} />
+          <Box>
+            <Typography variant="h6" gutterBottom>
+                Billing Address
+              </Typography>
+              <Typography variant="body2" color="textSecondary" >
+                Name: {order?.customer?.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Address: {order?.address}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Phone: {user?.phoneNumber}
+              </Typography>
           </Box>
         </Box>
         <Box>

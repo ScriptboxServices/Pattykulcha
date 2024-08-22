@@ -10,7 +10,7 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { collection,query,getDocs,where } from "firebase/firestore";
+import { collection,query,getDocs,where, getDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export interface IncludedItem {
@@ -64,17 +64,17 @@ interface MenuContextType {
   setConfirmationResult :any,
   kulcha : any,
   setKulcha : any,
-  address: any,
-  setAddress : any,
   setCarts : any,
   carts : any[],
   grandTotal : any,
-  setGrandTotal : any
+  setGrandTotal : any,
 }
 
 interface AuthContextType {
   user : any,
-  isLoggedIn : boolean
+  isLoggedIn : boolean,
+  metaData: any,
+  setMetaData : any
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -117,6 +117,19 @@ export const getCartData = async (_id : string) => {
   }
 };
 
+export const getUserMetaData = async (_id : string) => {
+  try {
+    const metaData = await getDoc(doc(db,'users',_id))
+    return {
+      id : metaData.id,
+      ...metaData.data()
+    }
+  } catch (err) {
+    console.log(err);
+    return err
+  }
+};
+
 export const calculateGrandTotal = (carts : any[]) => {
   const grandTotal = carts?.reduce((acc, item) => {
     const { order } = item;
@@ -132,19 +145,29 @@ export const calculateGrandTotal = (carts : any[]) => {
   return Number(grandTotal).toFixed(2);
 };
 
-export const AuthProvider = ({children} : {children : ReactNode}) => {
+interface AuthProps {
+  children : ReactNode
+}
+
+export const AuthProvider : React.FC<AuthProps> = ({children}) => {
   const router  = useRouter()
   const pathname = usePathname()
   const [user,setUser] = useState<object | null>(null)
   const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
+  const [metaData,setMetaData] = useState<object | null>(null)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        const metaData : any = await getUserMetaData(user.uid)
+        setMetaData({
+          ...metaData
+        })
         setUser((prev) => user);
         setIsLoggedIn((prev) => true);
         router.push(pathname)
       } else {
+        setMetaData(null)
         setUser(null);
         setIsLoggedIn(false);
         router.push('/home')
@@ -153,7 +176,9 @@ export const AuthProvider = ({children} : {children : ReactNode}) => {
     return () => unsubscribe();
   }, []);
 
-  return <AuthContext.Provider value={{user,isLoggedIn}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{user,isLoggedIn,metaData,setMetaData}}>
+        {children}
+    </AuthContext.Provider>;
 }
 
 
@@ -197,16 +222,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [instructions, setInstructions] = useState('');
   const [count, setCount] = useState(0);
   const [grandTotal, setGrandTotal] = useState<string | number>(0);
-  const [address, setAddress] = useState({
-    raw:'',
-    seperate: {
-      city:'',
-      line1:'',
-      postal_code:'',
-      state:''
-    }
-  });
-
 
   const getData = async (_id : string) => {
     if(_id){
@@ -227,30 +242,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     };
     getData(user?.uid)
     setKulcha(getStoredData("kulcha",{}));
-    // setSize(getStoredData("size", "regular"));
-    // setPrice(getStoredData("price", 0));
-    // setCal(getStoredData("cal", 640));
-    // setSelectedKulchas(getStoredData("selectedkulchas", []));
-    // setCount(getStoredData("count", 0)); 
-    setAddress(getStoredData("address", {
-      raw :"",
-      seperate:{}
-    }));
-    // setIncludedItems1(getStoredData("includedItems1",includedItems1));
     setIncludedItems2(getStoredData("includedItems2", []));
-    // setQuantities(getStoredData("quantities", {}));
-    // setExtraItems(getStoredData("extraItems", [
-    //   "Chana",
-    //   "Imli Pyaz Chutney",
-    //   "Amul Butter",
-    //   "Normal Butter",
-    // ]));
-    // setPlasticware(getStoredData("plasticware", "no"));
     setInstructions(localStorage.getItem("instructions") || '');
-    // setQuantity(getStoredData("quantity", 1));
-    // setSelectedDrinks(getStoredData("selectedDrinks", []));
-    // setSelectedLassis(getStoredData("selectedLassis", []));
-    // setTotal(getStoredData("total", 0));
   }, [user]);
 
   const setQuantityForItem = (itemName: string, quantity: number) => {
@@ -295,8 +288,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     confirmationResult,
     kulcha,
     setKulcha,
-    address,
-    setAddress,
     setCarts,
     carts,
     grandTotal,

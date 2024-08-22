@@ -173,6 +173,23 @@ const OutForDelivery: React.FC = () => {
           </Box>
         </Box>
         <Box>
+          <Divider sx={{ my: 1 }} />
+          <Box>
+            <Typography variant="h6" gutterBottom>
+                Billing Address
+              </Typography>
+              <Typography variant="body2" color="textSecondary" >
+                Name: {order?.customer?.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Address: {order?.address}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Phone: {user?.phoneNumber}
+              </Typography>
+          </Box>
+        </Box>
+        <Box>
           <Divider sx={{ my: 2 }} />
           <Box
             sx={{

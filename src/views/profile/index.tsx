@@ -46,7 +46,7 @@ type User = {
 };
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuthContext();
+  const { user , setMetaData } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [me, setMe] = useState<User | null>(null);
@@ -103,9 +103,14 @@ const ProfilePage: React.FC = () => {
           phoneNumber,
           address,
         });
+        return {
+          id : userDoc.id,
+          ...userDoc.data()
+        } 
       }
     } catch (err) {
       console.log(err);
+      return err
     }
   };
 
@@ -134,7 +139,8 @@ const ProfilePage: React.FC = () => {
         await updateProfile(user, {
           displayName: name,
         });
-        await getUser();
+        const metaData : any =  await getUser();
+        setMetaData({...metaData})
         setLoading(false);
         return;
       }
@@ -143,7 +149,8 @@ const ProfilePage: React.FC = () => {
         await updateDoc(docRef, {
           email: email,
         });
-        await getUser();
+        const metaData : any =  await getUser();
+        setMetaData({...metaData})
         setLoading(false);
         return;
       }
@@ -152,7 +159,8 @@ const ProfilePage: React.FC = () => {
         await updateDoc(docRef, {
           address: address,
         });
-        await getUser();
+        const metaData : any =  await getUser();
+        setMetaData({...metaData})
         setLoading(false);
         return;
       }
