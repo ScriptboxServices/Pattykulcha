@@ -11,6 +11,10 @@ import {
   useTheme,
   Alert,
   IconButton,
+  Dialog,
+  DialogContent,
+  Grid,
+  DialogTitle
 } from "@mui/material";
 import Image from "next/image";
 import {
@@ -23,6 +27,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 import Link from "next/link";
+import CloseIcon from "@mui/icons-material/Close";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
@@ -31,16 +36,16 @@ interface Props {
 }
 
 const OrderHome: React.FC<Props> = ({ setLoading }) => {
-  const { setCount, grandTotal, setCarts, setGrandTotal, carts } =
-    useMenuContext();
+  const { setCount, grandTotal, setCarts, setGrandTotal, carts, isAddressReachable } = useMenuContext();
 
   const router = useRouter();
   const pathName = usePathname();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const { user ,metaData } = useAuthContext();
+  const { user, metaData, kitchenMetaData } = useAuthContext();
 
   const [error, setError] = useState(false);
+  const [dialogboxOpen, setDialogboxOpen] = useState(false);
 
   const calculateTotal = (item: any, addon: any[]) => {
     const additionalTotal = addon?.reduce((acc, value) => {
@@ -86,7 +91,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
       <Box
         sx={{
           width: "100%",
-          minHeight: {xs:'60vh',md:'70vh',lg:'70vh',xl:'80vh'},
+          minHeight: { xs: "60vh", md: "70vh", lg: "70vh", xl: "80vh" },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -97,7 +102,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
           position: "relative",
         }}
       >
-        <Container maxWidth="xl" >
+        <Container maxWidth="xl">
           {carts?.length === 0 ? (
             <Paper
               sx={{
@@ -108,7 +113,6 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 margin: "0 auto",
                 maxWidth: "400px",
                 borderRadius: "12px",
-
               }}
             >
               <Typography
@@ -189,7 +193,9 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                         height={80}
                       />
                     </Box>
-                    <Box sx={{ ml: isSmallScreen ? 0 : 3, flex: 1 ,width:'90%'}}>
+                    <Box
+                      sx={{ ml: isSmallScreen ? 0 : 3, flex: 1, width: "90%" }}
+                    >
                       <Typography
                         variant="h6"
                         sx={{
@@ -225,47 +231,47 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           >
                             Add on items :
                           </Typography>
-                              {additional?.map((add: any) => {
-                                return (
-                                  <Box
-                                    key={add?.id}
-                                    sx={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      mt: isSmallScreen ? 2 : 0,
-                                      justifyContent: "space-between",
-                                      width: isSmallScreen ? "100%" : "auto",
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        color: "#1F2937",
-                                        fontWeight: "bold",
-                                        fontSize: "14px",
-                                        mr: 2,
-                                      }}
-                                    >
-                                      {add?.items?.[0]?.name}: x{add?.items?.[0]?.quantity}
-                                    </Typography>
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        color: "#1F2937",
-                                        fontWeight: "bold",
-                                        fontSize: "14px",
-                                        mr: 2,
-                                      }}
-                                    >
-                                      ${add?.items?.[0]?.price} x{" "}
-                                      {add?.items?.[0]?.quantity}
-                                    </Typography>
-                                  </Box>
-                                );
-                              })}
-                            </>
-                          ) 
-                        }
+                          {additional?.map((add: any) => {
+                            return (
+                              <Box
+                                key={add?.id}
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mt: isSmallScreen ? 2 : 0,
+                                  justifyContent: "space-between",
+                                  width: isSmallScreen ? "100%" : "auto",
+                                }}
+                              >
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    color: "#1F2937",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                    mr: 2,
+                                  }}
+                                >
+                                  {add?.items?.[0]?.name}: x
+                                  {add?.items?.[0]?.quantity}
+                                </Typography>
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    color: "#1F2937",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                    mr: 2,
+                                  }}
+                                >
+                                  ${add?.items?.[0]?.price} x{" "}
+                                  {add?.items?.[0]?.quantity}
+                                </Typography>
+                              </Box>
+                            );
+                          })}
+                        </>
+                      )}
                       <hr style={{ margin: "3px 0" }}></hr>
                       <Box
                         sx={{
@@ -454,6 +460,17 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                       setError(true);
                       return;
                     }
+
+                    if (!kitchenMetaData?.isShopOpen) {
+                      setDialogboxOpen(true)
+                      return;
+                    }
+
+                    if(!isAddressReachable){
+                      setDialogboxOpen(true)
+                      return
+                    }
+
                     setError(false);
                     router.push("/payment");
                   }}
@@ -484,6 +501,52 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
           )}
         </Container>
       </Box>
+      <Dialog
+        open={dialogboxOpen}
+        onClose={() => setDialogboxOpen(!dialogboxOpen)}
+        maxWidth="sm"
+        fullWidth
+      >
+          <DialogTitle sx={{fontWeight:'bold'}}>
+          <IconButton
+            aria-label="close"
+            onClick={() => setDialogboxOpen(!dialogboxOpen)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {
+              kitchenMetaData?.isShopOpen ? <>
+                <Typography
+                  variant="body1"
+                  color="textPrimary"
+                  align="center"
+                  sx={{ fontSize: "18px", mt:5 }}
+                >
+                  Currently we are not delivering in your area. Please try again after sometime.
+                </Typography>
+              </> : <>
+                <Typography
+                  variant="body1"
+                  color="textPrimary"
+                  align="center"
+                  sx={{ fontSize: "18px", mt:5 }}
+                >
+                  Temporarly we are offline. Please try again after sometime.
+                </Typography>
+              </>
+            }
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

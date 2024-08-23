@@ -15,11 +15,11 @@ import Image from "next/image";
 import ViewOrders from "./ViewOrders";
 import DashboardProfile from "./Profile";
 import { useAuthContext } from "@/context";
-import {
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import { styled } from "@mui/material/styles";
+import Switch from "@mui/material/Switch";
+import CircularLodar from "@/components/CircularLodar";
 
 const drawerWidth = 240;
 
@@ -27,15 +27,36 @@ interface Props {
   window?: () => Window;
 }
 
-const Home = () => <Typography variant="h6">Home</Typography>;
+const OnlineOfflineSwitch = styled(Switch)(({ theme, checked }) => ({
+  "& .MuiSwitch-switchBase": {
+    "&.Mui-checked": {
+      color: "green",
+      "& + .MuiSwitch-track": {
+        backgroundColor: "green",
+      },
+    },
+    "&.MuiSwitch-switchBase:not(.Mui-checked)": {
+      color: "red",
+      "& + .MuiSwitch-track": {
+        backgroundColor: "red",
+      },
+    },
+  },
+  "& .MuiSwitch-track": {
+    backgroundColor: checked ? "green" : "red",
+  },
+}));
 
-const Settings = () => <Typography variant="h6">Settings Component</Typography>;
+const Home = () => <Typography variant='h6'>Home</Typography>;
+
+const Settings = () => <Typography variant='h6'>Settings Component</Typography>;
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState("Home");
-  const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("Home");
+  const { user, kitchenMetaData } = useAuthContext();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -45,16 +66,31 @@ export default function ResponsiveDrawer(props: Props) {
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
-          const audio = new Audio('/mp3/message.mp3');
-          audio.play();     
+          const audio = new Audio("/mp3/message.mp3");
+          audio.play();
         }
-      }); 
+      });
     });
 
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, []);
+
+  const onlineOfflineHandler = async (e:any) => {
+    try{
+      setLoading(true)
+      const docRef = doc(db,'foodtrucks',kitchenMetaData?.id)
+      await updateDoc(docRef,{
+        isShopOpen : e.target.checked
+      })
+      setLoading(false)
+    }catch(err){
+      console.log(err);
+      setLoading(false)
+      return err
+    }
+  }
 
   const drawerItems = [
     { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
@@ -97,8 +133,7 @@ export default function ResponsiveDrawer(props: Props) {
                     activeTab == item.text ? "black" : "transparent", // Prevent hover background change
                   color: activeTab == item.text ? "white" : "inherit", // Prevent hover text color change
                 },
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   backgroundColor: activeTab == item.text ? "white" : "white",
@@ -107,8 +142,7 @@ export default function ResponsiveDrawer(props: Props) {
                   borderRadius: "20%",
                   padding: "4px",
                   marginRight: "12px", // This adds space between the image and text
-                }}
-              >
+                }}>
                 <Image
                   src={item.icon}
                   alt={`${item.text} icon`}
@@ -121,6 +155,27 @@ export default function ResponsiveDrawer(props: Props) {
           </ListItem>
         ))}
       </List>
+      <Box sx={{ margin: 2, display: "flex", alignItems: "center" }}>
+        {kitchenMetaData?.isShopOpen ? (
+          <>
+            <Typography variant='body1' sx={{ ml: 1,fontWeight:'bold',color:'green' }}>
+              We are Online
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant='body1' sx={{ ml: 1,fontWeight:'bold',color:'red' }}>
+              We are Offline
+            </Typography>
+          </>
+        )}
+
+        <OnlineOfflineSwitch
+          value={kitchenMetaData?.isShopOpen}
+          checked={kitchenMetaData?.isShopOpen}
+          onChange={onlineOfflineHandler}
+        />
+      </Box>
     </div>
   );
 
@@ -133,60 +188,60 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "white", height: "100vh" }}>
-      <Box
-        component="nav"
-        sx={{
-          width: { sm: drawerWidth },
-          flexShrink: { sm: 0 },
-          bgcolor: "white",
-        }}
-        aria-label="sidebar options"
-      >
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
+    <>
+      <CircularLodar isLoading={loading} />    
+      <Box sx={{ display: "flex", bgcolor: "white", height: "100vh" }}>
+        <Box
+          component='nav'
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-              bgcolor: "white", // Sidebar background color for mobile view
-            },
+            width: { sm: drawerWidth },
+            flexShrink: { sm: 0 },
+            bgcolor: "white",
           }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
+          aria-label='sidebar options'>
+          <Drawer
+            container={container}
+            variant='temporary'
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                bgcolor: "white", // Sidebar background color for mobile view
+              },
+            }}>
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant='permanent'
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                borderRight: "1px solid black",
+                bgcolor: "white", // Sidebar background color for permanent drawer
+              },
+            }}
+            open>
+            {drawer}
+          </Drawer>
+        </Box>
+        <Box
+          component='main'
           sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-              bgcolor: "white", // Sidebar background color for permanent drawer
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            bgcolor: "white",
+            paddingRight: 0, // Remove or minimize the right padding
+          }}>
+          {renderContent()}
+        </Box>
       </Box>
-      <Box
-        component="main"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          bgcolor: "white",
-          paddingRight: 0, // Remove or minimize the right padding
-        }}
-      >
-        {renderContent()}
-      </Box>
-    </Box>
+    </>
   );
 }

@@ -32,6 +32,11 @@ export default function RootLayout({
             gtag('config', 'G-TZBK3DHJXT');
           `}
         </Script>
+        <Script
+          async
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places`}>
+        </Script>
       </head>
       <body>
         <AuthProvider>

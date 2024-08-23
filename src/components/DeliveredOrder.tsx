@@ -1,4 +1,4 @@
-import { useAuthContext } from "@/context";
+import { KITCHEN_ID, useAuthContext } from "@/context";
 import { db } from "@/firebase";
 import {
   Timestamp,
@@ -31,6 +31,7 @@ const DeliveredOrder: React.FC = () => {
     const colRef = collection(db, "orders");
     const q = query(
       colRef,
+      where("kitchenId", "==", KITCHEN_ID),
       where("delivery.status", "==", true),
       orderBy("createdAt", "desc")
     );

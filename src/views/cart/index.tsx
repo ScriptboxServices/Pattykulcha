@@ -99,13 +99,9 @@ const FIXED_INCLUDE_ITEMS = [
 
 const MenuPage = () => {
   const {
-    setSize,
-    setPrice,
     kulcha,
-    setCal,
     includedItems2,
     setIncludedItems2,
-    includedItems1,
     extraItems,
     count,
     setCount,
@@ -125,19 +121,6 @@ const MenuPage = () => {
   const [isLassiDialogOpen, setIsLassiDialogOpen] = useState(false);
   const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
   const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
-
-  const handleSize = (event: any, newSize: string | null) => {
-    if (newSize !== null) {
-      setSize(newSize);
-      if (newSize == "regular") {
-        setPrice(8);
-        setCal(640);
-      } else {
-        setPrice(6.75);
-        setCal(320);
-      }
-    }
-  };
 
   const handleAddItem = (itemName: string) => {
     const existingItem = includedItems2.find((includedItem) =>

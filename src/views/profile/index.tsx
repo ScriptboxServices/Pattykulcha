@@ -36,7 +36,7 @@ type User = {
   profile: string;
   address: {
     raw: string;
-    separate: {
+    seperate: {
       state: string;
       city: string;
       postal_code: string;
@@ -362,7 +362,7 @@ const ProfilePage: React.FC = () => {
 
                                     setAddress({
                                       raw: place.formatted_address,
-                                      separate: {
+                                      seperate: {
                                         state: state,
                                         city: city,
                                         postal_code: zipCode || plusCode || postalCode,
