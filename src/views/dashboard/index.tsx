@@ -9,23 +9,44 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import Switch from "@mui/material/Switch";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
 import Image from "next/image";
 import ViewOrders from "./ViewOrders";
 import DashboardProfile from "./Profile";
 import { useAuthContext } from "@/context";
-import {
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
+import { styled } from "@mui/material/styles";
+import KanbanBoard from "../kanban";
 
 const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
 }
+
+// Styled component to customize the switch
+const OnlineOfflineSwitch = styled(Switch)(({ theme, checked }) => ({
+  "& .MuiSwitch-switchBase": {
+    "&.Mui-checked": {
+      color: "green",
+      "& + .MuiSwitch-track": {
+        backgroundColor: "green",
+      },
+    },
+    "&.MuiSwitch-switchBase:not(.Mui-checked)": {
+      color: "red",
+      "& + .MuiSwitch-track": {
+        backgroundColor: "red",
+      },
+    },
+  },
+  "& .MuiSwitch-track": {
+    backgroundColor: checked ? "green" : "red",
+  },
+}));
 
 const Home = () => <Typography variant="h6">Home</Typography>;
 
@@ -35,6 +56,7 @@ export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("Home");
+  const [isOnline, setIsOnline] = useState(true); // State for online/offline toggle
   const { user } = useAuthContext();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -54,7 +76,7 @@ export default function ResponsiveDrawer(props: Props) {
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, [user]); // Add isOnline dependency
 
   const drawerItems = [
     { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
@@ -78,7 +100,7 @@ export default function ResponsiveDrawer(props: Props) {
       icon: "/images/dashboard/profile.png",
       component: <DashboardProfile />,
     },
-    // { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
+    { text: "Kanban", icon: '/images/dashboard/setting.png', component: <KanbanBoard /> },
   ];
 
   const drawer = (
@@ -121,11 +143,20 @@ export default function ResponsiveDrawer(props: Props) {
           </ListItem>
         ))}
       </List>
+      {/* <Box sx={{ margin: 2, display: 'flex', alignItems: 'center' }}>
+        <Typography variant="body1" sx={{ marginRight: 1 }}>
+          {isOnline ? "We are Online" : "We are Offline"}
+        </Typography>
+        <OnlineOfflineSwitch
+          checked={isOnline}
+          onChange={() => setIsOnline(!isOnline)}
+        />
+      </Box> */}
     </div>
   );
 
   const container =
-    window !== undefined ? () => window().document.body : undefined;
+    window != undefined ? () => window().document.body : undefined;
 
   const renderContent = () => {
     const activeItem = drawerItems.find((item) => item.text == activeTab);

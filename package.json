@@ -26,6 +26,7 @@
     "crypto-js": "^4.2.0",
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.1",
+    "framer-motion": "^11.3.29",
     "keen-slider": "^6.8.6",
     "newpattykulcha": "file:",
     "next": "14.2.5",

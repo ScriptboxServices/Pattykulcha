@@ -13,11 +13,8 @@ import {
 import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { Kulcha } from "@/context";
 import Image from "next/image";
 import { RootState } from "@/redux-store";
-import { setActiveCategory } from "@/redux-store/slices/Menu";
 
 type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
 
@@ -31,7 +28,7 @@ interface MenuItem {
   desc: string;
   image: string;
   price: number;
-  quantity : number;
+  quantity: number;
 }
 
 const MenuSection = () => {
@@ -67,9 +64,9 @@ const MenuSection = () => {
     desc: string,
     image: string,
     price: number,
-    quantity : number
+    quantity: number
   ) => {
-    const newKulcha = { name: itemName, desc, image, price, quantity};
+    const newKulcha = { name: itemName, desc, image, price, quantity };
     setKulcha(newKulcha);
     localStorage.setItem("kulcha", JSON.stringify(newKulcha));
     setSelectedKulchas((prevKulchas: MenuItem[]) => [
@@ -91,7 +88,7 @@ const MenuSection = () => {
   return (
     <Box
       sx={{
-        paddingLeft: {xs:1.5,sm:3,md:4,lg:4},
+        paddingLeft: { xs: 1.5, sm: 3, md: 4, lg: 4 },
         backgroundColor: "#FFF8E1",
         position: "relative",
         paddingTop: 10,
@@ -138,6 +135,26 @@ const MenuSection = () => {
                   },
                 }}
               >
+                {/* {(index == 0 || index == menuItems.length - 1) && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "-30px",
+                      right: "-30px",
+                      width: "100px", 
+                      height: "100px", 
+                      backgroundImage: 'url(/images/landingpage/dis.png)',
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontWeight: "bold",
+                      color: "#fff",
+                    }}
+                  ></Box>
+                )} */}
+
                 <Box
                   sx={{
                     borderRadius: "50%",
