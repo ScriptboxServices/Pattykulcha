@@ -3,33 +3,25 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Link from "next/link";
-import Image from "next/image";
 import * as yup from "yup";
 import {
   Box,
   Button,
   Container,
   TextField,
-  Typography,
   CssBaseline,
   Grid,
-  Autocomplete,
+  Autocomplete as MUIAutocomplete,
   InputAdornment,
-  CircularProgress,
   Alert,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import { Icon, IconifyIcon } from "@iconify/react";
+import Autocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
 import { countryCodes } from "@/utils/constants";
-import {
-  ConfirmationResult,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
-import { auth } from "@/firebase";
-import { useMenuContext } from "@/context";
-import CircularLodar from "@/components/CircularLodar";
 
 export interface CountryCode {
   name: string;
@@ -40,14 +32,18 @@ export interface CountryCode {
 
 // Define the Yup schema
 const schema = yup.object().shape({
+  name: yup.string().required("Name is required"),
   phoneNumber: yup
     .string()
     .matches(/^\d+$/, "Phone number is not valid")
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   countryCode: yup.string().required(),
+  address: yup.string().required("Address is required"),
+  kulchaType: yup.string().required("Kulcha type is required"),
 });
 
+// Define the TypeScript interface based on the Yup schema
 type IFormInput = yup.InferType<typeof schema>;
 
 const filterOptions = (options: CountryCode[], state: any) =>
@@ -55,10 +51,11 @@ const filterOptions = (options: CountryCode[], state: any) =>
     option.name.toLowerCase().includes(state.inputValue.toLowerCase())
   );
 
-const Login: React.FC = () => {
+const MakeOrder: React.FC = () => {
   const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
     null
   );
+  const [address, setAddress] = useState<any>({});
   const {
     control,
     handleSubmit,
@@ -71,32 +68,7 @@ const Login: React.FC = () => {
     },
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [recaptchaVerifier, setRecaptchaVerifier] =
-    useState<RecaptchaVerifier | null>(null);
-  const router = useRouter();
-  const { confirmationResult, setConfirmationResult } = useMenuContext();
-
-  useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      {
-        size: "invisible",
-      }
-    );
-
-    setRecaptchaVerifier(recaptchaVerifier);
-    return () => {
-      recaptchaVerifier.clear();
-    };
-  }, [auth]);
-
-  useEffect(() => {
-    if (!confirmationResult) return;
-    router.push("/verification");
-  }, [confirmationResult]);
 
   useEffect(() => {
     setDefaultCountry(
@@ -106,33 +78,11 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setError("");
-    if (!recaptchaVerifier) return;
-
-    try {
-      setLoading(true);
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        `+${data?.countryCode}${data?.phoneNumber}`,
-        recaptchaVerifier
-      );
-      setLoading(false);
-
-      setConfirmationResult(confirmation);
-    } catch (err: any) {
-      console.log(err.code);
-      setLoading(false);
-      if (err.code == "auth/invalid-phone-number") {
-        setError("Invalid phone number.");
-      } else {
-        setError("Failed to send otp.");
-      }
-    }
+    console.log("Form Submitted:", data);
   };
 
   return (
     <>
-      <CircularLodar isLoading={loading} />
-      <div id="recaptcha-container" />
       <CssBaseline />
       <Box
         sx={{
@@ -140,8 +90,8 @@ const Login: React.FC = () => {
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: {xs:"flex-start",sm:"center"},
-          overflow: "hidden", // Prevent overflow issues
+          alignItems: "center",
+          overflow: "hidden",
         }}
       >
         <Container
@@ -152,7 +102,7 @@ const Login: React.FC = () => {
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
-            overflow: "hidden", // Prevent content overflow
+            overflow: "hidden",
           }}
         >
           <Box
@@ -163,32 +113,6 @@ const Login: React.FC = () => {
               width: "100%",
             }}
           >
-            <Link href="/home" passHref>
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                height={150}
-                layout="fixed"
-                width={170}
-                priority
-              />
-            </Link>
-            <Typography
-              component="h2"
-              variant="subtitle1"
-              align="left"
-              sx={{ width: "100%", mt: 2,fontWeight:'bold' }}
-            >
-              Welcome to Patty kulcha!
-            </Typography>
-            <Typography
-              variant="body2"
-              align="left"
-              sx={{ width: "100%", mt: 0.5, mb: 3 }}
-              gutterBottom
-            >
-              Please sign-in to your account.
-            </Typography>
             <Box
               component="form"
               noValidate
@@ -198,10 +122,34 @@ const Login: React.FC = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Controller
+                    name="name"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        required
+                        fullWidth
+                        label="Name"
+                        placeholder="Your Name"
+                        value={value}
+                        onChange={onChange}
+                        error={!!errors.name}
+                        helperText={errors.name?.message ?? ""}
+                        InputLabelProps={{ style: { color: "black" } }}
+                        sx={{
+                          "@media (max-width: 600px)": {
+                            marginTop: "7px",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
                     name="countryCode"
                     control={control}
                     render={({ field: { value, onChange } }) => (
-                      <Autocomplete
+                      <MUIAutocomplete
                         fullWidth
                         options={countryCodes}
                         filterOptions={filterOptions}
@@ -304,6 +252,83 @@ const Login: React.FC = () => {
                     )}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <Autocomplete
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
+                    style={{
+                      outline: "none",
+                      color: "#8F8996",
+                      padding: "14px 10px",
+                      fontWeight: "bold",
+                      border: "1px solid grey",
+                      fontSize: "1rem",
+                      width: "100%",
+                    }}
+                    defaultValue={address?.raw}
+                    onPlaceSelected={(place) => {
+                      if (!place) return;
+
+                      let zipCode = "";
+                      let city = "";
+                      let state = "";
+
+                      place.address_components?.forEach((component) => {
+                        if (component.types.includes("postal_code")) {
+                          zipCode = component.long_name;
+                        }
+                        if (component.types.includes("locality")) {
+                          city = component.long_name;
+                        }
+                        if (
+                          component.types.includes("administrative_area_level_1")
+                        ) {
+                          state = component.long_name;
+                        }
+                      });
+
+                      const post = place.geometry?.location;
+                      if (!post) return;
+
+                      setAddress({
+                        raw: place.formatted_address,
+                        separate: {
+                          state: state,
+                          city: city,
+                          postal_code: zipCode,
+                          line1: place.formatted_address?.split(",")[0],
+                        },
+                      });
+                    }}
+                    options={{
+                      componentRestrictions: { country: ["ca"] },
+                      types: ["geocode", "establishment"],
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    name="kulchaType"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <FormControl fullWidth required>
+                        <InputLabel>Kulcha Type</InputLabel>
+                        <Select
+                          value={value}
+                          onChange={onChange}
+                          label="Kulcha Type"
+                          error={!!errors.kulchaType}
+                          sx={{ textAlign: "left" }}
+                        >
+                          <MenuItem value="Mix Kulcha">Mix Kulcha</MenuItem>
+                          <MenuItem value="Paneer Kulcha">Paneer Kulcha</MenuItem>
+                          <MenuItem value="Aloo Kulcha">Aloo Kulcha</MenuItem>
+                          <MenuItem value="Onion Kulcha">Onion Kulcha</MenuItem>
+                          <MenuItem value="Gobi Kulcha">Gobi Kulcha</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
               </Grid>
               <Button
                 type="submit"
@@ -322,10 +347,10 @@ const Login: React.FC = () => {
                   },
                 }}
               >
-                Login
+                Submit Order
               </Button>
               {error && (
-                <Alert severity="error" className=" mt-2">
+                <Alert severity="error" className="mt-2">
                   {error}
                 </Alert>
               )}
@@ -337,4 +362,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default MakeOrder;

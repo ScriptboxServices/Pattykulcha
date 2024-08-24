@@ -224,7 +224,7 @@ const KanbanBoard = () => {
   }
 
   return (
-    <>
+    <Box sx={{minHeight:"auto",backgroundColor:"white",overflowY:"auto"}}>
       <CircularLodar isLoading={loading} />
       <Box>
         <Typography
@@ -234,7 +234,7 @@ const KanbanBoard = () => {
         </Typography>
       </Box>
       <Box
-        className=' w-auto p-5 h-[100%] bg-white no-scrollbar'
+        className=' w-auto p-5 max-h-[1300px] bg-white no-scrollbar'
         sx={{ overflowY: "hidden", overflowX: "auto", ml: 3 }}>
         <DndContext sensors={sensors} collisionDetection={closestCorners}>
           <SortableContext items={containers.map((container) => container.id)}>
@@ -528,7 +528,7 @@ const KanbanBoard = () => {
           </SortableContext>
         </DndContext>
       </Box>
-    </>
+    </Box>
   );
 };
 

@@ -61,7 +61,8 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
     [theme.breakpoints.up("sm")]: {
       width: "40px",
       height: "40px", // Keep it square on larger screens too
-      margin: theme.spacing(0.2),
+      margin: theme.spacing(0.1),
+      justifyContent: "center",
     },
   },
 }));
