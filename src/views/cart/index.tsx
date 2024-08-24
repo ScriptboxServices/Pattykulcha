@@ -422,7 +422,7 @@ const MenuPage = () => {
                           md: "150px",
                           lg: "150px",
                         },
-                        width: { xs: "150px", sm: "175px" },
+                        width: { xs: "130px", sm: "175px" },
                         margin: "0.5rem", // Updated margin
                         boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
                       }}
@@ -486,7 +486,7 @@ const MenuPage = () => {
                         position: "relative",
                         cursor: "pointer",
                         height: { xs: "270px", sm: "270px" },
-                        width: { xs: "150px", sm: "175px" },
+                        width: { xs: "130px", sm: "175px" },
                         margin: "0.5rem",
                         boxShadow: "2px 2px 3px #4e5664",
                       }}

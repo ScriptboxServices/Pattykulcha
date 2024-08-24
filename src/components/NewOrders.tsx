@@ -99,9 +99,12 @@ const NewOrders: React.FC = () => {
                 {order.date}
               </Typography>
             </Box>
-            {/* View More Details Icon */}
             <IconButton size="small">
-              <Visibility />
+            <Chip
+              label={order.delivery.message}
+              color={order.delivery.status ? "success" : "warning"}
+              sx={{ borderRadius: "50px", textTransform: "none" }}
+            />
             </IconButton>
           </Box>
 
@@ -209,11 +212,6 @@ const NewOrders: React.FC = () => {
             <Typography variant="body2" color="textSecondary">
               X{order?.order?.length} Items
             </Typography>
-            <Chip
-              label={order.delivery.message}
-              color={order.delivery.status ? "success" : "warning"}
-              sx={{ borderRadius: "50px", textTransform: "none" }}
-            />
           </Box>
         </Box>
       </Card>

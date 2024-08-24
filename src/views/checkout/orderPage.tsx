@@ -121,14 +121,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          px: 2,
-          pt: 4,
+          pt:4
         }}
       >
         <Container maxWidth="md">
           <Paper
             sx={{
-              p: 4,
+              p: 2,
               backgroundColor: "white",
               borderRadius: 4,
               boxShadow: 3,

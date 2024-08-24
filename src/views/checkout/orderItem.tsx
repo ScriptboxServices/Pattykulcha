@@ -531,7 +531,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   align="center"
                   sx={{ fontSize: "18px", mt:5 }}
                 >
-                  Currently we are not delivering in your area. Please try again after sometime.
+                  We&apos;re unable to deliver to your area at the moment. Thank you for your understanding!
                 </Typography>
               </> : <>
                 <Typography
@@ -540,7 +540,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   align="center"
                   sx={{ fontSize: "18px", mt:5 }}
                 >
-                  Temporarly we are offline. Please try again after sometime.
+                  We&apos;re temporarily offline and unable to deliver to your area at the moment. We appreciate your understanding and look forward to serving you again soon!
                 </Typography>
               </>
             }

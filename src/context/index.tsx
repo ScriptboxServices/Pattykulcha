@@ -196,7 +196,7 @@ export const AuthProvider : React.FC<AuthProps> = ({children}) => {
       return () => {
         unsubscribe()
       }
-  },[])
+  },[user])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {

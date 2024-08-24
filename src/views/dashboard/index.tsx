@@ -1,14 +1,21 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Typography from "@mui/material/Typography";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  Switch,
+  FormControlLabel,
+} from "@mui/material";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
 import Image from "next/image";
@@ -18,8 +25,8 @@ import { useAuthContext } from "@/context";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { styled } from "@mui/material/styles";
-import Switch from "@mui/material/Switch";
 import CircularLodar from "@/components/CircularLodar";
+import KanbanBoard from "../kanban";
 
 const drawerWidth = 240;
 
@@ -27,35 +34,15 @@ interface Props {
   window?: () => Window;
 }
 
-const OnlineOfflineSwitch = styled(Switch)(({ theme, checked }) => ({
-  "& .MuiSwitch-switchBase": {
-    "&.Mui-checked": {
-      color: "green",
-      "& + .MuiSwitch-track": {
-        backgroundColor: "green",
-      },
-    },
-    "&.MuiSwitch-switchBase:not(.Mui-checked)": {
-      color: "red",
-      "& + .MuiSwitch-track": {
-        backgroundColor: "red",
-      },
-    },
-  },
-  "& .MuiSwitch-track": {
-    backgroundColor: checked ? "green" : "red",
-  },
-}));
-
 const Home = () => <Typography variant='h6'>Home</Typography>;
 
-const Settings = () => <Typography variant='h6'>Settings Component</Typography>;
+// const Settings = () => <Typography variant='h6'>Settings Component</Typography>;
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [loading, setLoading] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Home");
+  const [activeTab, setActiveTab] = useState("Order Detail");
   const { user, kitchenMetaData } = useAuthContext();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -93,11 +80,11 @@ export default function ResponsiveDrawer(props: Props) {
   }
 
   const drawerItems = [
-    { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
+    // { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
     {
       text: "Order Detail",
       icon: "/images/dashboard/orderdetail.png",
-      component: <ViewOrders />,
+      component: <KanbanBoard />,
     },
     {
       text: "Order List",
@@ -114,7 +101,6 @@ export default function ResponsiveDrawer(props: Props) {
       icon: "/images/dashboard/profile.png",
       component: <DashboardProfile />,
     },
-    // { text: "Settings", icon: '/images/dashboard/setting.png', component: <Settings /> },
   ];
 
   const drawer = (
@@ -155,32 +141,11 @@ export default function ResponsiveDrawer(props: Props) {
           </ListItem>
         ))}
       </List>
-      <Box sx={{ margin: 2, display: "flex", alignItems: "center" }}>
-        {kitchenMetaData?.isShopOpen ? (
-          <>
-            <Typography variant='body1' sx={{ ml: 1,fontWeight:'bold',color:'green' }}>
-              We are Online
-            </Typography>
-          </>
-        ) : (
-          <>
-            <Typography variant='body1' sx={{ ml: 1,fontWeight:'bold',color:'red' }}>
-              We are Offline
-            </Typography>
-          </>
-        )}
-
-        <OnlineOfflineSwitch
-          value={kitchenMetaData?.isShopOpen}
-          checked={kitchenMetaData?.isShopOpen}
-          onChange={onlineOfflineHandler}
-        />
-      </Box>
     </div>
   );
 
   const container =
-    window !== undefined ? () => window().document.body : undefined;
+    window != undefined ? () => window().document.body : undefined;
 
   const renderContent = () => {
     const activeItem = drawerItems.find((item) => item.text == activeTab);
@@ -237,9 +202,54 @@ export default function ResponsiveDrawer(props: Props) {
           sx={{
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             bgcolor: "white",
-            paddingRight: 0, // Remove or minimize the right padding
+            pr: 0, // Remove or minimize the right padding
           }}>
           {renderContent()}
+          <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: kitchenMetaData?.isShopOpen ? "#e0f7fa" : "#ffebee",
+            padding: "8px 16px",
+            borderRadius: "25px",
+            width:'220px',
+            boxShadow: 1,
+            position:'absolute',
+            right:20,
+            top:20
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+              value={kitchenMetaData?.isShopOpen}
+              checked={kitchenMetaData?.isShopOpen}
+              onChange={onlineOfflineHandler}
+                color="primary"
+                sx={{
+                  "& .MuiSwitch-switchBase.Mui-checked": {
+                    color: kitchenMetaData?.isShopOpen ? "#4caf50" : "#f44336",
+                  },
+                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                    backgroundColor: kitchenMetaData?.isShopOpen ? "#4caf50" : "#f44336",
+                  },
+                }}
+              />
+            }
+            label={
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  color: kitchenMetaData?.isShopOpen ? "#388e3c" : "#d32f2f",
+                  fontSize: "1rem",
+                }}
+              >
+                {kitchenMetaData?.isShopOpen ? "We are online" : "We are offline"}
+              </Typography>
+            }
+            sx={{ margin: 0 }}
+          />
+        </Box>
         </Box>
       </Box>
     </>

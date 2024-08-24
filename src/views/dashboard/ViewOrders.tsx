@@ -5,13 +5,9 @@ import {
   Typography,
   Grid,
   Box,
-  TextField,
-  Avatar,
-  Divider,
-  Chip,
-  IconButton,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
-import { Visibility } from "@mui/icons-material"; // Importing the eye icon
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -30,6 +26,11 @@ const ViewOrders = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const [isOnline, setIsOnline] = useState(true);
+
+  const handleToggleChange = (event: { target: { checked: boolean | ((prevState: boolean) => boolean); }; }) => {
+    setIsOnline(event.target.checked);
+  };
 
   return (
     <Box sx={{ padding: 5, height: "auto", bgcolor: "white" }}>
@@ -38,33 +39,6 @@ const ViewOrders = () => {
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
           Order List
         </Typography>
-        <TextField
-          label="Search"
-          variant="outlined"
-          sx={{
-            width: "40%",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "25px", // Rounded corners for the input box
-              backgroundColor: "#fff", // Light background color
-              "&:hover fieldset": {
-                borderColor: "#4CAF50", // Green border on hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#4CAF50", // Green border when focused
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "#888", // Label color
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#4CAF50", // Label color when focused
-            },
-            "& .MuiOutlinedInput-input": {
-              padding: "10px 40px",
-              paddingLeft:"70px" // Extra padding inside the input box
-            },
-          }}
-        />
       </Box>
 
       {/* Status Filters */}
