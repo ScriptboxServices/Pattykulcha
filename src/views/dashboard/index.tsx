@@ -15,6 +15,7 @@ import {
   Box,
   Switch,
   FormControlLabel,
+  Button
 } from "@mui/material";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
@@ -27,6 +28,8 @@ import { db } from "@/firebase";
 import { styled } from "@mui/material/styles";
 import CircularLodar from "@/components/CircularLodar";
 import KanbanBoard from "../kanban";
+import MakeOrder from "./CreateOrder";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
@@ -34,9 +37,7 @@ interface Props {
   window?: () => Window;
 }
 
-const Home = () => <Typography variant='h6'>Home</Typography>;
-
-// const Settings = () => <Typography variant='h6'>Settings Component</Typography>;
+const Home = () => <Typography variant="h6">Home</Typography>;
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
@@ -64,23 +65,22 @@ export default function ResponsiveDrawer(props: Props) {
     };
   }, []);
 
-  const onlineOfflineHandler = async (e:any) => {
-    try{
-      setLoading(true)
-      const docRef = doc(db,'foodtrucks',kitchenMetaData?.id)
-      await updateDoc(docRef,{
-        isShopOpen : e.target.checked
-      })
-      setLoading(false)
-    }catch(err){
+  const onlineOfflineHandler = async (e: any) => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, "foodtrucks", kitchenMetaData?.id);
+      await updateDoc(docRef, {
+        isShopOpen: e.target.checked,
+      });
+      setLoading(false);
+    } catch (err) {
       console.log(err);
-      setLoading(false)
-      return err
+      setLoading(false);
+      return err;
     }
-  }
+  };
 
   const drawerItems = [
-    // { text: "Home", icon: "/images/dashboard/home.png", component: <Home /> },
     {
       text: "Order Detail",
       icon: "/images/dashboard/orderdetail.png",
@@ -101,11 +101,29 @@ export default function ResponsiveDrawer(props: Props) {
       icon: "/images/dashboard/profile.png",
       component: <DashboardProfile />,
     },
+    {
+      text: "Make Order",
+      icon: "/images/dashboard/profile.png",
+      component: <MakeOrder />,
+    },
   ];
 
   const drawer = (
-    <div>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <List>
+        <Link href="/home" passHref>
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            height={150}
+            layout="fixed"
+            width={170}
+            priority
+            style={{
+              marginInline: "auto",
+            }}
+          />
+        </Link>
         {drawerItems.map((item, index) => (
           <ListItem disablePadding key={item.text} sx={{ marginTop: 4 }}>
             <ListItemButton
@@ -116,10 +134,11 @@ export default function ResponsiveDrawer(props: Props) {
                 color: activeTab == item.text ? "white" : "inherit",
                 "&:hover": {
                   backgroundColor:
-                    activeTab == item.text ? "black" : "transparent", // Prevent hover background change
-                  color: activeTab == item.text ? "white" : "inherit", // Prevent hover text color change
+                    activeTab == item.text ? "black" : "transparent",
+                  color: activeTab == item.text ? "white" : "inherit",
                 },
-              }}>
+              }}
+            >
               <ListItemIcon
                 sx={{
                   backgroundColor: activeTab == item.text ? "white" : "white",
@@ -127,8 +146,9 @@ export default function ResponsiveDrawer(props: Props) {
                   color: activeTab == item.text ? "white" : "inherit",
                   borderRadius: "20%",
                   padding: "4px",
-                  marginRight: "12px", // This adds space between the image and text
-                }}>
+                  marginRight: "12px",
+                }}
+              >
                 <Image
                   src={item.icon}
                   alt={`${item.text} icon`}
@@ -141,7 +161,28 @@ export default function ResponsiveDrawer(props: Props) {
           </ListItem>
         ))}
       </List>
-    </div>
+      <Box sx={{ flexGrow: 1 }} />{" "}
+      {/* Filler space to push the button to the bottom */}
+      
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            backgroundColor: "#ECAB21",
+            color: "white",
+            marginY:3,
+            fontSize:"12px",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#FFC107",
+              color: "white",
+            },
+          }}
+        >
+          Switch to customer
+        </Button>
+      
+    </Box>
   );
 
   const container =
@@ -154,19 +195,20 @@ export default function ResponsiveDrawer(props: Props) {
 
   return (
     <>
-      <CircularLodar isLoading={loading} />    
+      <CircularLodar isLoading={loading} />
       <Box sx={{ display: "flex", bgcolor: "white", height: "100vh" }}>
         <Box
-          component='nav'
+          component="nav"
           sx={{
             width: { sm: drawerWidth },
             flexShrink: { sm: 0 },
             bgcolor: "white",
           }}
-          aria-label='sidebar options'>
+          aria-label="sidebar options"
+        >
           <Drawer
             container={container}
-            variant='temporary'
+            variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
@@ -177,79 +219,90 @@ export default function ResponsiveDrawer(props: Props) {
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
-                bgcolor: "white", // Sidebar background color for mobile view
+                bgcolor: "white",
               },
-            }}>
+            }}
+          >
             {drawer}
           </Drawer>
           <Drawer
-            variant='permanent'
+            variant="permanent"
             sx={{
               display: { xs: "none", sm: "block" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
                 borderRight: "1px solid black",
-                bgcolor: "white", // Sidebar background color for permanent drawer
+                bgcolor: "white",
               },
             }}
-            open>
+            open
+          >
             {drawer}
           </Drawer>
         </Box>
         <Box
-          component='main'
+          component="main"
           sx={{
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             bgcolor: "white",
-            pr: 0, // Remove or minimize the right padding
-          }}>
-          {renderContent()}
-          <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: kitchenMetaData?.isShopOpen ? "#e0f7fa" : "#ffebee",
-            padding: "8px 16px",
-            borderRadius: "25px",
-            width:'220px',
-            boxShadow: 1,
-            position:'absolute',
-            right:20,
-            top:20
+            pr: 0,
           }}
         >
-          <FormControlLabel
-            control={
-              <Switch
-              value={kitchenMetaData?.isShopOpen}
-              checked={kitchenMetaData?.isShopOpen}
-              onChange={onlineOfflineHandler}
-                color="primary"
-                sx={{
-                  "& .MuiSwitch-switchBase.Mui-checked": {
-                    color: kitchenMetaData?.isShopOpen ? "#4caf50" : "#f44336",
-                  },
-                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                    backgroundColor: kitchenMetaData?.isShopOpen ? "#4caf50" : "#f44336",
-                  },
-                }}
-              />
-            }
-            label={
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: kitchenMetaData?.isShopOpen ? "#388e3c" : "#d32f2f",
-                  fontSize: "1rem",
-                }}
-              >
-                {kitchenMetaData?.isShopOpen ? "We are online" : "We are offline"}
-              </Typography>
-            }
-            sx={{ margin: 0 }}
-          />
-        </Box>
+          {renderContent()}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: kitchenMetaData?.isShopOpen
+                ? "#e0f7fa"
+                : "#ffebee",
+              padding: "8px 16px",
+              borderRadius: "25px",
+              width: "220px",
+              boxShadow: 1,
+              position: "absolute",
+              right: 20,
+              top: 20,
+            }}
+          >
+            <FormControlLabel
+              control={
+                <Switch
+                  value={kitchenMetaData?.isShopOpen}
+                  checked={kitchenMetaData?.isShopOpen}
+                  onChange={onlineOfflineHandler}
+                  color="primary"
+                  sx={{
+                    "& .MuiSwitch-switchBase.Mui-checked": {
+                      color: kitchenMetaData?.isShopOpen
+                        ? "#4caf50"
+                        : "#f44336",
+                    },
+                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                      backgroundColor: kitchenMetaData?.isShopOpen
+                        ? "#4caf50"
+                        : "#f44336",
+                    },
+                  }}
+                />
+              }
+              label={
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    color: kitchenMetaData?.isShopOpen ? "#388e3c" : "#d32f2f",
+                    fontSize: "1rem",
+                  }}
+                >
+                  {kitchenMetaData?.isShopOpen
+                    ? "We are online"
+                    : "We are offline"}
+                </Typography>
+              }
+              sx={{ margin: 0 }}
+            />
+          </Box>
         </Box>
       </Box>
     </>

@@ -269,7 +269,13 @@ const MenuSection = () => {
             </Grid>
           ))}
         </Grid>
-        <Typography variant="h4">Review Section</Typography>
+        <Typography
+          variant="h3"
+          component="h2"
+          sx={{ color: "#333333", fontWeight: "bold" }}
+        >
+          Customer&apos;s review
+        </Typography>
         <ReviewSlider/>
       </Container>
     </Box>
