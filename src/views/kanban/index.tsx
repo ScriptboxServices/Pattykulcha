@@ -423,6 +423,11 @@ const KanbanBoard = () => {
                                     color='textSecondary'>
                                     Phone: {order?.customer?.phoneNumber}
                                   </Typography>
+                                  <Typography
+                                    variant='body2'
+                                    color='textSecondary'>
+                                    Instructions: {order?.instructions}
+                                  </Typography>
                                 </Box>
                               </Box>
                               <Box>

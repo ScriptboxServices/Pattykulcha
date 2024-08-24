@@ -60,7 +60,7 @@ const PaymentPage = () => {
         data: {
           address : metaData?.address,
           instructions,
-          name : user?.displayName
+          name : metaData?.name
         },
       })
       .then((response : any) => response.data)
