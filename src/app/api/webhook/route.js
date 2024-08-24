@@ -47,6 +47,7 @@ export const POST = async (req, res) => {
       const charge = await stripe.charges.retrieve(latest_charge);
       const cardDetails = charge.payment_method_details.card;
       const { brand, last4, exp_month, exp_year } = cardDetails;
+      const kitchenId = '0bXJJJIHMgu5MNGSArY2'
 
       await Promise.all([
         orderDocRef.set({
@@ -68,6 +69,7 @@ export const POST = async (req, res) => {
               name : metadata.name,
               phoneNumber : metadata.phoneNumber
             },
+            kitchenId: kitchenId,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({

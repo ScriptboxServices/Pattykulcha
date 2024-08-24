@@ -18,6 +18,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Chip
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -49,7 +50,7 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useMenuContext();
-  const { isLoggedIn } = useAuthContext();
+  const { isLoggedIn,kitchenMetaData } = useAuthContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleDrawerToggle = () => {
@@ -58,7 +59,6 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     await auth.signOut();
-    localStorage.removeItem("address");
     localStorage.removeItem("instructions");
     localStorage.removeItem("kulcha");
     localStorage.removeItem("includedItems2");
@@ -194,6 +194,15 @@ const Navbar: React.FC = () => {
             </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
+            {
+              kitchenMetaData && (
+                kitchenMetaData.isShopOpen ? <>
+                  <Chip label="Online" color="success" variant="outlined" sx={{mr : 1}}/>
+                </> : <>
+                  <Chip label="Offline" color="warning" variant="outlined" sx={{mr : 1}}/>  
+                </>
+              )
+            }
             {isLoggedIn && (
               <Link href="/checkout" passHref>
                 <IconButton

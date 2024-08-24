@@ -41,7 +41,7 @@ export const POST = async (req, res) => {
 
     const decodeToken = await admin.auth().verifyIdToken(xToken);
     const { uid, phone_number } = decodeToken;
-    const { city, state, line1, postal_code } = address.separate;
+    const { city, state, line1, postal_code } = address.seperate;
 
     const cartResult = await db
       .collection("carts")
@@ -82,7 +82,7 @@ export const POST = async (req, res) => {
       instructions,
       address: address.raw,
       name : name ? name : `Customer_${uid}`,
-      phoneNumber : phone_number
+      phoneNumber : phone_number,
     };
 
     const _address = {

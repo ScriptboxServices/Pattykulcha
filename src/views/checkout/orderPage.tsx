@@ -1,7 +1,7 @@
 "use client";
 
 import Autocomplete from "react-google-autocomplete";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -26,12 +26,11 @@ interface Props {
 }
 
 const OrderPage: React.FC<Props> = ({ setLoading }) => {
-  const {user,metaData,setMetaData} = useAuthContext()
-  const { instructions, setInstructions } =
-    useMenuContext();
+  const { user, metaData, setMetaData, kitchenMetaData } = useAuthContext();
+  const { instructions, setInstructions, setIsAddressReachable } = useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [address, setAddress] = useState<any>({...metaData.address});
+  const [address, setAddress] = useState<any>({ ...metaData.address });
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
   const handleOptionChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -41,6 +40,33 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
       setSelectedOption(newOption);
     }
   };
+
+  useEffect(() => {
+    if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
+      const service = new google.maps.DistanceMatrixService();
+      const request: any = {
+        origins: [kitchenMetaData?.address?.raw],
+        destinations: [metaData?.address?.raw],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false,
+      };
+
+      service.getDistanceMatrix(request, (response : any, status: any) => {
+        if (status === "OK") {
+          const distance = response.rows[0].elements[0].distance;
+          if (distance.value > 10000) {
+            setIsAddressReachable(false)
+          } else {
+            setIsAddressReachable(true)
+          }
+        } else {
+          console.error("Distance failed due to: " + status);
+        }
+      });
+    }
+  }, [metaData, kitchenMetaData]);
 
   const handleEditClick = (field: string) => {
     if (field == "address") {
@@ -52,19 +78,29 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
 
   const handleSaveClick = async (field: string) => {
     if (field == "address") {
-      setLoading(true)
-      await updateDoc(doc(db,'users',user.uid),{
-        address : address
-      })
-      const metaData : any = await getUserMetaData(user?.uid)
-      setMetaData({...metaData})
-      setLoading(false)
+      setLoading(true);
+      await updateDoc(doc(db, "users", user.uid), {
+        address: address,
+      });
+      const metaData: any = await getUserMetaData(user?.uid);
+      setMetaData({ ...metaData });
+      setLoading(false);
       setIsEditingAddress(false);
     } else if (field == "instructions") {
       localStorage.setItem("instructions", instructions);
       setIsEditingInstructions(false);
     }
   };
+
+  const isAddressReach  = async (_id : string) => {
+    if(!_id){
+      return
+    }
+
+
+    //Do some logic here regarding address.
+
+  }
 
   // const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setAddress(event.target.value);
@@ -80,7 +116,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     <>
       <Box
         sx={{
-          background:'#FAF3E0',
+          background: "#FAF3E0",
           minHeight: "60vh",
           display: "flex",
           alignItems: "center",
@@ -100,7 +136,9 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
               alignItems: "center",
             }}
           >
-            <Box sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}>
+            <Box
+              sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}
+            >
               <Link
                 href="/home"
                 underline="none"
@@ -180,8 +218,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                             flex: "1",
                           }}
                           defaultValue={address?.raw}
-                          // required={true}
-                          // placeholder='Search the address'
+                          // placeholder = 'Search the address'
                           onPlaceSelected={(place) => {
                             if (!place) return;
 
@@ -196,7 +233,8 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                               for (
                                 let j = 0;
                                 j <
-                                (place.address_components![i].types.length ?? 0);
+                                (place.address_components![i].types.length ??
+                                  0);
                                 j++
                               ) {
                                 if (
@@ -216,7 +254,8 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                                   place?.address_components![i].types[j] ==
                                   "administrative_area_level_1"
                                 ) {
-                                  state = place?.address_components[i].long_name;
+                                  state =
+                                    place?.address_components[i].long_name;
                                 }
                               }
                             }
@@ -243,7 +282,9 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                                         j < results[i].types.length;
                                         j++
                                       ) {
-                                        if (results[i].types[j] == "plus_code") {
+                                        if (
+                                          results[i].types[j] == "plus_code"
+                                        ) {
                                           plusCode =
                                             results[i]?.plus_code.global_code;
                                         }
@@ -257,14 +298,16 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                                       }
                                     }
                                     setAddress({
-                                      ...address,
                                       raw: place.formatted_address,
                                       seperate: {
                                         state: state,
                                         city: city,
-                                        postal_code: zipCode || plusCode || postalCode,
+                                        postal_code:
+                                          zipCode || plusCode || postalCode,
                                         line1:
-                                          place.formatted_address?.split(",")[0],
+                                          place.formatted_address?.split(
+                                            ","
+                                          )[0],
                                       },
                                     });
                                   } else {

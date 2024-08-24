@@ -128,7 +128,7 @@ const VerificationPage: React.FC = () => {
             name: "",
             address: {
               raw: "",
-              separate: {
+              seperate: {
                 state: "",
                 city: "",
                 postal_code: "",

@@ -10,7 +10,7 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { collection,query,getDocs,where, getDoc, doc } from "firebase/firestore";
+import { collection,query,getDocs,where, getDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export interface IncludedItem {
@@ -30,8 +30,6 @@ export interface Kulcha {
 }
 
 interface MenuContextType {
-  size: string;
-  setSize: (size: string) => void;
   price: number;
   setPrice: (price: number) => void;
   cal: number;
@@ -66,19 +64,24 @@ interface MenuContextType {
   setKulcha : any,
   setCarts : any,
   carts : any[],
-  grandTotal : any,
-  setGrandTotal : any,
+  grandTotal : string | number,
+  setGrandTotal : React.Dispatch<React.SetStateAction<string | number>>,
+  isAddressReachable : boolean,
+  setIsAddressReachable : React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface AuthContextType {
   user : any,
   isLoggedIn : boolean,
   metaData: any,
-  setMetaData : any
+  setMetaData : any,
+  kitchenMetaData : any
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
 const AuthContext = createContext<AuthContextType | null>(null);
+
+export const KITCHEN_ID : string = '0bXJJJIHMgu5MNGSArY2'
 
 export const useMenuContext = () => {
   const context = useContext(MenuContext);
@@ -116,6 +119,25 @@ export const getCartData = async (_id : string) => {
     return err
   }
 };
+
+export const getKithenInfo = async (_id : string) => {
+  try{
+    const docRef = doc(db,'foodtrucks',_id)
+
+    onSnapshot(docRef,(snapshot) => {
+      if(snapshot.exists()){
+        console.log(snapshot.data())
+        return {
+          id : snapshot.id,
+          ...snapshot.data()
+        }
+      }
+    })
+  }catch(err) {
+    console.log(err)
+    return err
+  }
+}
 
 export const getUserMetaData = async (_id : string) => {
   try {
@@ -155,6 +177,26 @@ export const AuthProvider : React.FC<AuthProps> = ({children}) => {
   const [user,setUser] = useState<object | null>(null)
   const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
   const [metaData,setMetaData] = useState<object | null>(null)
+  const [kitchenMetaData,setKitchenMetaData] = useState<object | null>(null)
+
+  useEffect(() => {
+        const docRef = doc(db,'foodtrucks',KITCHEN_ID)    
+        const unsubscribe =  onSnapshot(docRef,(snapshot) => {
+          if(snapshot.exists()){
+            console.log(snapshot.data())
+            setKitchenMetaData({
+              id : snapshot.id,
+              ...snapshot.data()
+            })
+          }else{
+            setKitchenMetaData(null)
+          }
+        })
+ 
+      return () => {
+        unsubscribe()
+      }
+  },[user])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -176,7 +218,7 @@ export const AuthProvider : React.FC<AuthProps> = ({children}) => {
     return () => unsubscribe();
   }, []);
 
-  return <AuthContext.Provider value={{user,isLoggedIn,metaData,setMetaData}}>
+  return <AuthContext.Provider value={{user,isLoggedIn,metaData,setMetaData,kitchenMetaData}}>
         {children}
     </AuthContext.Provider>;
 }
@@ -186,12 +228,12 @@ export const AuthProvider : React.FC<AuthProps> = ({children}) => {
 export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const {user} = useAuthContext()
   const [confirmationResult,setConfirmationResult] = useState<ConfirmationResult | null>(null)
-  const [size, setSize] = useState("regular");
   const [price, setPrice] = useState(0);
   const [cal, setCal] = useState(640);
   const [selectedkulchas, setSelectedKulchas] = useState<Kulcha[]>([]);
   const [kulcha, setKulcha] = useState({});
   const [carts, setCarts] = useState<any[]>([]);
+  const [isAddressReachable,setIsAddressReachable] = useState<boolean>(false)
   const [includedItems1, setIncludedItems1] = useState<any[]>([
     {
       id: "chana",
@@ -254,8 +296,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
-    size,
-    setSize,
     price,
     setPrice,
     cal,
@@ -291,7 +331,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setCarts,
     carts,
     grandTotal,
-    setGrandTotal
+    setGrandTotal,
+    setIsAddressReachable,
+    isAddressReachable
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
