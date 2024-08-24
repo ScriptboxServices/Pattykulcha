@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import { RootState } from "@/redux-store";
+import ReviewSlider from "@/views/review-slider";
 
 type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
 
@@ -268,6 +269,8 @@ const MenuSection = () => {
             </Grid>
           ))}
         </Grid>
+        <Typography variant="h4">Review Section</Typography>
+        <ReviewSlider/>
       </Container>
     </Box>
   );

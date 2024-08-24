@@ -25,6 +25,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuthContext, useMenuContext } from "@/context";
 import { auth } from "@/firebase";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "white",
@@ -79,9 +80,14 @@ const Navbar: React.FC = () => {
   const drawer = (
     <Box sx={{ width: 250 }}>
       <Link href="/home" passHref>
-        <Typography variant="h6" sx={{ fontWeight: "bold", m: 2, color: "#ECAB21" }}>
-          PATTY KULCHA
-        </Typography>
+        <Image
+          src="/images/logo.png"
+          alt="logo"
+          height={150}
+          layout="fixed"
+          width={170}
+          priority
+        />
       </Link>
       <Divider />
       <List>
@@ -102,11 +108,6 @@ const Navbar: React.FC = () => {
         <Link href="/home" passHref>
           <ListItem button onClick={handleLinkClick}>
             <ListItemText primary="Menu" />
-          </ListItem>
-        </Link>
-        <Link href="/about-us" passHref>
-          <ListItem button onClick={handleLinkClick}>
-            <ListItemText primary="About" />
           </ListItem>
         </Link>
       </List>
@@ -170,9 +171,16 @@ const Navbar: React.FC = () => {
       <StyledAppBar position="static">
         <StyledToolbar>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold", color: "#ECAB21" }}>
-              PATTY KULCHA
-            </Typography>
+            <Link href="/home" passHref>
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                height={150}
+                layout="fixed"
+                width={170}
+                priority
+              />
+            </Link>
           </Box>
           <Box
             sx={{
@@ -183,9 +191,6 @@ const Navbar: React.FC = () => {
           >
             <Link href="/home" passHref>
               <NavButton>Menu</NavButton>
-            </Link>
-            <Link href="/about-us" passHref>
-              <NavButton>About</NavButton>
             </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>

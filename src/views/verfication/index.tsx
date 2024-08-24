@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
 import { auth, db } from "@/firebase";
-import { Padding } from "@mui/icons-material";
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -54,15 +53,18 @@ const StyledForm = styled(Box)(({ theme }) => ({
 const StyledCodeInput = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-evenly",
+  marginBottom:"1rem",
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
+    height: "40px", // Ensure the box is square
     [theme.breakpoints.up("sm")]: {
       width: "50px",
-      
+      height: "40px", // Keep it square on larger screens too
     },
   },
 }));
+
 
 const VerificationPage: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(""));
@@ -162,7 +164,7 @@ const VerificationPage: React.FC = () => {
         component="main"
         maxWidth="xl"
         sx={{
-          height: "100vh",
+          height: "100dvh",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -173,13 +175,13 @@ const VerificationPage: React.FC = () => {
       >
         <StyledRoot>
           <StyledForm>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" sx={{mt:'1rem'}} gutterBottom>
               Verify your phone number
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1" sx={{mb:'1rem'}} gutterBottom>
               Check the messages for the verification code, sent to your phone number.
             </Typography>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 400 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 400,mb:'1rem' }}>
               Enter OTP
             </Typography>
             <StyledCodeInput>
@@ -195,7 +197,7 @@ const VerificationPage: React.FC = () => {
                   inputRef={(el) => (inputRefs.current[index] = el)}
                   sx={{
                     margin: 0.5,
-                    border: "1px solid black",
+                    // border: "1px solid black",
                     borderRadius: 1,
                     "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": {
@@ -224,6 +226,7 @@ const VerificationPage: React.FC = () => {
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
+                  mb:'1rem',
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",

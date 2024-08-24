@@ -165,13 +165,20 @@ const Login: React.FC = () => {
             }}
           >
             <Link href="/home" passHref>
-              <Typography variant="h5" sx={{fontWeight:'bold'}}>PATTY KULCHA</Typography>
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                height={150}
+                layout="fixed"
+                width={170}
+                priority
+              />
             </Link>
             <Typography
               component="h2"
               variant="subtitle1"
               align="left"
-              sx={{ width: "100%", mt: 3,fontWeight:'bold' }}
+              sx={{ width: "100%", mt: 2,fontWeight:'bold' }}
             >
               Welcome to Patty kulcha!
             </Typography>

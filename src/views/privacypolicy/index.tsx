@@ -9,7 +9,6 @@ import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 
-// Styled Card component for the header
 const HeaderCard = styled(Card)({
   backgroundImage: 'url(/images/bgimage.png)',
   backgroundSize: 'cover',
