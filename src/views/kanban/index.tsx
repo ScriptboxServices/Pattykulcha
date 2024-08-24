@@ -12,9 +12,11 @@ import { db } from "@/firebase";
 import {
   Timestamp,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -29,9 +31,13 @@ import {
   Chip,
   Divider,
   IconButton,
+  Button,
   Typography,
 } from "@mui/material";
+import Select from "@mui/material/Select";
 import { Visibility } from "@mui/icons-material";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import CircularLodar from "@/components/CircularLodar";
 
 const KanbanBoard = () => {
   const [containers] = useState([
@@ -49,10 +55,12 @@ const KanbanBoard = () => {
     })
   );
   const { user } = useAuthContext();
+  const [allOrders, setAllOrders] = useState<any>({});
   const [newOrders, setNewOrders] = useState<any[]>([]);
   const [deliveredOrder, setDeliveredOrder] = useState<any[]>([]);
-  const [allOrders, setAllOrders] = useState<any>({});
   const [outForDelivery, setOutForDelivery] = useState<any[]>([]);
+  const [canceledOrders, setCanceledOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const today = new Date();
   const startOfToday = Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
   const endOfToday = Timestamp.fromDate(
@@ -86,6 +94,7 @@ const KanbanBoard = () => {
       colRef,
       where("kitchenId", "==", KITCHEN_ID),
       where("delivery.status", "==", false),
+      where("delivery.message", "==", 'Out For Delivery'),
       orderBy("createdAt", "desc")
     );
     const unsubscribeOutForDelivery = onSnapshot(
@@ -112,9 +121,10 @@ const KanbanBoard = () => {
       colRef,
       where("kitchenId", "==", KITCHEN_ID),
       where("delivery.status", "==", true),
+      where("delivery.message", "==", 'Delivered'),
       orderBy("createdAt", "desc")
     );
-    const unsubscribe = onSnapshot(deliveredOrderQuery, (snapshot) => {
+    const unsubscribeDelivered = onSnapshot(deliveredOrderQuery, (snapshot) => {
       let deliveredOrder: any[] = [];
       snapshot.forEach((doc) => {
         const { delivery } = doc.data();
@@ -128,106 +138,35 @@ const KanbanBoard = () => {
       setDeliveredOrder([...deliveredOrder]);
     });
 
+    const canceledOrderQuery = query(
+      colRef,
+      where("kitchenId", "==", KITCHEN_ID),
+      where("delivery.status", "==", false),
+      where("delivery.message", "==", 'Canceled'),
+      where("canceled", "==", true),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeCanceled = onSnapshot(canceledOrderQuery, (snapshot) => {
+      let canceledOrders: any[] = [];
+      snapshot.forEach((doc) => {
+        const { delivery,canceled } = doc.data();
+        if (delivery.status === false && delivery.message === "Canceled" && canceled) {
+          canceledOrders.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        }
+      });
+      setCanceledOrders([...canceledOrders]);
+    });
+
     return () => {
       unsubscribeNewOrder();
       unsubscribeOutForDelivery();
+      unsubscribeDelivered();
+      unsubscribeCanceled();
     };
   }, [user]);
-
-  const orders = [
-    {
-      orderId: "Pending",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Amritsari Kulcha",
-          price: "$5.30",
-          addons: "Add-ons: Coke, Extra Chutney",
-          quantity: 1,
-        },
-        { name: "Mushroom kulcha", price: "$5.30", addons: "", quantity: 1 },
-      ],
-      status: "Pending",
-    },
-    {
-      orderId: "#352",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Aloo Cheese Kulcha",
-          price: "$5.30",
-          addons: "Add-ons: Extra Chutney",
-          quantity: 1,
-        },
-        { name: "Gobi kulcha", price: "$5.30", addons: "", quantity: 1 },
-      ],
-      status: "Delivered",
-    },
-    {
-      orderId: "#353",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Aloo Kulcha",
-          price: "$7.30",
-          addons: "Add-ons: Caffe Latte, Amul Butter",
-          quantity: 1,
-        },
-      ],
-      status: "Pending",
-    },
-    {
-      orderId: "#354",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Paneer Kulcha",
-          price: "$7.30",
-          addons: "Add-ons: Tea, Amul Butter",
-          quantity: 1,
-        },
-      ],
-      status: "Pending",
-    },
-    {
-      orderId: "#355",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Patty Kulcha",
-          price: "$5.30",
-          addons: "Add-ons: Extra Chutney",
-          quantity: 1,
-        },
-        {
-          name: "Mix kulcha",
-          price: "$6.30",
-          addons: "Add-ons: Dollar Channa, Extra Chutney",
-          quantity: 1,
-        },
-      ],
-      status: "Delivered",
-    },
-    {
-      orderId: "#356",
-      date: "05 Feb 2023, 08:28 PM",
-      items: [
-        {
-          name: "Corn Kulcha",
-          price: "$5.30",
-          addons: "Add-ons: Lassi, Extra Chutney",
-          quantity: 1,
-        },
-        {
-          name: "Mix kulcha",
-          price: "$5.30",
-          addons: "Add-ons: Dollar Channa",
-          quantity: 1,
-        },
-      ],
-      status: "Delivered",
-    },
-  ];
 
   useEffect(() => {
     setAllOrders({
@@ -235,15 +174,58 @@ const KanbanBoard = () => {
       "container-2": [...newOrders],
       "container-3": [...outForDelivery],
       "container-4": [...deliveredOrder],
-      "container-5": [],
+      "container-5": [...canceledOrders],
     });
-  }, [user, newOrders, outForDelivery, deliveredOrder]);
+  }, [user, newOrders, outForDelivery, deliveredOrder, canceledOrders]);
 
   console.log(allOrders);
-  console.log(allOrders["container-1"]);
+
+  const updateOrderStatus = async (
+    _id: string,
+    message: string,
+    status: boolean
+  ) => {
+    try{
+      setLoading(true)
+      const docRef = doc(db,'orders',_id)
+      await updateDoc(docRef,{
+        delivery : {
+          message,
+          status
+        }
+      })
+      setLoading(false)
+    }catch(err) {
+      console.log(err);
+      return err
+    }finally{
+      setLoading(false)
+    }
+  };
+
+  const cancelOrderStatus = async (_id : string) => {
+    try{
+      setLoading(true)
+      const docRef = doc(db,'orders',_id)
+      await updateDoc(docRef,{
+        canceled : true,
+        delivery : {
+          message : 'Canceled',
+          status : false
+        }
+      })
+      setLoading(false)
+    }catch(err) {
+      console.log(err);
+      return err
+    }finally{
+      setLoading(false)
+    }
+  }
 
   return (
     <>
+      <CircularLodar isLoading={loading} />
       <Box>
         <Typography
           variant='h5'
@@ -283,7 +265,7 @@ const KanbanBoard = () => {
                     }}>
                     {container.title}
                   </Typography>
-                  <SortableContext items={orders.map((order) => order.orderId)}>
+                  <SortableContext items={[]}>
                     {allOrders[container.id] &&
                       allOrders[container.id]?.map((order: any) => {
                         return (
@@ -308,7 +290,7 @@ const KanbanBoard = () => {
                                     <Typography
                                       variant='h6'
                                       sx={{ fontWeight: "bold", mb: 1 }}>
-                                      Order #{order.id.slice(0, 3)}...
+                                      Order #1234
                                     </Typography>
                                     <Typography
                                       variant='body2'
@@ -319,7 +301,7 @@ const KanbanBoard = () => {
                                   <Chip
                                     label={order.delivery.message}
                                     color={
-                                      order.delivery.status
+                                      !order.delivery.status && order.canceled ? 'error' : order.delivery.status
                                         ? "success"
                                         : "warning"
                                     }
@@ -329,7 +311,6 @@ const KanbanBoard = () => {
                                     }}
                                   />
                                 </Box>
-
                                 {order?.order?.map((item: any, idx: number) => {
                                   let { additional } = item?.order;
                                   let addOnName = "";
@@ -368,7 +349,11 @@ const KanbanBoard = () => {
                                         <Typography
                                           variant='body2'
                                           color='textSecondary'
-                                          sx={{ display: "flex",width:'50px',textAlign:'right' }}>
+                                          sx={{
+                                            display: "flex",
+                                            width: "50px",
+                                            justifyContent: "flex-end",
+                                          }}>
                                           Qty: {item?.order?.kulcha?.quantity}
                                         </Typography>
                                       </Box>
@@ -454,6 +439,76 @@ const KanbanBoard = () => {
                                     variant='body2'
                                     color='textSecondary'>
                                     X{order?.order?.length} Items
+                                  </Typography>
+                                  <Typography
+                                    variant='body2'
+                                    color='textSecondary'
+                                    sx={{ display: "flex", gap: 1 }}>
+                                    {container.id === "container-2" && (
+                                      <Button
+                                        onClick={() =>
+                                          updateOrderStatus(
+                                            order.id,
+                                            "Out For Delivery",
+                                            false
+                                          )
+                                        }
+                                        variant='contained'
+                                        sx={{
+                                          backgroundColor: "#ECAB21",
+                                          color: "white",
+                                          fontWeight: "bold",
+                                          fontSize: "10px",
+                                          "&:hover": {
+                                            backgroundColor: "white",
+                                            color: "#ECAB21",
+                                          },
+                                        }}>
+                                        Out For Delivery
+                                      </Button>
+                                    )}
+                                    {container.id === "container-3" && (
+                                      <Button
+                                        onClick={() =>
+                                          updateOrderStatus(
+                                            order.id,
+                                            "Delivered",
+                                            true
+                                          )
+                                        }
+                                        variant='contained'
+                                        sx={{
+                                          backgroundColor: "#ECAB21",
+                                          color: "white",
+                                          fontWeight: "bold",
+                                          fontSize: "10px",
+                                          "&:hover": {
+                                            backgroundColor: "white",
+                                            color: "#ECAB21",
+                                          },
+                                        }}>
+                                        Delivered
+                                      </Button>
+                                    )}
+                                     {(container.id === "container-3" || container.id === "container-2")  && (
+                                      <Button
+                                        onClick={() =>
+                                          cancelOrderStatus(order.id)
+                                        }
+                                        variant='contained'
+                                        sx={{
+                                          backgroundColor: "red",
+                                          color: "white",
+                                          fontWeight: "bold",
+                                          fontSize: "10px",
+                                          "&:hover": {
+                                            backgroundColor: "white",
+                                            color: "red",
+                                          },
+                                        }}>
+                                        Cancel
+                                      </Button>
+                                     )}
                                   </Typography>
                                 </Box>
                               </Box>
