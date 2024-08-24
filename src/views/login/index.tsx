@@ -48,7 +48,6 @@ const schema = yup.object().shape({
   countryCode: yup.string().required(),
 });
 
-// Define the TypeScript interface based on the Yup schema
 type IFormInput = yup.InferType<typeof schema>;
 
 const filterOptions = (options: CountryCode[], state: any) =>
@@ -141,7 +140,7 @@ const Login: React.FC = () => {
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: {xs:"flex-start",sm:"center"},
           overflow: "hidden", // Prevent overflow issues
         }}
       >

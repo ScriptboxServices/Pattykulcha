@@ -170,7 +170,7 @@ const MenuSection = () => {
                   }}
                 >
                   <Image
-                    src={item.image}
+                    src={"https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2F5.jpg?alt=media&token=27fded59-049a-4d7f-b8d4-918ca647ac4b"}
                     alt={item.name}
                     width={220}
                     height={300}
