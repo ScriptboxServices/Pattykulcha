@@ -59,8 +59,9 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
     width: "40px",
     height: "40px", // Ensure the box is square
     [theme.breakpoints.up("sm")]: {
-      width: "50px",
+      width: "40px",
       height: "40px", // Keep it square on larger screens too
+      margin: theme.spacing(0.2),
     },
   },
 }));
@@ -226,7 +227,8 @@ const VerificationPage: React.FC = () => {
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
-                  mb:'1rem',
+                  marginTop:'1rem',
+                  marginBottom:'1rem',
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
