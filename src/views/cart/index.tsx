@@ -401,7 +401,7 @@ const MenuPage = () => {
               sx={{
                 color: "#336195",
               }}>
-              <RemoveCircleOutlineIcon />
+              <RemoveCircleOutlineIcon sx={{fontSize:'2.5rem'}}/>
             </IconButton>
             <Typography variant='body1' color='textPrimary'>
               {kulcha?.quantity}
@@ -411,14 +411,13 @@ const MenuPage = () => {
               sx={{
                 color: "#336195",
               }}>
-              <AddCircleOutlineIcon />
+              <AddCircleOutlineIcon sx={{fontSize:'2.5rem'}}/>
             </IconButton>
           </Box>
         </Grid>
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "2rem",
               paddingTop: "2rem",
               textAlign: "center",
             }}>
