@@ -23,7 +23,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^4.2.0",
-    "axios": "^1.7.3",
+    "axios": "^1.7.5",
     "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
     "firebase": "^10.12.5",
