@@ -105,7 +105,7 @@ const MenuPage = () => {
     setSelectedLassis,
   } = useMenuContext();
 
-  const { user } = useAuthContext();
+  const { user,metaData } = useAuthContext();
 
   const router = useRouter();
 
@@ -262,6 +262,11 @@ const MenuPage = () => {
       const colRef = collection(db, "carts");
       const data = {
         userId: user?.uid,
+        customer :{
+          name : metaData?.name,
+          phoneNumber : metaData?.phoneNumber,
+          address : metaData?.address
+        },
         order: {
           kulcha: kulcha,
           withKulcha: [...FIXED_INCLUDE_ITEMS],

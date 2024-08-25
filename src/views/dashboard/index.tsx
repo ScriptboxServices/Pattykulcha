@@ -53,13 +53,18 @@ export default function ResponsiveDrawer(props: Props) {
 
   useEffect(() => {
     if(kitchenMetaData?.userId !== user?.uid){
-      // return router.push('/home')
+      return router.push('/home')
     }
   },[user,kitchenMetaData])
 
+  const isFirstLoad = useRef(true);
   useEffect(() => {
     const colRef = collection(db, "orders");
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      if (isFirstLoad.current) {
+        isFirstLoad.current = false;
+        return;
+      }
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           const audio = new Audio("/mp3/message.mp3");
