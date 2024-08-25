@@ -147,7 +147,7 @@ const Navbar: React.FC = () => {
                   <Button
                     onClick={(e) => {
                       handleLinkClick();
-                      router.push("/login");
+                      router.push("/dashboard");
                     }}
                     sx={{
                       textTransform: "none",
