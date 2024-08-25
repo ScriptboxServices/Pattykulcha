@@ -151,7 +151,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
               {carts?.map((item) => {
                 const { order } = item;
                 const { kulcha, additional } = order;
-                const total = calculateTotal(kulcha?.price, additional);
+                const total = calculateTotal(Number(kulcha?.price) * Number(kulcha?.quantity), additional);
                 return (
                   <Paper
                     key={item.id}

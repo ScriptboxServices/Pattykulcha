@@ -53,7 +53,7 @@ export default function ResponsiveDrawer(props: Props) {
 
   useEffect(() => {
     if(kitchenMetaData?.userId !== user?.uid){
-      return router.push('/home')
+      // return router.push('/home')
     }
   },[user,kitchenMetaData])
 

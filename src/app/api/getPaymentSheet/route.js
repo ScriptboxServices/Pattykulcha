@@ -13,7 +13,7 @@ const calculateGrandTotal = (_cart) => {
 
     const total = additional?.reduce((acc, value) => {
       return (acc = acc + (Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity)));
-    }, Number(kulcha?.price));
+    }, Number(kulcha?.price) * Number(kulcha?.quantity));
 
     let tax = Number(total) * 0.13;
     total_tax = total_tax + tax;

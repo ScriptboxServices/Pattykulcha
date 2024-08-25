@@ -307,6 +307,8 @@ const KanbanBoard = () => {
     }
   };
 
+  console.log(cart);
+
   return (
     <Box
       sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}>
@@ -389,35 +391,48 @@ const KanbanBoard = () => {
                                       flexDirection: "column",
                                       justifyContent: "space-between",
                                     }}>
-                                    <CardContent sx={{ padding: 2 }}>
+                                    <CardContent>
                                       <Box
                                         sx={{
                                           display: "flex",
                                           alignItems: "center",
                                           flexDirection: "column",
-                                          mt: 2,
                                         }}>
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            px: 2,
-                                            width: "100%",
-                                          }}>
-                                          <Avatar
-                                            src={order?.order?.kulcha?.image}
+                                           <Box
                                             sx={{
-                                              width: 50,
-                                              height: 50,
-                                              mr: 2,
-                                            }}
-                                          />
-                                          <Typography variant='body1'>
-                                            {order?.order?.kulcha?.name}
-                                          </Typography>
-                                        </Box>
+                                              display: "flex",
+                                              alignItems: "center",
+                                              width:'100%',
+                                            }}>
+                                            <Avatar
+                                              src={order?.order?.kulcha?.image}
+                                              sx={{
+                                                width: 50,
+                                                height: 50,
+                                                mr: 2,
+                                              }}
+                                            />
+                                            <Box sx={{ flexGrow: 1 }}>
+                                              <Typography variant='body1'>
+                                                {order?.order?.kulcha?.name}
+                                              </Typography>
+                                            </Box>
+                                            <Box sx={{ textAlign: "right" }}>
+                                              <Typography
+                                                variant='body2'
+                                                color='textSecondary'
+                                                sx={{
+                                                  display: "flex",
+                                                  width: "50px",
+                                                  justifyContent: "flex-end",
+                                                }}>
+                                                Qty:{" "}
+                                                {order?.order?.kulcha?.quantity}
+                                              </Typography>
+                                            </Box>
+                                          </Box>
                                         <Box
-                                          sx={{ width: "100%", px: 2, mt: 1 }}>
+                                          sx={{ width: "100%", mt: 1 }}>
                                           {additional?.length !== 0 && (
                                             <>
                                               <Typography
@@ -475,10 +490,7 @@ const KanbanBoard = () => {
                                       </Box>
                                       <Box>
                                         <Divider sx={{ my: 1 }} />
-                                        <Box
-                                          sx={{
-                                            px: 2,
-                                          }}>
+                                        <Box>
                                           <Typography variant='body2'>
                                             <Typography
                                               variant='body2'
@@ -491,10 +503,7 @@ const KanbanBoard = () => {
                                             {order?.customer?.name}
                                           </Typography>
                                         </Box>
-                                        <Box
-                                          sx={{
-                                            px: 2,
-                                          }}>
+                                        <Box>
                                           <Typography variant='body2'>
                                             <Typography
                                               variant='body2'
@@ -507,10 +516,7 @@ const KanbanBoard = () => {
                                             {order?.customer?.phoneNumber}
                                           </Typography>
                                         </Box>
-                                        <Box
-                                          sx={{
-                                            px: 2,
-                                          }}>
+                                        <Box>
                                           <Typography variant='body2'>
                                             <Typography
                                               variant='body2'
@@ -528,7 +534,6 @@ const KanbanBoard = () => {
                                         <Divider sx={{ my: 1 }} />
                                         <Box
                                           sx={{
-                                            px: 2,
                                             display: "flex",
                                             justifyContent: "space-between",
                                             alignItems: "center",
@@ -553,7 +558,6 @@ const KanbanBoard = () => {
                                         </Box>
                                         <Box
                                           sx={{
-                                            px: 2,
                                             display: "flex",
                                             justifyContent: "space-between",
                                             alignItems: "center",

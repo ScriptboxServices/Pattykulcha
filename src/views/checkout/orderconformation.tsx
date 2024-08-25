@@ -123,10 +123,16 @@ const OrdersPage = ({ data }: { data: any }) => {
                   Name: {orderData?.customer?.name}
                 </Typography>
                 <Typography variant="body1">
+                  Phone: {orderData?.customer?.phoneNumber}
+                </Typography>
+                <Typography variant="body1">
                   Address: {orderData?.address?.raw}
                 </Typography>
                 <Typography variant="body1">
-                  Phone: {orderData?.customer?.phoneNumber}
+                  Distance: {orderData?.address?.distance?.text}
+                </Typography>
+                <Typography variant="body1">
+                  Instructions: {orderData?.instructions}
                 </Typography>
               </Grid>
 
@@ -191,9 +197,12 @@ const OrdersPage = ({ data }: { data: any }) => {
                                 <Typography variant="body1">
                                   {kulcha.name}
                                 </Typography>
+                                <Typography variant="body1">
+                                  Qty : {kulcha.quantity} 
+                                </Typography>
                               </Box>
                               <Typography variant="body1" sx={{ ml: "auto" }}>
-                                ${kulcha.price.toFixed(2)}
+                                ${kulcha.price.toFixed(2)} x {kulcha.quantity} 
                               </Typography>
                             </Box>
                           )}
