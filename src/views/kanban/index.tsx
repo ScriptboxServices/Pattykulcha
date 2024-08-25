@@ -40,6 +40,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import CircularLodar from "@/components/CircularLodar";
 import axios from "axios";
 import { getIdToken } from "firebase/auth";
+import { formatTimestampToCustomDate } from "@/utils/commonFunctions";
 
 const KanbanBoard = () => {
   const [containers] = useState([
@@ -129,6 +130,8 @@ const KanbanBoard = () => {
     const outForDeliveryQuery = query(
       colRef,
       where("kitchenId", "==", KITCHEN_ID),
+      where("createdAt", ">=", startOfToday),
+      where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", false),
       where("delivery.message", "==", "Out For Delivery"),
       orderBy("createdAt", "desc")
@@ -157,6 +160,8 @@ const KanbanBoard = () => {
     const deliveredOrderQuery = query(
       colRef,
       where("kitchenId", "==", KITCHEN_ID),
+      where("createdAt", ">=", startOfToday),
+      where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", true),
       where("delivery.message", "==", "Delivered"),
       orderBy("createdAt", "desc")
@@ -178,6 +183,8 @@ const KanbanBoard = () => {
     const canceledOrderQuery = query(
       colRef,
       where("kitchenId", "==", KITCHEN_ID),
+      where("createdAt", ">=", startOfToday),
+      where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", false),
       where("canceled", "==", true),
       orderBy("createdAt", "desc")
@@ -344,12 +351,157 @@ const KanbanBoard = () => {
                     {container.title}
                   </Typography>
                   <SortableContext items={[]}>
-                    {allOrders[container.id] &&
-                      allOrders[container.id]?.map(
-                        (order: any, idy: number) => {
-                          if (container.id === "container-1") {
-                            let { additional } = order.order;
+                    {allOrders[container.id]?.length === 0 ? (
+                      <>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            mt: 2,
+                          }}>
+                          <Box
+                            sx={{
+                              px: 2,
+                              width: "100%",
+                            }}>
+                            <Typography variant='body1'>
+                              No record found.
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        {allOrders[container.id]?.map(
+                          (order: any, idy: number) => {
+                            if (container.id === "container-1") {
+                              let { additional } = order.order;
 
+                              return (
+                                <Box key={order.orderId} sx={{ padding: 2 }}>
+                                  <Card
+                                    sx={{
+                                      marginBottom: 2,
+                                      borderRadius: 2,
+                                      boxShadow: 3,
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      justifyContent: "space-between",
+                                    }}>
+                                    <CardContent sx={{ padding: 2 }}>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          flexDirection: "column",
+                                          mt: 2,
+                                        }}>
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            px: 2,
+                                            width: "100%",
+                                          }}>
+                                          <Avatar
+                                            src={order?.order?.kulcha?.image}
+                                            sx={{
+                                              width: 50,
+                                              height: 50,
+                                              mr: 2,
+                                            }}
+                                          />
+                                          <Typography variant='body1'>
+                                            {order?.order?.kulcha?.name}
+                                          </Typography>
+                                        </Box>
+                                        <Box
+                                          sx={{ width: "100%", px: 2, mt: 1 }}>
+                                          {additional?.length !== 0 && (
+                                            <>
+                                              <Typography
+                                                variant='h6'
+                                                sx={{
+                                                  fontSize: "12px",
+                                                  color: "#1F2937",
+                                                  paddingBottom: "4px",
+                                                }}>
+                                                Add on items :
+                                              </Typography>
+                                              {additional.map((add: any) => {
+                                                return (
+                                                  <Box
+                                                    key={add?.id}
+                                                    sx={{
+                                                      display: "flex",
+                                                      alignItems: "center",
+                                                      justifyContent:
+                                                        "space-between",
+                                                    }}>
+                                                    <Typography
+                                                      variant='body1'
+                                                      sx={{
+                                                        color: "#1F2937",
+                                                        fontWeight: "bold",
+                                                        fontSize: "14px",
+                                                      }}>
+                                                      {add?.items?.[0]?.name}: x
+                                                      {
+                                                        add?.items?.[0]
+                                                          ?.quantity
+                                                      }
+                                                    </Typography>
+                                                    <Typography
+                                                      variant='body1'
+                                                      sx={{
+                                                        color: "#1F2937",
+                                                        fontWeight: "bold",
+                                                        fontSize: "14px",
+                                                      }}>
+                                                      ${add?.items?.[0]?.price}{" "}
+                                                      x{" "}
+                                                      {
+                                                        add?.items?.[0]
+                                                          ?.quantity
+                                                      }
+                                                    </Typography>
+                                                  </Box>
+                                                );
+                                              })}
+                                            </>
+                                          )}
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}>
+                                          <Typography
+                                            variant='body2'
+                                            color='textSecondary'>
+                                            Total Amount
+                                          </Typography>
+                                          <Typography
+                                            variant='body2'
+                                            color='textSecondary'>
+                                            $
+                                            {Number(
+                                              order?.total_amount || 0
+                                            ).toFixed(2)}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                    </CardContent>
+                                  </Card>
+                                </Box>
+                              );
+                            }
                             return (
                               <Box key={order.orderId} sx={{ padding: 2 }}>
                                 <Card
@@ -365,398 +517,311 @@ const KanbanBoard = () => {
                                     <Box
                                       sx={{
                                         display: "flex",
-                                        alignItems: "center",
-                                        flexDirection: "column",
-                                        mt: 2,
+                                        justifyContent: "space-between",
+                                        mb: 2,
                                       }}>
-                                      <Box
-                                        sx={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          px: 2,
-                                          width: "100%",
-                                        }}>
-                                        <Avatar
-                                          src={order?.order?.kulcha?.image}
-                                          sx={{ width: 50, height: 50, mr: 2 }}
-                                        />
-                                        <Typography variant='body1'>
-                                          {order?.order?.kulcha?.name}
+                                      <Box>
+                                        <Typography
+                                          variant='h6'
+                                          sx={{ fontWeight: "bold", mb: 1 }}>
+                                          Order #1234
+                                        </Typography>
+                                        <Typography
+                                          variant='body2'
+                                          color='textSecondary'>
+                                          {order.date}
                                         </Typography>
                                       </Box>
-                                      <Box sx={{ width: "100%", px: 2, mt: 1 }}>
-                                        {additional?.length !== 0 && (
-                                          <>
-                                            <Typography
-                                              variant='h6'
+                                      <Chip
+                                        label={order?.delivery?.message}
+                                        color={
+                                          !order?.delivery?.status &&
+                                          (order?.canceled || order?.refunded)
+                                            ? "error"
+                                            : order?.delivery?.status
+                                            ? "success"
+                                            : "warning"
+                                        }
+                                        sx={{
+                                          borderRadius: "50px",
+                                          textTransform: "none",
+                                        }}
+                                      />
+                                    </Box>
+                                    {order?.order?.map(
+                                      (item: any, idx: number) => {
+                                        let { additional } = item?.order;
+                                        let addOnName = "";
+                                        for (
+                                          let i = 0;
+                                          i < additional.length;
+                                          i++
+                                        ) {
+                                          addOnName +=
+                                            additional[i].items[0].name;
+
+                                          if (i < additional.length - 1) {
+                                            addOnName += " | ";
+                                          }
+                                        }
+                                        return (
+                                          <Box
+                                            key={idx}
+                                            sx={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              mt: 2,
+                                            }}>
+                                            <Avatar
+                                              src={item?.order?.kulcha?.image}
                                               sx={{
-                                                fontSize: "12px",
-                                                color: "#1F2937",
-                                                paddingBottom: "4px",
-                                              }}>
-                                              Add on items :
-                                            </Typography>
-                                            {additional.map((add: any) => {
-                                              return (
-                                                <Box
-                                                  key={add?.id}
-                                                  sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent:
-                                                      "space-between",
-                                                  }}>
-                                                  <Typography
-                                                    variant='body1'
-                                                    sx={{
-                                                      color: "#1F2937",
-                                                      fontWeight: "bold",
-                                                      fontSize: "14px",
-                                                    }}>
-                                                    {add?.items?.[0]?.name}: x
-                                                    {add?.items?.[0]?.quantity}
-                                                  </Typography>
-                                                  <Typography
-                                                    variant='body1'
-                                                    sx={{
-                                                      color: "#1F2937",
-                                                      fontWeight: "bold",
-                                                      fontSize: "14px",
-                                                    }}>
-                                                    ${add?.items?.[0]?.price} x{" "}
-                                                    {add?.items?.[0]?.quantity}
-                                                  </Typography>
-                                                </Box>
-                                              );
-                                            })}
-                                          </>
-                                        )}
-                                      </Box>
-                                    </Box>
-                                    <Box>
-                                      <Divider sx={{ my: 1 }} />
-                                      <Box
-                                        sx={{
-                                          px: 2,
-                                          display: "flex",
-                                          justifyContent: "space-between",
-                                          alignItems: "center",
-                                        }}>
-                                        <Typography
-                                          variant='body2'
-                                          color='textSecondary'>
-                                          Total Amount
-                                        </Typography>
-                                        <Typography
-                                          variant='body2'
-                                          color='textSecondary'>
-                                          $
-                                          {Number(
-                                            order?.total_amount || 0
-                                          ).toFixed(2)}
-                                        </Typography>
-                                      </Box>
-                                    </Box>
+                                                width: 50,
+                                                height: 50,
+                                                mr: 2,
+                                              }}
+                                            />
+                                            <Box sx={{ flexGrow: 1 }}>
+                                              <Typography variant='body1'>
+                                                {item?.order?.kulcha?.name}
+                                              </Typography>
+                                              {additional?.length !== 0 && (
+                                                <Typography
+                                                  variant='body2'
+                                                  color='textSecondary'>
+                                                  Add-ons : {addOnName}
+                                                </Typography>
+                                              )}
+                                            </Box>
+                                            <Box sx={{ textAlign: "right" }}>
+                                              <Typography
+                                                variant='body2'
+                                                color='textSecondary'
+                                                sx={{
+                                                  display: "flex",
+                                                  width: "50px",
+                                                  justifyContent: "flex-end",
+                                                }}>
+                                                Qty:{" "}
+                                                {item?.order?.kulcha?.quantity}
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                        );
+                                      }
+                                    )}
                                   </CardContent>
-                                </Card>
-                              </Box>
-                            );
-                          }
-                          return (
-                            <Box key={order.orderId} sx={{ padding: 2 }}>
-                              <Card
-                                sx={{
-                                  marginBottom: 2,
-                                  borderRadius: 2,
-                                  boxShadow: 3,
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                }}>
-                                <CardContent sx={{ padding: 2 }}>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      mb: 2,
-                                    }}>
-                                    <Box>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}>
                                       <Typography
-                                        variant='h6'
-                                        sx={{ fontWeight: "bold", mb: 1 }}>
-                                        Order #1234
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Time
                                       </Typography>
                                       <Typography
                                         variant='body2'
                                         color='textSecondary'>
-                                        {order.date}
+                                        {formatTimestampToCustomDate(order.createdAt)}
                                       </Typography>
                                     </Box>
-                                    <Chip
-                                      label={order?.delivery?.message}
-                                      color={
-                                        !order?.delivery?.status &&
-                                        (order?.canceled || order?.refunded)
-                                          ? "error"
-                                          : order?.delivery?.status
-                                          ? "success"
-                                          : "warning"
-                                      }
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box
                                       sx={{
-                                        borderRadius: "50px",
-                                        textTransform: "none",
-                                      }}
-                                    />
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Total Tax
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        ${Number(order?.total_tax).toFixed(2)}
+                                      </Typography>
+                                    </Box>
                                   </Box>
-                                  {order?.order?.map(
-                                    (item: any, idx: number) => {
-                                      let { additional } = item?.order;
-                                      let addOnName = "";
-                                      for (
-                                        let i = 0;
-                                        i < additional.length;
-                                        i++
-                                      ) {
-                                        addOnName +=
-                                          additional[i].items[0].name;
-
-                                        if (i < additional.length - 1) {
-                                          addOnName += " | ";
-                                        }
-                                      }
-                                      return (
-                                        <Box
-                                          key={idx}
-                                          sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            mt: 2,
-                                          }}>
-                                          <Avatar
-                                            src={item?.order?.kulcha?.image}
+                                  <Box>
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Total
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        ${Number(order?.grand_total).toFixed(2)}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box sx={{ px: 2 }}>
+                                      <Typography variant='h6' gutterBottom>
+                                        Billing Address
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Name: {order?.customer?.name}
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Phone: {order?.customer?.phoneNumber}
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Address:{" "}
+                                        {order?.address?.raw || order?.address}
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Distance:{" "}
+                                        {order?.address?.distance?.text || ""}
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        Instructions: {order?.instructions}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 2 }} />
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        pb: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'>
+                                        X{order?.order?.length} Items
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        color='textSecondary'
+                                        sx={{ display: "flex", gap: 1 }}>
+                                        {container.id === "container-2" && (
+                                          <Button
+                                            onClick={() =>
+                                              updateOrderStatus(
+                                                order.id,
+                                                "Out For Delivery",
+                                                false
+                                              )
+                                            }
+                                            variant='contained'
                                             sx={{
-                                              width: 50,
-                                              height: 50,
-                                              mr: 2,
-                                            }}
-                                          />
-                                          <Box sx={{ flexGrow: 1 }}>
-                                            <Typography variant='body1'>
-                                              {item?.order?.kulcha?.name}
-                                            </Typography>
-                                            {additional?.length !== 0 && (
-                                              <Typography
-                                                variant='body2'
-                                                color='textSecondary'>
-                                                Add-ons : {addOnName}
-                                              </Typography>
-                                            )}
-                                          </Box>
-                                          <Box sx={{ textAlign: "right" }}>
-                                            <Typography
-                                              variant='body2'
-                                              color='textSecondary'
-                                              sx={{
-                                                display: "flex",
-                                                width: "50px",
-                                                justifyContent: "flex-end",
-                                              }}>
-                                              Qty:{" "}
-                                              {item?.order?.kulcha?.quantity}
-                                            </Typography>
-                                          </Box>
-                                        </Box>
-                                      );
-                                    }
-                                  )}
-                                </CardContent>
-                                <Box>
-                                  <Divider sx={{ my: 1 }} />
-                                  <Box
-                                    sx={{
-                                      px: 2,
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                    }}>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Total Tax
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      ${Number(order?.total_tax).toFixed(2)}
-                                    </Typography>
+                                              backgroundColor: "#ECAB21",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                              fontSize: "10px",
+                                              "&:hover": {
+                                                backgroundColor: "white",
+                                                color: "#ECAB21",
+                                              },
+                                            }}>
+                                            Out For Delivery
+                                          </Button>
+                                        )}
+                                        {container.id === "container-3" && (
+                                          <Button
+                                            onClick={() =>
+                                              updateOrderStatus(
+                                                order.id,
+                                                "Delivered",
+                                                true
+                                              )
+                                            }
+                                            variant='contained'
+                                            sx={{
+                                              backgroundColor: "#ECAB21",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                              fontSize: "10px",
+                                              "&:hover": {
+                                                backgroundColor: "white",
+                                                color: "#ECAB21",
+                                              },
+                                            }}>
+                                            Delivered
+                                          </Button>
+                                        )}
+                                        {(container.id === "container-3" ||
+                                          container.id === "container-2") && (
+                                          <Button
+                                            onClick={() =>
+                                              cancelOrderStatus(order.id)
+                                            }
+                                            variant='contained'
+                                            sx={{
+                                              backgroundColor: "red",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                              fontSize: "10px",
+                                              "&:hover": {
+                                                backgroundColor: "white",
+                                                color: "red",
+                                              },
+                                            }}>
+                                            Cancel
+                                          </Button>
+                                        )}
+                                        {container.id === "container-5" && (
+                                          <Button
+                                            onClick={() =>
+                                              orderRefund(order.id)
+                                            }
+                                            variant='contained'
+                                            disabled={order?.refunded}
+                                            sx={{
+                                              backgroundColor: "#ECAB21",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                              fontSize: "10px",
+                                              "&:hover": {
+                                                backgroundColor: "white",
+                                                color: "#ECAB21",
+                                              },
+                                            }}>
+                                            Refund
+                                          </Button>
+                                        )}
+                                      </Typography>
+                                    </Box>
                                   </Box>
-                                </Box>
-                                <Box>
-                                  <Box
-                                    sx={{
-                                      px: 2,
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                    }}>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Total
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      ${Number(order?.grand_total).toFixed(2)}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                                <Box>
-                                  <Divider sx={{ my: 1 }} />
-                                  <Box sx={{ px: 2 }}>
-                                    <Typography variant='h6' gutterBottom>
-                                      Billing Address
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Name: {order?.customer?.name}
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Phone: {order?.customer?.phoneNumber}
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Address:{" "}
-                                      {order?.address?.raw || order?.address}
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Distance:{" "}
-                                      {order?.address?.distance?.text || ''}
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      Instructions: {order?.instructions}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                                <Box>
-                                  <Divider sx={{ my: 2 }} />
-                                  <Box
-                                    sx={{
-                                      px: 2,
-                                      pb: 2,
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                    }}>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'>
-                                      X{order?.order?.length} Items
-                                    </Typography>
-                                    <Typography
-                                      variant='body2'
-                                      color='textSecondary'
-                                      sx={{ display: "flex", gap: 1 }}>
-                                      {container.id === "container-2" && (
-                                        <Button
-                                          onClick={() =>
-                                            updateOrderStatus(
-                                              order.id,
-                                              "Out For Delivery",
-                                              false
-                                            )
-                                          }
-                                          variant='contained'
-                                          sx={{
-                                            backgroundColor: "#ECAB21",
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            fontSize: "10px",
-                                            "&:hover": {
-                                              backgroundColor: "white",
-                                              color: "#ECAB21",
-                                            },
-                                          }}>
-                                          Out For Delivery
-                                        </Button>
-                                      )}
-                                      {container.id === "container-3" && (
-                                        <Button
-                                          onClick={() =>
-                                            updateOrderStatus(
-                                              order.id,
-                                              "Delivered",
-                                              true
-                                            )
-                                          }
-                                          variant='contained'
-                                          sx={{
-                                            backgroundColor: "#ECAB21",
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            fontSize: "10px",
-                                            "&:hover": {
-                                              backgroundColor: "white",
-                                              color: "#ECAB21",
-                                            },
-                                          }}>
-                                          Delivered
-                                        </Button>
-                                      )}
-                                      {(container.id === "container-3" ||
-                                        container.id === "container-2") && (
-                                        <Button
-                                          onClick={() =>
-                                            cancelOrderStatus(order.id)
-                                          }
-                                          variant='contained'
-                                          sx={{
-                                            backgroundColor: "red",
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            fontSize: "10px",
-                                            "&:hover": {
-                                              backgroundColor: "white",
-                                              color: "red",
-                                            },
-                                          }}>
-                                          Cancel
-                                        </Button>
-                                      )}
-                                      {container.id === "container-5" && (
-                                        <Button
-                                          onClick={() => orderRefund(order.id)}
-                                          variant='contained'
-                                          disabled={order?.refunded}
-                                          sx={{
-                                            backgroundColor: "#ECAB21",
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            fontSize: "10px",
-                                            "&:hover": {
-                                              backgroundColor: "white",
-                                              color: "#ECAB21",
-                                            },
-                                          }}>
-                                          Refund
-                                        </Button>
-                                      )}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                              </Card>
-                            </Box>
-                          );
-                        }
-                      )}
+                                </Card>
+                              </Box>
+                            );
+                          }
+                        )}
+                      </>
+                    )}
                   </SortableContext>
                 </Box>
               ))}

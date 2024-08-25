@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,6 +12,9 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LockIcon from "@mui/icons-material/Lock";
+import { useAuthContext } from "@/context";
+import { collection } from "firebase/firestore";
+import { db } from "@/firebase";
 
 // Sample data array for orders
 const orders = [
@@ -65,8 +68,17 @@ const orders = [
   },
 ];
 
+
 const OrdersPage: React.FC = () => {
-  // Function to calculate the grand total for a single order
+
+  const {user,metaData,kitchenMetaData} = useAuthContext()
+
+  useEffect(() => {
+  
+    const colRef = collection(db,'orders',)
+
+
+  },[user,kitchenMetaData])
   const calculateGrandTotal = (order: any) => {
     const kulchaTotal = order.kulcha.price * order.kulcha.quantity;
     const additionalTotal = order.additional.reduce(

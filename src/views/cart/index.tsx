@@ -710,7 +710,7 @@ const MenuPage = () => {
                   <ArrowForwardIosIcon />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -751,8 +751,8 @@ const MenuPage = () => {
                   </Box>
                   <ArrowForwardIosIcon />
                 </Box>
-              </Grid>
-              <Grid item xs={12}>
+              </Grid> */}
+              {/* <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -793,8 +793,8 @@ const MenuPage = () => {
                   </Box>
                   <ArrowForwardIosIcon />
                 </Box>
-              </Grid>
-              <Grid item xs={12}>
+              </Grid> */}
+              {/* <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -835,7 +835,7 @@ const MenuPage = () => {
                   </Box>
                   <ArrowForwardIosIcon />
                 </Box>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         </Grid>
