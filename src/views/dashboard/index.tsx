@@ -51,11 +51,11 @@ export default function ResponsiveDrawer(props: Props) {
     setMobileOpen(!mobileOpen);
   };
 
-  // useEffect(() => {
-  //   if(kitchenMetaData?.userId !== user?.uid){
-  //     return router.push('/home')
-  //   }
-  // },[user,kitchenMetaData])
+  useEffect(() => {
+    if(kitchenMetaData?.userId !== user?.uid){
+      return router.push('/home')
+    }
+  },[user,kitchenMetaData])
 
   useEffect(() => {
     const colRef = collection(db, "orders");

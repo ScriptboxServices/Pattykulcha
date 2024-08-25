@@ -300,14 +300,13 @@ const Navbar: React.FC = () => {
                         <Typography>My Orders</Typography>
                       </Link>
                     </MenuItem>
-                    {(metaData?.role === "kitchen" &&
+                    {metaData?.role === "kitchen" &&
                       metaData?.foodTruckId === KITCHEN_ID &&
-                      metaData?.isKitchen) ||
-                      (true && (
+                      metaData?.isKitchen && (
                         <MenuItem onClick={() => router.push("/dashboard")}>
                           Switch to kitchen
                         </MenuItem>
-                      ))}
+                      )}
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
