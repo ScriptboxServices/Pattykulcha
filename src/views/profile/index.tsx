@@ -46,7 +46,7 @@ type User = {
 };
 
 const ProfilePage: React.FC = () => {
-  const { user , setMetaData } = useAuthContext();
+  const { user , setMetaData, kitchenMetaData } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [me, setMe] = useState<User | null>(null);
@@ -127,6 +127,33 @@ const ProfilePage: React.FC = () => {
     };
     init();
   }, [user]);
+
+  const calculateDistance = (source : string , destinations : string) => {
+    return new Promise((resolve,reject) => {
+      try{
+        const service = new google.maps.DistanceMatrixService();
+        const request: any = {
+          origins: [source],
+          destinations: [destinations],
+          travelMode: window.google.maps.TravelMode.DRIVING,
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false,
+        };
+    
+        service.getDistanceMatrix(request, (response : any, status: any) => {
+          if (status === "OK") {
+            const distance = response.rows[0].elements[0].distance;
+            resolve(distance)
+          } else {
+            console.error("Distance failed due to: " + status);
+          }
+        });
+      }catch(err) {
+        reject(err)
+      }
+    })
+  }
 
   const updateUser = async (type: string) => {
     const docRef = doc(db, "users", user?.uid);
@@ -335,7 +362,7 @@ const ProfilePage: React.FC = () => {
                             );
                             geocoder.geocode(
                               { location: latlng },
-                              (results: any, status: any) => {
+                              async (results: any, status: any) => {
                                 if (status === "OK") {
                                   if (results.length !== 0) {
                                     let plusCode = "";
@@ -360,6 +387,8 @@ const ProfilePage: React.FC = () => {
                                       }
                                     }
 
+                                    const distance =  await calculateDistance(kitchenMetaData?.address?.raw, place.formatted_address || '')
+
                                     setAddress({
                                       raw: place.formatted_address,
                                       seperate: {
@@ -369,6 +398,7 @@ const ProfilePage: React.FC = () => {
                                         line1:
                                           place.formatted_address?.split(",")[0],
                                       },
+                                      distance
                                     });
                                   } else {
                                     console.error("No results found");

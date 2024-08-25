@@ -247,6 +247,15 @@ const MenuPage = () => {
     setIsCoffeeDialogOpen(false);
   };
 
+  const calculateAmount = () => {
+    const additionalTotal = includedItems2?.reduce((acc, value) => {
+      return (acc =
+        acc +
+        Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity));
+    }, Number(kulcha?.price || 0));
+    return Number(additionalTotal.toFixed(2));
+  }
+
   const handleAddToCart = async () => {
     try {
       setLoading(true);
@@ -258,6 +267,7 @@ const MenuPage = () => {
           withKulcha: [...FIXED_INCLUDE_ITEMS],
           additional: [...includedItems2],
         },
+        total_amount : calculateAmount(),
         createdAt: Timestamp.now(),
       };
       await addDoc(colRef, {

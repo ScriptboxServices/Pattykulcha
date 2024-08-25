@@ -51,7 +51,7 @@ export const POST = async (req, res) => {
 
       await Promise.all([
         orderDocRef.set({
-            address: metadata.address,
+            address: JSON.parse(metadata.address),
             grand_total: metadata.grand_total,
             instructions: metadata.instructions,
             basic_amount: metadata.basic_amount,
@@ -63,7 +63,9 @@ export const POST = async (req, res) => {
               message : 'New Order',
               status : false
             },
+            transactionId : id,
             canceled : false,
+            refunded : false,
             customer:{
               _id : customer,
               name : metadata.name,
@@ -73,7 +75,7 @@ export const POST = async (req, res) => {
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({
-            address: metadata.address,
+            address: JSON.parse(metadata.address),
             grand_total: metadata.grand_total,
             total_tax: metadata.total_tax,
             instructions: metadata.instructions,
@@ -85,7 +87,8 @@ export const POST = async (req, res) => {
             },
             customer:{
               _id : customer,
-              name : metadata.name
+              name : metadata.name,
+              phoneNumber : metadata.phoneNumber
             },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           })

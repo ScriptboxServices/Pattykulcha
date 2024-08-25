@@ -10,8 +10,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ['img.icons8.com'],
-    domains: ['firebasestorage.googleapis.com'],
+    domains: ['img.icons8.com',"firebasestorage.googleapis.com"],
   },
   eslint: {
     ignoreDuringBuilds: true,

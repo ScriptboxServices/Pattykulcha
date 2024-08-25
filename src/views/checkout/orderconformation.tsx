@@ -123,7 +123,7 @@ const OrdersPage = ({ data }: { data: any }) => {
                   Name: {orderData?.customer?.name}
                 </Typography>
                 <Typography variant="body1">
-                  Address: {orderData?.address}
+                  Address: {orderData?.address?.raw}
                 </Typography>
                 <Typography variant="body1">
                   Phone: {orderData?.customer?.phoneNumber}

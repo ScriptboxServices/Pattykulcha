@@ -29,7 +29,7 @@ export const POST = async (req, res) => {
   const { address, instructions, name } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
-    console.log("hit api")
+    console.log("hit api",address)
 
     if (!xToken)
       return NextResponse.json({
@@ -80,7 +80,7 @@ export const POST = async (req, res) => {
       total_tax,
       basic_amount: sub_total,
       instructions,
-      address: address.raw,
+      address: JSON.stringify(address),
       name : name ? name : `Customer_${uid}`,
       phoneNumber : phone_number,
     };

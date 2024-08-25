@@ -35,7 +35,7 @@ const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   phoneNumber: yup
     .string()
-    .matches(/^\d+$/, "Phone number is not valid")
+    // .matches(/^\d+$/, "Phone number is not valid")
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   countryCode: yup.string().required(),
@@ -76,9 +76,10 @@ const MakeOrder: React.FC = () => {
     );
   }, []);
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit = (e : any) => {
+    e.preventDefault()
     setError("");
-    console.log("Form Submitted:", data);
+    console.log("Form Submitted:", e.target.name);
   };
 
   return (
@@ -117,7 +118,7 @@ const MakeOrder: React.FC = () => {
               component="form"
               noValidate
               sx={{ mt: 1, width: "100%" }}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={onSubmit}
             >
               <Grid container spacing={2}>
                 <Grid item xs={12}>

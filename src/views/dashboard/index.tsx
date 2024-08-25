@@ -24,12 +24,13 @@ import ViewOrders from "./ViewOrders";
 import DashboardProfile from "./Profile";
 import { useAuthContext } from "@/context";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { styled } from "@mui/material/styles";
 import CircularLodar from "@/components/CircularLodar";
 import KanbanBoard from "../kanban";
 import MakeOrder from "./CreateOrder";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
@@ -42,12 +43,19 @@ const Home = () => <Typography variant="h6">Home</Typography>;
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Order Detail");
   const { user, kitchenMetaData } = useAuthContext();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  // useEffect(() => {
+  //   if(kitchenMetaData?.userId !== user?.uid){
+  //     return router.push('/home')
+  //   }
+  // },[user,kitchenMetaData])
 
   useEffect(() => {
     const colRef = collection(db, "orders");
@@ -64,6 +72,14 @@ export default function ResponsiveDrawer(props: Props) {
       unsubscribe();
     };
   }, []);
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    localStorage.removeItem("instructions");
+    localStorage.removeItem("kulcha");
+    localStorage.removeItem("includedItems2");
+    router.push("/login");
+  };
 
   const onlineOfflineHandler = async (e: any) => {
     try {
@@ -125,7 +141,7 @@ export default function ResponsiveDrawer(props: Props) {
           />
         </Link>
         {drawerItems.map((item, index) => (
-          <ListItem disablePadding key={item.text} sx={{ marginTop: 4 }}>
+          <ListItem disablePadding key={item.text} sx={{ marginTop: 2 }}>
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
@@ -164,13 +180,16 @@ export default function ResponsiveDrawer(props: Props) {
       <Box sx={{ flexGrow: 1 }} />{" "}
       {/* Filler space to push the button to the bottom */}
       
+      <Box sx={{display:'flex',justifyContent:'center',flexDirection:'column',alignItems:'center'}}>
+
         <Button
           type="submit"
           variant="contained"
+          onClick={() => router.push('/home')}
           sx={{
+            width:'178px',
             backgroundColor: "#ECAB21",
             color: "white",
-            marginY:3,
             fontSize:"12px",
             fontWeight: "bold",
             "&:hover": {
@@ -181,6 +200,27 @@ export default function ResponsiveDrawer(props: Props) {
         >
           Switch to customer
         </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          onClick={handleLogout}
+          sx={{
+            width:'178px',
+            backgroundColor: "#ECAB21",
+            color: "white",
+            mb:4,
+            mt:2,
+            fontSize:"12px",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#FFC107",
+              color: "white",
+            },
+          }}
+        >
+          Logout
+        </Button>
+      </Box>
       
     </Box>
   );
