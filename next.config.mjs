@@ -7,10 +7,6 @@ const nextConfig = {
         destination: "/home",
         permanent: true,
       },
-      {
-        source: '/.well-known/apple-developer-merchantid-domain-association',
-        destination: '/.well-known/apple-developer-merchantid-domain-association',
-      },
     ];
   },
   images: {
