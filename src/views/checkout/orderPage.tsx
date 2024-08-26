@@ -128,7 +128,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     <>
       <Box
         sx={{
-          // background: "#FAF3E0",
+          background: "#FAF3E0",
           minHeight: "900px",
           display: "flex",
           alignItems: "center",
