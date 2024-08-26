@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux-store";
 import ReviewSlider from "@/views/review-slider";
 
@@ -47,7 +47,6 @@ const MenuSection = () => {
   const activeCategory = useSelector(
     (state: RootState) => state.menu.activeCategory as MenuCategoryKey
   );
-
   const menuItems = useSelector(
     (state: RootState) => state.menu.items[activeCategory]
   ) as MenuItem[];

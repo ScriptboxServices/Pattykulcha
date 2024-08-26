@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Image from "next/image";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
   Box,
   Button,
@@ -14,19 +16,30 @@ import {
   Autocomplete as MUIAutocomplete,
   InputAdornment,
   Alert,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Card,
+  CardContent,
+  Avatar,
   Typography,
   IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import {
+  drinkOptions,
+} from "@/constants/MenuOptions";
+import { getImageSrc } from "../cart";
+import { v4 as uuidv4 } from "uuid";
 import { Icon, IconifyIcon } from "@iconify/react";
 import Autocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { countryCodes } from "@/utils/constants";
-
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { menuItems } from "@/constants/MenuOptions";
 export interface CountryCode {
   name: string;
   phone: number;
@@ -78,7 +91,65 @@ const MakeOrder: React.FC = () => {
   const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
     null
   );
+  const [includedItems1, setIncludedItems1] = useState<any[]>([]);
+  const [includedItems2, setIncludedItems2] = useState<any[]>([]);
+  const [allKulcha, setAllKulcha] = useState<any[]>([...menuItems]);
   const [address, setAddress] = useState<any>({});
+  const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
+
+  const handleDrinkDialogOpen = () => {
+    setIsDrinkDialogOpen(true);
+  };
+
+  const handleDrinkDialogClose = () => {
+    setIsDrinkDialogOpen(false);
+  };
+
+  const handleDrinkSelect = (drink: string) => {
+    const drinkItem = drinkOptions.find((d) => d.name == drink);
+    handleAddItem(drinkItem!.name);
+  };
+
+  const handleAddItem = (itemName: string) => {
+    const existingItem = includedItems2.find((includedItem) =>
+      includedItem.items.some((item: any) => item.name === itemName)
+    );
+
+    if (existingItem) {
+      // If item already exists, remove it
+      handleRemoveItem(existingItem.id);
+    } else {
+      // Otherwise, add it
+      const itemId = uuidv4();
+      const drink = drinkOptions.find((drink) => drink.name == itemName);
+
+      const price =
+        drink?.price ||
+        (itemName == "Chana"
+          ? 1.5
+          : itemName == "Imli Pyaz Chutney"
+          ? 1.5
+          : itemName == "Amul Butter"
+          ? 2.5
+          : itemName == "Normal Butter"
+          ? 1.5
+          : itemName == "Pickle"
+          ? 1 // Assuming the price for Pickle is 1.5
+          : 0); // Default price if item is not in the above lists
+
+      const newItem = {
+        id: itemId,
+        items: [{ name: itemName, price, quantity: 1 }],
+      };
+
+      setIncludedItems2([...includedItems2, newItem]);
+    }
+  };
+
+  const handleRemoveItem = (itemId: string) => {
+    setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
+  };
+
   const {
     control,
     handleSubmit,
@@ -86,7 +157,8 @@ const MakeOrder: React.FC = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
-      countryCode: countryCodes.find((country) => country.name == "Canada")
+      countryCode: countryCodes
+        .find((country) => country.name == "Canada")
         ?.phone.toString(),
       address: "",
       kulchas: [{ kulchaType: "", quantity: 1 }],
@@ -97,21 +169,6 @@ const MakeOrder: React.FC = () => {
       instructions: "",
       additionalItems: [{ item: "", quantity: 1 }],
     },
-  });
-
-  const { fields: kulchaFields, append: addKulcha, remove: removeKulcha } =
-    useFieldArray({
-      control,
-      name: "kulchas",
-    });
-
-  const {
-    fields: additionalItemFields,
-    append: addAdditionalItem,
-    remove: removeAdditionalItem,
-  } = useFieldArray({
-    control,
-    name: "additionalItems",
   });
 
   const [error, setError] = useState<string>("");
@@ -127,6 +184,88 @@ const MakeOrder: React.FC = () => {
     console.log("Form Submitted:", data);
   };
 
+  const handleAddKulcha = (kulcha: any) => {
+    if( includedItems1.some(
+      (item: any) => item.name === kulcha.name
+    )){
+      let arr = allKulcha.map((item) => {
+        if (item.name === kulcha.name) {
+          return {
+            ...item,
+            quantity:1,
+          };
+        }
+        return item;
+      });
+      setAllKulcha([...arr]);
+      setIncludedItems1([...includedItems1.filter((item) => item.name !== kulcha.name)])
+      return
+    }
+    setIncludedItems1([...includedItems1, kulcha]);
+  };
+
+  const handleIncreaseQTY = (e: any, name: string) => {
+    e.stopPropagation();
+    let changed: any;
+    let arr = allKulcha.map((item) => {
+      if (item.name === name) {
+        changed = {
+          ...item,
+          quantity: item.quantity + 1,
+        };
+        return changed;
+      }
+      return item;
+    });
+    let filtered = includedItems1.filter((item) => {
+      return item.name !== name;
+    });
+    setIncludedItems1([...filtered, changed]);
+    setAllKulcha([...arr]);
+  };
+
+  const handleDecreaseQTY = (e: any, name: string) => {
+    e.stopPropagation();
+    let changed: any;
+    let arr = allKulcha.map((item) => {
+      if (item.name === name) {
+        changed = {
+          ...item,
+          quantity: item.quantity - 1 < 1 ? item.quantity : item.quantity - 1,
+        };
+        return changed;
+      }
+      return item;
+    });
+    let filtered = includedItems1.filter((item) => {
+      return item.name !== name;
+    });
+    setIncludedItems1([...filtered, changed]);
+    setAllKulcha([...arr]);
+  };
+
+  const handleDecreaseQTYDrink = (_id: string) => {
+    const arr = [...includedItems2];
+    arr.forEach((item) => {
+      if (item.id === _id) {
+        if (item.items[0].quantity > 1)
+          item.items[0].quantity = item.items[0].quantity - 1;
+      }
+    });
+    setIncludedItems2([...arr]);
+  };
+
+  const handleIncreaseQTYDrink = (_id: string) => {
+    const arr = [...includedItems2];
+    arr.forEach((item) => {
+      if (item.id === _id) {
+        item.items[0].quantity = item.items[0].quantity + 1;
+      }
+    });
+
+    setIncludedItems2([...arr]);
+  };
+
   return (
     <>
       <CssBaseline />
@@ -139,47 +278,47 @@ const MakeOrder: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
           overflowY: "auto",
-        }}
-      >
-        <Typography variant="h4" sx={{ marginBottom: 2,marginTop:2 }}>
+        }}>
+        <Typography variant='h4' sx={{ marginBottom: 2, marginTop: 2 }}>
           Make an Order
         </Typography>
         <Container
-          component="main"
-          maxWidth="md"
+          component='main'
+          maxWidth='md'
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
-          }}
-        >
+          }}>
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               width: "100%",
-            }}
-          >
+            }}>
             <Box
-              component="form"
+              component='form'
               noValidate
-              sx={{ mt: 1, width: "100%" }}
-              onSubmit={handleSubmit(onSubmit)}
-            >
+              sx={{
+                mt: 1,
+                maxWidth: "100%",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              }}
+              onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <Controller
-                    name="name"
+                    name='name'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        label="Name"
-                        placeholder="Your Name"
+                        label='Name'
+                        placeholder='Your Name'
                         value={value}
                         onChange={onChange}
                         error={!!errors.name}
@@ -217,7 +356,9 @@ const MakeOrder: React.FC = () => {
                           city = component.long_name;
                         }
                         if (
-                          component.types.includes("administrative_area_level_1")
+                          component.types.includes(
+                            "administrative_area_level_1"
+                          )
                         ) {
                           state = component.long_name;
                         }
@@ -244,7 +385,7 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Controller
-                    name="countryCode"
+                    name='countryCode'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <MUIAutocomplete
@@ -255,7 +396,7 @@ const MakeOrder: React.FC = () => {
                           `${option.name} (${option.phone}) `
                         }
                         renderOption={(props, option: CountryCode) => (
-                          <Box component="li" {...props}>
+                          <Box component='li' {...props}>
                             <Icon
                               icon={option.icon as IconifyIcon}
                               width={20}
@@ -275,15 +416,15 @@ const MakeOrder: React.FC = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Country Code"
-                            placeholder="Select Country Code"
+                            label='Country Code'
+                            placeholder='Select Country Code'
                             required
                             InputProps={{
                               ...params.InputProps,
                               startAdornment: (
                                 <>
                                   {params.InputProps.startAdornment}
-                                  <InputAdornment position="start">
+                                  <InputAdornment position='start'>
                                     <Icon
                                       icon={
                                         (countryCodes.find(
@@ -305,15 +446,15 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Controller
-                    name="phoneNumber"
+                    name='phoneNumber'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        type="tel"
-                        label="Phone Number"
-                        placeholder="123-456-7890"
+                        type='tel'
+                        label='Phone Number'
+                        placeholder='123-456-7890'
                         value={value}
                         onChange={onChange}
                         error={!!errors.phoneNumber}
@@ -324,8 +465,8 @@ const MakeOrder: React.FC = () => {
                         }}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position="start">
-                              <i className="ri-phone-fill" />
+                            <InputAdornment position='start'>
+                              <i className='ri-phone-fill' />
                             </InputAdornment>
                           ),
                         }}
@@ -345,164 +486,243 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                {kulchaFields.map((field, index) => (
-                  <React.Fragment key={field.id}>
-                    <Grid item xs={12} md={6}>
-                      <Controller
-                        name={`kulchas.${index}.kulchaType`}
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl fullWidth required>
-                            <InputLabel>Kulcha Type</InputLabel>
-                            <Select
-                              {...field}
-                              label="Kulcha Type"
-                              error={!!errors.kulchas?.[index]?.kulchaType}
-                            >
-                              <MenuItem value="Mix Kulcha">Mix Kulcha</MenuItem>
-                              <MenuItem value="Paneer Kulcha">Paneer Kulcha</MenuItem>
-                              <MenuItem value="Aloo Kulcha">Aloo Kulcha</MenuItem>
-                              <MenuItem value="Onion Kulcha">Onion Kulcha</MenuItem>
-                              <MenuItem value="Gobi Kulcha">Gobi Kulcha</MenuItem>
-                            </Select>
-                          </FormControl>
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={5}>
-                      <Controller
-                        name={`kulchas.${index}.quantity`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            fullWidth
-                            required
-                            InputProps={{ inputProps: { min: 1 } }}
-                            label="Quantity"
-                            type="number"
-                            {...field}
-                            error={!!errors.kulchas?.[index]?.quantity}
-                            helperText={
-                              errors.kulchas?.[index]?.quantity?.message ?? ""
-                            }
-                          />
-                        )}
-                      />
-                    </Grid>
-                    {index !== 0 && (
-                      <Grid item xs={12} md={1}>
-                        <IconButton
-                          aria-label="delete"
-                          color="secondary"
-                          onClick={() => removeKulcha(index)}
-                          sx={{ mt: 2, color: "black" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Grid>
-                    )}
-                  </React.Fragment>
-                ))}
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddCircleOutlineIcon />}
-                    disabled={kulchaFields.length >= 5} // Updated check
-                    onClick={() =>{
-                      if(kulchaFields.length<5){
-                        addKulcha({ kulchaType: "", quantity: 1 })
-                      }
-                    }}
-                  >
-                    Add Kulcha
-                  </Button>
-                </Grid>
 
-                {additionalItemFields.map((field, index) => (
-                  <React.Fragment key={field.id}>
-                    <Grid item xs={12} md={6}>
-                      <Controller
-                        name={`additionalItems.${index}.item`}
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl fullWidth required>
-                            <InputLabel>Additional Item</InputLabel>
-                            <Select
-                              {...field}
-                              label="Additional Item"
-                              error={!!errors.additionalItems?.[index]?.item}
-                            >
-                              <MenuItem value="Channa">Channa</MenuItem>
-                              <MenuItem value="Imli Chatney">Imli Chatney</MenuItem>
-                              <MenuItem value="Normal Butter">Normal Butter</MenuItem>
-                              <MenuItem value="Amul Butter">Amul Butter</MenuItem>
-                            </Select>
-                          </FormControl>
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={5}>
-                      <Controller
-                        name={`additionalItems.${index}.quantity`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            fullWidth
-                            required
-                            label="Additional Item Quantity"
-                            type="number"
-                            InputProps={{ inputProps: { min: 1 } }}
-                            {...field}
-                            error={
-                              !!errors.additionalItems?.[index]?.quantity
-                            }
-                            helperText={
-                              errors.additionalItems?.[index]?.quantity
-                                ?.message ?? ""
-                            }
+                <Grid
+                  item
+                  xs={12}
+                  display='flex'
+                  justifyContent='center'
+                  flexDirection='column'
+                  alignItems='center'>
+                  {allKulcha?.map((kulcha: any, index: number) => {
+                    return (
+                      <Box sx={{mb:2}}>
+                        <Box
+                          onClick={() => handleAddKulcha(kulcha)}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            width: "500px",
+                            border: includedItems1.some(
+                              (item: any) => item.name === kulcha.name
+                            )
+                              ? "2px solid green"
+                              : "1px solid #ddd",
+                            borderRadius: "10px",
+                            p: 2,
+                            cursor: "pointer",
+                          }}>
+                          <Avatar
+                            src={kulcha?.image}
+                            sx={{
+                              width: 50,
+                              height: 50,
+                              mr: 2,
+                            }}
                           />
-                        )}
-                      />
-                    </Grid>
-                    {index !== 0 && (
-                      <Grid item xs={12} md={1}>
-                        <IconButton
-                          aria-label="delete"
-                          color="secondary"
-                          onClick={() => removeAdditionalItem(index)}
-                          sx={{ mt: 2, color: "black" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Grid>
-                    )}
-                  </React.Fragment>
-                ))}
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddCircleOutlineIcon />}
-                    disabled={additionalItemFields.length >= 4} // Updated check
-                    onClick={() =>{
-                      if(addAdditionalItem.length<4){
-                        addAdditionalItem({ item: "", quantity: 1 })
-                      }
-                      else{
-                        return;
-                      }
-                    }}
-                                          
-                  >
-                    Add Additional Item
-                  </Button>
+                          <Box sx={{ flexGrow: 1 }}>
+                            <Typography variant='body1'>
+                              {kulcha?.name} &nbsp;
+                              <Typography
+                              component='span'
+                              variant='body2'
+                              color='textSecondary'>
+                              Qty: {kulcha?.quantity}
+                            </Typography>
+                            </Typography>
+                            <Typography
+                              variant='body1'
+                              sx={{ fontSize: "14px" }}>
+                              ${Number(kulcha.price)}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ textAlign: "right" }}>
+                            <Typography variant='body1' sx={{ fontSize: "14px" }}>
+                              ${Number(kulcha.price) * Number(kulcha?.quantity)}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        {
+                          includedItems1.some(
+                            (item: any) => item.name === kulcha.name
+                          ) &&
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "end",
+                            }}>
+                            <IconButton
+                              onClick={(e) => handleDecreaseQTY(e, kulcha?.name)}
+                              sx={{
+                                color: "#336195",
+                              }}>
+                              <RemoveCircleOutlineIcon />
+                            </IconButton>
+                            <Typography variant='body1' color='textPrimary'>
+                              {kulcha.quantity || 1}
+                            </Typography>
+                            <IconButton
+                              onClick={(e) => handleIncreaseQTY(e, kulcha?.name)}
+                              sx={{
+                                color: "#336195",
+                              }}>
+                              <AddCircleOutlineIcon />
+                            </IconButton>
+                          </Box>
+                        }
+                      </Box>
+                    );
+                  })}
                 </Grid>
+                <Grid container spacing={1} justifyContent="center">
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    border: "2px solid #dcdcdc",
+                    borderRadius: "8px",
+                    textAlign: "left",
+                    position: "relative",
+                    cursor: "pointer",
+                    margin: "0.2rem 0",
+                    width: { xs: "100%", md: "60%" },
+                    marginInline: "auto",
+                  }}
+                  onClick={handleDrinkDialogOpen}>
+                  <Box display='flex' alignItems='center'>
+                    <Image
+                      src='/images/landingpage/Drinks.svg'
+                      alt='Add a Drink'
+                      layout='fixed'
+                      width={50}
+                      height={50}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <Typography
+                      variant='body1'
+                      color='textPrimary'
+                      sx={{ marginLeft: "1rem" }}>
+                      Add a Drink
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon />
+                </Box>
+              </Grid>
+              <Grid container spacing={2} justifyContent="center">
+              {includedItems2.length == 0 ? (
+                <></>
+              ) : (
+                includedItems2.map((item) => (
+                  <Grid item xs={6} sm={4} md={1.6} key={item.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "1rem",
+                        backgroundColor: "white",
+                        border: "2px solid #87939f",
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        position: "relative",
+                        cursor: "pointer",
+                        height: { xs: "270px", sm: "270px" },
+                        width: { xs: "130px", sm: "175px" },
+                        margin: "0.5rem",
+                        boxShadow: "2px 2px 3px #4e5664",
+                      }}
+                    >
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "#336195",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Image
+                        src={getImageSrc(item.items[0].name)}
+                        alt={item.items[0].name}
+                        width={150}
+                        height={150}
+                        style={{
+                          width: "65%",
+                          height: "55%",
+                          objectFit: "contain",
+                        }}
+                      />
+                      <Typography variant="body1" color="textPrimary">
+                        {item.items[0].name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        ${item.items[0].price.toFixed(2)}
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginTop: "0.5rem",
+                        }}
+                      >
+                        <IconButton
+                          onClick={() => handleDecreaseQTYDrink(item.id)}
+                          sx={{
+                            color: "#336195",
+                          }}
+                        >
+                          <RemoveCircleOutlineIcon />
+                        </IconButton>
+                        <Typography variant="body1" color="textPrimary">
+                          {item.items[0].quantity || 1}
+                        </Typography>
+                        <IconButton
+                          onClick={() => handleIncreaseQTYDrink(item.id)}
+                          sx={{
+                            color: "#336195",
+                          }}
+                        >
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Box>
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleRemoveItem(item.id)}
+                        sx={{
+                          backgroundColor: "transparent",
+                          color: "#336195",
+                          border: "1px solid #336195",
+                          marginTop: "auto",
+                          borderRadius: "20px",
+                          textTransform: "none",
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </Box>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+            </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name="instructions"
+                    name='instructions'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        placeholder="Special instructions"
+                        placeholder='Special instructions'
                         fullWidth
                         value={value}
                         onChange={onChange}
@@ -516,9 +736,9 @@ const MakeOrder: React.FC = () => {
                 </Grid>
               </Grid>
               <Button
-                type="submit"
+                type='submit'
                 fullWidth
-                variant="contained"
+                variant='contained'
                 sx={{
                   backgroundColor: "#ECAB21",
                   color: "white",
@@ -530,12 +750,11 @@ const MakeOrder: React.FC = () => {
                     backgroundColor: "#FFC107",
                     color: "white",
                   },
-                }}
-              >
+                }}>
                 Submit Order
               </Button>
               {error && (
-                <Alert severity="error" className="mt-2">
+                <Alert severity='error' className='mt-2'>
                   {error}
                 </Alert>
               )}
@@ -543,6 +762,101 @@ const MakeOrder: React.FC = () => {
           </Box>
         </Container>
       </Box>
+      <Dialog
+        open={isDrinkDialogOpen}
+        onClose={handleDrinkDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontWeight: "bold" }}>
+          Add a Drink{" "}
+          <IconButton
+            aria-label="close"
+            onClick={handleDrinkDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {drinkOptions.map((drink) => (
+              <Grid item xs={12} sm={6} md={4} key={drink.name}>
+                <Card
+                  onClick={() => handleDrinkSelect(drink.name)}
+                  sx={{
+                    border: includedItems2.some((item) =>
+                      item.items.some((i: any) => i.name === drink.name)
+                    )
+                      ? "2px solid green"
+                      : "1px solid #ddd",
+                    position: "relative",
+                    cursor: "pointer",
+                    height: "270px", // Ensure all cards have the same height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center", // Align items center horizontally
+                  }}
+                >
+                  <Image
+                    alt={drink.name}
+                    src={drink.image}
+                    width={150}
+                    height={150}
+                    style={{
+                      width: "65%", // Set the width to 65% of the container
+                      height: "55%", // Set the height to 55% of the container
+                      objectFit: "contain",
+                      display: "block", // Ensures the image is treated as a block-level element
+                      margin: "0 auto", // Center horizontally within the container
+                    }}
+                  />
+                  <CardContent sx={{ textAlign: "center" }}>
+                    <Typography
+                      variant="body1"
+                      color="textPrimary"
+                      sx={{ fontSize: "18px" }}
+                    >
+                      {drink.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      ${drink.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i: any) => i.name === drink.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        {/* <DialogActions>
+          <Button onClick={handleDrinkDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDrinkDialogClose} color="primary">
+            Save
+          </Button>
+        </DialogActions> */}
+      </Dialog>
     </>
   );
 };

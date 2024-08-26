@@ -37,6 +37,21 @@ export interface Kulcha {
   quantity: number;
 }
 
+export const FIXED_INCLUDE_ITEMS = [
+  {
+    id: "chana",
+    items: [{ name: "Chana", price: 1.5 }],
+  },
+  {
+    id: "imli-pyaz-chutney",
+    items: [{ name: "Imli Pyaz Chutney", price: 1.5 }],
+  },
+  {
+    id: "amul-butter",
+    items: [{ name: "Butter", price: 1.5 }],
+  },
+];
+
 interface MenuContextType {
   price: number;
   setPrice: (price: number) => void;

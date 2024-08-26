@@ -22,14 +22,13 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuthContext, useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext, FIXED_INCLUDE_ITEMS } from "@/context";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import CircularLodar from "@/components/CircularLodar";
-
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
@@ -84,21 +83,6 @@ export interface IncludedItem {
     quantity: number;
   }>;
 }
-
-const FIXED_INCLUDE_ITEMS = [
-  {
-    id: "chana",
-    items: [{ name: "Chana", price: 1.5 }],
-  },
-  {
-    id: "imli-pyaz-chutney",
-    items: [{ name: "Imli Pyaz Chutney", price: 1.5 }],
-  },
-  {
-    id: "amul-butter",
-    items: [{ name: "Butter", price: 1.5 }],
-  },
-];
 
 const MenuPage = () => {
   const {
@@ -266,8 +250,6 @@ const MenuPage = () => {
     }, Number(kulcha?.price) * Number(kulcha.quantity));
     return Number(additionalTotal.toFixed(2));
   };
-
-  console.log(calculateAmount());
 
   const handleAddToCart = async () => {
     try {
@@ -748,14 +730,14 @@ const MenuPage = () => {
                 marginBottom: "23px", // Add space between the line and the text
               }}
             /> */}
-            {/* <Typography
+            <Typography
               variant='h4'
               gutterBottom
               sx={{ color: "#021e3a", fontWeight: "bold" }}>
               Make it a Meal
-            </Typography> */}
+            </Typography>
             <Grid container spacing={1} justifyContent="center">
-              {/* <Grid item xs={12}>
+              <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -794,7 +776,7 @@ const MenuPage = () => {
                   </Box>
                   <ArrowForwardIosIcon />
                 </Box>
-              </Grid> */}
+              </Grid>
               {/* <Grid item xs={12}>
                 <Box
                   sx={{
