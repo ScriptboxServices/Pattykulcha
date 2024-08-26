@@ -112,7 +112,7 @@ const OrdersPage: React.FC = () => {
 
   return (
     <>
-      <CircularLodar isLoading={loading} />   
+      <CircularLodar isLoading={loading} />
       <Box
         sx={{
           backgroundColor: "#fffaeb",
@@ -121,10 +121,15 @@ const OrdersPage: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           overflowY: "auto", // Make the container scrollable
-        }}>
+        }}
+      >
         <Box sx={{ maxWidth: "600px", width: "100%" }}>
           {" "}
-          <Typography variant='h4' fontWeight='bold' gutterBottom>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ color: "#333333", fontWeight: "bold",textAlign:"center",mb:1.75 }}
+          >
             My Orders
           </Typography>
           {myOrders.map((orderDoc: any) => {
@@ -140,27 +145,52 @@ const OrdersPage: React.FC = () => {
                   boxShadow: 3,
                   minHeight: "150px",
                   width: "100%",
-                }}>
+                }}
+              >
                 <OrderStatusChip status={orderDoc?.delivery?.message} />
                 <Box
-                  sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: 2,
+                  }}
+                >
                   <LockIcon sx={{ marginRight: 1 }} />
-                  <Typography variant='body2' sx={{ fontWeight: "bold" }}>
+                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                     ORD-1234
                   </Typography>
                 </Box>
                 <Box
-                  sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-                  <LocationOnIcon sx={{ marginRight: 1 }} />
-                  <Typography variant='body2' sx={{ marginRight: 1 }}>
+                  sx={{
+                    display: "flex",
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    marginBottom: 2,
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  <LocationOnIcon
+                    sx={{
+                      marginRight: 1,
+                      display: { xs: "none", sm: "block" },
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ marginRight: 1 }}>
                     {orderDoc?.address?.seperate?.line1 || "Location not set"}
                   </Typography>
-                  <Divider orientation='vertical' flexItem sx={{ marginX: 1 }} />
-                  <Typography variant='body2' sx={{ marginRight: 1 }}>
+                  <Divider
+                    orientation="vertical"
+                    flexItem
+                    sx={{ marginX: 1 }}
+                  />
+                  <Typography variant="body2" sx={{ marginRight: 1 }}>
                     Estimated arrival: 30 min
                   </Typography>
-                  <Divider orientation='vertical' flexItem sx={{ marginX: 1 }} />
-                  <Typography variant='body2'>
+                  <Divider
+                    orientation="vertical"
+                    flexItem
+                    sx={{ marginX: 1 }}
+                  />
+                  <Typography variant="body2">
                     {orderDoc?.address?.seperate?.city},{" "}
                     {orderDoc?.address?.seperate?.state}, Canada
                   </Typography>
@@ -171,7 +201,7 @@ const OrdersPage: React.FC = () => {
                     <Grid container spacing={2} sx={{ marginBottom: 2 }}>
                       <Grid item xs={12} sm={6} sx={{ display: "flex" }}>
                         <Avatar
-                          variant='square'
+                          variant="square"
                           src={kulcha?.image}
                           sx={{
                             width: 80,
@@ -181,10 +211,10 @@ const OrdersPage: React.FC = () => {
                           }}
                         />
                         <Box>
-                          <Typography variant='body2' fontWeight='bold'>
+                          <Typography variant="body2" fontWeight="bold">
                             {kulcha.name}
                           </Typography>
-                          <Typography variant='body2'>
+                          <Typography variant="body2">
                             ${kulcha.price} x{kulcha.quantity}
                           </Typography>
                         </Box>
@@ -192,15 +222,17 @@ const OrdersPage: React.FC = () => {
                       {additional?.length !== 0 && (
                         <Grid item xs={12} sx={{ marginTop: 1 }}>
                           <Typography
-                            variant='body2'
-                            sx={{ fontWeight: "bold", marginBottom: 1 }}>
+                            variant="body2"
+                            sx={{ fontWeight: "bold", marginBottom: 1 }}
+                          >
                             Additional Items:
                           </Typography>
                           {additional.map((item: any, itemIndex: number) => (
                             <Typography
                               key={itemIndex}
-                              variant='body2'
-                              sx={{ display: "inline", marginRight: 2 }}>
+                              variant="body2"
+                              sx={{ display: "inline", marginRight: 2 }}
+                            >
                               {item.items[0].name} ({item.items[0].quantity})
                             </Typography>
                           ))}
@@ -212,31 +244,32 @@ const OrdersPage: React.FC = () => {
                 <Divider sx={{ my: 2 }} />
                 <Box>
                   <Typography
-                    variant='body2'
-                    sx={{ fontWeight: "bold", marginBottom: 1 }}>
+                    variant="body2"
+                    sx={{ fontWeight: "bold", marginBottom: 1 }}
+                  >
                     Billing Address :
                   </Typography>
-                  <Typography variant='body2' color='textSecondary'>
+                  <Typography variant="body2" color="textSecondary">
                     Name: {orderDoc?.customer?.name}
                   </Typography>
-                  <Typography variant='body2' color='textSecondary'>
+                  <Typography variant="body2" color="textSecondary">
                     Phone: {orderDoc?.customer?.phoneNumber}
                   </Typography>
-                  <Typography variant='body2' color='textSecondary'>
+                  <Typography variant="body2" color="textSecondary">
                     Address: {orderDoc?.address?.raw || orderDoc?.address}
                   </Typography>
-                  <Typography variant='body2' color='textSecondary'>
+                  <Typography variant="body2" color="textSecondary">
                     Distance: {orderDoc?.address?.distance?.text || ""}
                   </Typography>
-                  <Typography variant='body2' color='textSecondary'>
+                  <Typography variant="body2" color="textSecondary">
                     Instructions: {orderDoc?.instructions}
                   </Typography>
                 </Box>
                 <Divider sx={{ marginY: 2 }} />
-                <Typography variant='body2' fontWeight='bold' textAlign='right'>
+                <Typography variant="body2" fontWeight="bold" textAlign="right">
                   Total Tax: {orderDoc?.total_tax}
                 </Typography>
-                <Typography variant='body2' fontWeight='bold' textAlign='right'>
+                <Typography variant="body2" fontWeight="bold" textAlign="right">
                   Total: {orderDoc?.grand_total}
                 </Typography>
               </Paper>

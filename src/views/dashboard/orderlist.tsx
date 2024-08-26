@@ -105,11 +105,11 @@ function CustomPaginationActionsTable() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ borderRadius: 2 ,padding:4}}>
+    <TableContainer component={Paper} sx={{ borderRadius: 2 ,padding:4,minWidth:900}}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2, pl: 2, pt: 2 }}>
         Order Details
       </Typography>
-      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+      <Table sx={{ minWidth: "500px" }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', paddingY: 2, backgroundColor: '#f5f5f5', borderBottom: '2px solid #dcdcdc' }}>Order Name</TableCell>

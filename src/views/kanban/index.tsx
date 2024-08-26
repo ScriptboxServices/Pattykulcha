@@ -58,6 +58,9 @@ const KanbanBoard = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const [expandedCards, setExpandedCards] = useState<{
+    [key: string]: boolean;
+  }>({});
   const { user, metaData } = useAuthContext();
   const [allOrders, setAllOrders] = useState<any>({});
   const [cart, setCart] = useState<any[]>([]);
@@ -307,30 +310,41 @@ const KanbanBoard = () => {
     }
   };
 
+  const handleToggleExpand = (id: string) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   console.log(cart);
 
   return (
     <Box
-      sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}>
+      sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}
+    >
       <CircularLodar isLoading={loading} />
       <Box>
         <Typography
-          variant='h5'
-          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: 4.5 }}>
+          variant="h5"
+          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: 4.5 }}
+        >
           Order Details
         </Typography>
       </Box>
       <Box
-        className=' w-auto p-5 max-h-[1300px] bg-white no-scrollbar'
-        sx={{ overflowY: "hidden", overflowX: "auto", ml: 3 }}>
+        className=" w-auto p-5 max-h-[1300px] bg-white no-scrollbar"
+        sx={{ overflowY: "hidden", overflowX: "auto", ml: 3 }}
+      >
         <DndContext sensors={sensors} collisionDetection={closestCorners}>
           <SortableContext items={containers.map((container) => container.id)}>
             <Box
-              display='flex'
-              justifyContent='space-evenly'
+              display="flex"
+              justifyContent="space-evenly"
               gap={2}
-              minWidth='1900px'
-              marginTop={3}>
+              minWidth="2300px"
+              marginTop={3}
+            >
               {containers.map((container) => (
                 <Box
                   key={container.id}
@@ -341,15 +355,21 @@ const KanbanBoard = () => {
                     borderRadius: 2,
                     boxShadow: 3,
                     backgroundColor: "#fff",
-                  }}>
+                  }}
+                >
                   <Typography
-                    variant='h6'
+                    variant="h6"
                     sx={{
-                      textAlign: "center",
-                      padding: 2,
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 10,
                       backgroundColor: "#3f51b5",
                       color: "#fff",
-                    }}>
+                      textAlign: "center",
+                      padding: 2,
+                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                    }}
+                  >
                     {container.title}
                   </Typography>
                   <SortableContext items={[]}>
@@ -361,13 +381,15 @@ const KanbanBoard = () => {
                             alignItems: "center",
                             flexDirection: "column",
                             mt: 2,
-                          }}>
+                          }}
+                        >
                           <Box
                             sx={{
                               px: 2,
                               width: "100%",
-                            }}>
-                            <Typography variant='body1'>
+                            }}
+                          >
+                            <Typography variant="body1">
                               No record found.
                             </Typography>
                           </Box>
@@ -377,6 +399,7 @@ const KanbanBoard = () => {
                       <>
                         {allOrders[container.id]?.map(
                           (order: any, idy: number) => {
+                            const isExpanded = expandedCards[order.id] || false;
                             if (container.id === "container-1") {
                               let { additional } = order.order;
 
@@ -390,58 +413,63 @@ const KanbanBoard = () => {
                                       display: "flex",
                                       flexDirection: "column",
                                       justifyContent: "space-between",
-                                    }}>
+                                    }}
+                                  >
                                     <CardContent>
                                       <Box
                                         sx={{
                                           display: "flex",
                                           alignItems: "center",
                                           flexDirection: "column",
-                                        }}>
-                                           <Box
-                                            sx={{
-                                              display: "flex",
-                                              alignItems: "center",
-                                              width:'100%',
-                                            }}>
-                                            <Avatar
-                                              src={order?.order?.kulcha?.image}
-                                              sx={{
-                                                width: 50,
-                                                height: 50,
-                                                mr: 2,
-                                              }}
-                                            />
-                                            <Box sx={{ flexGrow: 1 }}>
-                                              <Typography variant='body1'>
-                                                {order?.order?.kulcha?.name}
-                                              </Typography>
-                                            </Box>
-                                            <Box sx={{ textAlign: "right" }}>
-                                              <Typography
-                                                variant='body2'
-                                                color='textSecondary'
-                                                sx={{
-                                                  display: "flex",
-                                                  width: "50px",
-                                                  justifyContent: "flex-end",
-                                                }}>
-                                                Qty:{" "}
-                                                {order?.order?.kulcha?.quantity}
-                                              </Typography>
-                                            </Box>
-                                          </Box>
+                                        }}
+                                      >
                                         <Box
-                                          sx={{ width: "100%", mt: 1 }}>
+                                          sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            width: "100%",
+                                          }}
+                                        >
+                                          <Avatar
+                                            src={order?.order?.kulcha?.image}
+                                            sx={{
+                                              width: 50,
+                                              height: 50,
+                                              mr: 2,
+                                            }}
+                                          />
+                                          <Box sx={{ flexGrow: 1 }}>
+                                            <Typography variant="body1">
+                                              {order?.order?.kulcha?.name}
+                                            </Typography>
+                                          </Box>
+                                          <Box sx={{ textAlign: "right" }}>
+                                            <Typography
+                                              variant="body2"
+                                              color="textSecondary"
+                                              sx={{
+                                                display: "flex",
+                                                width: "50px",
+                                                justifyContent: "flex-end",
+                                              }}
+                                            >
+                                              Qty:{" "}
+                                              {order?.order?.kulcha?.quantity}
+                                            </Typography>
+                                          </Box>
+                                        </Box>
+
+                                        <Box sx={{ width: "100%", mt: 1 }}>
                                           {additional?.length !== 0 && (
                                             <>
                                               <Typography
-                                                variant='h6'
+                                                variant="h6"
                                                 sx={{
                                                   fontSize: "12px",
                                                   color: "#1F2937",
                                                   paddingBottom: "4px",
-                                                }}>
+                                                }}
+                                              >
                                                 Add on items :
                                               </Typography>
                                               {additional.map((add: any) => {
@@ -453,14 +481,16 @@ const KanbanBoard = () => {
                                                       alignItems: "center",
                                                       justifyContent:
                                                         "space-between",
-                                                    }}>
+                                                    }}
+                                                  >
                                                     <Typography
-                                                      variant='body1'
+                                                      variant="body1"
                                                       sx={{
                                                         color: "#1F2937",
                                                         fontWeight: "bold",
                                                         fontSize: "14px",
-                                                      }}>
+                                                      }}
+                                                    >
                                                       {add?.items?.[0]?.name}: x
                                                       {
                                                         add?.items?.[0]
@@ -468,12 +498,13 @@ const KanbanBoard = () => {
                                                       }
                                                     </Typography>
                                                     <Typography
-                                                      variant='body1'
+                                                      variant="body1"
                                                       sx={{
                                                         color: "#1F2937",
                                                         fontWeight: "bold",
                                                         fontSize: "14px",
-                                                      }}>
+                                                      }}
+                                                    >
                                                       ${add?.items?.[0]?.price}{" "}
                                                       x{" "}
                                                       {
@@ -488,98 +519,177 @@ const KanbanBoard = () => {
                                           )}
                                         </Box>
                                       </Box>
-                                      <Box>
-                                        <Divider sx={{ my: 1 }} />
-                                        <Box>
-                                          <Typography variant='body2'>
-                                            <Typography
-                                              variant='body2'
-                                              component='span'
-                                              sx={{
-                                                fontWeight: "bold",
-                                              }}>
-                                              Name:
-                                            </Typography>{" "}
-                                            {order?.customer?.name}
-                                          </Typography>
-                                        </Box>
-                                        <Box>
-                                          <Typography variant='body2'>
-                                            <Typography
-                                              variant='body2'
-                                              component='span'
-                                              sx={{
-                                                fontWeight: "bold",
-                                              }}>
-                                              Phone:
-                                            </Typography>{" "}
-                                            {order?.customer?.phoneNumber}
-                                          </Typography>
-                                        </Box>
-                                        <Box>
-                                          <Typography variant='body2'>
-                                            <Typography
-                                              variant='body2'
-                                              component='span'
-                                              sx={{
-                                                fontWeight: "bold",
-                                              }}>
-                                              Address:
-                                            </Typography>{" "}
-                                            {order?.customer?.address?.raw || ''}
-                                          </Typography>
-                                        </Box>
-                                      </Box>
-                                      <Box>
-                                        <Divider sx={{ my: 1 }} />
+                                      {!isExpanded && (
                                         <Box
-                                          sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                          }}>
-                                          <Typography
-                                            variant='body2'
-                                            component='span'
+                                          sx={{ textAlign: "center", mt: 1 }}
+                                        >
+                                          <Button
+                                            variant="text"
+                                            onClick={() =>
+                                              handleToggleExpand(order.id)
+                                            }
+                                            size="small"
                                             sx={{
                                               fontWeight: "bold",
-                                            }}>
-                                            Total Tax:
-                                          </Typography>
-                                          <Typography
-                                            variant='body2'
-                                            color='textSecondary'>
-                                            $
-                                            {(
-                                              Number(order?.total_amount || 0) *
-                                              0.13
-                                            ).toFixed(2)}
-                                          </Typography>
+                                              fontSize: "10px",
+                                            }}
+                                          >
+                                            Show More
+                                          </Button>
                                         </Box>
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                          }}>
-                                          <Typography
-                                            variant='body2'
-                                            component='span'
-                                            sx={{
-                                              fontWeight: "bold",
-                                            }}>
-                                            Total Amount:
-                                          </Typography>
-                                          <Typography
-                                            variant='body2'
-                                            color='textSecondary'>
-                                            $
-                                            {Number(
-                                              order?.total_amount || 0
-                                            ).toFixed(2)}
-                                          </Typography>
-                                        </Box>
-                                      </Box>
+                                      )}
+                                      {isExpanded && (
+                                        <>
+                                          <Box>
+                                            <Divider sx={{ my: 1 }} />
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                component="span"
+                                                sx={{
+                                                  fontWeight: "bold",
+                                                }}
+                                              >
+                                                Time:
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                component="span"
+                                              >
+                                                {formatTimestampToCustomDate(
+                                                  order.createdAt
+                                                )}
+                                              </Typography>
+                                            </Box>
+                                            <Box>
+                                              <Typography variant="body2">
+                                                <Typography
+                                                  variant="body2"
+                                                  component="span"
+                                                  sx={{
+                                                    fontWeight: "bold",
+                                                  }}
+                                                >
+                                                  Name:
+                                                </Typography>{" "}
+                                                {order?.customer?.name}
+                                              </Typography>
+                                            </Box>
+                                            <Box>
+                                              <Typography variant="body2">
+                                                <Typography
+                                                  variant="body2"
+                                                  component="span"
+                                                  sx={{
+                                                    fontWeight: "bold",
+                                                  }}
+                                                >
+                                                  Phone:
+                                                </Typography>{" "}
+                                                {order?.customer?.phoneNumber}
+                                              </Typography>
+                                            </Box>
+                                            <Box>
+                                              <Typography variant="body2">
+                                                <Typography
+                                                  variant="body2"
+                                                  component="span"
+                                                  sx={{
+                                                    fontWeight: "bold",
+                                                  }}
+                                                >
+                                                  Address:
+                                                </Typography>{" "}
+                                                {order?.customer?.address
+                                                  ?.raw || ""}
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                          <Box>
+                                            <Divider sx={{ my: 1 }} />
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                component="span"
+                                                sx={{
+                                                  fontWeight: "bold",
+                                                }}
+                                              >
+                                                Total Tax:
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                color="textSecondary"
+                                              >
+                                                $
+                                                {(
+                                                  Number(
+                                                    order?.total_amount || 0
+                                                  ) * 0.13
+                                                ).toFixed(2)}
+                                              </Typography>
+                                            </Box>
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                component="span"
+                                                sx={{
+                                                  fontWeight: "bold",
+                                                }}
+                                              >
+                                                Total Amount:
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                color="textSecondary"
+                                              >
+                                                $
+                                                {Number(
+                                                  order?.total_amount || 0
+                                                ).toFixed(2)}
+                                              </Typography>
+                                            </Box>
+                                            <Box
+                                              sx={{
+                                                textAlign: "center",
+                                                mt: 1,
+                                              }}
+                                            >
+                                              <Button
+                                                variant="text"
+                                                onClick={() =>
+                                                  handleToggleExpand(order.id)
+                                                }
+                                                size="small"
+                                                sx={{
+                                                  fontWeight: "bold",
+                                                  fontSize: "10px",
+                                                }}
+                                              >
+                                                Show Less
+                                              </Button>
+                                            </Box>
+                                          </Box>
+                                        </>
+                                      )}
                                     </CardContent>
                                   </Card>
                                 </Box>
@@ -595,23 +705,27 @@ const KanbanBoard = () => {
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "space-between",
-                                  }}>
+                                  }}
+                                >
                                   <CardContent sx={{ padding: 2 }}>
                                     <Box
                                       sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
                                         mb: 2,
-                                      }}>
+                                      }}
+                                    >
                                       <Box>
                                         <Typography
-                                          variant='h6'
-                                          sx={{ fontWeight: "bold", mb: 1 }}>
+                                          variant="h6"
+                                          sx={{ fontWeight: "bold", mb: 1 }}
+                                        >
                                           Order #1234
                                         </Typography>
                                         <Typography
-                                          variant='body2'
-                                          color='textSecondary'>
+                                          variant="body2"
+                                          color="textSecondary"
+                                        >
                                           {order.date}
                                         </Typography>
                                       </Box>
@@ -654,7 +768,8 @@ const KanbanBoard = () => {
                                               display: "flex",
                                               alignItems: "center",
                                               mt: 2,
-                                            }}>
+                                            }}
+                                          >
                                             <Avatar
                                               src={item?.order?.kulcha?.image}
                                               sx={{
@@ -664,26 +779,28 @@ const KanbanBoard = () => {
                                               }}
                                             />
                                             <Box sx={{ flexGrow: 1 }}>
-                                              <Typography variant='body1'>
+                                              <Typography variant="body1">
                                                 {item?.order?.kulcha?.name}
                                               </Typography>
                                               {additional?.length !== 0 && (
                                                 <Typography
-                                                  variant='body2'
-                                                  color='textSecondary'>
+                                                  variant="body2"
+                                                  color="textSecondary"
+                                                >
                                                   Add-ons : {addOnName}
                                                 </Typography>
                                               )}
                                             </Box>
                                             <Box sx={{ textAlign: "right" }}>
                                               <Typography
-                                                variant='body2'
-                                                color='textSecondary'
+                                                variant="body2"
+                                                color="textSecondary"
                                                 sx={{
                                                   display: "flex",
                                                   width: "50px",
                                                   justifyContent: "flex-end",
-                                                }}>
+                                                }}
+                                              >
                                                 Qty:{" "}
                                                 {item?.order?.kulcha?.quantity}
                                               </Typography>
@@ -693,255 +810,334 @@ const KanbanBoard = () => {
                                       }
                                     )}
                                   </CardContent>
-                                  <Box>
-                                    <Divider sx={{ my: 1 }} />
+                                  {!isExpanded && (
                                     <Box
                                       sx={{
-                                        px: 2,
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                      }}>
-                                      <Typography
-                                        variant='body2'
-                                        component='span'
+                                        textAlign: "center",
+                                        mt: 1,
+                                        marginBottom: 2,
+                                      }}
+                                    >
+                                      <Button
+                                        variant="text"
+                                        onClick={() =>
+                                          handleToggleExpand(order.id)
+                                        }
+                                        size="small"
                                         sx={{
                                           fontWeight: "bold",
-                                        }}>
-                                        Time:
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        color='textSecondary'>
-                                        {formatTimestampToCustomDate(
-                                          order.createdAt
-                                        )}
-                                      </Typography>
+                                          fontSize: "10px",
+                                        }}
+                                      >
+                                        Show More
+                                      </Button>
                                     </Box>
-                                  </Box>
-                                  <Box>
-                                    <Divider sx={{ my: 1 }} />
-                                    <Box
-                                      sx={{
-                                        px: 2,
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                      }}>
-                                      <Typography
-                                        variant='body2'
-                                        component='span'
-                                        sx={{
-                                          fontWeight: "bold",
-                                        }}>
-                                        Total Tax:
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        color='textSecondary'>
-                                        ${Number(order?.total_tax).toFixed(2)}
-                                      </Typography>
-                                    </Box>
-                                  </Box>
-                                  <Box>
-                                    <Box
-                                      sx={{
-                                        px: 2,
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                      }}>
-                                      <Typography
-                                        variant='body2'
-                                        component='span'
-                                        sx={{
-                                          fontWeight: "bold",
-                                        }}>
-                                        Total:
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        color='textSecondary'>
-                                        ${Number(order?.grand_total).toFixed(2)}
-                                      </Typography>
-                                    </Box>
-                                  </Box>
-                                  <Box>
-                                    <Divider sx={{ my: 1 }} />
-                                    <Box sx={{ px: 2 }}>
-                                      <Typography
-                                        variant='body2'
-                                        sx={{
-                                          fontWeight: "bold",
-                                          marginBottom: 1,
-                                        }}>
-                                        Billing Address :
-                                      </Typography>
-                                      <Typography variant='body2'>
-                                        <Typography
-                                          variant='body2'
-                                          component='span'
+                                  )}
+                                  {isExpanded && (
+                                    <>
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box
                                           sx={{
-                                            fontWeight: "bold",
-                                          }}>
-                                          Name:
-                                        </Typography>{" "}
-                                        {order?.customer?.name}
-                                      </Typography>
-                                      <Typography variant='body2'>
-                                        <Typography
-                                          variant='body2'
-                                          component='span'
-                                          sx={{
-                                            fontWeight: "bold",
-                                          }}>
-                                          Phone:
-                                        </Typography>{" "}
-                                        {order?.customer?.phoneNumber}
-                                      </Typography>
-                                      <Typography variant='body2'>
-                                        <Typography
-                                          variant='body2'
-                                          component='span'
-                                          sx={{
-                                            fontWeight: "bold",
-                                          }}>
-                                          Address:
-                                        </Typography>{" "}
-                                        {order?.address?.raw || order?.address}
-                                      </Typography>
-                                      <Typography variant='body2'>
-                                        <Typography
-                                          variant='body2'
-                                          component='span'
-                                          sx={{
-                                            fontWeight: "bold",
-                                          }}>
-                                          Distance:
-                                        </Typography>{" "}
-                                        {order?.address?.distance?.text || ""}
-                                      </Typography>
-                                      <Typography variant='body2'>
-                                        <Typography
-                                          variant='body2'
-                                          component='span'
-                                          sx={{
-                                            fontWeight: "bold",
-                                          }}>
-                                          Instructions:
-                                        </Typography>{" "}
-                                        {order?.instructions}
-                                      </Typography>
-                                    </Box>
-                                  </Box>
-                                  <Box>
-                                    <Divider sx={{ my: 2 }} />
-                                    <Box
-                                      sx={{
-                                        px: 2,
-                                        pb: 2,
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                      }}>
-                                      <Typography
-                                        variant='body2'
-                                        color='textSecondary'>
-                                        X{order?.order?.length} Items
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        color='textSecondary'
-                                        sx={{ display: "flex", gap: 1 }}>
-                                        {container.id === "container-2" && (
-                                          <Button
-                                            onClick={() =>
-                                              updateOrderStatus(
-                                                order.id,
-                                                "Out For Delivery",
-                                                false
-                                              )
-                                            }
-                                            variant='contained'
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
                                             sx={{
-                                              backgroundColor: "#ECAB21",
-                                              color: "white",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Time:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            {formatTimestampToCustomDate(
+                                              order.createdAt
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Total Tax:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            $
+                                            {Number(order?.total_tax).toFixed(
+                                              2
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Total:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            $
+                                            {Number(order?.grand_total).toFixed(
+                                              2
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box sx={{ px: 2 }}>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              fontWeight: "bold",
+                                              marginBottom: 1,
+                                            }}
+                                          >
+                                            Billing Address :
+                                          </Typography>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Name:
+                                            </Typography>{" "}
+                                            {order?.customer?.name}
+                                          </Typography>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Phone:
+                                            </Typography>{" "}
+                                            {order?.customer?.phoneNumber}
+                                          </Typography>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Address:
+                                            </Typography>{" "}
+                                            {order?.address?.raw ||
+                                              order?.address}
+                                          </Typography>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Distance:
+                                            </Typography>{" "}
+                                            {order?.address?.distance?.text ||
+                                              ""}
+                                          </Typography>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Instructions:
+                                            </Typography>{" "}
+                                            {order?.instructions}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Divider sx={{ my: 2 }} />
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            pb: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            X{order?.order?.length} Items
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                            sx={{ display: "flex", gap: 1 }}
+                                          >
+                                            {container.id === "container-2" && (
+                                              <Button
+                                                onClick={() =>
+                                                  updateOrderStatus(
+                                                    order.id,
+                                                    "Out For Delivery",
+                                                    false
+                                                  )
+                                                }
+                                                variant="contained"
+                                                sx={{
+                                                  backgroundColor: "#ECAB21",
+                                                  color: "white",
+                                                  fontWeight: "bold",
+                                                  fontSize: "10px",
+                                                  "&:hover": {
+                                                    backgroundColor: "white",
+                                                    color: "#ECAB21",
+                                                  },
+                                                }}
+                                              >
+                                                Out For Delivery
+                                              </Button>
+                                            )}
+                                            {container.id === "container-3" && (
+                                              <Button
+                                                onClick={() =>
+                                                  updateOrderStatus(
+                                                    order.id,
+                                                    "Delivered",
+                                                    true
+                                                  )
+                                                }
+                                                variant="contained"
+                                                sx={{
+                                                  backgroundColor: "#ECAB21",
+                                                  color: "white",
+                                                  fontWeight: "bold",
+                                                  fontSize: "10px",
+                                                  "&:hover": {
+                                                    backgroundColor: "white",
+                                                    color: "#ECAB21",
+                                                  },
+                                                }}
+                                              >
+                                                Delivered
+                                              </Button>
+                                            )}
+                                            {(container.id === "container-3" ||
+                                              container.id ===
+                                                "container-2") && (
+                                              <Button
+                                                onClick={() =>
+                                                  cancelOrderStatus(order.id)
+                                                }
+                                                variant="contained"
+                                                sx={{
+                                                  backgroundColor: "red",
+                                                  color: "white",
+                                                  fontWeight: "bold",
+                                                  fontSize: "10px",
+                                                  "&:hover": {
+                                                    backgroundColor: "white",
+                                                    color: "red",
+                                                  },
+                                                }}
+                                              >
+                                                Cancel
+                                              </Button>
+                                            )}
+                                            {container.id === "container-5" && (
+                                              <Button
+                                                onClick={() =>
+                                                  orderRefund(order.id)
+                                                }
+                                                variant="contained"
+                                                disabled={order?.refunded}
+                                                sx={{
+                                                  backgroundColor: "#ECAB21",
+                                                  color: "white",
+                                                  fontWeight: "bold",
+                                                  fontSize: "10px",
+                                                  "&:hover": {
+                                                    backgroundColor: "white",
+                                                    color: "#ECAB21",
+                                                  },
+                                                }}
+                                              >
+                                                Refund
+                                              </Button>
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                        <Box
+                                          sx={{
+                                            textAlign: "center",
+                                            mt: 1,
+                                            mb: 1.5,
+                                          }}
+                                        >
+                                          <Button
+                                            variant="text"
+                                            onClick={() =>
+                                              handleToggleExpand(order.id)
+                                            }
+                                            size="small"
+                                            sx={{
                                               fontWeight: "bold",
                                               fontSize: "10px",
-                                              "&:hover": {
-                                                backgroundColor: "white",
-                                                color: "#ECAB21",
-                                              },
-                                            }}>
-                                            Out For Delivery
+                                            }}
+                                          >
+                                            Show Less
                                           </Button>
-                                        )}
-                                        {container.id === "container-3" && (
-                                          <Button
-                                            onClick={() =>
-                                              updateOrderStatus(
-                                                order.id,
-                                                "Delivered",
-                                                true
-                                              )
-                                            }
-                                            variant='contained'
-                                            sx={{
-                                              backgroundColor: "#ECAB21",
-                                              color: "white",
-                                              fontWeight: "bold",
-                                              fontSize: "10px",
-                                              "&:hover": {
-                                                backgroundColor: "white",
-                                                color: "#ECAB21",
-                                              },
-                                            }}>
-                                            Delivered
-                                          </Button>
-                                        )}
-                                        {(container.id === "container-3" ||
-                                          container.id === "container-2") && (
-                                          <Button
-                                            onClick={() =>
-                                              cancelOrderStatus(order.id)
-                                            }
-                                            variant='contained'
-                                            sx={{
-                                              backgroundColor: "red",
-                                              color: "white",
-                                              fontWeight: "bold",
-                                              fontSize: "10px",
-                                              "&:hover": {
-                                                backgroundColor: "white",
-                                                color: "red",
-                                              },
-                                            }}>
-                                            Cancel
-                                          </Button>
-                                        )}
-                                        {container.id === "container-5" && (
-                                          <Button
-                                            onClick={() =>
-                                              orderRefund(order.id)
-                                            }
-                                            variant='contained'
-                                            disabled={order?.refunded}
-                                            sx={{
-                                              backgroundColor: "#ECAB21",
-                                              color: "white",
-                                              fontWeight: "bold",
-                                              fontSize: "10px",
-                                              "&:hover": {
-                                                backgroundColor: "white",
-                                                color: "#ECAB21",
-                                              },
-                                            }}>
-                                            Refund
-                                          </Button>
-                                        )}
-                                      </Typography>
-                                    </Box>
-                                  </Box>
+                                        </Box>
+                                      </Box>
+                                    </>
+                                  )}
                                 </Card>
                               </Box>
                             );

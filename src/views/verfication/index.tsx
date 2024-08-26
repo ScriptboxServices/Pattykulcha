@@ -53,7 +53,7 @@ const StyledForm = styled(Box)(({ theme }) => ({
 const StyledCodeInput = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-evenly",
-  marginBottom:"1rem",
+  marginBottom: "1rem",
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
@@ -67,34 +67,63 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
   },
 }));
 
-
 const VerificationPage: React.FC = () => {
-  const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(""));
+  const [verificationCode, setVerificationCode] = useState<string[]>(
+    Array(6).fill("")
+  );
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { confirmationResult, setConfirmationResult } = useMenuContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  const [timer, setTimer] = useState<number>(60);
+  const [resendDisabled, setResendDisabled] = useState<boolean>(true);
 
-  const handleCodeChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newCode = [...verificationCode];
-    newCode[index] = event.target.value;
-    setVerificationCode(newCode);
+  const handleCodeChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newCode = [...verificationCode];
+      newCode[index] = event.target.value;
+      setVerificationCode(newCode);
 
-    if (event.target.value && index < verificationCode.length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
+      if (event.target.value && index < verificationCode.length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    };
 
-  const handleKeyDown = (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Backspace" && !verificationCode[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
+  const handleKeyDown =
+    (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Backspace" && !verificationCode[index] && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    };
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
+    startTimer();
   }, []);
+
+  useEffect(() => {
+    if (timer == 0) {
+      setResendDisabled(false);
+    } else {
+      setResendDisabled(true);
+    }
+  }, [timer]);
+
+  const startTimer = () => {
+    setResendDisabled(true);
+    setTimer(60); 
+
+    const countdown = setInterval(() => {
+      setTimer((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  };
 
   useEffect(() => {
     if (verificationCode.join("").length === 6) {
@@ -114,7 +143,9 @@ const VerificationPage: React.FC = () => {
 
     try {
       setLoading(true);
-      const result = await confirmationResult?.confirm(verificationCode?.join(""));
+      const result = await confirmationResult?.confirm(
+        verificationCode?.join("")
+      );
       const { user } = result;
       if (user) {
         const docRef = doc(db, "users", user.uid);
@@ -135,10 +166,10 @@ const VerificationPage: React.FC = () => {
                 line1: "",
               },
             },
-            role: 'customer',
-            isKitchen : false,
-            foodTruckId : '',
-            enable: true 
+            role: "customer",
+            isKitchen: false,
+            foodTruckId: "",
+            enable: true,
           });
         }
       }
@@ -159,6 +190,10 @@ const VerificationPage: React.FC = () => {
     submitOtp();
   };
 
+  const handleResend = () => {
+    startTimer();
+  };
+
   return (
     <>
       <CircularLodar isLoading={loading} />
@@ -177,13 +212,18 @@ const VerificationPage: React.FC = () => {
       >
         <StyledRoot>
           <StyledForm>
-            <Typography variant="h4" sx={{mt:'1rem'}} gutterBottom>
+            <Typography variant="h4" sx={{ mt: "1rem" }} gutterBottom>
               Verify your phone number
             </Typography>
-            <Typography variant="body1" sx={{mb:'1rem'}} gutterBottom>
-              Check the messages for the verification code, sent to your phone number.
+            <Typography variant="body1" sx={{ mb: "1rem" }} gutterBottom>
+              Check the messages for the verification code, sent to your phone
+              number.
             </Typography>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 400,mb:'1rem' }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontWeight: 400, mb: "1rem" }}
+            >
               Enter OTP
             </Typography>
             <StyledCodeInput>
@@ -228,8 +268,8 @@ const VerificationPage: React.FC = () => {
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
-                  marginTop:'1rem',
-                  marginBottom:'1rem',
+                  marginTop: "1rem",
+                  marginBottom: "1rem",
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
@@ -239,7 +279,31 @@ const VerificationPage: React.FC = () => {
               >
                 Confirm
               </Button>
-              {error && <Alert sx={{ mt: 2 }} severity="error">{error}</Alert>}
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleResend}
+                fullWidth
+                disabled={resendDisabled}
+                sx={{
+                  paddingX: 4,
+                  paddingY: 1,
+                  fontWeight: "bold",
+                  marginTop: "1rem",
+                  color: "black",
+                }}
+              >
+                {resendDisabled
+                  ? `Resend OTP in ${Math.floor(timer / 60)}:${String(
+                      timer % 60
+                    ).padStart(2, "0")}`
+                  : "Resend OTP"}
+              </Button>
+              {error && (
+                <Alert sx={{ mt: 2 }} severity="error">
+                  {error}
+                </Alert>
+              )}
             </Box>
           </StyledForm>
         </StyledRoot>

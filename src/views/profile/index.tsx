@@ -213,7 +213,7 @@ const ProfilePage: React.FC = () => {
           pt: 4,
           pb: 4,
           background: "#FAF3E0",
-          minHeight: {xs:'60vh',md:'70vh',lg:'70vh',xl:'80vh'}
+          minHeight: {xs:'70vh',xl:'80vh'}
         }}>
         <Grid container spacing={4} maxWidth="md" sx={{
             display: "flex",
