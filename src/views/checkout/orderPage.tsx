@@ -129,7 +129,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
       <Box
         sx={{
           background: "#FAF3E0",
-          minHeight: "900px",
+          minHeight: "400px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -140,6 +140,8 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
           <Paper
             sx={{
               p: 2,
+              pt:3,
+              pl:3,
               backgroundColor: "white",
               borderRadius: 4,
               boxShadow: 3,
