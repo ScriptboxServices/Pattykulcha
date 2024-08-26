@@ -91,7 +91,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
       <Box
         sx={{
           width: "100%",
-          minHeight: { xs: "60vh", md: "70vh", lg: "70vh", xl: "80vh" },
+          minHeight: { xs: "70vh", md: "70vh", lg: "70vh", xl: "80vh" },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -207,7 +207,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name}: x{kulcha?.quantity}
+                        {kulcha?.name}: x {" "}{kulcha?.quantity}
                         <Typography
                           variant="body1"
                           sx={{

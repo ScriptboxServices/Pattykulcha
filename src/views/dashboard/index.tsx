@@ -8,24 +8,22 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import {
-  Card,
-  CardContent,
   Typography,
-  Grid,
   Box,
   Switch,
   FormControlLabel,
-  Button
+  Button,
+  IconButton
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
 import Image from "next/image";
-import ViewOrders from "./ViewOrders";
 import DashboardProfile from "./Profile";
 import { useAuthContext } from "@/context";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
-import { styled } from "@mui/material/styles";
 import CircularLodar from "@/components/CircularLodar";
 import KanbanBoard from "../kanban";
 import MakeOrder from "./CreateOrder";
@@ -43,19 +41,25 @@ const Home = () => <Typography variant="h6">Home</Typography>;
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Order Detail");
   const { user, kitchenMetaData } = useAuthContext();
+  const [menuExpanded, setMenuExpanded] = useState(false); 
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const toggleMenu = () => {
+    setMenuExpanded(!menuExpanded); // Toggle the menu state
+  };
+
   useEffect(() => {
-    if(kitchenMetaData?.userId !== user?.uid){
+    if (kitchenMetaData?.userId !== user?.uid) {
       // return router.push('/home')
     }
-  },[user,kitchenMetaData])
+  }, [user, kitchenMetaData]);
 
   const isFirstLoad = useRef(true);
   useEffect(() => {
@@ -131,43 +135,57 @@ export default function ResponsiveDrawer(props: Props) {
 
   const drawer = (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {menuExpanded && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "16px",
+          }}
+        >
+          <Link href="/home" passHref>
+            <Image
+              src="/images/logo.png"
+              alt="logo"
+              height={150}
+              layout="fixed"
+              width={170}
+              priority
+              style={{
+                marginInline: "auto",
+              }}
+            />
+          </Link>
+          <IconButton onClick={toggleMenu}>
+            <ArrowBackIcon /> {/* Show the arrow icon next to the logo */}
+          </IconButton>
+        </Box>
+      )}
       <List>
-        <Link href="/home" passHref>
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            height={150}
-            layout="fixed"
-            width={170}
-            priority
-            style={{
-              marginInline: "auto",
-            }}
-          />
-        </Link>
         {drawerItems.map((item, index) => (
           <ListItem disablePadding key={item.text} sx={{ marginTop: 2 }}>
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
                 backgroundColor:
-                  activeTab == item.text ? "black" : "transparent",
-                color: activeTab == item.text ? "white" : "inherit",
+                  activeTab === item.text ? "black" : "transparent",
+                color: activeTab === item.text ? "white" : "inherit",
                 "&:hover": {
                   backgroundColor:
-                    activeTab == item.text ? "black" : "transparent",
-                  color: activeTab == item.text ? "white" : "inherit",
+                    activeTab === item.text ? "black" : "transparent",
+                  color: activeTab === item.text ? "white" : "inherit",
                 },
               }}
             >
               <ListItemIcon
                 sx={{
-                  backgroundColor: activeTab == item.text ? "white" : "white",
+                  backgroundColor: activeTab === item.text ? "white" : "white",
                   minWidth: "auto",
-                  color: activeTab == item.text ? "white" : "inherit",
+                  color: activeTab === item.text ? "white" : "inherit",
                   borderRadius: "20%",
                   padding: "4px",
-                  marginRight: "12px",
+                  marginRight: menuExpanded ? "12px" : "0",
                 }}
               >
                 <Image
@@ -177,64 +195,70 @@ export default function ResponsiveDrawer(props: Props) {
                   height={24}
                 />
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              {menuExpanded && <ListItemText primary={item.text} />}
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-      <Box sx={{ flexGrow: 1 }} />{" "}
-      {/* Filler space to push the button to the bottom */}
-      
-      <Box sx={{display:'flex',justifyContent:'center',flexDirection:'column',alignItems:'center'}}>
+      <Box sx={{ flexGrow: 1 }} />
 
-        <Button
-          type="submit"
-          variant="contained"
-          onClick={() => router.push('/home')}
+      {menuExpanded && (
+        <Box
           sx={{
-            width:'178px',
-            backgroundColor: "#ECAB21",
-            color: "white",
-            fontSize:"12px",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "#FFC107",
-              color: "white",
-            },
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          Switch to customer
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          onClick={handleLogout}
-          sx={{
-            width:'178px',
-            backgroundColor: "#ECAB21",
-            color: "white",
-            mb:4,
-            mt:2,
-            fontSize:"12px",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "#FFC107",
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={() => router.push("/home")}
+            sx={{
+              width: "178px",
+              backgroundColor: "#ECAB21",
               color: "white",
-            },
-          }}
-        >
-          Logout
-        </Button>
-      </Box>
-      
+              fontSize: "12px",
+              fontWeight: "bold",
+              "&:hover": {
+                backgroundColor: "#FFC107",
+                color: "white",
+              },
+            }}
+          >
+            Switch to customer
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={handleLogout}
+            sx={{
+              width: "178px",
+              backgroundColor: "#ECAB21",
+              color: "white",
+              mb: 4,
+              mt: 2,
+              fontSize: "12px",
+              fontWeight: "bold",
+              "&:hover": {
+                backgroundColor: "#FFC107",
+                color: "white",
+              },
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 
   const container =
-    window != undefined ? () => window().document.body : undefined;
+    window !== undefined ? () => window().document.body : undefined;
 
   const renderContent = () => {
-    const activeItem = drawerItems.find((item) => item.text == activeTab);
+    const activeItem = drawerItems.find((item) => item.text === activeTab);
     return activeItem?.component;
   };
 
@@ -245,7 +269,7 @@ export default function ResponsiveDrawer(props: Props) {
         <Box
           component="nav"
           sx={{
-            width: { sm: drawerWidth },
+            width: menuExpanded ? { sm: drawerWidth } : { sm: 80 },
             flexShrink: { sm: 0 },
             bgcolor: "white",
           }}
@@ -276,20 +300,27 @@ export default function ResponsiveDrawer(props: Props) {
               display: { xs: "none", sm: "block" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
-                width: drawerWidth,
+                width: menuExpanded ? drawerWidth : 80,
                 borderRight: "1px solid black",
                 bgcolor: "white",
               },
             }}
             open
           >
+            {!menuExpanded && (
+              <Box sx={{ padding: "8px", mt: 2, textAlign: "center" }}>
+                <IconButton onClick={toggleMenu}>
+                  <MenuIcon /> 
+                </IconButton>
+              </Box>
+            )}
             {drawer}
           </Drawer>
         </Box>
         <Box
           component="main"
           sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: { sm: `calc(100% - ${menuExpanded ? drawerWidth : 80}px)` },
             bgcolor: "white",
             pr: 0,
           }}
@@ -336,7 +367,9 @@ export default function ResponsiveDrawer(props: Props) {
                 <Typography
                   sx={{
                     fontWeight: "bold",
-                    color: kitchenMetaData?.isShopOpen ? "#388e3c" : "#d32f2f",
+                    color: kitchenMetaData?.isShopOpen
+                      ? "#388e3c"
+                      : "#d32f2f",
                     fontSize: "1rem",
                   }}
                 >
