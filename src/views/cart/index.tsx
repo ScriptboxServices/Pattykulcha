@@ -915,6 +915,7 @@ const MenuPage = () => {
             border: "2px solid #dcdcdc",
             borderRadius: "8px",
             padding: "1rem",
+            zIndex:'99999',
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           }}
         >
