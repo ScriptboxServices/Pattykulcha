@@ -195,6 +195,37 @@ interface AuthProps {
   children: ReactNode;
 }
 
+export const calculateDistance = (source : string , destinations : string) => {
+  return new Promise((resolve,reject) => {
+    try{
+      const service = new google.maps.DistanceMatrixService();
+      const request: any = {
+        origins: [source],
+        destinations: [destinations],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false,
+      };
+  
+      service.getDistanceMatrix(request, (response : any, status: any) => {
+        if (status === "OK") {
+          const distance = response.rows[0].elements[0].distance;
+          if (distance.value > 10000) {
+            resolve({distance,flag : false})
+          } else {
+            resolve({distance,flag : true})
+          }
+        } else {
+          console.error("Distance failed due to: " + status);
+        }
+      });
+    }catch(err) {
+      reject(err)
+    }
+  })
+}
+
 export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -205,21 +236,23 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   useEffect(() => {
     const docRef = doc(db, "foodtrucks", KITCHEN_ID);
-    const unsubscribe = onSnapshot(docRef, (snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.data());
-        setKitchenMetaData({
-          id: snapshot.id,
-          ...snapshot.data(),
-        });
-      } else {
-        setKitchenMetaData(null);
-      }
-    });
+    if(user){
+      const unsubscribe = onSnapshot(docRef, (snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.data());
+          setKitchenMetaData({
+            id: snapshot.id,
+            ...snapshot.data(),
+          });
+        } else {
+          setKitchenMetaData(null);
+        }
+      });
+      return () => {
+        unsubscribe();
+      };
+    }
 
-    return () => {
-      unsubscribe();
-    };
   }, [user]);
 
   useEffect(() => {

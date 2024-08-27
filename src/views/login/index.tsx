@@ -267,7 +267,7 @@ const Login: React.FC = () => {
                         fullWidth
                         type="tel"
                         label="Phone Number"
-                        placeholder="123-456-7890"
+                        placeholder="(123)-456-7890"
                         value={value}
                         onChange={onChange}
                         error={!!errors.phoneNumber}

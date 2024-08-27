@@ -21,7 +21,7 @@ export const POST = async (req, res) => {
         message: "Unauthorized Request.",
       },
       {
-        status: 400,
+        status: 401,
       }
     );
   }
@@ -72,6 +72,7 @@ export const POST = async (req, res) => {
               phoneNumber : metadata.phoneNumber
             },
             kitchenId: kitchenId,
+            source:'Website',
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({
@@ -90,6 +91,7 @@ export const POST = async (req, res) => {
               name : metadata.name,
               phoneNumber : metadata.phoneNumber
             },
+            paymentMode : 'Online',
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           })
       ])

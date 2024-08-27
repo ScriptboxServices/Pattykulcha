@@ -38,4 +38,21 @@ export const formatTimestampToCustomDate = (timestamp) => {
     hours = hours ? hours : 12;
   
     return `${day}-${month}-${year} ${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
-  }
+}
+
+export const formatPhoneNumber = (value) => {
+    // Remove all non-numeric characters
+    const cleaned = ('' + value).replace(/\D/g, '');
+
+    // Format the number as (XXX) XXX-XXXX
+    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+    if (match) {
+      return (
+        (match[1] ? `(${match[1]}` : '') +
+        (match[2] ? `) ${match[2]}` : '') +
+        (match[3] ? `-${match[3]}` : '')
+      );
+    }
+
+    return value;
+  };

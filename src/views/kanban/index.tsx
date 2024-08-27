@@ -34,9 +34,6 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import Select from "@mui/material/Select";
-import { Visibility } from "@mui/icons-material";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import CircularLodar from "@/components/CircularLodar";
 import axios from "axios";
 import { getIdToken } from "firebase/auth";

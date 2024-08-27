@@ -168,6 +168,7 @@ export default function ResponsiveDrawer(props: Props) {
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
+                justifyContent:'center',
                 backgroundColor:
                   activeTab === item.text ? "black" : "transparent",
                 color: activeTab === item.text ? "white" : "inherit",

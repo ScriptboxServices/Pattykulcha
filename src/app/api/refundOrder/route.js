@@ -4,34 +4,10 @@ import { stripe } from "@/stripe/config";
 
 const db = admin.firestore();
 
-const calculateGrandTotal = (_cart) => {
-  let total_tax = 0;
-  let sub_total = 0;
-  const grandTotal = _cart?.reduce((acc, item) => {
-    const { order } = item;
-    const { kulcha, additional } = order;
-
-    const total = additional?.reduce((acc, value) => {
-      return (acc =
-        acc +
-        Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity));
-    }, Number(kulcha?.price));
-
-    let tax = Number(total) * 0.13;
-    total_tax = total_tax + tax;
-    sub_total = sub_total + total;
-
-    return (acc = acc + (Number(total) + Number(tax)));
-  }, 0);
-
-  return { grand_total: Number(grandTotal).toFixed(2), total_tax, sub_total };
-};
-
 export const POST = async (req, res) => {
   const { order_id } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
-    console.log(order_id);
     if (!xToken)
       return NextResponse.json(
         {
@@ -78,6 +54,7 @@ export const POST = async (req, res) => {
     const refund = await stripe.refunds.create({
       payment_intent: orderDetails.transactionId,
       metadata,
+      // amount: 0,
     //   reason: "Order canceled",
     });
 

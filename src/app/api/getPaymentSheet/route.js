@@ -29,7 +29,6 @@ export const POST = async (req, res) => {
   const { address, instructions, name } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
-    console.log("hit api",address)
 
     if (!xToken)
       return NextResponse.json({
@@ -40,6 +39,15 @@ export const POST = async (req, res) => {
     });
 
     const decodeToken = await admin.auth().verifyIdToken(xToken);
+
+    if (!decodeToken)
+      return NextResponse.json({
+        code: 0,
+        message: "Unauthorized User",
+      },{
+        status : 401
+    });
+
     const { uid, phone_number } = decodeToken;
     const { city, state, line1, postal_code } = address.seperate;
 
@@ -146,6 +154,8 @@ export const POST = async (req, res) => {
     return NextResponse.json({
       code: 0,
       message: "Internal Server Error",
+    },{
+      status: 500
     });
   }
 };
