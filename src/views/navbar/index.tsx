@@ -58,11 +58,16 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await auth.signOut();
-    localStorage.removeItem("instructions");
-    localStorage.removeItem("kulcha");
-    localStorage.removeItem("includedItems2");
-    router.push("/login");
+    try{
+      await auth.signOut();
+      localStorage.removeItem("instructions");
+      localStorage.removeItem("kulcha");
+      localStorage.removeItem("includedItems2");
+      router.push("/login");
+    }catch(err) {
+      console.log(err);
+      router.push("/login");
+    }
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
