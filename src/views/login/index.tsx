@@ -28,7 +28,7 @@ import {
   signInWithPhoneNumber,
 } from "firebase/auth";
 import { auth } from "@/firebase";
-import { useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
 
 export interface CountryCode {
@@ -71,13 +71,20 @@ const Login: React.FC = () => {
     },
   });
 
+  const {user} = useAuthContext()
+  
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [recaptchaVerifier, setRecaptchaVerifier] =
-    useState<RecaptchaVerifier | null>(null);
+  useState<RecaptchaVerifier | null>(null);
   const router = useRouter();
   const { confirmationResult, setConfirmationResult } = useMenuContext();
-
+  
+  useEffect(() => {
+    if (user) {
+      return router.push('/home')
+    }
+  }, [user]);
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
       auth,
