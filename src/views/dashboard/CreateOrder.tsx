@@ -107,7 +107,6 @@ const MakeOrder: React.FC = () => {
     const drinkItem = drinkOptions.find((d) => d.name == drink);
     handleAddItem(drinkItem!.name);
   };
-
   const handleAddItem = (itemName: string) => {
     const existingItem = includedItems2.find((includedItem) =>
       includedItem.items.some((item: any) => item.name === itemName)
@@ -207,6 +206,7 @@ const MakeOrder: React.FC = () => {
         setValue("name", "");
         setValue("instructions", "");
         setValue("phoneNumber", "");
+        setValue("paymentmethod", "");
         setAllKulcha([...menuItems]);
       }
       setLoading(false);
@@ -334,7 +334,7 @@ const MakeOrder: React.FC = () => {
   };
 
   const { extraItems } = useMenuContext();
-
+  console.log(includedItems2);
   return (
     <>
       <CssBaseline />
@@ -347,45 +347,41 @@ const MakeOrder: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
           overflowY: "auto",
-        }}
-      >
+        }}>
         <CircularLodar isLoading={loading} />
-        <Typography variant="h4" sx={{ marginBottom: 2, marginTop: 2 }}>
+        <Typography variant='h4' sx={{ marginBottom: 2, marginTop: 2 }}>
           Make an Order
         </Typography>
         <Container
-          component="main"
-          maxWidth="md"
+          component='main'
+          maxWidth='md'
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
-          }}
-        >
+          }}>
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               width: "100%",
-            }}
-          >
+            }}>
             <Box
-              component="form"
+              component='form'
               noValidate
               sx={{
                 mt: 1,
                 maxWidth: "100%",
                 // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               }}
-              onSubmit={handleSubmit(onSubmit)}
-            >
+              onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Controller
-                    name="countryCode"
+                    name='countryCode'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <MUIAutocomplete
@@ -396,7 +392,7 @@ const MakeOrder: React.FC = () => {
                           `${option.name} (${option.phone}) `
                         }
                         renderOption={(props, option: CountryCode) => (
-                          <Box component="li" {...props}>
+                          <Box component='li' {...props}>
                             <Icon
                               icon={option.icon as IconifyIcon}
                               width={20}
@@ -418,15 +414,15 @@ const MakeOrder: React.FC = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Country Code"
-                            placeholder="Select Country Code"
+                            label='Country Code'
+                            placeholder='Select Country Code'
                             required
                             InputProps={{
                               ...params.InputProps,
                               startAdornment: (
                                 <>
                                   {params.InputProps.startAdornment}
-                                  <InputAdornment position="start">
+                                  <InputAdornment position='start'>
                                     <Icon
                                       icon={
                                         (countryCodes.find(
@@ -448,15 +444,15 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Controller
-                    name="phoneNumber"
+                    name='phoneNumber'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        type="tel"
-                        label="Phone Number"
-                        placeholder="(123)-456-7890"
+                        type='tel'
+                        label='Phone Number'
+                        placeholder='(123)-456-7890'
                         value={value}
                         onChange={(e) => onChange(checkuser(e.target.value))}
                         error={!!errors.phoneNumber}
@@ -467,8 +463,8 @@ const MakeOrder: React.FC = () => {
                         }}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position="start">
-                              <i className="ri-phone-fill" />
+                            <InputAdornment position='start'>
+                              <i className='ri-phone-fill' />
                             </InputAdornment>
                           ),
                         }}
@@ -490,14 +486,14 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Controller
-                    name="name"
+                    name='name'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        label="Customer Name"
-                        placeholder="Customer Name"
+                        label='Customer Name'
+                        placeholder='Customer Name'
                         value={value}
                         onChange={onChange}
                         error={!!errors.name}
@@ -610,11 +606,10 @@ const MakeOrder: React.FC = () => {
                 <Grid
                   item
                   xs={12}
-                  display="flex"
-                  justifyContent="center"
-                  flexDirection="column"
-                  alignItems="center"
-                >
+                  display='flex'
+                  justifyContent='center'
+                  flexDirection='column'
+                  alignItems='center'>
                   {allKulcha?.map((kulcha: any, index: number) => {
                     return (
                       <Box sx={{ mb: 2 }} key={index}>
@@ -630,10 +625,10 @@ const MakeOrder: React.FC = () => {
                               ? "2px solid green"
                               : "1px solid #ddd",
                             borderRadius: "10px",
+                            boxShadow: "1px 1px 2px #4e5664",
                             p: 2,
                             cursor: "pointer",
-                          }}
-                        >
+                          }}>
                           <Avatar
                             src={kulcha?.image}
                             sx={{
@@ -643,28 +638,25 @@ const MakeOrder: React.FC = () => {
                             }}
                           />
                           <Box sx={{ flexGrow: 1 }}>
-                            <Typography variant="body1">
+                            <Typography variant='body1'>
                               {kulcha?.name} &nbsp;
                               <Typography
-                                component="span"
-                                variant="body2"
-                                color="textSecondary"
-                              >
+                                component='span'
+                                variant='body2'
+                                color='textSecondary'>
                                 Qty: {kulcha?.quantity}
                               </Typography>
                             </Typography>
                             <Typography
-                              variant="body1"
-                              sx={{ fontSize: "14px" }}
-                            >
+                              variant='body1'
+                              sx={{ fontSize: "14px" }}>
                               ${Number(kulcha.price)}
                             </Typography>
                           </Box>
                           <Box sx={{ textAlign: "right" }}>
                             <Typography
-                              variant="body1"
-                              sx={{ fontSize: "14px" }}
-                            >
+                              variant='body1'
+                              sx={{ fontSize: "14px" }}>
                               ${Number(kulcha.price) * Number(kulcha?.quantity)}
                             </Typography>
                           </Box>
@@ -677,19 +669,17 @@ const MakeOrder: React.FC = () => {
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "end",
-                            }}
-                          >
+                            }}>
                             <IconButton
                               onClick={(e) =>
                                 handleDecreaseQTY(e, kulcha?.name)
                               }
                               sx={{
                                 color: "#336195",
-                              }}
-                            >
+                              }}>
                               <RemoveCircleOutlineIcon />
                             </IconButton>
-                            <Typography variant="body1" color="textPrimary">
+                            <Typography variant='body1' color='textPrimary'>
                               {kulcha.quantity || 1}
                             </Typography>
                             <IconButton
@@ -698,8 +688,7 @@ const MakeOrder: React.FC = () => {
                               }
                               sx={{
                                 color: "#336195",
-                              }}
-                            >
+                              }}>
                               <AddCircleOutlineIcon />
                             </IconButton>
                           </Box>
@@ -708,7 +697,69 @@ const MakeOrder: React.FC = () => {
                     );
                   })}
                 </Grid>
-                <Grid container spacing={1} justifyContent="center">
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ mb: 4 }}
+                  display='flex'
+                  justifyContent='center'
+                  flexDirection='row'
+                  alignItems='center'
+                  gap={5}>
+                  {extraItems.map((item, index) =>{ 
+                    return(
+                    <Grid item xs={6} sm={4} md={1.6} key={index}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "1rem",
+                          backgroundColor: "white",
+                          borderRadius: "8px",
+                          textAlign: "center",
+                          position: "relative",
+                          cursor: "pointer",
+                          height: {
+                            xs: "160px",
+                            sm: "120px",
+                            md: "150px",
+                            lg: "150px",
+                          },
+                          boxShadow: "1px 1px 3px #4e5664", // Updated box-shadow
+                          border: includedItems2.some(
+                            (_item: any) => {
+                              return item === _item.items[0].name}
+                          )
+                            ? "2px solid green"
+                            : "1px solid #ddd",
+                          // border: "1px solid black",
+                        }}
+                        onClick={() => handleAddItem(item)}>
+                        <Image
+                          src={getImageSrc(item)}
+                          alt={item}
+                          width={150}
+                          height={150}
+                          style={{
+                            width: "50%", // Set the width to 65% of the container
+                            height: "50%", // Set the height to 55% of the container
+                            objectFit: "contain",
+                            marginTop: 1,
+                          }}
+                        />
+                        <Typography
+                          variant='body1'
+                          color='textPrimary'
+                          sx={{ mt: 2 }}>
+                          {item}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  )})}
+                </Grid>
+                <Grid container spacing={1} justifyContent='center'>
                   <Grid item xs={12}>
                     <Box
                       sx={{
@@ -722,18 +773,16 @@ const MakeOrder: React.FC = () => {
                         textAlign: "left",
                         position: "relative",
                         cursor: "pointer",
-                        marginLeft:"15px",
+                        marginLeft: "15px",
                         // margin: "0.3rem 0",
                         width: { xs: "100%", md: "843px" },
-                       
                       }}
-                      onClick={handleDrinkDialog}
-                    >
-                      <Box display="flex" alignItems="center">
+                      onClick={handleDrinkDialog}>
+                      <Box display='flex' alignItems='center'>
                         <Image
-                          src="/images/landingpage/Drinks.svg"
-                          alt="Add a Drink"
-                          layout="fixed"
+                          src='/images/landingpage/Drinks.svg'
+                          alt='Add a Drink'
+                          layout='fixed'
                           width={50}
                           height={50}
                           style={{
@@ -742,17 +791,16 @@ const MakeOrder: React.FC = () => {
                           }}
                         />
                         <Typography
-                          variant="body1"
-                          color="textPrimary"
-                          sx={{ marginLeft: "1rem" }}
-                        >
+                          variant='body1'
+                          color='textPrimary'
+                          sx={{ marginLeft: "1rem" }}>
                           Add a Drink
                         </Typography>
                       </Box>
                       <ArrowForwardIosIcon />
                     </Box>
                   </Grid>
-                  <Grid container justifyContent="space-evenly" mt={1.75}>
+                  <Grid container justifyContent='space-evenly' mt={1.75}>
                     {includedItems2.length == 0 ? (
                       <></>
                     ) : (
@@ -775,8 +823,7 @@ const MakeOrder: React.FC = () => {
                               width: { xs: "130px", sm: "130px" },
                               margin: "0.5rem",
                               boxShadow: "2px 2px 3px #4e5664",
-                            }}
-                          >
+                            }}>
                             <CheckCircleIcon
                               sx={{
                                 position: "absolute",
@@ -799,13 +846,12 @@ const MakeOrder: React.FC = () => {
                               }}
                             />
                             <Typography
-                              variant="body1"
-                              color="textPrimary"
-                              sx={{ fontSize: "12px" }}
-                            >
+                              variant='body1'
+                              color='textPrimary'
+                              sx={{ fontSize: "12px" }}>
                               {item.items[0].name}
                             </Typography>
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant='body2' color='textSecondary'>
                               ${item.items[0].price.toFixed(2)}
                             </Typography>
                             <Box
@@ -813,30 +859,27 @@ const MakeOrder: React.FC = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                              }}
-                            >
+                              }}>
                               <IconButton
                                 onClick={() => handleDecreaseQTYDrink(item.id)}
                                 sx={{
                                   color: "#336195",
-                                }}
-                              >
+                                }}>
                                 <RemoveCircleOutlineIcon />
                               </IconButton>
-                              <Typography variant="body1" color="textPrimary">
+                              <Typography variant='body1' color='textPrimary'>
                                 {item.items[0].quantity || 1}
                               </Typography>
                               <IconButton
                                 onClick={() => handleIncreaseQTYDrink(item.id)}
                                 sx={{
                                   color: "#336195",
-                                }}
-                              >
+                                }}>
                                 <AddCircleOutlineIcon />
                               </IconButton>
                             </Box>
                             <Button
-                              variant="outlined"
+                              variant='outlined'
                               onClick={() => handleRemoveItem(item.id)}
                               sx={{
                                 backgroundColor: "transparent",
@@ -845,8 +888,7 @@ const MakeOrder: React.FC = () => {
                                 marginTop: "auto",
                                 borderRadius: "20px",
                                 textTransform: "none",
-                              }}
-                            >
+                              }}>
                               Remove
                             </Button>
                           </Box>
@@ -855,107 +897,20 @@ const MakeOrder: React.FC = () => {
                     )}
                   </Grid>
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  display="flex"
-                  justifyContent="center"
-                  flexDirection="row"
-                  alignItems="center"
-                  gap={5}
-
-                >
-                  {extraItems.map((item, index) => (
-                    <Grid item xs={6} sm={4} md={1.6} key={index}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "1rem",
-                          backgroundColor: "white",
-                          // border: "2px solid #87939f",
-                          borderRadius: "8px",
-                          textAlign: "center",
-                          position: "relative",
-                          cursor: "pointer",
-                          height: {
-                            xs: "160px",
-                            sm: "120px",
-                            md: "150px",
-                            lg: "150px",
-                          },
-                          width: "120px",
-                          margin: "0.5rem", // Updated margin
-                          boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
-                          border:"1px solid black",
-                        }}
-                      >
-                        <Image
-                          src={getImageSrc(item)}
-                          alt={item}
-                          width={150}
-                          height={150}
-                          style={{
-                            width: "50%", // Set the width to 65% of the container
-                            height: "50%", // Set the height to 55% of the container
-                            objectFit: "contain",
-                            marginTop: 1,
-                          }}
-                        />
-                        <Typography
-                          variant="body1"
-                          color="textPrimary"
-                          sx={{ mt: 2 }}
-                        >
-                          {item}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <IconButton
-                          onClick={() => {}}
-                          sx={{
-                            color: "#336195",
-                          }}
-                        >
-                          <RemoveCircleOutlineIcon />
-                        </IconButton>
-                        <Typography variant="body1" color="textPrimary">
-                          {1}
-                        </Typography>
-                        <IconButton
-                          onClick={() => {}}
-                          sx={{
-                            color: "#336195",
-                          }}
-                        >
-                          <AddCircleOutlineIcon />
-                        </IconButton>
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={12}>
                   <Controller
-                    name="paymentmethod"
+                    name='paymentmethod'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <FormControl fullWidth>
                         <InputLabel>Payment method</InputLabel>
                         <Select
-                          label="Payment method"
+                          label='Payment method'
                           value={value}
                           onChange={onChange}
-                        >
-                          <MenuItem value="cash">Cash</MenuItem>
-                          <MenuItem value="online">Online</MenuItem>
+                          error={!!errors.paymentmethod}>
+                          <MenuItem value='Cash'>Cash</MenuItem>
+                          <MenuItem value='Online'>Online</MenuItem>
                         </Select>
                       </FormControl>
                     )}
@@ -963,11 +918,11 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name="instructions"
+                    name='instructions'
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        placeholder="Special instructions"
+                        placeholder='Special instructions'
                         fullWidth
                         value={value}
                         onChange={onChange}
@@ -981,33 +936,32 @@ const MakeOrder: React.FC = () => {
                 </Grid>
               </Grid>
               <Button
-                type="submit"
-                variant="contained"
+                type='submit'
+                variant='contained'
                 sx={{
-                  marginLeft:"40%",
+                  marginLeft: "40%",
                   backgroundColor: "#ECAB21",
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
-                  
+
                   mt: 2,
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
                     color: "white",
                   },
-                }}
-              >
+                }}>
                 Submit Order
               </Button>
               {/* <OrderReceiptPrinter/> */}
               {error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
+                <Alert severity='error' sx={{ mt: 2 }}>
                   {error}
                 </Alert>
               )}
               {Number(status) === 1 && (
-                <Alert severity="success" sx={{ mt: 2 }}>
+                <Alert severity='success' sx={{ mt: 2 }}>
                   Order Placed successfully.
                 </Alert>
               )}
@@ -1018,21 +972,19 @@ const MakeOrder: React.FC = () => {
       <Dialog
         open={isDrinkDialogOpen}
         onClose={handleDrinkDialog}
-        maxWidth="sm"
-        fullWidth
-      >
+        maxWidth='sm'
+        fullWidth>
         <DialogTitle sx={{ fontWeight: "bold" }}>
           Add a Drink{" "}
           <IconButton
-            aria-label="close"
+            aria-label='close'
             onClick={handleDrinkDialog}
             sx={{
               position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -1055,8 +1007,7 @@ const MakeOrder: React.FC = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center", // Align items center horizontally
-                  }}
-                >
+                  }}>
                   <Image
                     alt={drink.name}
                     src={drink.image}
@@ -1072,13 +1023,12 @@ const MakeOrder: React.FC = () => {
                   />
                   <CardContent sx={{ textAlign: "center" }}>
                     <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      sx={{ fontSize: "18px" }}
-                    >
+                      variant='body1'
+                      color='textPrimary'
+                      sx={{ fontSize: "18px" }}>
                       {drink.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       ${drink.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
@@ -1100,7 +1050,6 @@ const MakeOrder: React.FC = () => {
               </Grid>
             ))}
           </Grid>
-
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={handleDrinkDialogClose} color="primary">

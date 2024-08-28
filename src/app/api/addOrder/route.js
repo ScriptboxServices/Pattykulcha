@@ -37,7 +37,8 @@ export const POST = async (req, res) => {
     address,
     instructions,
     countryCode,
-    createdAt
+    createdAt,
+    paymentmethod
   } = await req.json();
 
   const kitchenId = "0bXJJJIHMgu5MNGSArY2";
@@ -170,6 +171,7 @@ export const POST = async (req, res) => {
         },
         kitchenId: kitchenId,
         source: "Shop",
+        paymentMode: paymentmethod,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       }),
       paymentDocRef.set({
@@ -191,7 +193,7 @@ export const POST = async (req, res) => {
           name: name,
           phoneNumber: phoneNumber,
         },
-        paymentMode: "Cash",
+        paymentMode: paymentmethod,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       }),
     ]);

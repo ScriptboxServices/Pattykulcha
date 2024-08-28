@@ -385,7 +385,7 @@ const MenuPage = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5">Quantity</Typography>
+            {/* <Typography variant="h5">Quantity</Typography> */}
             <IconButton
               onClick={() => handleDecreaseKulchaQTY()}
               sx={{

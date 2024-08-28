@@ -219,11 +219,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleDialogOpen = () => {
-    setOpenDialog(true);
-  };
-
-  const handleDialogClose = () => {
-    setOpenDialog(false);
+    setOpenDialog(!openDialog);
   };
 
   return (
@@ -445,7 +441,7 @@ const ProfilePage: React.FC = () => {
                         }}
                       />
                     </ListItem>
-                    <ListItem
+                    {/* <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -471,7 +467,7 @@ const ProfilePage: React.FC = () => {
                       >
                         Submit
                       </Button>
-                    </ListItem>
+                    </ListItem> */}
                     <ListItem
                       onClick={() => handleAddressSelection("primary")}
                       sx={{ cursor: "pointer" }}
@@ -701,11 +697,12 @@ const ProfilePage: React.FC = () => {
       </Box>
       <Dialog
         open={openDialog}
-        onClose={handleDialogClose}
+        onClose={handleDialogOpen}
         maxWidth="xs"
         fullWidth
+        sx={{zIndex:'999'}}
         PaperProps={{
-          sx: { borderRadius: "10px" }, // Set border radius
+          sx: { borderRadius: "10px"}, // Set border radius
         }}
       >
         <DialogTitle
@@ -716,7 +713,7 @@ const ProfilePage: React.FC = () => {
           }}
         >
           Enter your Address
-          <IconButton onClick={handleDialogClose}>
+          <IconButton onClick={handleDialogOpen}>
             <Close sx={{ color: "#ECAB21" }} />
           </IconButton>
         </DialogTitle>
@@ -730,7 +727,6 @@ const ProfilePage: React.FC = () => {
               padding: "6px 10px",
               marginTop: "8px",
               width: "100%",
-              position: "relative",
             }}
           >
             <Home

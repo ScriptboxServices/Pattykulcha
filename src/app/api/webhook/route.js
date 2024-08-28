@@ -72,6 +72,7 @@ export const POST = async (req, res) => {
               phoneNumber : metadata.phoneNumber
             },
             kitchenId: kitchenId,
+            paymentMode : 'Online',
             source:'Website',
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
