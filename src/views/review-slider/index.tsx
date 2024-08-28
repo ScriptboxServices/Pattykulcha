@@ -18,14 +18,13 @@ type Review = {
   author: string;
   rating: number;
   avatarUrl: string;
-  date:string;
+  date: string;
 };
-
 const reviews: Review[] = [
   {
     id: 1,
     content:
-      "These kulchas are amazing—crispy on the outside, soft inside, and packed with flavor. Their creamy lassi is also a perfect match for the meal. If you’re after authentic taste, these are worth trying. They remind me of traditional flavors from back home, and the attention to detail is clear in every bite.",
+      "These kulchas are amazing—crispy on the outside, soft inside, and packed with flavor. The creamy lassi is also a perfect match. Authentic taste worth trying!",
     author: "Harpreet Kaur",
     rating: 4,
     avatarUrl: "/images/avatars/1.png",
@@ -34,7 +33,7 @@ const reviews: Review[] = [
   {
     id: 2,
     content:
-      "The delivery was super fast and the food arrived fresh and warm. The paneer kulcha was generously filled and full of flavor. I added a cold coffee, and it really was a hit. Do try these out! I’m thoroughly impressed with both the quality of the food and the service.",
+      "Super fast delivery, fresh and warm. The paneer kulcha was generously filled and flavorful. Added a cold coffee, and it was a hit. Highly recommend!",
     author: "Liam Anderson",
     rating: 5,
     avatarUrl: "/images/avatars/2.png",
@@ -43,7 +42,7 @@ const reviews: Review[] = [
   {
     id: 3,
     content:
-      "Great taste, authentic flavors, at such a reasonable price. These kulchas are a must-try! It’s rare to find such good quality and consistency, especially when ordering for delivery. I’ll definitely be recommending this to friends and family.",
+      "Great taste and authentic flavors at a reasonable price. These kulchas are a must-try! Consistent quality, especially for delivery. Definitely recommend.",
     author: "Rajesh Desai",
     rating: 5,
     avatarUrl: "/images/avatars/3.png",
@@ -52,7 +51,7 @@ const reviews: Review[] = [
   {
     id: 4,
     content:
-      "The kulchas here are just like the ones I tasted back home—generously stuffed, perfectly spiced, and full of authentic flavor. The chutney is tangy and the drinks are a refreshing treat. It's a must-try for anyone craving a genuine taste of Indian street food.",
+      "Kulchas just like back home—stuffed, spiced, and full of flavor. Tangy chutney and refreshing drinks. A must-try for those craving authentic Indian street food.",
     author: "Kunal Singh",
     rating: 4,
     avatarUrl: "/images/avatars/4.png",
@@ -61,7 +60,7 @@ const reviews: Review[] = [
   {
     id: 5,
     content:
-      "I am impressed with the quick delivery! The kulcha was still warm, with just the right crunch and spice. Great service and delicious food—The kulchas are worth trying! It’s become my go-to comfort food whenever I want something both tasty and filling.",
+      "Quick delivery! The kulcha was warm, crunchy, and flavorful. Great service and delicious food. It’s now my go-to comfort food for a filling, tasty meal.",
     author: "Chris Lee",
     rating: 4,
     avatarUrl: "/images/avatars/5.png",
@@ -70,7 +69,7 @@ const reviews: Review[] = [
   {
     id: 6,
     content:
-      "PattyKulcha has got wonderful kulchas in Canada! I paired their crispy kulchas with hot chai, it was a true comfort food! The quality is consistent, and the flavors never disappoint. Perfect for those rainy evenings when all you want is something warm and hearty.",
+      "Wonderful kulchas! Paired with hot chai, it’s true comfort food. Consistent quality and flavors that never disappoint. Perfect for a cozy evening.",
     author: "Emma Turner",
     rating: 5,
     avatarUrl: "/images/avatars/6.png",
@@ -79,7 +78,7 @@ const reviews: Review[] = [
   {
     id: 7,
     content:
-      "I tried the paneer kulcha, and the stuffed paneer was soft and well-seasoned. I also got the masala chai, which had that perfect homemade taste. Together, it was a perfect meal for the day. If you’re looking for authentic, homestyle food, this is the place.",
+      "Tried the paneer kulcha and masala chai. Perfect homestyle meal. Authentic and satisfying. If you’re after real, homestyle food, this is the place.",
     author: "Riya Sethi",
     rating: 4,
     avatarUrl: "/images/avatars/7.png",
@@ -88,7 +87,7 @@ const reviews: Review[] = [
   {
     id: 8,
     content:
-      "The kulchas are always crispy and generously stuffed. My favorite is the gobi kulcha paired with an iced coffee. Great food, great service—highly recommended! The flavors are balanced, and the quality is consistent across different orders.",
+      "Crispy kulchas, generously stuffed. My favorite is the gobi kulcha with iced coffee. Great food and service—highly recommended!",
     author: "Anjali Kapoor",
     rating: 5,
     avatarUrl: "/images/avatars/8.png",
@@ -97,7 +96,7 @@ const reviews: Review[] = [
   {
     id: 9,
     content:
-      "My recent order was the aloo kulcha, and it was packed with flavor. The lassi I got was sweet and refreshing, a perfect pairing with the spicy kulcha. Delivery is always prompt. It’s a great option for those quick lunches when you crave something filling but tasty.",
+      "Ordered aloo kulcha, packed with flavor. Sweet lassi was the perfect pairing. Prompt delivery and perfect for a quick, tasty lunch.",
     author: "Sana Ali",
     rating: 5,
     avatarUrl: "/images/avatars/1.png",
@@ -106,7 +105,7 @@ const reviews: Review[] = [
   {
     id: 10,
     content:
-      "The mix kulcha is one of my favorites—well-spiced stuffing and consistently perfect baking. Amazing quality and taste! The chutney adds just the right kick, and the kulchas have that homemade feel that’s hard to find elsewhere.",
+      "Mix kulcha is a favorite—well-spiced and perfectly baked. Great quality and taste with a kick from the chutney. Feels homemade.",
     author: "Daniel Miller",
     rating: 4,
     avatarUrl: "/images/avatars/2.png",
@@ -115,7 +114,7 @@ const reviews: Review[] = [
   {
     id: 11,
     content:
-      "The kulchas are well-prepared, with a great balance of flavors. I especially enjoyed the paneer stuffing with the chai. Highly recommended for quick delivery and delicious meals. It’s the kind of food that leaves you satisfied without feeling overly heavy.",
+      "Well-prepared kulchas with balanced flavors. Enjoyed the paneer stuffing with chai. Highly recommended for quick, delicious meals.",
     author: "Priya Sharma",
     rating: 4,
     avatarUrl: "/images/avatars/3.png",
@@ -124,7 +123,7 @@ const reviews: Review[] = [
   {
     id: 12,
     content:
-      "I ordered for a family get-together and everyone loved it. The gobi kulcha was a hit, and the sweet lassi was the perfect complement. Will order again! The food arrived fresh and warm, making it an instant favorite for all of us.",
+      "Ordered for a family gathering and everyone loved it. The gobi kulcha and sweet lassi were hits. Fresh, warm, and an instant favorite.",
     author: "David Brown",
     rating: 5,
     avatarUrl: "/images/avatars/4.png",
@@ -133,7 +132,7 @@ const reviews: Review[] = [
   {
     id: 13,
     content:
-      "Authentic flavors that remind me of home. The chutneys were spot on, and the kulchas had just the right texture. A must-try if you crave Indian street food. It’s the perfect blend of nostalgia and quality—highly recommend!",
+      "Authentic flavors that remind me of home. Spot-on chutneys and perfect texture. A must-try if you crave Indian street food.",
     author: "Sneha Patel",
     rating: 5,
     avatarUrl: "/images/avatars/5.png",
@@ -142,7 +141,7 @@ const reviews: Review[] = [
   {
     id: 14,
     content:
-      "Consistent quality with every order. My go-to is the mix kulcha, and it never disappoints. The stuffing is flavorful, and the service is excellent. Whether you’re ordering for a quick meal or for a group, it’s always reliable.",
+      "Consistent quality in every order. Mix kulcha is my go-to. Flavorful stuffing and reliable service. Perfect for quick meals or groups.",
     author: "Amit Singh",
     rating: 4,
     avatarUrl: "/images/avatars/6.png",
@@ -151,7 +150,7 @@ const reviews: Review[] = [
   {
     id: 15,
     content:
-      "Quick delivery and delicious kulchas! I particularly enjoyed the paneer kulcha with a side of lassi. A great option for comfort food at home. The flavors are rich and the portion sizes are generous, making it a perfect meal option.",
+      "Quick delivery and delicious kulchas. Loved the paneer kulcha with lassi. Rich flavors and generous portions. Great comfort food.",
     author: "Laura Johnson",
     rating: 4,
     avatarUrl: "/images/avatars/7.png",
@@ -160,7 +159,7 @@ const reviews: Review[] = [
   {
     id: 16,
     content:
-      "If you're looking for a taste of authentic kulchas, this is the place. The flavors are rich, and the portions are generous. Highly recommend the gobi kulcha! It’s a perfect example of how simple ingredients can be turned into something delicious.",
+      "If you’re after authentic kulchas, this is the place. Rich flavors and generous portions. Highly recommend the gobi kulcha!",
     author: "Ravi Verma",
     rating: 5,
     avatarUrl: "/images/avatars/8.png",
@@ -169,7 +168,7 @@ const reviews: Review[] = [
   {
     id: 17,
     content:
-      "The kulchas are flavorful and filling, with just the right amount of spice. The delivery was prompt, and the food was still hot when it arrived. It’s the ideal comfort food, especially when you’re looking for something quick but satisfying.",
+      "Flavorful kulchas with just the right spice. Prompt delivery and the food was still hot. Ideal comfort food for a quick, satisfying meal.",
     author: "Jessica Lee",
     rating: 5,
     avatarUrl: "/images/avatars/1.png",
@@ -178,7 +177,7 @@ const reviews: Review[] = [
   {
     id: 18,
     content:
-      "Loved the taste and the freshness of the kulchas. The cold coffee I ordered was the perfect drink to go along with it. Definitely coming back for more. It’s rare to find such a well-balanced meal that’s both tasty and convenient.",
+      "Loved the taste and freshness. The cold coffee was the perfect match. Well-balanced and convenient. Definitely ordering again.",
     author: "Aditya Kumar",
     rating: 5,
     avatarUrl: "/images/avatars/2.png",
@@ -187,7 +186,7 @@ const reviews: Review[] = [
   {
     id: 19,
     content:
-      "The combination of crispy kulchas and sweet lassi is unbeatable. Perfect for a light but filling meal. The service was top-notch, too! I’ll definitely be ordering from here again for those easy weekday meals.",
+      "Crispy kulchas and sweet lassi—perfect combo. Great for a light meal. Service was excellent. Definitely ordering again!",
     author: "Sarah Wilson",
     rating: 4,
     avatarUrl: "/images/avatars/3.png",
@@ -196,7 +195,7 @@ const reviews: Review[] = [
   {
     id: 20,
     content:
-      "Tried the aloo kulcha and was very impressed. The stuffing was well-seasoned, and the chutney was flavorful. Great value for money. It’s perfect for those times when you want something delicious without breaking the bank.",
+      "Tried the aloo kulcha and was impressed. Well-seasoned stuffing and flavorful chutney. Great value and perfect for a delicious meal.",
     author: "Michael Davis",
     rating: 4,
     avatarUrl: "/images/avatars/4.png",
@@ -207,52 +206,8 @@ const reviews: Review[] = [
 const ReviewSlider = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [index, setIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const leftReviewRef = useRef<HTMLDivElement | null>(null);
-  const rightReviewRef = useRef<HTMLDivElement | null>(null);
-  const [expandedReview, setExpandedReview] = useState<number | null>(null);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      animateReviews();
-      setTimeout(() => {
-        setIndex((prevIndex) => (prevIndex + 1) % reviews.length);
-      }, 1500);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isMobile, reviews.length]);
-
-  const animateReviews = () => {
-    if (leftReviewRef.current && rightReviewRef.current) {
-      const tl = gsap.timeline();
-      tl.to(leftReviewRef.current, {
-        x: isMobile ? "-100%" : "-350px",
-        opacity: 0,
-        duration: 1.2,
-        ease: "power2.inOut",
-      });
-      tl.fromTo(
-        rightReviewRef.current,
-        { x: isMobile ? "100%" : "350px", opacity: 0 },
-        { x: "0%", opacity: 1, duration: 1.2, ease: "power2.inOut" },
-        "-=0.5"
-      );
-    }
-  };
-
-  const displayedReviews = isMobile
-    ? [reviews[index]]
-    : [
-        reviews[index],
-        reviews[(index + 1) % reviews.length],
-        reviews[(index + 2) % reviews.length],
-      ];
-
-  const toggleExpand = (reviewId: number) => {
-    setExpandedReview(expandedReview === reviewId ? null : reviewId);
-  };
+  const duplicatedReviews = [...reviews, ...reviews]; // Duplicate reviews for seamless scrolling
 
   return (
     <Box
@@ -260,37 +215,37 @@ const ReviewSlider = () => {
         display: "flex",
         justifyContent: "center",
         marginTop: 3,
-        minWidth: "100%",
         position: "relative",
         overflow: "hidden",
-        height: isMobile ? "auto" : "auto",
-        paddingRight: 2,
+        height: "auto",
         paddingBottom: 6,
       }}
     >
-      <div
-        ref={containerRef}
-        style={{
+      <Box
+        className="review-container" // Target this class for animation control
+        sx={{
           display: "flex",
           justifyContent: "center",
-          gap: "16px",
           flexDirection: isMobile ? "column" : "row",
+          animation: `scrolling 120s linear infinite`,
+          "&:hover": {
+            animationPlayState: "paused", // Pauses the animation on hover
+          },
         }}
       >
-        {displayedReviews.map((review, idx) => (
+        {duplicatedReviews.map((review, idx) => (
           <Card
-            key={review.id}
-            ref={idx === 0 ? leftReviewRef : idx === 2 ? rightReviewRef : undefined}
+            key={idx}
             sx={{
               width: isMobile ? "100%" : 350,
-              maxHeight: expandedReview === review.id ? 350 : 270,
+              maxHeight: 270,
               borderRadius: "16px",
               padding: 2,
+              marginRight: isMobile ? 0 : "16px",
+              marginBottom: isMobile ? "16px" : 0,
               boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-              display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              transition: "max-height 0.3s ease-in-out",
               overflow: "hidden",
             }}
           >
@@ -322,31 +277,37 @@ const ReviewSlider = () => {
                 color="text.secondary"
                 sx={{
                   marginBottom: 2,
-                  overflow: expandedReview === review.id ? "visible" : "hidden",
                   textOverflow: "ellipsis",
                   display: "-webkit-box",
-                  WebkitLineClamp: expandedReview === review.id ? "none" : 3,
                   WebkitBoxOrient: "vertical",
+                  overflowWrap: "break-word",
+                  whiteSpace: "normal",
                 }}
               >
                 {review.content}
               </Typography>
-              <Button
-                size="small"
-                onClick={() => toggleExpand(review.id)}
-                sx={{ textTransform: "none" }}
-              >
-                {expandedReview === review.id ? "Show Less" : "Show More"}
-              </Button>
             </CardContent>
-            <Box sx={{ paddingBottom: 4,marginBottom:3 }}>
+            <Box sx={{ paddingBottom: 4, marginBottom: 3 }}>
               <Rating value={review.rating} readOnly size="small" />
             </Box>
           </Card>
         ))}
-      </div>
+      </Box>
+
+      <style jsx global>{`
+        @keyframes scrolling {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </Box>
   );
 };
+
+
 
 export default ReviewSlider;

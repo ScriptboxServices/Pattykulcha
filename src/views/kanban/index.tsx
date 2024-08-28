@@ -404,7 +404,7 @@ const KanbanBoard = () => {
                                 <Box key={order.orderId} sx={{ padding: 2 }}>
                                   <Card
                                     sx={{
-                                      marginBottom: 2,
+                                      marginBottom: 1,
                                       borderRadius: 2,
                                       boxShadow: 3,
                                       display: "flex",
@@ -544,6 +544,7 @@ const KanbanBoard = () => {
                                                 display: "flex",
                                                 justifyContent: "flex-start",
                                                 alignItems: "center",
+                                                gap:0.56,
                                               }}
                                             >
                                               <Typography
@@ -1115,7 +1116,6 @@ const KanbanBoard = () => {
                                           sx={{
                                             textAlign: "center",
                                             mt: 1,
-                                            mb: 1.5,
                                           }}
                                         >
                                           <Button

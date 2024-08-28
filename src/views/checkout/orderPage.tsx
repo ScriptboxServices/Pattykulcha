@@ -17,9 +17,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SaveIcon from "@mui/icons-material/Save";
-import { getUserMetaData, useAuthContext, useMenuContext,calculateDistance } from "@/context";
+import { getUserMetaData, useAuthContext, useMenuContext } from "@/context";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import { rejects } from "assert";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,14 +42,42 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     }
   };
 
-  useEffect(() => {
-    const init = async () => {
-      if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
-        const { distance, flag } : any = await calculateDistance(kitchenMetaData?.address?.raw , metaData?.address?.raw)
-        setIsAddressReachable(flag)
+  const calculateDistance = (source : string , destinations : string) => {
+    return new Promise((resolve,reject) => {
+      try{
+        const service = new google.maps.DistanceMatrixService();
+        const request: any = {
+          origins: [source],
+          destinations: [destinations],
+          travelMode: window.google.maps.TravelMode.DRIVING,
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false,
+        };
+    
+        service.getDistanceMatrix(request, (response : any, status: any) => {
+          if (status === "OK") {
+            const distance = response.rows[0].elements[0].distance;
+            if (distance.value > 10000) {
+              setIsAddressReachable(false)
+            } else {
+              setIsAddressReachable(true)
+            }
+            resolve(distance)
+          } else {
+            console.error("Distance failed due to: " + status);
+          }
+        });
+      }catch(err) {
+        reject(err)
       }
+    })
+  }
+
+  useEffect(() => {
+    if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
+      calculateDistance(kitchenMetaData?.address?.raw , metaData?.address?.raw)
     }
-    init()
   }, [metaData, kitchenMetaData]);
 
   const handleEditClick = (field: string) => {
@@ -282,7 +311,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                                         }
                                       }
                                     }
-                                    const { distance } : any =  await calculateDistance(kitchenMetaData?.address?.raw, place.formatted_address || '')
+                                    const distance =  await calculateDistance(kitchenMetaData?.address?.raw, place.formatted_address || '')
 
                                     setAddress({
                                       raw: place.formatted_address,
@@ -314,8 +343,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                             types: ["geocode", "establishment"],
                           }}
                         />
-                        <IconButton onClick={() => handleSaveClick("address")}>
-                          <SaveIcon sx={{ color: "#6B7280" }} />
+                        <IconButton
+                        sx={{background:'#F59E0B',borderRadius:'50%',"&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },}}
+                        onClick={() => handleSaveClick("address")}>
+                          <SaveIcon sx={{ color: "#ffffff" }} />
                         </IconButton>
                       </Box>
                     ) : (
@@ -329,8 +363,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                         }}
                       >
                         Address: {address?.raw}
-                        <IconButton onClick={() => handleEditClick("address")}>
-                          <EditIcon sx={{ color: "#6B7280" }} />
+                        <IconButton
+                        sx={{background:'#F59E0B',borderRadius:'50%',"&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        }}}
+                        onClick={() => handleEditClick("address")}>
+                          <EditIcon sx={{ color: "#ffffff" }} />
                         </IconButton>
                       </Typography>
                     )}
@@ -347,9 +386,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                           sx={{ mr: 2 }}
                         />
                         <IconButton
-                          onClick={() => handleSaveClick("instructions")}
+                        sx={{background:'#F59E0B',borderRadius:'50%',"&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },}}
+                        onClick={() => handleSaveClick("instructions")}
                         >
-                          <SaveIcon sx={{ color: "#6B7280" }} />
+                          <SaveIcon sx={{ color: "#ffffff" }} />
                         </IconButton>
                       </Box>
                     ) : (
@@ -364,9 +407,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                       >
                         Delivery Instructions: {instructions}
                         <IconButton
-                          onClick={() => handleEditClick("instructions")}
+                        sx={{background:'#F59E0B',borderRadius:'50%',"&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },}}
+                        onClick={() => handleEditClick("instructions")}
                         >
-                          <EditIcon sx={{ color: "#6B7280" }} />
+                          <EditIcon sx={{ color: "#ffffff" }} />
                         </IconButton>
                       </Typography>
                     )}

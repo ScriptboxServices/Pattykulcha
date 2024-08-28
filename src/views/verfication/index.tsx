@@ -197,9 +197,18 @@ const VerificationPage: React.FC = () => {
   return (
     <>
       <CircularLodar isLoading={loading} />
+      <Box 
+      sx={{
+        backgroundColor: "white",
+        height: "100dvh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: {xs:"flex-start",sm:"center"},
+        overflow: "hidden",
+      }}>
       <Container
         component="main"
-        maxWidth="xl"
+        maxWidth='xl'
         sx={{
           height: "100dvh",
           display: "flex",
@@ -308,6 +317,7 @@ const VerificationPage: React.FC = () => {
           </StyledForm>
         </StyledRoot>
       </Container>
+      </Box>
     </>
   );
 };
