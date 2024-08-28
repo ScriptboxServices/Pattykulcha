@@ -310,8 +310,7 @@ const MenuPage = () => {
       sx={{
         backgroundColor: "#fffaeb",
         padding: { xs: "1rem", sm: "2rem" },
-      }}
-    >
+      }}>
       <CircularLodar isLoading={loading} />
 
       <Grid
@@ -322,30 +321,27 @@ const MenuPage = () => {
           paddingLeft: "15px",
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Grid item xs={12} md={6}>
           <Box sx={{ paddingLeft: "7%" }}>
             <Typography
-              variant="h4"
+              variant='h4'
               sx={{
                 marginBottom: "1rem",
                 marginTop: "2rem",
                 fontWeight: "bold",
                 fontSize: { xs: "1.5rem", sm: "3.2rem" },
                 color: "#000000",
-              }}
-            >
+              }}>
               {kulcha?.name}
             </Typography>
             <Typography
-              variant="body1"
+              variant='body1'
               sx={{
                 marginBottom: "1rem",
                 color: "#000000",
                 fontSize: { xs: "1rem", sm: "1.2rem" },
-              }}
-            >
+              }}>
               {kulcha?.desc}
             </Typography>
           </Box>
@@ -357,11 +353,10 @@ const MenuPage = () => {
               marginLeft: { md: 13 },
               paddingLeft: "20%",
               paddingRight: "10%",
-            }}
-          >
+            }}>
             <Image
               src={kulcha?.image}
-              alt="Amritsari Kulcha"
+              alt='Amritsari Kulcha'
               width={500}
               height={500}
               style={{
@@ -383,26 +378,23 @@ const MenuPage = () => {
               mt: 3,
               justifyContent: "center",
               alignItems: "center",
-            }}
-          >
+            }}>
             {/* <Typography variant="h5">Quantity</Typography> */}
             <IconButton
               onClick={() => handleDecreaseKulchaQTY()}
               sx={{
                 color: "#336195",
-              }}
-            >
+              }}>
               <RemoveCircleOutlineIcon sx={{ fontSize: "2.5rem" }} />
             </IconButton>
-            <Typography variant="body1" color="textPrimary">
+            <Typography variant='body1' color='textPrimary'>
               {kulcha?.quantity}
             </Typography>
             <IconButton
               onClick={() => handleIncreaseKulchaQTY()}
               sx={{
                 color: "#336195",
-              }}
-            >
+              }}>
               <AddCircleOutlineIcon sx={{ fontSize: "2.5rem" }} />
             </IconButton>
           </Box>
@@ -412,8 +404,7 @@ const MenuPage = () => {
             sx={{
               paddingTop: "2rem",
               textAlign: "center",
-            }}
-          >
+            }}>
             <Box
               sx={{
                 width: "60%",
@@ -424,13 +415,12 @@ const MenuPage = () => {
               }}
             />
             <Typography
-              variant="h4"
+              variant='h4'
               gutterBottom
-              sx={{ color: "#021e3a", fontWeight: "bold" }}
-            >
+              sx={{ color: "#021e3a", fontWeight: "bold" }}>
               What&apos;s Included
             </Typography>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={2} justifyContent='center'>
               {FIXED_INCLUDE_ITEMS.length == 0 ? (
                 <Grid item>
                   <Box
@@ -452,12 +442,11 @@ const MenuPage = () => {
                       },
                       width: { xs: "150px", sm: "175px" },
                       margin: "1rem",
-                    }}
-                  >
+                    }}>
                     <AddCircleOutlineIcon
                       sx={{ fontSize: "4rem", color: "#336195" }}
                     />
-                    <Typography variant="body1" color="textSecondary">
+                    <Typography variant='body1' color='textSecondary'>
                       Add Items
                     </Typography>
                   </Box>
@@ -487,8 +476,7 @@ const MenuPage = () => {
                         width: { xs: "130px", sm: "175px" },
                         margin: "0.5rem", // Updated margin
                         boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
-                      }}
-                    >
+                      }}>
                       <CheckCircleIcon
                         sx={{
                           position: "absolute",
@@ -512,10 +500,9 @@ const MenuPage = () => {
                         }}
                       />
                       <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ mt: 2 }}
-                      >
+                        variant='body1'
+                        color='textPrimary'
+                        sx={{ mt: 2 }}>
                         {item.items[0].name}
                       </Typography>
                     </Box>
@@ -525,14 +512,13 @@ const MenuPage = () => {
             </Grid>
             {includedItems2.length > 0 && (
               <Typography
-                variant="h4"
+                variant='h4'
                 gutterBottom
-                sx={{ color: "#021e3a", marginTop: 4 }}
-              >
+                sx={{ color: "#021e3a", marginTop: 4 }}>
                 Additional items
               </Typography>
             )}
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={2} justifyContent='center'>
               {includedItems2.length == 0 ? (
                 <></>
               ) : (
@@ -555,8 +541,7 @@ const MenuPage = () => {
                         width: { xs: "130px", sm: "175px" },
                         margin: "0.5rem",
                         boxShadow: "2px 2px 3px #4e5664",
-                      }}
-                    >
+                      }}>
                       <CheckCircleIcon
                         sx={{
                           position: "absolute",
@@ -578,10 +563,10 @@ const MenuPage = () => {
                           objectFit: "contain",
                         }}
                       />
-                      <Typography variant="body1" color="textPrimary">
+                      <Typography variant='body1' color='textPrimary'>
                         {item.items[0].name}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography variant='body2' color='textSecondary'>
                         ${item.items[0].price.toFixed(2)}
                       </Typography>
                       <Box
@@ -590,30 +575,27 @@ const MenuPage = () => {
                           alignItems: "center",
                           justifyContent: "center",
                           marginTop: "0.5rem",
-                        }}
-                      >
+                        }}>
                         <IconButton
                           onClick={() => handleDecreaseQTY(item.id)}
                           sx={{
                             color: "#336195",
-                          }}
-                        >
+                          }}>
                           <RemoveCircleOutlineIcon />
                         </IconButton>
-                        <Typography variant="body1" color="textPrimary">
+                        <Typography variant='body1' color='textPrimary'>
                           {item.items[0].quantity || 1}
                         </Typography>
                         <IconButton
                           onClick={() => handleIncreaseQTY(item.id)}
                           sx={{
                             color: "#336195",
-                          }}
-                        >
+                          }}>
                           <AddCircleOutlineIcon />
                         </IconButton>
                       </Box>
                       <Button
-                        variant="outlined"
+                        variant='outlined'
                         onClick={() => handleRemoveItem(item.id)}
                         sx={{
                           backgroundColor: "transparent",
@@ -622,8 +604,7 @@ const MenuPage = () => {
                           marginTop: "auto",
                           borderRadius: "20px",
                           textTransform: "none",
-                        }}
-                      >
+                        }}>
                         Remove
                       </Button>
                     </Box>
@@ -640,8 +621,7 @@ const MenuPage = () => {
               paddingTop: "0rem",
               marginBottom: "0rem",
               textAlign: "center",
-            }}
-          >
+            }}>
             <Box
               sx={{
                 width: "65%",
@@ -652,20 +632,18 @@ const MenuPage = () => {
               }}
             />
             <Typography
-              variant="h4"
+              variant='h4'
               gutterBottom
-              sx={{ color: "#021e3a", fontWeight: "bold" }}
-            >
+              sx={{ color: "#021e3a", fontWeight: "bold" }}>
               Would you like to add extra items?
             </Typography>
-            <Grid container spacing={1} justifyContent="center">
+            <Grid container spacing={1} justifyContent='center'>
               {extraItems.map((item, index) => (
                 <Grid
                   item
                   xs={12}
                   key={index}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                  sx={{ display: "flex", justifyContent: "center" }}>
                   <Box
                     sx={{
                       display: "flex",
@@ -681,13 +659,12 @@ const MenuPage = () => {
                       margin: "0.5rem 0",
                       width: { xs: "100%", md: "60%" },
                     }}
-                    onClick={() => handleAddItem(item)}
-                  >
-                    <Box display="flex" alignItems="center">
+                    onClick={() => handleAddItem(item)}>
+                    <Box display='flex' alignItems='center'>
                       <Image
                         src={getImageSrc(item)}
                         alt={item}
-                        layout="fixed"
+                        layout='fixed'
                         width={50}
                         height={50}
                         style={{
@@ -696,10 +673,9 @@ const MenuPage = () => {
                         }}
                       />
                       <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        sx={{ marginLeft: "1rem" }}
-                      >
+                        variant='body1'
+                        color='textPrimary'
+                        sx={{ marginLeft: "1rem" }}>
                         {item}
                       </Typography>
                     </Box>
@@ -719,8 +695,7 @@ const MenuPage = () => {
               paddingTop: "0rem",
               marginBottom: "0.5rem",
               textAlign: "center",
-            }}
-          >
+            }}>
             {/* <Box
               sx={{
                 width: "65%",
@@ -736,7 +711,7 @@ const MenuPage = () => {
               sx={{ color: "#021e3a", fontWeight: "bold" }}>
               Make it a Meal
             </Typography>
-            <Grid container spacing={1} justifyContent="center">
+            <Grid container spacing={1} justifyContent='center'>
               <Grid item xs={12}>
                 <Box
                   sx={{
@@ -776,6 +751,29 @@ const MenuPage = () => {
                   </Box>
                   <ArrowForwardIosIcon />
                 </Box>
+                <Box
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'>
+                    <Button
+                      variant='contained'
+                      sx={{
+                        backgroundColor: "#ECAB21",
+                        color: "white",
+                        borderRadius: 10,
+                        marginTop: 2,
+                        paddingX: 4,
+                        paddingY: 1,
+                        fontWeight: "bold",
+                        "&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },
+                      }}
+                      onClick={handleAddToCart}>
+                      Add to cart
+                    </Button>
+                  </Box>
               </Grid>
               {/* <Grid item xs={12}>
                 <Box
@@ -906,48 +904,23 @@ const MenuPage = () => {
             </Grid>
           </Box>
         </Grid>
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: { xs: "10px", md: "20px" },
-            right: { xs: "10px", md: "20px" },
-            backgroundColor: "#ebebe1",
-            border: "2px solid #dcdcdc",
-            borderRadius: "8px",
-            padding: "1rem",
-            zIndex:'99999',
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Box display="flex" justifyContent="flex-end" alignItems="center">
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={handleAddToCart}
-            >
-              Add to cart
-            </Button>
-          </Box>
-        </Box>
       </Grid>
       <Dialog
         open={isDrinkDialogOpen}
         onClose={handleDrinkDialogClose}
-        maxWidth="sm"
-        fullWidth
-      >
+        maxWidth='sm'
+        fullWidth>
         <DialogTitle sx={{ fontWeight: "bold" }}>
           Add a Drink{" "}
           <IconButton
-            aria-label="close"
+            aria-label='close'
             onClick={handleDrinkDialogClose}
             sx={{
               position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -970,8 +943,7 @@ const MenuPage = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center", // Align items center horizontally
-                  }}
-                >
+                  }}>
                   <Image
                     alt={drink.name}
                     src={drink.image}
@@ -987,13 +959,12 @@ const MenuPage = () => {
                   />
                   <CardContent sx={{ textAlign: "center" }}>
                     <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      sx={{ fontSize: "18px" }}
-                    >
+                      variant='body1'
+                      color='textPrimary'
+                      sx={{ fontSize: "18px" }}>
                       {drink.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       ${drink.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
@@ -1028,21 +999,19 @@ const MenuPage = () => {
       <Dialog
         open={isLassiDialogOpen}
         onClose={handleLassiDialogClose}
-        maxWidth="sm"
-        fullWidth
-      >
+        maxWidth='sm'
+        fullWidth>
         <DialogTitle sx={{ fontWeight: "bold" }}>
           Add a Lassi
           <IconButton
-            aria-label="close"
+            aria-label='close'
             onClick={handleLassiDialogClose}
             sx={{
               position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -1064,8 +1033,7 @@ const MenuPage = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Image
                     alt={lassi.name}
                     src={lassi.image}
@@ -1081,18 +1049,16 @@ const MenuPage = () => {
                   />
                   <CardContent>
                     <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      align="center"
-                      sx={{ fontSize: "18px" }}
-                    >
+                      variant='body1'
+                      color='textPrimary'
+                      align='center'
+                      sx={{ fontSize: "18px" }}>
                       {lassi.name}
                     </Typography>
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="center"
-                    >
+                      variant='body2'
+                      color='textSecondary'
+                      align='center'>
                       ${lassi.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
@@ -1127,21 +1093,19 @@ const MenuPage = () => {
       <Dialog
         open={isTeaDialogOpen}
         onClose={handleTeaDialogClose}
-        maxWidth="sm"
-        fullWidth
-      >
+        maxWidth='sm'
+        fullWidth>
         <DialogTitle sx={{ fontWeight: "bold" }}>
           Add a Tea
           <IconButton
-            aria-label="close"
+            aria-label='close'
             onClick={handleTeaDialogClose}
             sx={{
               position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -1163,8 +1127,7 @@ const MenuPage = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Image
                     alt={tea.name}
                     src={tea.image}
@@ -1180,18 +1143,16 @@ const MenuPage = () => {
                   />
                   <CardContent>
                     <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      align="center"
-                      sx={{ fontSize: "18px" }}
-                    >
+                      variant='body1'
+                      color='textPrimary'
+                      align='center'
+                      sx={{ fontSize: "18px" }}>
                       {tea.name}
                     </Typography>
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="center"
-                    >
+                      variant='body2'
+                      color='textSecondary'
+                      align='center'>
                       ${tea.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
@@ -1226,21 +1187,19 @@ const MenuPage = () => {
       <Dialog
         open={isCoffeeDialogOpen}
         onClose={handleCoffeeDialogClose}
-        maxWidth="sm"
-        fullWidth
-      >
+        maxWidth='sm'
+        fullWidth>
         <DialogTitle sx={{ fontWeight: "bold" }}>
           Add a Coffee
           <IconButton
-            aria-label="close"
+            aria-label='close'
             onClick={handleCoffeeDialogClose}
             sx={{
               position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -1262,8 +1221,7 @@ const MenuPage = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Image
                     alt={coffee.name}
                     src={coffee.image}
@@ -1279,18 +1237,16 @@ const MenuPage = () => {
                   />
                   <CardContent>
                     <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      align="center"
-                      sx={{ fontSize: "18px" }}
-                    >
+                      variant='body1'
+                      color='textPrimary'
+                      align='center'
+                      sx={{ fontSize: "18px" }}>
                       {coffee.name}
                     </Typography>
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="center"
-                    >
+                      variant='body2'
+                      color='textSecondary'
+                      align='center'>
                       ${coffee.price.toFixed(2)}
                     </Typography>
                     {includedItems2.some((item) =>
