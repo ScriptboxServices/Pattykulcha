@@ -508,7 +508,6 @@ const ProfilePage: React.FC = () => {
                               fontSize: "1rem",
                               flex: "1",
                               marginLeft: "16px",
-                              border:'none'
                             }}
                             defaultValue={address?.raw}
                             onPlaceSelected={(place) => {
@@ -659,7 +658,7 @@ const ProfilePage: React.FC = () => {
                                 fontSize: "14px",
                               }}
                             >
-                              Edit
+                              Remove
                             </Typography>
                           )}
                         </IconButton>

@@ -57,10 +57,10 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
-    height: "40px", // Ensure the box is square
+    height: "40px", 
     [theme.breakpoints.up("sm")]: {
       width: "40px",
-      height: "40px", // Keep it square on larger screens too
+      height: "40px", 
       margin: theme.spacing(0.1),
       justifyContent: "center",
     },

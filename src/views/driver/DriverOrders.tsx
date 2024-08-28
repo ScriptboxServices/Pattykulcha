@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import {
   Box,
@@ -70,16 +70,16 @@ const DriverOrders = () => {
   const [loading, setLoading] = useState(false);
   const [myOrders, setMyOrders] = useState(orders);
 
-  const calculateGrandTotal = (order) => {
+  const calculateGrandTotal = (order: { id?: string; status?: string; location?: string; estimatedArrival?: string; destination?: string; kulcha: any; additional: any; }) => {
     const kulchaTotal = order.kulcha.price * order.kulcha.quantity;
     const additionalTotal = order.additional.reduce(
-      (sum, item) => sum + item.items[0].price * item.items[0].quantity,
+      (sum: number, item: { items: { quantity: number; }[]; }) => sum + 2 * item.items[0].quantity,
       0
     );
     return kulchaTotal + additionalTotal;
   };
 
-  const updateOrderStatus = (orderId) => {
+  const updateOrderStatus = (orderId: string) => {
     setMyOrders((currentOrders) =>
       currentOrders.map((order) =>
         order.id === orderId
@@ -114,7 +114,12 @@ const DriverOrders = () => {
           <Typography
             variant="h3"
             component="h2"
-            sx={{ color: "#333333", fontWeight: "bold", textAlign: "center", mb: 1.75 }}
+            sx={{
+              color: "#333333",
+              fontWeight: "bold",
+              textAlign: "center",
+              mb: 1.75,
+            }}
           >
             Orders for Delivery
           </Typography>
@@ -131,7 +136,7 @@ const DriverOrders = () => {
                 width: "100%",
               }}
             >
-              <OrderStatusChip status={order.status} />
+              <OrderStatusChip status={order.status as StatusType} />
               <Box
                 sx={{
                   display: "flex",
@@ -152,18 +157,12 @@ const DriverOrders = () => {
                   flexDirection: { xs: "column", sm: "row" },
                 }}
               >
-                <LocationOnIcon sx={{ marginRight: 1, display: { xs: "none", sm: "block" } }} />
-                <Typography variant="body2" sx={{ marginRight: 1 }}>
-                  {order.location || "Location not set"}
-                </Typography>
-                <Divider orientation="vertical" flexItem sx={{ marginX: 1 }} />
+                {/* <Divider orientation="vertical" flexItem sx={{ marginX: 1 }} /> */}
                 <Typography variant="body2" sx={{ marginRight: 1 }}>
                   Estimated arrival: {order.estimatedArrival}
                 </Typography>
                 <Divider orientation="vertical" flexItem sx={{ marginX: 1 }} />
-                <Typography variant="body2">
-                  {order.destination}
-                </Typography>
+                <Typography variant="body2">{order.destination}</Typography>
               </Box>
               <Grid container spacing={2} sx={{ marginBottom: 2 }}>
                 <Grid item xs={12} sm={6} sx={{ display: "flex" }}>
@@ -218,14 +217,22 @@ const DriverOrders = () => {
                   Address: {order.location}
                 </Typography>
               </Box>
-              <Divider sx={{ marginY: 2 }} />
+              <Divider sx={{ marginY: 1 }} />
               <Typography variant="body2" fontWeight="bold" textAlign="right">
                 Total: ${calculateGrandTotal(order).toFixed(2)}
               </Typography>
               <Button
                 variant="contained"
-                color="warning"
-                sx={{ position: "absolute", bottom: 16, left: 16 }}
+                sx={{
+                  backgroundColor: "#ECAB21",
+                  color: "white",
+                  fontWeight: "bold",
+                  marginTop:-3,
+                  "&:hover": {
+                    backgroundColor: "#FFC107",
+                    color: "white",
+                  },
+                }}
                 onClick={() => updateOrderStatus(order.id)}
               >
                 Update Status
@@ -238,14 +245,19 @@ const DriverOrders = () => {
   );
 };
 
-// Custom Order Status Chip Component
-const OrderStatusChip = ({ status }) => {
-  const statusColors = {
-    "Out For Delivery": "#FFAB00",
-    Delivered: "#4CAF50",
-    Pending: "#F44336",
-  };
+type StatusType = "Out For Delivery" | "Delivered" | "Pending";
 
+const statusColors: Record<StatusType, string> = {
+  "Out For Delivery": "#FFAB00",
+  Delivered: "#4CAF50",
+  Pending: "#F44336",
+};
+
+interface OrderStatusChipProps {
+  status: StatusType;
+}
+
+const OrderStatusChip: React.FC<OrderStatusChipProps> = ({ status }) => {
   return (
     <Chip
       label={status}
@@ -259,5 +271,4 @@ const OrderStatusChip = ({ status }) => {
     />
   );
 };
-
 export default DriverOrders;

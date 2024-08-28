@@ -74,7 +74,6 @@ const schema = yup.object().shape({
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   paymentmethod: yup.string().required("Payment method is required"),
-  paymentstatus: yup.string().required("Payment status is required"),
   countryCode: yup.string().required(),
   instructions: yup.string().required("Special instructions are required"),
 });
@@ -164,7 +163,6 @@ const MakeOrder: React.FC = () => {
       phoneNumber: "",
       instructions: "",
       paymentmethod: "",
-      paymentstatus: "",
     },
   });
 
@@ -619,7 +617,7 @@ const MakeOrder: React.FC = () => {
                 >
                   {allKulcha?.map((kulcha: any, index: number) => {
                     return (
-                      <Box sx={{ mb: 2 }}>
+                      <Box sx={{ mb: 2 }} key={index}>
                         <Box
                           onClick={() => handleAddKulcha(kulcha)}
                           sx={{
@@ -865,6 +863,7 @@ const MakeOrder: React.FC = () => {
                   flexDirection="row"
                   alignItems="center"
                   gap={5}
+
                 >
                   {extraItems.map((item, index) => (
                     <Grid item xs={6} sm={4} md={1.6} key={index}>
@@ -876,7 +875,7 @@ const MakeOrder: React.FC = () => {
                           justifyContent: "center",
                           padding: "1rem",
                           backgroundColor: "white",
-                          border: "2px solid #87939f",
+                          // border: "2px solid #87939f",
                           borderRadius: "8px",
                           textAlign: "center",
                           position: "relative",
@@ -890,6 +889,7 @@ const MakeOrder: React.FC = () => {
                           width: "120px",
                           margin: "0.5rem", // Updated margin
                           boxShadow: "2px 2px 3px #4e5664", // Updated box-shadow
+                          border:"1px solid black",
                         }}
                       >
                         <Image
@@ -917,8 +917,6 @@ const MakeOrder: React.FC = () => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          // marginTop: "0.5rem",
-                          // marginLeft:"70px",
                         }}
                       >
                         <IconButton
@@ -963,25 +961,6 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Controller
-                    name="paymentstatus"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <FormControl fullWidth>
-                        <InputLabel>Payment Status</InputLabel>
-                        <Select
-                          label="Payment Status"
-                          value={value}
-                          onChange={onChange}
-                        >
-                          <MenuItem value="pending">Pending</MenuItem>
-                          <MenuItem value="paid">Paid</MenuItem>
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
                 <Grid item xs={12}>
                   <Controller
                     name="instructions"
@@ -1021,6 +1000,7 @@ const MakeOrder: React.FC = () => {
               >
                 Submit Order
               </Button>
+              {/* <OrderReceiptPrinter/> */}
               {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
@@ -1120,6 +1100,7 @@ const MakeOrder: React.FC = () => {
               </Grid>
             ))}
           </Grid>
+
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={handleDrinkDialogClose} color="primary">
