@@ -225,7 +225,8 @@ const ReviewSlider = () => {
         sx={{
           display: "flex",
           justifyContent: "center",
-          flexDirection: isMobile ? "column" : "row",
+          flexDirection: "row",
+          gap:'2rem',
           animation: `scrolling 120s linear infinite`,
           "&:hover": {
             animationPlayState: "paused", // Pauses the animation on hover
@@ -237,7 +238,7 @@ const ReviewSlider = () => {
             key={idx}
             sx={{
               width: isMobile ? "100%" : 350,
-              maxHeight: 270,
+              // maxHeight: 270,
               borderRadius: "16px",
               padding: 2,
               marginRight: isMobile ? 0 : "16px",
@@ -254,13 +255,15 @@ const ReviewSlider = () => {
                   display: "flex",
                   alignItems: "center",
                   marginBottom: 2,
+                  width: isMobile ? '220px' : '100%',
                   justifyContent: "space-around",
+                  flexDirection: 'column'
                 }}
               >
                 <Avatar
                   src={review.avatarUrl}
                   alt={review.author}
-                  sx={{ width: 60, height: 60, marginRight: 2 }}
+                  sx={{ width: 60, height: 60,mb:2}}
                 />
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -286,7 +289,7 @@ const ReviewSlider = () => {
                 {review.content}
               </Typography>
             </CardContent>
-            <Box sx={{ paddingBottom: 4, marginBottom: 3 }}>
+            <Box sx={{ paddingBottom: 2}}>
               <Rating value={review.rating} readOnly size="small" />
             </Box>
           </Card>

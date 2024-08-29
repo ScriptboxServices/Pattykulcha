@@ -235,18 +235,16 @@ const ProfilePage: React.FC = () => {
           alignItem: "center",
           background: "#FAF3E0",
           minHeight: { xs: "100%", xl: "100d%" },
-        }}
-      >
+        }}>
         <Grid
           container
           spacing={4}
-          maxWidth="md"
+          maxWidth='md'
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -256,29 +254,25 @@ const ProfilePage: React.FC = () => {
                   md: "100%",
                 },
                 margin: "0 auto",
-              }}
-            >
+              }}>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   mb: 2, // Adds margin below the title
-                }}
-              >
+                }}>
                 <Typography
-                  variant="h4"
-                  component="h2"
+                  variant='h4'
+                  component='h2'
                   gutterBottom
-                  sx={{ fontWeight: "bold" }}
-                >
+                  sx={{ fontWeight: "bold" }}>
                   User Profile
                 </Typography>
               </Box>
               <Card
                 sx={{
                   borderRadius: "20px",
-                }}
-              >
+                }}>
                 <CardContent>
                   <List>
                     <ListItem>
@@ -286,8 +280,8 @@ const ProfilePage: React.FC = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         fullWidth
-                        variant="outlined"
-                        size="small"
+                        variant='outlined'
+                        size='small'
                         sx={{
                           borderRadius: "10px",
                           height: "56px",
@@ -297,7 +291,7 @@ const ProfilePage: React.FC = () => {
                         }}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position="start">
+                            <InputAdornment position='start'>
                               <Person
                                 sx={{
                                   background: "black",
@@ -311,11 +305,10 @@ const ProfilePage: React.FC = () => {
                             </InputAdornment>
                           ),
                           endAdornment: (
-                            <InputAdornment position="end">
+                            <InputAdornment position='end'>
                               <IconButton
                                 onClick={handleNameEdit}
-                                sx={{ ml: 1 }}
-                              >
+                                sx={{ ml: 1 }}>
                                 {isEditingName ? (
                                   <Typography
                                     sx={{
@@ -324,8 +317,7 @@ const ProfilePage: React.FC = () => {
                                       textDecoration: "underline",
                                       ml: 1,
                                       fontSize: "14px",
-                                    }}
-                                  >
+                                    }}>
                                     Save
                                   </Typography>
                                 ) : (
@@ -336,8 +328,7 @@ const ProfilePage: React.FC = () => {
                                       textDecoration: "underline",
                                       ml: 1,
                                       fontSize: "14px",
-                                    }}
-                                  >
+                                    }}>
                                     Edit
                                   </Typography>
                                 )}
@@ -352,8 +343,8 @@ const ProfilePage: React.FC = () => {
                       <TextField
                         value={me?.phoneNumber}
                         fullWidth
-                        variant="outlined"
-                        size="small"
+                        variant='outlined'
+                        size='small'
                         disabled
                         sx={{
                           height: "56px",
@@ -363,7 +354,7 @@ const ProfilePage: React.FC = () => {
                         }}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position="start">
+                            <InputAdornment position='start'>
                               <Phone
                                 sx={{
                                   background: "black",
@@ -385,8 +376,8 @@ const ProfilePage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         fullWidth
-                        variant="outlined"
-                        size="small"
+                        variant='outlined'
+                        size='small'
                         sx={{
                           height: "56px",
                           "& .MuiOutlinedInput-root": {
@@ -396,7 +387,7 @@ const ProfilePage: React.FC = () => {
                         disabled={!isEditingEmail}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position="start">
+                            <InputAdornment position='start'>
                               <Email
                                 sx={{
                                   background: "black",
@@ -410,11 +401,10 @@ const ProfilePage: React.FC = () => {
                             </InputAdornment>
                           ),
                           endAdornment: (
-                            <InputAdornment position="end">
+                            <InputAdornment position='end'>
                               <IconButton
                                 onClick={handleEmailEdit}
-                                sx={{ ml: 1 }}
-                              >
+                                sx={{ ml: 1 }}>
                                 {isEditingEmail ? (
                                   <Typography
                                     sx={{
@@ -423,8 +413,7 @@ const ProfilePage: React.FC = () => {
                                       textDecoration: "underline",
                                       ml: 1,
                                       fontSize: "14px",
-                                    }}
-                                  >
+                                    }}>
                                     Save
                                   </Typography>
                                 ) : (
@@ -435,8 +424,7 @@ const ProfilePage: React.FC = () => {
                                       textDecoration: "underline",
                                       ml: 1,
                                       fontSize: "14px",
-                                    }}
-                                  >
+                                    }}>
                                     Edit
                                   </Typography>
                                 )}
@@ -455,171 +443,36 @@ const ProfilePage: React.FC = () => {
                     > */}
 
                     {/* </ListItem>  */}
-                    <ListItem
-                      onClick={() => handleAddressSelection("primary")}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          border: "1px solid grey",
-                          borderRadius: "8px",
-                          padding: "6px 10px",
-                          width: "100%",
-                          position: "relative",
-                        }}
-                      >
-                        <Home
+                      <ListItem
+                        onClick={() => handleAddressSelection("primary")}
+                        sx={{ cursor: "pointer" }}>
+                        <Box
                           sx={{
-                            background: "black",
-                            color: "white",
-                            borderRadius: "50%",
-                            fontSize: "32px", // Adjust the fontSize as needed
-                            padding: "6px",
-                          }}
-                        />
-                        {isEditingAddress ? (
-                          <Autocomplete
-                            apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
-                            style={{
-                              outline: "none",
-                              color: "#8F8996",
-                              padding: "14px 10px",
-                              fontWeight: "bold",
-                              border: "1px solid grey",
-                              fontSize: "1rem",
-                              flex: "1",
-                              marginLeft: "16px",
-                            }}
-                            defaultValue={address?.raw}
-                            onPlaceSelected={(place) => {
-                              if (!place) return;
-
-                              let zipCode: string;
-                              let city: string;
-                              let state: string;
-                              for (
-                                let i = 0;
-                                i < (place.address_components?.length ?? 0);
-                                i++
-                              ) {
-                                for (
-                                  let j = 0;
-                                  j <
-                                  (place.address_components![i].types.length ??
-                                    0);
-                                  j++
-                                ) {
-                                  if (
-                                    place.address_components![i].types[j] ==
-                                    "postal_code"
-                                  ) {
-                                    zipCode =
-                                      place.address_components![i].long_name;
-                                  }
-                                  if (
-                                    place?.address_components![i].types[j] ==
-                                    "locality"
-                                  ) {
-                                    city =
-                                      place.address_components[i].long_name;
-                                  }
-                                  if (
-                                    place?.address_components![i].types[j] ==
-                                    "administrative_area_level_1"
-                                  ) {
-                                    state =
-                                      place?.address_components[i].long_name;
-                                  }
-                                }
-                              }
-
-                              const geocoder =
-                                new window.google.maps.Geocoder();
-                              const post = place.geometry?.location;
-
-                              if (!post) return;
-
-                              const latlng = new window.google.maps.LatLng(
-                                post.lat(),
-                                post.lng()
-                              );
-                              geocoder.geocode(
-                                { location: latlng },
-                                async (results: any, status: any) => {
-                                  if (status === "OK") {
-                                    if (results.length !== 0) {
-                                      let plusCode = "";
-                                      let postalCode = "";
-                                      for (let i = 0; i < results.length; i++) {
-                                        for (
-                                          let j = 0;
-                                          j < results[i].types.length;
-                                          j++
-                                        ) {
-                                          if (
-                                            results[i].types[j] == "plus_code"
-                                          ) {
-                                            plusCode =
-                                              results[i]?.plus_code.global_code;
-                                          }
-                                          if (
-                                            results[i].types[j] == "postal_code"
-                                          ) {
-                                            postalCode =
-                                              results[i]?.address_components[j]
-                                                .long_name;
-                                          }
-                                        }
-                                      }
-
-                                      const distance = await calculateDistance(
-                                        kitchenMetaData?.address?.raw,
-                                        place.formatted_address || ""
-                                      );
-
-                                      setAddress({
-                                        raw: place.formatted_address,
-                                        seperate: {
-                                          state: state,
-                                          city: city,
-                                          postal_code:
-                                            zipCode || plusCode || postalCode,
-                                          line1:
-                                            place.formatted_address?.split(
-                                              ","
-                                            )[0],
-                                        },
-                                        distance,
-                                      });
-                                    } else {
-                                      console.error("No results found");
-                                    }
-                                  } else {
-                                    console.error(
-                                      "Geocoder failed due to: " + status
-                                    );
-                                  }
-                                }
-                              );
-                            }}
-                            options={{
-                              componentRestrictions: { country: ["ca"] },
-                              types: ["geocode", "establishment"],
+                            display: "flex",
+                            alignItems: "center",
+                            border: "1px solid grey",
+                            borderRadius: "8px",
+                            padding: "6px 10px",
+                            width: "100%",
+                            position: "relative",
+                          }}>
+                          <Home
+                            sx={{
+                              background: "black",
+                              color: "white",
+                              borderRadius: "50%",
+                              fontSize: "32px", // Adjust the fontSize as needed
+                              padding: "6px",
                             }}
                           />
-                        ) : (
                           <ListItemText
                             secondary={me?.address?.raw}
                             sx={{ ml: 2 }}
                           />
-                        )}
-                        {/* {selectedAddress === "primary" && (
-                        <CheckCircle sx={{ color: "green", ml: 2 }} />
-                      )} */}
-                        <IconButton onClick={handleAddressEdit} sx={{ ml: 1 }}>
-                          {isEditingAddress ? (
+                          {/* {selectedAddress === "primary" && (
+                          <CheckCircle sx={{ color: "green", ml: 2 }} />
+                        )} */}
+                          <IconButton onClick={handleAddressEdit} sx={{ ml: 1 }}>
                             <Typography
                               sx={{
                                 cursor: "pointer",
@@ -627,36 +480,21 @@ const ProfilePage: React.FC = () => {
                                 textDecoration: "underline",
                                 ml: 1,
                                 fontSize: "14px",
-                              }}
-                            >
-                              Save
-                            </Typography>
-                          ) : (
-                            <Typography
-                              sx={{
-                                cursor: "pointer",
-                                color: "black",
-                                textDecoration: "underline",
-                                ml: 1,
-                                fontSize: "14px",
-                              }}
-                            >
+                              }}>
                               Remove
                             </Typography>
-                          )}
-                        </IconButton>
-                      </Box>
-                    </ListItem>
+                          </IconButton>
+                        </Box>
+                      </ListItem>
                     <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
                         width: "100%",
-                      }}
-                    >
+                      }}>
                       <Button
                         startIcon={<Add />}
-                        variant="contained"
+                        variant='contained'
                         sx={{
                           backgroundColor: "#ECAB21",
                           color: "white",
@@ -670,8 +508,7 @@ const ProfilePage: React.FC = () => {
                             color: "white",
                           },
                         }}
-                        onClick={handleDialogOpen}
-                      >
+                        onClick={handleDialogOpen}>
                         Add new Address
                       </Button>
                     </ListItem>
@@ -685,20 +522,18 @@ const ProfilePage: React.FC = () => {
       <Dialog
         open={openDialog}
         onClose={handleDialogOpen}
-        maxWidth="xs"
+        maxWidth='xs'
         fullWidth
         sx={{ zIndex: "999" }}
         PaperProps={{
           sx: { borderRadius: "10px" },
-        }}
-      >
+        }}>
         <DialogTitle
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+          }}>
           Enter your Address
           <IconButton onClick={handleDialogOpen}>
             <Close sx={{ color: "#ECAB21" }} />
@@ -714,8 +549,7 @@ const ProfilePage: React.FC = () => {
               padding: "6px 10px",
               marginTop: "8px",
               width: "100%",
-            }}
-          >
+            }}>
             <Home
               sx={{
                 background: "black",
@@ -831,7 +665,7 @@ const ProfilePage: React.FC = () => {
           </Box>
           <DialogActions>
             <Button
-              variant="contained"
+              variant='contained'
               sx={{
                 backgroundColor: "#ECAB21",
                 color: "white",
@@ -840,13 +674,12 @@ const ProfilePage: React.FC = () => {
                 marginTop: "0.5rem",
                 marginBottom: "0.5rem",
                 fontWeight: "bold",
-                marginInline:"auto",
+                marginInline: "auto",
                 "&:hover": {
                   backgroundColor: "#FFC107",
                   color: "white",
                 },
-              }}
-            >
+              }}>
               Save address
             </Button>
           </DialogActions>
