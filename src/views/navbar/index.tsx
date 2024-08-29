@@ -226,7 +226,7 @@ const Navbar: React.FC = () => {
             </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {kitchenMetaData &&
+            {kitchenMetaData && isLoggedIn &&
               (kitchenMetaData.isShopOpen ? (
                 <>
                   <Chip
