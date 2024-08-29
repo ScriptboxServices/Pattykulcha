@@ -371,15 +371,13 @@ const MenuPage = () => {
           <Box
             sx={{
               textAlign: { xs: "center", md: "right" },
-              marginLeft: { md: 13 },
+              marginLeft: { md: 8 },
               paddingLeft: "20%",
               paddingRight: "10%",
               display: "flex",
-              mt: 3,
               justifyContent: "center",
               alignItems: "center",
             }}>
-            {/* <Typography variant="h5">Quantity</Typography> */}
             <IconButton
               onClick={() => handleDecreaseKulchaQTY()}
               sx={{
@@ -402,7 +400,6 @@ const MenuPage = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              paddingTop: "2rem",
               textAlign: "center",
             }}>
             <Box
@@ -617,7 +614,7 @@ const MenuPage = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "2.7rem",
+              marginTop: "2rem",
               paddingTop: "0rem",
               marginBottom: "0rem",
               textAlign: "center",
@@ -938,11 +935,13 @@ const MenuPage = () => {
                       : "1px solid #ddd",
                     position: "relative",
                     cursor: "pointer",
-                    height: "270px", // Ensure all cards have the same height
+                    height: "250px", // Ensure all cards have the same height
                     display: "flex",
+                    width:{xs:"230px",sm:"auto"},
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center", // Align items center horizontally
+                    marginInline:{xs:"auto"},
                   }}>
                   <Image
                     alt={drink.name}

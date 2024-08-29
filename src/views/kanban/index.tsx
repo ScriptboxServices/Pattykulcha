@@ -33,6 +33,14 @@ import {
   IconButton,
   Button,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import CircularLodar from "@/components/CircularLodar";
 import axios from "axios";
@@ -48,6 +56,36 @@ const KanbanBoard = () => {
     { id: `container-5`, title: "Cancelled" },
     { id: `container-6`, title: "Sorted order" },
   ]);
+
+  const [drivers] = useState([
+    { id: "driver-1", name: "John Doe" },
+    { id: "driver-2", name: "Jane Smith" },
+    { id: "driver-3", name: "Alex Johnson" },
+  ]);
+  const [showDriverDropdown, setShowDriverDropdown] = useState<string | null>(
+    null
+  );
+  
+  const [openDialog, setOpenDialog] = useState<string | null>(null);
+  const [selectedDriver, setSelectedDriver] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const handleOpenDialog = (orderId: string) => {
+    setOpenDialog(orderId);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(null);
+  };
+
+  const handleDriverSelect = (orderId: string, driverId: string) => {
+    setSelectedDriver((prev) => ({
+      ...prev,
+      [orderId]: driverId,
+    }));
+    handleCloseDialog();
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -544,7 +582,7 @@ const KanbanBoard = () => {
                                                 display: "flex",
                                                 justifyContent: "flex-start",
                                                 alignItems: "center",
-                                                gap:0.56,
+                                                gap: 0.56,
                                               }}
                                             >
                                               <Typography
@@ -1004,8 +1042,8 @@ const KanbanBoard = () => {
                                             px: 2,
                                             pb: 2,
                                             display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
+                                            flexDirection: "column",
+                                            alignItems: "flex-start",
                                           }}
                                         >
                                           <Typography
@@ -1020,28 +1058,131 @@ const KanbanBoard = () => {
                                             sx={{ display: "flex", gap: 1 }}
                                           >
                                             {container.id === "container-2" && (
-                                              <Button
-                                                onClick={() =>
-                                                  updateOrderStatus(
-                                                    order.id,
-                                                    "Out For Delivery",
-                                                    false
-                                                  )
-                                                }
-                                                variant="contained"
-                                                sx={{
-                                                  backgroundColor: "#ECAB21",
-                                                  color: "white",
-                                                  fontWeight: "bold",
-                                                  fontSize: "10px",
-                                                  "&:hover": {
-                                                    backgroundColor: "white",
-                                                    color: "#ECAB21",
-                                                  },
-                                                }}
-                                              >
-                                                Out For Delivery
-                                              </Button>
+                                              <>
+                                                <Button
+                                                  onClick={() =>
+                                                    updateOrderStatus(
+                                                      order.id,
+                                                      "Out For Delivery",
+                                                      false
+                                                    )
+                                                  }
+                                                  variant="contained"
+                                                  sx={{
+                                                    backgroundColor: "#ECAB21",
+                                                    color: "white",
+                                                    fontWeight: "bold",
+                                                    fontSize: "10px",
+                                                    marginTop: 2,
+                                                    "&:hover": {
+                                                      backgroundColor: "white",
+                                                      color: "#ECAB21",
+                                                    },
+                                                  }}
+                                                >
+                                                  Out For Delivery
+                                                </Button>
+                                                <Button
+                                                  onClick={() =>
+                                                    handleOpenDialog(order.id)
+                                                  }
+                                                  variant="contained"
+                                                  sx={{
+                                                    backgroundColor: "#ECAB21",
+                                                    color: "white",
+                                                    fontWeight: "bold",
+                                                    fontSize: "10px",
+                                                    marginTop: 2,
+                                                    "&:hover": {
+                                                      backgroundColor: "white",
+                                                      color: "#ECAB21",
+                                                    },
+                                                  }}
+                                                >
+                                                  Assigned to
+                                                </Button>
+                                                <Dialog
+                                                  open={openDialog === order.id}
+                                                  onClose={handleCloseDialog}
+                                                  PaperProps={{
+                                                    sx: {
+                                                      borderRadius: 4, // Rounds the corners of the dialog
+                                                      padding: 2, // Adds padding inside the dialog
+                                                      minWidth: 400, // Minimum width for the dialog
+                                                    },
+                                                  }}
+                                                >
+                                                  <DialogTitle>
+                                                    Assign Driver
+                                                  </DialogTitle>
+                                                  <DialogContent>
+                                                    <FormControl
+                                                      fullWidth
+                                                      variant="outlined"
+                                                      sx={{ mt: 2 }}
+                                                    >
+                                                      <InputLabel>
+                                                        Select Driver
+                                                      </InputLabel>
+                                                      <Select
+                                                        value={
+                                                          selectedDriver[
+                                                            order.id
+                                                          ] || ""
+                                                        }
+                                                        onChange={(e) =>
+                                                          handleDriverSelect(
+                                                            order.id,
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                        label="Select Driver"
+                                                        fullWidth
+                                                        sx={{
+                                                          borderRadius: 2, // Rounds the corners of the Select component
+                                                        }}
+                                                      >
+                                                        {drivers.map(
+                                                          (driver) => (
+                                                            <MenuItem
+                                                              key={driver.id}
+                                                              value={driver.id}
+                                                            >
+                                                              {driver.name}
+                                                            </MenuItem>
+                                                          )
+                                                        )}
+                                                      </Select>
+                                                    </FormControl>
+                                                  </DialogContent>
+                                                  <DialogActions>
+                                                    <Button
+                                                      onClick={
+                                                        handleCloseDialog
+                                                      }
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                    <Button
+                                                      onClick={() =>
+                                                        handleDriverSelect(
+                                                          order.id,
+                                                          selectedDriver[
+                                                            order.id
+                                                          ] || ""
+                                                        )
+                                                      }
+                                                      disabled={
+                                                        !selectedDriver[
+                                                          order.id
+                                                        ]
+                                                      }
+                                                    >
+                                                      Assign
+                                                    </Button>
+                                                  </DialogActions>
+                                                </Dialog>
+                                              </>
                                             )}
                                             {container.id === "container-3" && (
                                               <Button
@@ -1079,6 +1220,7 @@ const KanbanBoard = () => {
                                                   backgroundColor: "red",
                                                   color: "white",
                                                   fontWeight: "bold",
+                                                  marginTop: 2,
                                                   fontSize: "10px",
                                                   "&:hover": {
                                                     backgroundColor: "white",
@@ -1116,6 +1258,7 @@ const KanbanBoard = () => {
                                           sx={{
                                             textAlign: "center",
                                             mt: 1,
+                                            mb:1,
                                           }}
                                         >
                                           <Button

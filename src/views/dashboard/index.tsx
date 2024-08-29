@@ -56,9 +56,9 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   useEffect(() => {
-    if (kitchenMetaData?.userId !== user?.uid) {
-      return router.push('/home')
-    }
+    // if (kitchenMetaData?.userId !== user?.uid) {
+    //   return router.push('/home')
+    // }
   }, [user, kitchenMetaData]);
 
   const isFirstLoad = useRef(true);
@@ -163,7 +163,7 @@ export default function ResponsiveDrawer(props: Props) {
             />
           </Link>
           <IconButton onClick={toggleMenu}>
-            <ArrowBackIcon /> {/* Show the arrow icon next to the logo */}
+            <ArrowBackIcon /> 
           </IconButton>
         </Box>
       )}

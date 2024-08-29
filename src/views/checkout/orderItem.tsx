@@ -14,7 +14,7 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  DialogTitle
+  DialogTitle,
 } from "@mui/material";
 import Image from "next/image";
 import {
@@ -27,16 +27,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 import Link from "next/link";
+import WarningIcon from "@mui/icons-material/Warning";
 import CloseIcon from "@mui/icons-material/Close";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OrderHome: React.FC<Props> = ({ setLoading }) => {
-  const { setCount, grandTotal, setCarts, setGrandTotal, carts, isAddressReachable } = useMenuContext();
+  const {
+    setCount,
+    grandTotal,
+    setCarts,
+    setGrandTotal,
+    carts,
+    isAddressReachable,
+  } = useMenuContext();
 
   const router = useRouter();
   const pathName = usePathname();
@@ -151,7 +157,10 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
               {carts?.map((item) => {
                 const { order } = item;
                 const { kulcha, additional } = order;
-                const total = calculateTotal(Number(kulcha?.price) * Number(kulcha?.quantity), additional);
+                const total = calculateTotal(
+                  Number(kulcha?.price) * Number(kulcha?.quantity),
+                  additional
+                );
                 return (
                   <Paper
                     key={item.id}
@@ -207,7 +216,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           paddingBottom: "4px",
                         }}
                       >
-                        {kulcha?.name}: x {" "}{kulcha?.quantity}
+                        {kulcha?.name}: x {kulcha?.quantity}
                         <Typography
                           variant="body1"
                           sx={{
@@ -462,13 +471,13 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     }
 
                     if (!kitchenMetaData?.isShopOpen) {
-                      setDialogboxOpen(true)
+                      setDialogboxOpen(true);
                       return;
                     }
 
-                    if(!isAddressReachable){
-                      setDialogboxOpen(true)
-                      return
+                    if (!isAddressReachable) {
+                      setDialogboxOpen(true);
+                      return;
                     }
 
                     setError(false);
@@ -507,7 +516,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
         maxWidth="sm"
         fullWidth
       >
-          <DialogTitle sx={{fontWeight:'bold'}}>
+        <DialogTitle sx={{ fontWeight: "bold" }}>
           <IconButton
             aria-label="close"
             onClick={() => setDialogboxOpen(!dialogboxOpen)}
@@ -523,27 +532,54 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
-            {
-              kitchenMetaData?.isShopOpen ? <>
-                <Typography
-                  variant="body1"
-                  color="textPrimary"
-                  align="center"
-                  sx={{ fontSize: "18px", mt:5 }}
+            {kitchenMetaData?.isShopOpen ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "#ECAB21",
+                  }}
                 >
-                  We&apos;re unable to deliver to your area at the moment. Thank you for your understanding!
-                </Typography>
-              </> : <>
-                <Typography
-                  variant="body1"
-                  color="textPrimary"
-                  align="center"
-                  sx={{ fontSize: "18px", mt:5 }}
-                >
-                  We&apos;re temporarily offline and unable to deliver to your area at the moment. We appreciate your understanding and look forward to serving you again soon!
-                </Typography>
+                  <WarningIcon sx={{ fontSize: "46px", marginTop: 3 }} />
+                  <Typography
+                    variant="body1"
+                    color="textPrimary"
+                    align="center"
+                    sx={{ fontSize: "18px", mt: 2 }}
+                  >
+                    We&apos;re unable to deliver to your area at the moment.
+                    Thank you for your understanding!
+                  </Typography>
+                </Box>
               </>
-            }
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "#ECAB21",
+                  }}
+                >
+                  <WarningIcon sx={{ fontSize: "46px", marginTop: 3 }} />
+                  <Typography
+                    variant="body1"
+                    color="textPrimary"
+                    align="center"
+                    sx={{ fontSize: "18px", mt: 2 }}
+                  >
+                    We&apos;re temporarily offline and unable to deliver to your
+                    area at the moment. We appreciate your understanding and
+                    look forward to serving you again soon!
+                  </Typography>
+                </Box>
+              </>
+            )}
           </Grid>
         </DialogContent>
       </Dialog>

@@ -28,8 +28,7 @@
     "crypto-js": "^4.2.0",
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.1",
-    "gsap": "^3.12.5",
-    "keen-slider": "^6.8.6",
+    "jspdf": "^2.5.1",
     "newpattykulcha": "file:",
     "next": "14.2.5",
     "react": "^18",
@@ -40,8 +39,7 @@
     "react-toastify": "^10.0.5",
     "stripe": "^16.7.0",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0",
-    "zod": "^3.23.8"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/googlemaps": "^3.43.3",

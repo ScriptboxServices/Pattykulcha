@@ -147,7 +147,7 @@ const Login: React.FC = () => {
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: {xs:"flex-start",sm:"center"},
+          alignItems: {xs:"center",sm:"center"},
           overflow: "hidden", // Prevent overflow issues
         }}
       >

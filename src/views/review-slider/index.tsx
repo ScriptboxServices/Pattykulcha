@@ -10,7 +10,6 @@ import {
   Button,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
 
 type Review = {
   id: number;

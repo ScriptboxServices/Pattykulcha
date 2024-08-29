@@ -229,12 +229,12 @@ const ProfilePage: React.FC = () => {
         sx={{
           display: "flex",
           justifyContent: "center",
-          height:'auto',
-          pt:{ xs: 6, xl: 8},
-          pb:{ xs: 6, xl: 8},
+          height: "auto",
+          pt: { xs: 6, xl: 8 },
+          pb: { xs: 6, xl: 8 },
           alignItem: "center",
           background: "#FAF3E0",
-          minHeight: { xs: "100%", xl: "100d%"},
+          minHeight: { xs: "100%", xl: "100d%" },
         }}
       >
         <Grid
@@ -259,16 +259,21 @@ const ProfilePage: React.FC = () => {
               }}
             >
               <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              mb: 2, // Adds margin below the title
-            }}
-          >
-            <Typography variant="h4" component="h2" gutterBottom sx={{fontWeight:'bold'}}>
-              User Profile
-            </Typography>
-          </Box>
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mb: 2, // Adds margin below the title
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  component="h2"
+                  gutterBottom
+                  sx={{ fontWeight: "bold" }}
+                >
+                  User Profile
+                </Typography>
+              </Box>
               <Card
                 sx={{
                   borderRadius: "20px",
@@ -447,27 +452,9 @@ const ProfilePage: React.FC = () => {
                         justifyContent: "center",
                         width: "100%",
                       }}
-                    >
-                      <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "#ECAB21",
-                          color: "white",
-                          paddingX: 4,
-                          paddingY: 1,
-                          marginTop: "0.5rem",
-                          marginBottom: "0.5rem",
-                          fontWeight: "bold",
-                          width:'80%',
-                          "&:hover": {
-                            backgroundColor: "#FFC107",
-                            color: "white",
-                          },
-                        }}
-                      >
-                        Submit
-                      </Button>
-                    </ListItem> */}
+                    > */}
+
+                    {/* </ListItem>  */}
                     <ListItem
                       onClick={() => handleAddressSelection("primary")}
                       sx={{ cursor: "pointer" }}
@@ -478,7 +465,7 @@ const ProfilePage: React.FC = () => {
                           alignItems: "center",
                           border: "1px solid grey",
                           borderRadius: "8px",
-                          padding: "6px 10px",                         
+                          padding: "6px 10px",
                           width: "100%",
                           position: "relative",
                         }}
@@ -677,7 +664,7 @@ const ProfilePage: React.FC = () => {
                           paddingY: 1,
                           marginTop: "0.5rem",
                           fontWeight: "bold",
-                          width:'80%',
+                          width: "80%",
                           "&:hover": {
                             backgroundColor: "#FFC107",
                             color: "white",
@@ -700,9 +687,9 @@ const ProfilePage: React.FC = () => {
         onClose={handleDialogOpen}
         maxWidth="xs"
         fullWidth
-        sx={{zIndex:'999'}}
+        sx={{ zIndex: "999" }}
         PaperProps={{
-          sx: { borderRadius: "10px"}, // Set border radius
+          sx: { borderRadius: "10px" },
         }}
       >
         <DialogTitle
@@ -734,9 +721,9 @@ const ProfilePage: React.FC = () => {
                 background: "black",
                 color: "white",
                 borderRadius: "50%",
-                fontSize: "32px", // Adjust the fontSize as needed
+                fontSize: "32px",
                 padding: "6px",
-                marginRight: "8px", // Add some spacing between the icon and the text input
+                marginRight: "8px",
               }}
             />
             <Autocomplete
@@ -842,6 +829,27 @@ const ProfilePage: React.FC = () => {
               }}
             />
           </Box>
+          <DialogActions>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#ECAB21",
+                color: "white",
+                paddingX: 4,
+                paddingY: 1,
+                marginTop: "0.5rem",
+                marginBottom: "0.5rem",
+                fontWeight: "bold",
+                marginInline:"auto",
+                "&:hover": {
+                  backgroundColor: "#FFC107",
+                  color: "white",
+                },
+              }}
+            >
+              Save address
+            </Button>
+          </DialogActions>
         </DialogContent>
       </Dialog>
     </>

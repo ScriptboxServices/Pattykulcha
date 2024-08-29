@@ -3,7 +3,6 @@
 import React, { useState,useEffect } from "react";
 import OrderHome from "./orderItem";
 import OrderPage from "./orderPage";
-import RecommendationSlider from "./recommendation";
 import CircularLodar from "@/components/CircularLodar";
 import { useAuthContext, useMenuContext } from "@/context";
 import { getCartData,calculateGrandTotal } from "@/context";
@@ -53,8 +52,7 @@ const Checkout = () => {
       <OrderPage  setLoading = {setLoading}/>
       }
       <OrderHome  setLoading = {setLoading}/>
-      {/* <RecommendationSlider /> */}
-      {/* <AddCouponComponent /> */}
+   
     </>
   );
 };
