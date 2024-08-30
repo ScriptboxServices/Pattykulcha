@@ -341,7 +341,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       return storedValue ? JSON.parse(storedValue) : defaultValue;
     };
     getData(user?.uid);
-    setKulcha(getStoredData("kulcha", {}));
     setIncludedItems2(getStoredData("includedItems2", []));
     setInstructions(localStorage.getItem("instructions") || "");
   }, [user]);

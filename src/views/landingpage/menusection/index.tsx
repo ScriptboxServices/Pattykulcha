@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux-store";
 import ReviewSlider from "@/views/review-slider";
+import { encrypt } from "@/utils/commonFunctions";
 
 type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
 
@@ -257,7 +258,9 @@ const MenuSection = () => {
                           item.price,
                           item.quantity
                         );
-                        router.push("/cart");
+                        router.push(`/cart/${encodeURIComponent(
+                          encrypt({ kulcha_name: item.name })
+                        )}`);
                       }}
                     >
                       Order Now

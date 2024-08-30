@@ -84,9 +84,8 @@ export interface IncludedItem {
   }>;
 }
 
-const MenuPage = () => {
+const MenuPage = ({kulcha} : {kulcha : any}) => {
   const {
-    kulcha,
     setKulcha,
     includedItems2,
     setIncludedItems2,
