@@ -283,6 +283,8 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
     } catch (err :any) {
       console.log(err);
       alert(JSON.stringify(err))
+      alert(JSON.stringify(metaData))
+      alert(JSON.stringify(user))
       setLoading(false);
     }
   };
