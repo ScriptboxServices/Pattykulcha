@@ -20,8 +20,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useAuthContext, useMenuContext, FIXED_INCLUDE_ITEMS } from "@/context";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
@@ -1279,7 +1277,6 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
           </Button>
         </DialogActions> */}
       </Dialog>
-      <ToastContainer />
     </Box>
   );
 };

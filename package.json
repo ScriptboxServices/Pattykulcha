@@ -24,7 +24,6 @@
     "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^4.2.0",
     "axios": "^1.7.5",
-    "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.1",
@@ -36,7 +35,6 @@
     "react-google-autocomplete": "^2.7.3",
     "react-hook-form": "^7.52.2",
     "react-redux": "^9.1.2",
-    "react-toastify": "^10.0.5",
     "stripe": "^16.7.0",
     "uuid": "^10.0.0",
     "yup": "^1.4.0"
