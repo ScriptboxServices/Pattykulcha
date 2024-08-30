@@ -251,7 +251,6 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
   };
 
   const handleAddToCart = async () => {
-    console.log("Function called");
     try {
       setLoading(true);
       const colRef = collection(db, "carts");
@@ -277,14 +276,10 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
         ...data,
       });
       setLoading(false);
-      alert('This is try ')
       setCount(count + 1);
       router.push("/checkout");
     } catch (err :any) {
       console.log(err);
-      alert(JSON.stringify(err))
-      alert(JSON.stringify(metaData))
-      alert(JSON.stringify(user))
       setLoading(false);
     }
   };
