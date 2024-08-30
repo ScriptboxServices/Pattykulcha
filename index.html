@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fffaeb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 150px;
+            width: 170px;
+        }
+
+        h6 {
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .divider {
+            border-bottom: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .grid {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .list-item {
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .list-item-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        .items-ordered {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="images/logo.png" alt="logo">
+        </div>
+
+        <div class="divider"></div>
+
+        <h6>Order Details</h6>
+        <div class="grid">
+            <ul class="list">
+                <li class="list-item">
+                    <div class="list-item-text">
+                        <span>Order ID</span>
+                        <span>ORD-5678</span>
+                    </div>
+                </li>
+                <li class="list-item">
+                    <div class="list-item-text">
+                        <span>Phone Number</span>
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                </li>
+            </ul>
+            <ul class="list">
+                <li class="list-item">
+                    <div class="list-item-text">
+                        <span>Name</span>
+                        <span>John Doe</span>
+                    </div>
+                </li>
+                <li class="list-item">
+                    <div class="list-item-text">
+                        <span>Address</span>
+                        <span>1234 Elm Street, Los Angeles, USA</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <h6>Items Ordered</h6>
+        <div class="items-ordered">
+            <img class="avatar" src="images/Img/5.jpg" alt="Aloo Kulcha">
+            <div class="list-item-text">
+                <span>Aloo Kulcha</span>
+                <span>$12.99</span>
+            </div>
+        </div>
+        <ul class="list">
+            <li class="list-item">
+                <div class="list-item-text">
+                    <span>Normal Butter</span>
+                    <span>$0.50</span>
+                </div>
+            </li>
+            <li class="list-item">
+                <div class="list-item-text">
+                    <span>Hot Coffee</span>
+                    <span>$3.50</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <ul class="list">
+            <li class="list-item">
+                <div class="list-item-text">
+                    <span>Subtotal</span>
+                    <span>$15.86</span>
+                </div>
+            </li>
+            <li class="list-item">
+                <div class="list-item-text">
+                    <span>Tax</span>
+                    <span>$1.39</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <div class="list-item-text">
+            <h6>Amount Charged</h6>
+            <span class="amount">$11.98</span>
+        </div>
+    </div>
+</body>
+</html>

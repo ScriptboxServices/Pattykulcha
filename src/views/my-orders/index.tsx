@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState,CSSProperties } from "react";
+import React, { useEffect, useState, CSSProperties } from "react";
 import {
   Box,
   Typography,
@@ -25,10 +25,9 @@ import { useAuthContext } from "@/context";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
-import jsPDF from "jspdf"; // Import jsPDF
 import Link from "next/link";
+import CancelIcon from "@mui/icons-material/Cancel";
 
-// Sample data array for orders
 const orders = [
   {
     id: "ORD-1234",
@@ -103,7 +102,7 @@ const order = {
   ],
 };
 
-const tableHeaderStyle:CSSProperties = {
+const tableHeaderStyle: CSSProperties = {
   border: "1px solid #ddd",
   padding: "8px",
   backgroundColor: "#e8f5ff",
@@ -111,19 +110,19 @@ const tableHeaderStyle:CSSProperties = {
   textAlign: "left" as "left", // Explicitly type it as a valid CSS 'textAlign' property
 };
 
-const tableCellStyle:CSSProperties = {
+const tableCellStyle: CSSProperties = {
   border: "1px solid #ddd",
   padding: "8px",
   textAlign: "left" as "left", // Explicitly type it as a valid CSS 'textAlign' property
 };
 
 const OrdersPage: React.FC = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const { user, metaData, kitchenMetaData } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [invoiceImage, setInvoiceImage] = useState<string>("/images/image.png");
   const [myOrders, setMyOrders] = useState<any>([]);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -161,132 +160,240 @@ const OrdersPage: React.FC = () => {
   //   return kulchaTotal + additionalTotal;
   // };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, order: any) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedOrder(order);
-  };
+  const handleDownloadInvoice = async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #ORD-1234</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 150px;
+        }
+        .company-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .invoice-number {
+            text-align: right;
+        }
+        .invoice-number h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .invoice-number p {
+            margin: 5px 0;
+            color: #7f8c8d;
+        }
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .invoice-details div {
+            width: 48%;
+            font-size: 14px;
+            color: #666;
+        }
+        .invoice-details div p {
+            margin: 5px 0;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .table th, .table td {
+            border: 1px solid #ecf0f1;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+        .totals {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .totals p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .totals p span {
+            margin-left: 20px;
+        }
+        .totals .total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            border-top: 2px solid #ecf0f1;
+            padding-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 20px;
+            }
+            .invoice-details {
+                flex-direction: column;
+            }
+            .invoice-details div {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedOrder(null);
-  };
+<div class="container">
+    <div class="header">
+        <div class="company-details">
+            <p><strong>Pattykulcha</strong></p>
+            <p>Canada</p>
+            <p>+1 (123) 456 7891, +44 (876) 543 2198</p>
+        </div>
+        <div class="invoice-number">
+            <h2>Invoice #ORD-1234</h2>
+            <p>Date Issued: August 29, 2024</p>
+        </div>
+    </div>
 
-  const handleDownloadInvoice = () => {
-    const doc = new jsPDF();
-    const { kulcha, additional } = order;
+    <div class="invoice-details">
+        <div>
+            <p><strong>Invoice To:</strong></p>
+            <p>Thomas Shelby</p>
+            <p>Shelby Company Limited</p>
+            <p>Small Heath, B10 0HF, UK</p>
+            <p>peakyFB@gmail.com</p>
+        </div>
+        <div>
+            <p><strong>Bill To:</strong></p>
+            <p>Total Due: $37.98</p>
+            <p>Bank Name: American Bank</p>
+            <p>Country: United States</p>
+            <p>IBAN: ETD95476213874685</p>
+            <p>SWIFT Code: BR91905</p>
+        </div>
+    </div>
 
-    const margin = 20;
-    let yPosition = 20;
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Cost</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Vuexy Admin Template</td>
+                <td>HTML Admin Template</td>
+                <td>$32</td>
+                <td>1</td>
+                <td>$32.00</td>
+            </tr>
+            <tr>
+                <td>Frest Admin Template</td>
+                <td>Angular Admin Template</td>
+                <td>$22</td>
+                <td>1</td>
+                <td>$22.00</td>
+            </tr>
+            <tr>
+                <td>Apex Admin Template</td>
+                <td>HTML Admin Template</td>
+                <td>$17</td>
+                <td>2</td>
+                <td>$34.00</td>
+            </tr>
+            <tr>
+                <td>Robust Admin Template</td>
+                <td>React Admin Template</td>
+                <td>$66</td>
+                <td>1</td>
+                <td>$66.00</td>
+            </tr>
+        </tbody>
+    </table>
 
-    // Add Invoice Header with Background
-    doc.setFillColor(245, 247, 250); // Light grey background
-    doc.rect(margin - 10, yPosition, 170, 30, "F"); // Draw background rectangle
-    doc.setFontSize(16);
-    doc.setTextColor(58, 102, 179); // Blue color for the logo text
-    doc.text("Materialize", margin, yPosition + 10);
+    <div class="totals">
+        <p><strong>Subtotal:</strong> <span>$154.25</span></p>
+        <p><strong>Discount:</strong> <span>$00.00</span></p>
+        <p><strong>Tax:</strong> <span>$50.00</span></p>
+        <p class="total"><strong>Total:</strong> <span>$204.25</span></p>
+    </div>
 
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0); // Reset color to black for normal text
-    doc.text("Office 149, 450 South Brand Brooklyn", margin, yPosition + 18);
-    doc.text("San Diego County, CA 91905, USA", margin, yPosition + 24);
-    doc.text("+1 (123) 456 7891, +44 (876) 543 2198", margin, yPosition + 30);
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>If you have any questions, contact us at support@materialize.com.</p>
+    </div>
+</div>
 
-    // Add Invoice Info
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Reset color to black for normal text
-    doc.text(`Invoice #${order.id}`, margin + 100, yPosition + 10);
-    doc.text("Date Issued: April 25, 2021", margin + 100, yPosition + 18);
-    doc.text("Date Due: May 25, 2021", margin + 100, yPosition + 24);
-
-    yPosition += 40; // Move down for customer and billing information
-
-    // Add Customer and Billing Information
-    doc.setFontSize(10);
-    doc.text("Invoice To:", margin, yPosition);
-    doc.text("Bill To:", margin + 100, yPosition);
-    yPosition += 5;
-
-    doc.text(`${order.customer?.name || "N/A"}`, margin, yPosition);
-    doc.text(
-      `Total Due: $${order.grand_total.toFixed(2)}`,
-      margin + 100,
-      yPosition
-    );
-    yPosition += 5;
-
-    doc.text("Shelby Company Limited", margin, yPosition);
-    doc.text("Bank Name: American Bank", margin + 100, yPosition);
-    yPosition += 5;
-
-    doc.text(`${order.address?.raw || "N/A"}`, margin, yPosition);
-    doc.text("Country: United States", margin + 100, yPosition);
-    yPosition += 5;
-
-    doc.text(`${order.customer?.phoneNumber || "N/A"}`, margin, yPosition);
-    doc.text("IBAN: ETD95476213874685", margin + 100, yPosition);
-    yPosition += 5;
-
-    doc.text(order.customer?.email || "N/A", margin, yPosition);
-    doc.text("SWIFT code: BR91905", margin + 100, yPosition);
-    yPosition += 10;
-
-    // Draw table headers for the items
-    doc.setFillColor(245, 247, 250); // Light grey background for headers
-    doc.rect(margin - 10, yPosition, 170, 8, "F");
-    doc.setFontSize(10);
-    doc.text("ITEM", margin, yPosition + 5);
-    doc.text("DESCRIPTION", margin + 50, yPosition + 5);
-    doc.text("COST", margin + 100, yPosition + 5);
-    doc.text("QTY", margin + 120, yPosition + 5);
-    doc.text("PRICE", margin + 140, yPosition + 5);
-    yPosition += 10;
-
-    // Add kulcha and additional items
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0); // Set text color to black
-    doc.text(kulcha.name, margin, yPosition);
-    doc.text("Delicious Indian bread", margin + 50, yPosition);
-    doc.text(`$${kulcha.price.toFixed(2)}`, margin + 100, yPosition);
-    doc.text(`${kulcha.quantity}`, margin + 120, yPosition);
-    doc.text(
-      `$${(kulcha.price * kulcha.quantity).toFixed(2)}`,
-      margin + 140,
-      yPosition
-    );
-    yPosition += 5;
-
-    additional?.forEach((addItem: any) => {
-      addItem.items.forEach((additionalItem: any) => {
-        doc.text(additionalItem.name, margin, yPosition);
-        doc.text("Extra item", margin + 50, yPosition);
-        doc.text(
-          `$${additionalItem.price.toFixed(2)}`,
-          margin + 100,
-          yPosition
-        );
-        doc.text(`${additionalItem.quantity}`, margin + 120, yPosition);
-        doc.text(
-          `$${(additionalItem.price * additionalItem.quantity).toFixed(2)}`,
-          margin + 140,
-          yPosition
-        );
-        yPosition += 5;
+</body>
+</html>`;
+    try {
+      const response = await fetch("/api/invoice-download", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ html }),
       });
-    });
 
-    yPosition += 10;
-
-    // Add total amounts at the bottom
-    doc.setFontSize(12);
-    doc.text("Total:", margin + 120, yPosition);
-    doc.text(`$${order.grand_total.toFixed(2)}`, margin + 140, yPosition);
-
-    // Save the PDF
-    doc.save(`Invoice_${order.id}.pdf`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "generated.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        console.error("Failed to generate PDF");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleViewInvoice = () => {
-    setSelectedOrder(order); // Use dummy data for viewing invoice
     setOpen(!open);
   };
 
@@ -335,7 +442,7 @@ const OrdersPage: React.FC = () => {
                   }}
                 >
                   <OrderStatusChip status={orderDoc?.delivery?.message} />
-                  {orderDoc?.delivery?.message == "Delivered" && (
+                  {/* {orderDoc?.delivery?.message == "Delivered" && (
                     <>
                       <IconButton
                         sx={{ position: "absolute", top: 14, right: -3 }} // Position the 3-dot icon next to the status
@@ -356,7 +463,7 @@ const OrdersPage: React.FC = () => {
                         </MenuItem>
                       </Menu>
                     </>
-                  )}
+                  )} */}
 
                   <Box
                     sx={{
@@ -383,14 +490,6 @@ const OrdersPage: React.FC = () => {
                         marginRight: 1,
                         display: { xs: "none", sm: "block" },
                       }}
-                    />
-                    <Typography variant="body2" sx={{ marginRight: 1 }}>
-                      {orderDoc?.address?.seperate?.line1 || "Location not set"}
-                    </Typography>
-                    <Divider
-                      orientation="vertical"
-                      flexItem
-                      sx={{ marginX: 1 }}
                     />
                     <Typography variant="body2" sx={{ marginRight: 1 }}>
                       Estimated arrival: 30 min
@@ -481,28 +580,60 @@ const OrdersPage: React.FC = () => {
                     </Typography>
                   </Box>
                   <Divider sx={{ marginY: 2 }} />
-
                   <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      flexDirection: "column",
+                    }}
                   >
-                    <Box sx={{ display: "flex", gap: 0.56 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 0.56,
+                        justifyContent: "flex-start",
+                      }}
+                    >
                       <Typography
                         variant="body2"
                         fontWeight="bold"
-                        textAlign="right"
+                        textAlign="left"
                       >
                         Total Tax: {orderDoc?.total_tax}
                       </Typography>
                       <Typography
                         variant="body2"
                         fontWeight="bold"
-                        textAlign="right"
+                        textAlign="left"
                       >
                         Total: {orderDoc?.grand_total}
                       </Typography>
                     </Box>
                     {orderDoc?.delivery?.message == "Delivered" && (
-                      <Link href={`/product-review/${orderDoc.id}`}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-evenly",
+                          marginTop: 1.45,
+                          gap: { xs: 0.73 },
+                        }}
+                      >
+                        <Link href={`/product-review/${orderDoc.id}`}>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#ECAB21",
+                              color: "white",
+                              fontWeight: "bold",
+                              "&:hover": {
+                                backgroundColor: "#FFC107",
+                                color: "white",
+                              },
+                            }}
+                          >
+                            Review
+                          </Button>
+                        </Link>
                         <Button
                           variant="contained"
                           sx={{
@@ -514,10 +645,28 @@ const OrdersPage: React.FC = () => {
                               color: "white",
                             },
                           }}
+                          onClick={handleViewInvoice}
                         >
-                          Add Review
+                          Invoice
                         </Button>
-                      </Link>
+
+                        <Link href={`/recipt/${orderDoc.id}`}>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#ECAB21",
+                              color: "white",
+                              fontWeight: "bold",
+                              "&:hover": {
+                                backgroundColor: "#FFC107",
+                                color: "white",
+                              },
+                            }}
+                          >
+                            Receipt
+                          </Button>
+                        </Link>
+                      </Box>
                     )}
                   </Box>
                 </Paper>
@@ -570,118 +719,51 @@ const OrdersPage: React.FC = () => {
               </Paper>
             </Box>
           )}
+          {myOrders.length > 0 && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Link href="/home">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    borderRadius: 20,
+                    paddingX: 4,
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                >
+                  ORDER NOW
+                </Button>
+              </Link>
+            </Box>
+          )}
         </Box>
       </Box>
+
       <Dialog open={open} onClose={handleViewInvoice} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: "#e8f5ff",
-              padding: "10px 20px",
-              borderRadius: "4px",
-            }}
-          >
-            <div
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#3a66b3" }}
-            >
-              Materialize
-            </div>
-            <div
-              style={{ textAlign: "right", fontSize: "12px", color: "#666" }}
-            >
-              <p>Invoice #{order.id}</p>
-              <p>Date Issued: April 25, 2021</p>
-              <p>Date Due: May 25, 2021</p>
-            </div>
-          </div>
-        </DialogTitle>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <DialogTitle>Invoice</DialogTitle>
+          <IconButton onClick={handleViewInvoice}>
+            <CancelIcon />
+          </IconButton>
+        </Box>
         <DialogContent>
-          <div style={{ padding: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h4 style={{ marginBottom: "5px" }}>Invoice To:</h4>
-                <p style={{ margin: 0 }}>{order.customer?.name}</p>
-                <p style={{ margin: 0 }}>Shelby Company Limited</p>
-                <p style={{ margin: 0 }}>{order.address?.raw}</p>
-                <p style={{ margin: 0 }}>{order.customer?.phoneNumber}</p>
-                <p style={{ margin: 0 }}>{order.customer?.email}</p>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <h4 style={{ marginBottom: "5px" }}>Bill To:</h4>
-                <p style={{ margin: 0 }}>
-                  Total Due: ${order.grand_total.toFixed(2)}
-                </p>
-                <p style={{ margin: 0 }}>Bank Name: American Bank</p>
-                <p style={{ margin: 0 }}>Country: United States</p>
-                <p style={{ margin: 0 }}>IBAN: ETD95476213874685</p>
-                <p style={{ margin: 0 }}>SWIFT code: BR91905</p>
-              </div>
-            </div>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                marginTop: "20px",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={tableHeaderStyle}>ITEM</th>
-                  <th style={tableHeaderStyle}>DESCRIPTION</th>
-                  <th style={tableHeaderStyle}>COST</th>
-                  <th style={tableHeaderStyle}>QTY</th>
-                  <th style={tableHeaderStyle}>PRICE</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={tableCellStyle}>{order.kulcha?.name}</td>
-                  <td style={tableCellStyle}>Delicious Indian bread</td>
-                  <td style={tableCellStyle}>
-                    ${order.kulcha?.price.toFixed(2)}
-                  </td>
-                  <td style={tableCellStyle}>{order.kulcha?.quantity}</td>
-                  <td style={tableCellStyle}>
-                    ${(order.kulcha?.price * order.kulcha?.quantity).toFixed(2)}
-                  </td>
-                </tr>
-                {order.additional?.map((addItem: any, index: number) =>
-                  addItem.items.map((additionalItem: any, subIndex: number) => (
-                    <tr key={`${index}-${subIndex}`}>
-                      <td style={tableCellStyle}>{additionalItem.name}</td>
-                      <td style={tableCellStyle}>Extra item</td>
-                      <td style={tableCellStyle}>
-                        ${additionalItem.price.toFixed(2)}
-                      </td>
-                      <td style={tableCellStyle}>{additionalItem.quantity}</td>
-                      <td style={tableCellStyle}>
-                        $
-                        {(
-                          additionalItem.price * additionalItem.quantity
-                        ).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-            <hr />
-            <div
-              style={{
-                textAlign: "right",
-                fontWeight: "bold",
-                marginTop: "10px",
-              }}
-            >
-              Total: ${order.grand_total.toFixed(2)}
-            </div>
-          </div>
+          <Box sx={{ textAlign: "center", overflow: "hidden" }}>
+            <img
+              src={invoiceImage}
+              alt="Invoice"
+              style={{ maxWidth: "85%", height: "490px", marginInline: "auto" }}
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleViewInvoice}>Close</Button>
+          <Button onClick={handleDownloadInvoice}>Download invoice</Button>
         </DialogActions>
       </Dialog>
     </>
@@ -702,8 +784,8 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
       label={status}
       sx={{
         position: "absolute",
-        top: 16,
-        right: 29,
+        top: 14,
+        right: 16,
         backgroundColor:
           statusColors[
             status as

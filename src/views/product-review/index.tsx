@@ -56,8 +56,8 @@ const ReviewForm: React.FC = () => {
       <Box
         sx={{
           backgroundColor: "white",
-          width: "400px",
           padding: "24px",
+          width: {xs:'350px',lg:'400px'},
           borderRadius: "12px",
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
         }}
