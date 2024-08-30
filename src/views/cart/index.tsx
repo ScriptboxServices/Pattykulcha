@@ -282,7 +282,7 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
       router.push("/checkout");
     } catch (err :any) {
       console.log(err);
-      alert(JSON.stringify(err.response))
+      alert(JSON.stringify(err))
       setLoading(false);
     }
   };
