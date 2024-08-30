@@ -252,6 +252,7 @@ const MenuPage = () => {
   };
 
   const handleAddToCart = async () => {
+    console.log("Function called");
     try {
       setLoading(true);
       const colRef = collection(db, "carts");
@@ -277,10 +278,12 @@ const MenuPage = () => {
         ...data,
       });
       setLoading(false);
+      alert('This is try ')
       setCount(count + 1);
       router.push("/checkout");
-    } catch (err) {
+    } catch (err :any) {
       console.log(err);
+      alert(JSON.stringify(err.response))
       setLoading(false);
     }
   };
