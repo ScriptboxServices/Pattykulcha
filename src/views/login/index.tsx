@@ -106,7 +106,7 @@ const Login: React.FC = () => {
       setLoading(true);
       const confirmation = await signInWithPhoneNumber(
         auth,
-        `+${selectedCountry?.phone}${data.phoneNumber}`,
+        `+${data?.countryCode?.phone}${data.phoneNumber}`,
         recaptchaVerifier
       );
 
@@ -116,11 +116,11 @@ const Login: React.FC = () => {
     } catch (err: any) {
       console.log(err.code);
       setLoading(false);
-      setError(
-        err.code === "auth/invalid-phone-number"
-          ? "Invalid phone number."
-          : "Failed to send OTP."
-      );
+      if (err.code == "auth/invalid-phone-number") {
+        setError("Invalid phone number.");
+      } else {
+        setError("Failed to send otp.");
+      }
     }
   };
 
