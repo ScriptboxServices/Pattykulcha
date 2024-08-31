@@ -159,7 +159,7 @@ const KanbanBoard = () => {
         }
       });
       sortedOrders.sort(
-        (a: any, b: any) => a.address.distance.value - b.address.distance.value
+        (a: any, b: any) => a.address?.distance?.value - b.address?.distance?.value
       );
       setSortedOrders([...sortedOrders]);
       setNewOrders([...newOrders]);
