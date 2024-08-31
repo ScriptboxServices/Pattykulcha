@@ -24,13 +24,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useAuthContext, useMenuContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
-
-interface CountryType {
-  code: string;
-  label: string;
-  phone: string;
-  suggested?: boolean;
-}
+import { CountryType } from "@/context/types";
 
 // Define the Yup schema
 const schema = yup.object().shape({

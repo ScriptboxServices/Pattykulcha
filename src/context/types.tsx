@@ -12,3 +12,10 @@ export interface MenuItem {
   price: number;
   quantity: number;
 }
+
+export interface CountryType {
+  code: string;
+  label: string;
+  phone: string;
+  suggested?: boolean;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
@@ -19,7 +19,8 @@ import {
   Alert,
 } from "@mui/material";
 import { Icon, IconifyIcon } from "@iconify/react";
-import { countryCodes } from "@/utils/constants";
+import { countries, countryCodes } from "@/utils/constants";
+import { CountryType } from "@/context/types";
 
 export interface CountryCode {
   name: string;
@@ -40,7 +41,7 @@ const schema = yup.object().shape({
     .matches(/^\d+$/, "Phone number is not valid")
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
-  countryCode: yup.string().required(),
+  countryCode: yup.mixed<CountryType>().required(),
   vehicleDetails: yup.string().required("Vehicle details are required"),
 });
 
@@ -63,13 +64,20 @@ const DriverPage: React.FC = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
-      countryCode: countryCodes
-        .find((country) => country.name == "Canada")
-        ?.phone.toString(),
+      countryCode:  countries.find((country) => country.label === "Canada"),
     },
   });
 
   const [error, setError] = useState<string>("");
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
+    null
+  );
+
+  useEffect(() => {
+    const defaultCountry =
+      countries.find((country) => country.label === "Canada") || null;
+    setSelectedCountry(defaultCountry);
+  }, []);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setError("");
@@ -180,58 +188,64 @@ const DriverPage: React.FC = () => {
                   control={control}
                   render={({ field: { value, onChange } }) => (
                     <Autocomplete
-                      fullWidth
-                      options={countryCodes}
-                      filterOptions={filterOptions}
-                      getOptionLabel={(option: CountryCode) =>
-                        `${option.name} (${option.phone}) `
-                      }
-                      renderOption={(props, option: CountryCode) => (
-                        <Box component="li" {...props}>
-                          <Icon
-                            icon={option.icon as IconifyIcon}
+                    id='country-select-demo'
+                    fullWidth
+                    options={countries}
+                    autoHighlight
+                    getOptionLabel={(option) => option.label}
+                    renderOption={(props, option) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <Box
+                          key={key}
+                          component='li'
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...optionProps}>
+                          <Image
+                            loading='lazy'
                             width={20}
-                            height={20}
+                            height={15} // Maintain aspect ratio similar to the original `img`
+                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                            alt={`${option.label} flag`}
                           />
-                          {option.name} ({option.phone})
+                          {option.label} ({option.code}) +{option.phone}
                         </Box>
-                      )}
-                      value={
-                        countryCodes.find(
-                          (code) => code.phone == Number(value)
-                        ) || defaultCountry
-                      }
-                      onChange={(event, newValue) =>
-                        onChange(newValue?.phone ?? "")
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Country Code"
-                          placeholder="Select Country Code"
-                          required
-                          InputProps={{
-                            ...params.InputProps,
-                            startAdornment: (
-                              <>
-                                {params.InputProps.startAdornment}
-                                <InputAdornment position="start">
-                                  <Icon
-                                    icon={
-                                      (countryCodes.find(
-                                        (option) =>
-                                          option.phone == Number(value)
-                                      )?.icon ||
-                                        defaultCountry?.icon) as IconifyIcon
-                                    }
-                                  />
-                                </InputAdornment>
-                              </>
-                            ),
-                          }}
-                        />
-                      )}
-                    />
+                      );
+                    }}
+                    value={selectedCountry}
+                    onChange={(event, newValue) => {
+                      onChange(newValue);
+                      setSelectedCountry(newValue || (null as any));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label='Choose a country code'
+                        inputProps={{
+                          ...params.inputProps,
+                          autoComplete: "new-password", // Correct way to pass autoComplete
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: selectedCountry && (
+                            <InputAdornment position='start'>
+                              <Image
+                                loading='eager'
+                                width={20}
+                                height={15} // Maintain aspect ratio similar to the original `img`
+                                src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
+                                priority
+                                alt='#'
+                              />
+                              <Typography sx={{ ml: 1 }}>
+                                +{selectedCountry.phone}
+                              </Typography>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
                   )}
                 />
               </Grid>

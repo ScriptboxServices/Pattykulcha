@@ -13,7 +13,7 @@ import {
   TextField,
   CssBaseline,
   Grid,
-  Autocomplete as MUIAutocomplete,
+  Autocomplete,
   InputAdornment,
   Alert,
   Dialog,
@@ -36,10 +36,10 @@ import { drinkOptions } from "@/constants/MenuOptions";
 import { getImageSrc } from "../cart";
 import { v4 as uuidv4 } from "uuid";
 import { Icon, IconifyIcon } from "@iconify/react";
-import Autocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
+import GoogleAddressAutocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { countryCodes } from "@/utils/constants";
+import { countries, countryCodes } from "@/utils/constants";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { menuItems } from "@/constants/MenuOptions";
 export interface CountryCode {
@@ -65,6 +65,7 @@ import { db } from "@/firebase";
 import { getIdToken } from "firebase/auth";
 import axios from "axios";
 import { useMenuContext } from "@/context";
+import { CountryType } from "@/context/types";
 
 // Define the Yup schema
 const schema = yup.object().shape({
@@ -74,7 +75,7 @@ const schema = yup.object().shape({
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   paymentmethod: yup.string().required("Payment method is required"),
-  countryCode: yup.string().required(),
+  countryCode: yup.mixed<CountryType>().required(),
   instructions: yup.string().required("Special instructions are required"),
 });
 
@@ -87,9 +88,6 @@ const filterOptions = (options: CountryCode[], state: any) =>
   );
 
 const MakeOrder: React.FC = () => {
-  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
-    null
-  );
   const [userData, setUserData] = useState<any>({});
   const [includedItems1, setIncludedItems1] = useState<any[]>([]);
   const [includedItems2, setIncludedItems2] = useState<any[]>([]);
@@ -98,7 +96,9 @@ const MakeOrder: React.FC = () => {
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { kitchenMetaData, user } = useAuthContext();
-
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
+    null
+  );
   const handleDrinkDialog = () => {
     setIsDrinkDialogOpen(!isDrinkDialogOpen);
   };
@@ -107,6 +107,13 @@ const MakeOrder: React.FC = () => {
     const drinkItem = drinkOptions.find((d) => d.name == drink);
     handleAddItem(drinkItem!.name);
   };
+
+  useEffect(() => {
+    const defaultCountry =
+      countries.find((country) => country.label === "Canada") || null;
+    setSelectedCountry(defaultCountry);
+  }, []);
+
   const handleAddItem = (itemName: string) => {
     const existingItem = includedItems2.find((includedItem) =>
       includedItem.items.some((item: any) => item.name === itemName)
@@ -155,9 +162,7 @@ const MakeOrder: React.FC = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
-      countryCode: countryCodes
-        .find((country) => country.name == "Canada")
-        ?.phone.toString(),
+      countryCode: countries.find((country) => country.label === "Canada"),
       name: "",
       phoneNumber: "",
       instructions: "",
@@ -312,7 +317,7 @@ const MakeOrder: React.FC = () => {
       const colRef = collection(db, "users");
       const q = query(
         colRef,
-        where("phoneNumber", "==", `+${defaultCountry?.phone}${value}`)
+        where("phoneNumber", "==", `+${selectedCountry?.phone}${value}`)
       );
       getDocs(q).then((user) => {
         console.log(user.size);
@@ -334,7 +339,7 @@ const MakeOrder: React.FC = () => {
   };
 
   const { extraItems } = useMenuContext();
-  console.log(includedItems2);
+
   return (
     <>
       <CssBaseline />
@@ -384,56 +389,60 @@ const MakeOrder: React.FC = () => {
                     name='countryCode'
                     control={control}
                     render={({ field: { value, onChange } }) => (
-                      <MUIAutocomplete
+                      <Autocomplete
+                        id='country-select-demo'
                         fullWidth
-                        options={countryCodes}
-                        filterOptions={filterOptions}
-                        getOptionLabel={(option: CountryCode) =>
-                          `${option.name} (${option.phone}) `
-                        }
-                        renderOption={(props, option: CountryCode) => (
-                          <Box component='li' {...props}>
-                            <Icon
-                              icon={option.icon as IconifyIcon}
-                              width={20}
-                              height={20}
-                            />
-                            {option.name} ({option.phone})
-                          </Box>
-                        )}
-                        value={
-                          countryCodes.find(
-                            (code) => code.phone == Number(value)
-                          ) || defaultCountry
-                        }
+                        options={countries}
+                        autoHighlight
+                        getOptionLabel={(option) => option.label}
+                        renderOption={(props, option) => {
+                          const { key, ...optionProps } = props;
+                          return (
+                            <Box
+                              key={key}
+                              component='li'
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...optionProps}>
+                              <Image
+                                loading='lazy'
+                                width={20}
+                                height={15} // Maintain aspect ratio similar to the original `img`
+                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                alt={`${option.label} flag`}
+                              />
+                              {option.label} ({option.code}) +{option.phone}
+                            </Box>
+                          );
+                        }}
+                        value={selectedCountry}
                         onChange={(event, newValue) => {
-                          console.log(newValue);
-                          setDefaultCountry(newValue);
-                          onChange(newValue?.phone ?? "");
+                          onChange(newValue);
+                          setSelectedCountry(newValue || (null as any));
                         }}
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label='Country Code'
-                            placeholder='Select Country Code'
-                            required
+                            label='Choose a country code'
+                            inputProps={{
+                              ...params.inputProps,
+                              autoComplete: "new-password", // Correct way to pass autoComplete
+                            }}
                             InputProps={{
                               ...params.InputProps,
-                              startAdornment: (
-                                <>
-                                  {params.InputProps.startAdornment}
-                                  <InputAdornment position='start'>
-                                    <Icon
-                                      icon={
-                                        (countryCodes.find(
-                                          (option) =>
-                                            option.phone == Number(value)
-                                        )?.icon ||
-                                          defaultCountry?.icon) as IconifyIcon
-                                      }
-                                    />
-                                  </InputAdornment>
-                                </>
+                              startAdornment: selectedCountry && (
+                                <InputAdornment position='start'>
+                                  <Image
+                                    loading='eager'
+                                    width={20}
+                                    height={15} // Maintain aspect ratio similar to the original `img`
+                                    src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
+                                    priority
+                                    alt='#'
+                                  />
+                                  <Typography sx={{ ml: 1 }}>
+                                    +{selectedCountry.phone}
+                                  </Typography>
+                                </InputAdornment>
                               ),
                             }}
                           />
@@ -504,7 +513,7 @@ const MakeOrder: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Autocomplete
+                  <GoogleAddressAutocomplete
                     key={address?.raw || "default"}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
                     style={{
@@ -706,58 +715,58 @@ const MakeOrder: React.FC = () => {
                   flexDirection='row'
                   alignItems='center'
                   gap={5}>
-                  {extraItems.map((item, index) =>{ 
-                    return(
-                    <Grid item xs={6} sm={4} md={1.6} key={index}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "1rem",
-                          backgroundColor: "white",
-                          borderRadius: "8px",
-                          textAlign: "center",
-                          position: "relative",
-                          cursor: "pointer",
-                          height: {
-                            xs: "160px",
-                            sm: "120px",
-                            md: "150px",
-                            lg: "150px",
-                          },
-                          boxShadow: "1px 1px 3px #4e5664", // Updated box-shadow
-                          border: includedItems2.some(
-                            (_item: any) => {
-                              return item === _item.items[0].name}
-                          )
-                            ? "2px solid green"
-                            : "1px solid #ddd",
-                          // border: "1px solid black",
-                        }}
-                        onClick={() => handleAddItem(item)}>
-                        <Image
-                          src={getImageSrc(item)}
-                          alt={item}
-                          width={150}
-                          height={150}
-                          style={{
-                            width: "50%", // Set the width to 65% of the container
-                            height: "50%", // Set the height to 55% of the container
-                            objectFit: "contain",
-                            marginTop: 1,
+                  {extraItems.map((item, index) => {
+                    return (
+                      <Grid item xs={6} sm={4} md={1.6} key={index}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "1rem",
+                            backgroundColor: "white",
+                            borderRadius: "8px",
+                            textAlign: "center",
+                            position: "relative",
+                            cursor: "pointer",
+                            height: {
+                              xs: "160px",
+                              sm: "120px",
+                              md: "150px",
+                              lg: "150px",
+                            },
+                            boxShadow: "1px 1px 3px #4e5664", // Updated box-shadow
+                            border: includedItems2.some((_item: any) => {
+                              return item === _item.items[0].name;
+                            })
+                              ? "2px solid green"
+                              : "1px solid #ddd",
+                            // border: "1px solid black",
                           }}
-                        />
-                        <Typography
-                          variant='body1'
-                          color='textPrimary'
-                          sx={{ mt: 2 }}>
-                          {item}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  )})}
+                          onClick={() => handleAddItem(item)}>
+                          <Image
+                            src={getImageSrc(item)}
+                            alt={item}
+                            width={150}
+                            height={150}
+                            style={{
+                              width: "50%", // Set the width to 65% of the container
+                              height: "50%", // Set the height to 55% of the container
+                              objectFit: "contain",
+                              marginTop: 1,
+                            }}
+                          />
+                          <Typography
+                            variant='body1'
+                            color='textPrimary'
+                            sx={{ mt: 2 }}>
+                            {item}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
                 <Grid container spacing={1} justifyContent='center'>
                   <Grid item xs={12}>

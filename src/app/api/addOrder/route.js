@@ -66,7 +66,7 @@ export const POST = async (req, res) => {
         }
     );
     let userId = ''
-    const user = await db.collection('users').where('phoneNumber','==',`+${countryCode}${phoneNumber}`).get()
+    const user = await db.collection('users').where('phoneNumber','==',`+${countryCode.phone}${phoneNumber}`).get()
     if(user.empty){
         const createUserRef = db.collection('users').doc()
         await createUserRef.set({
