@@ -19,7 +19,7 @@ import {
   Alert,
 } from "@mui/material";
 import { Icon, IconifyIcon } from "@iconify/react";
-import { countries, countryCodes } from "@/utils/constants";
+import { countries } from "@/utils/constants";
 import { CountryType } from "@/context/types";
 
 export interface CountryCode {
@@ -53,10 +53,6 @@ const filterOptions = (options: CountryCode[], state: any) =>
   );
 
 const DriverPage: React.FC = () => {
-  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
-    countryCodes.find((country) => country.name == "Canada") || null
-  );
-
   const {
     control,
     handleSubmit,

@@ -39,7 +39,7 @@ import { Icon, IconifyIcon } from "@iconify/react";
 import GoogleAddressAutocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { countries, countryCodes } from "@/utils/constants";
+import { countries } from "@/utils/constants";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { menuItems } from "@/constants/MenuOptions";
 export interface CountryCode {
