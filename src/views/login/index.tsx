@@ -148,7 +148,7 @@ const Login: React.FC = () => {
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
-            marginTop: { xs: 1.24 },
+            marginTop: { xs: 4.24 },
           }}
         >
           <Box

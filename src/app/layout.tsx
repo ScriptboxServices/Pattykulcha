@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
 
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="132x132" />
+        <link rel="icon" href="/images/favicon-32x32.png" type="image/png" sizes="132x132" />
 
         <Script
           async

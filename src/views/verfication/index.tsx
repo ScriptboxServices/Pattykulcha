@@ -62,10 +62,10 @@ const StyledCodeInput = styled(Box)(({ theme }) => ({
   "& > *": {
     margin: theme.spacing(0.5),
     width: "40px",
-    height: "40px", 
+    height: "40px",
     [theme.breakpoints.up("sm")]: {
       width: "40px",
-      height: "40px", 
+      height: "40px",
       margin: theme.spacing(0.1),
       justifyContent: "center",
     },
@@ -117,7 +117,7 @@ const VerificationPage: React.FC = () => {
 
   const startTimer = () => {
     setResendDisabled(true);
-    setTimer(60); 
+    setTimer(60);
 
     const countdown = setInterval(() => {
       setTimer((prevTime) => {
@@ -202,126 +202,127 @@ const VerificationPage: React.FC = () => {
   return (
     <>
       <CircularLodar isLoading={loading} />
-      <Box 
-      sx={{
-        backgroundColor: "white",
-        height: "100dvh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: {xs:"flex-start",sm:"center"},
-        overflow: "hidden",
-      }}>
-      <Container
-        component="main"
-        maxWidth='xl'
+      <Box
         sx={{
+          backgroundColor: "white",
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: {xs:"flex-start",sm:"center"},
-          backgroundColor: "white",
-          padding: { xs: 1, sm: 4, md: 4 },
+          alignItems: { xs: "flex-start", sm: "center" },
           overflow: "hidden",
         }}
       >
-        <StyledRoot>
-          <StyledForm>
-            <Typography variant="h4" sx={{ mt: "1rem" }} gutterBottom>
-              Verify your phone number
-            </Typography>
-            <Typography variant="body1" sx={{ mb: "1rem" }} gutterBottom>
-              Check the messages for the verification code, sent to your phone
-              number.
-            </Typography>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: 400, mb: "1rem" }}
-            >
-              Enter OTP
-            </Typography>
-            <StyledCodeInput>
-              {verificationCode.map((code, index) => (
-                <TextField
-                  key={index}
-                  type="tel"
-                  variant="outlined"
-                  value={code}
-                  onChange={handleCodeChange(index)}
-                  onKeyDown={handleKeyDown(index)}
-                  inputProps={{ maxLength: 1 }}
-                  inputRef={(el) => (inputRefs.current[index] = el)}
+        <Container
+          component="main"
+          maxWidth="xl"
+          sx={{
+            height: "100dvh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: { xs: "flex-start", sm: "center" },
+            backgroundColor: "white",
+            padding: { xs: 1, sm: 4, md: 4 },
+            overflow: "hidden",
+          }}
+        >
+          <StyledRoot>
+            <StyledForm>
+              <Typography variant="h4" sx={{ mt: "1rem" }} gutterBottom>
+                Verify your phone number
+              </Typography>
+              <Typography variant="body1" sx={{ mb: "1rem" }} gutterBottom>
+                Check the messages for the verification code, sent to your phone
+                number.
+              </Typography>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ fontWeight: 400, mb: "1rem" }}
+              >
+                Enter OTP
+              </Typography>
+              <div style={{display:"flex",justifyContent:"space-evenly"}}>
+                {verificationCode.map((code, index) => (
+                  <TextField
+                    key={index}
+                    type="tel"
+                    variant="outlined"
+                    value={code}
+                    onChange={handleCodeChange(index)}
+                    onKeyDown={handleKeyDown(index)}
+                    inputProps={{ maxLength: 1 }}
+                    inputRef={(el) => (inputRefs.current[index] = el)}
+                    sx={{
+                      margin: 0.5,
+                      // border: "1px solid black",
+                      borderRadius: 1,
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "black",
+                        },
+                        "& input": {
+                          textAlign: "center",
+                        },
+                        "&.Mui-focused input": {
+                          borderColor: "black",
+                          color: "black",
+                        },
+                      },
+                    }}
+                  />
+                ))}
+              </div>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleVerify}
+                  fullWidth
                   sx={{
-                    margin: 0.5,
-                    // border: "1px solid black",
-                    borderRadius: 1,
-                    "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": {
-                        borderColor: "black",
-                      },
-                      "& input": {
-                        textAlign: "center",
-                      },
-                      "&.Mui-focused input": {
-                        borderColor: "black",
-                        color: "black",
-                      },
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    paddingX: 4,
+                    paddingY: 1,
+                    marginTop: "1rem",
+                    marginBottom: "1rem",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
                     },
                   }}
-                />
-              ))}
-            </StyledCodeInput>
-            <Box mt={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleVerify}
-                fullWidth
-                sx={{
-                  backgroundColor: "#ECAB21",
-                  color: "white",
-                  paddingX: 4,
-                  paddingY: 1,
-                  marginTop: "1rem",
-                  marginBottom: "1rem",
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
-                    color: "white",
-                  },
-                }}
-              >
-                Confirm
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleResend}
-                fullWidth
-                disabled={resendDisabled}
-                sx={{
-                  paddingX: 4,
-                  paddingY: 1,
-                  fontWeight: "bold",
-                  marginTop: "1rem",
-                  color: "black",
-                }}
-              >
-                {resendDisabled
-                  ? `Resend OTP in ${Math.floor(timer / 60)}:${String(
-                      timer % 60
-                    ).padStart(2, "0")}`
-                  : "Resend OTP"}
-              </Button>
-              {error && (
-                <Alert sx={{ mt: 2 }} severity="error">
-                  {error}
-                </Alert>
-              )}
-            </Box>
-          </StyledForm>
-        </StyledRoot>
-      </Container>
+                >
+                  Confirm
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleResend}
+                  fullWidth
+                  disabled={resendDisabled}
+                  sx={{
+                    paddingX: 4,
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    marginTop: "1rem",
+                    color: "black",
+                  }}
+                >
+                  {resendDisabled
+                    ? `Resend OTP in ${Math.floor(timer / 60)}:${String(
+                        timer % 60
+                      ).padStart(2, "0")}`
+                    : "Resend OTP"}
+                </Button>
+                {error && (
+                  <Alert sx={{ mt: 2 }} severity="error">
+                    {error}
+                  </Alert>
+                )}
+              </Box>
+            </StyledForm>
+          </StyledRoot>
+        </Container>
       </Box>
     </>
   );
