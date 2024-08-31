@@ -6,7 +6,9 @@ export const POST = async (req) => {
   const url="";
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      executablePath : '/home/sbx_user1051/.cache/puppeteer'
+    });
     const page = await browser.newPage();
 
     if (url) {

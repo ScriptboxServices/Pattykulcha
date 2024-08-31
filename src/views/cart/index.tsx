@@ -82,8 +82,9 @@ export interface IncludedItem {
   }>;
 }
 
-const MenuPage = ({kulcha} : {kulcha : any}) => {
+const MenuPage = ({_kulcha} : {_kulcha : any}) => {
   const {
+    kulcha,
     setKulcha,
     includedItems2,
     setIncludedItems2,
@@ -107,16 +108,21 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
   const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
   const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
 
+  useEffect(() => {
+    setKulcha({
+      ..._kulcha,
+      ...kulcha
+    })
+  },[])
+
   const handleAddItem = (itemName: string) => {
     const existingItem = includedItems2.find((includedItem) =>
       includedItem.items.some((item: any) => item.name === itemName)
     );
 
     if (existingItem) {
-      // If item already exists, remove it
       handleRemoveItem(existingItem.id);
     } else {
-      // Otherwise, add it
       const itemId = uuidv4();
       const drink = drinkOptions.find((drink) => drink.name == itemName);
       const lassi = lassiOptions.find((lassi) => lassi.name == itemName);
@@ -333,6 +339,16 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
               }}>
               {kulcha?.desc}
             </Typography>
+            <Typography
+              variant='body1'
+              sx={{
+                marginBottom: "1rem",
+                color: "#000000",
+                fontSize: '14px',
+                fontWeight:'bold'
+              }}>
+              What&apos;s Included :- Chana | Imli-Pyaz-Chutney | Amul Butter
+            </Typography>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -400,44 +416,14 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
                 marginBottom: "23px",
               }}
             />
-            <Typography
+            {/* <Typography
               variant='h4'
               gutterBottom
               sx={{ color: "#021e3a", fontWeight: "bold" }}>
               What&apos;s Included
-            </Typography>
-            <Grid container spacing={2} justifyContent='center'>
-              {FIXED_INCLUDE_ITEMS.length == 0 ? (
-                <Grid item>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "1rem",
-                      backgroundColor: "white",
-                      border: "2px solid #dcdcdc",
-                      borderRadius: "8px",
-                      textAlign: "center",
-                      height: {
-                        xs: "200px",
-                        sm: "220px",
-                        md: "230px",
-                        lg: "230px",
-                      },
-                      width: { xs: "150px", sm: "175px" },
-                      margin: "1rem",
-                    }}>
-                    <AddCircleOutlineIcon
-                      sx={{ fontSize: "4rem", color: "#336195" }}
-                    />
-                    <Typography variant='body1' color='textSecondary'>
-                      Add Items
-                    </Typography>
-                  </Box>
-                </Grid>
-              ) : (
+            </Typography> */}
+            {/* <Grid container spacing={2} justifyContent='center'>
+              {
                 FIXED_INCLUDE_ITEMS.map((item) => (
                   <Grid item xs={6} sm={4} md={1.6} key={item.id}>
                     <Box
@@ -494,8 +480,8 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
                     </Box>
                   </Grid>
                 ))
-              )}
-            </Grid>
+              }
+            </Grid> */}
             {includedItems2.length > 0 && (
               <Typography
                 variant='h4'

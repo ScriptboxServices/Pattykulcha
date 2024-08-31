@@ -48,7 +48,7 @@ const OrdersPage = ({ data }: { data: any }) => {
     return new Promise((resolve, _) => {
       setTimeout(() => {
         resolve(true);
-      }, 5000);
+      }, 2000);
     });
   };
 
@@ -108,15 +108,37 @@ const OrdersPage = ({ data }: { data: any }) => {
               borderRadius: "16px",
             }}
           >
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={6} mt={5}>
+            <Grid container spacing={4} >
+              <Grid item xs={12} md={12} mt={5}>
                 <Typography variant="h4" gutterBottom fontWeight="bold">
                   Thank you for your order!
                 </Typography>
                 <Typography variant="body1" paragraph>
                   Your order will be delivered shortly.
                 </Typography>
-                <Typography variant="h6" gutterBottom>
+                <Box sx={{display:'flex',justifyContent:'center'}}>
+                  <Button
+                      onClick={() => {
+                        return router.push("/home");
+                      }}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#ECAB21",
+                        color: "white",
+                        paddingX: 4,
+                        paddingY: 1,
+                        mt: 2,
+                        fontWeight: "bold",
+                        "&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      Back to Main Menu
+              </Button>
+                </Box>
+                {/* <Typography variant="h6" gutterBottom>
                   Billing Address
                 </Typography>
                 <Typography variant="body1">
@@ -133,10 +155,10 @@ const OrdersPage = ({ data }: { data: any }) => {
                 </Typography>
                 <Typography variant="body1">
                   Instructions: {orderData?.instructions}
-                </Typography>
+                </Typography> */}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <Paper
                   elevation={1}
                   sx={{
@@ -264,7 +286,7 @@ const OrdersPage = ({ data }: { data: any }) => {
                     <Typography variant="h6">${payment?.grand_total}</Typography>
                   </Box>
                 </Paper>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Paper>
         </Box> : 
@@ -283,7 +305,7 @@ const OrdersPage = ({ data }: { data: any }) => {
          }}
        >
          <Grid container spacing={4}>
-           <Grid item xs={12} md={6} mt={5}>
+           <Grid item xs={12} md={12} mt={5}>
              <Typography variant="h6" sx={{textAlign:'center'}} gutterBottom fontWeight="bold">
              Your payment has been confirmed. However, due to a technical issue with our server, your order was not placed. We will process your refund shortly.
              </Typography>

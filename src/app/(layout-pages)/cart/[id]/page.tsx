@@ -13,7 +13,7 @@ const CartPage = ({params} : {params : any}) => {
 
   return (
     <>
-      <MenuPage kulcha= {filterKulcha} />
+      <MenuPage _kulcha= {filterKulcha} />
     </>
   );
 };

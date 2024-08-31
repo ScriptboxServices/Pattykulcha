@@ -550,16 +550,6 @@ const ProfilePage: React.FC = () => {
               marginTop: "8px",
               width: "100%",
             }}>
-            <Home
-              sx={{
-                background: "black",
-                color: "white",
-                borderRadius: "50%",
-                fontSize: "32px",
-                padding: "6px",
-                marginRight: "8px",
-              }}
-            />
             <Autocomplete
               apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
               style={{

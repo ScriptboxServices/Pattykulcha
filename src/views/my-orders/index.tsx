@@ -616,7 +616,7 @@ const OrdersPage: React.FC = () => {
                             Review
                           </Button>
                         </Link>
-                        <Button
+                        {/* <Button
                           variant="contained"
                           sx={{
                             backgroundColor: "#ECAB21",
@@ -630,9 +630,9 @@ const OrdersPage: React.FC = () => {
                           onClick={handleViewInvoice}
                         >
                           Invoice
-                        </Button>
+                        </Button> */}
 
-                        <Link href={`/recipt/${orderDoc.id}`}>
+                        {/* <Link href={`/recipt/${orderDoc.id}`}>
                           <Button
                             variant="contained"
                             sx={{
@@ -647,7 +647,7 @@ const OrdersPage: React.FC = () => {
                           >
                             Receipt
                           </Button>
-                        </Link>
+                        </Link> */}
                       </Box>
                     )}
                   </Box>
