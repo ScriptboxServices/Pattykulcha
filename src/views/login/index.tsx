@@ -95,7 +95,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     const defaultCountry =
       countries.find((country) => country.label === "Canada") || null;
-     setSelectedCountry(defaultCountry);
+    setSelectedCountry(defaultCountry);
   }, []);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -148,7 +148,7 @@ const Login: React.FC = () => {
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
-            marginTop: { xs: 8 },
+            marginTop: { xs: 1.24 },
           }}
         >
           <Box
@@ -306,6 +306,12 @@ const Login: React.FC = () => {
                       />
                     )}
                   />
+                  <Typography variant="subtitle1" sx={{mt:0.5,fontSize:"11px"}}>
+                    We’ll call or text you to confirm your number. Standard
+                    message and data rates apply.<Button sx={{fontSize:"11px",textDecoration:"underline",ml:-1,mt:-0.3}} onClick={()=>{
+                      router.push("/privacypolicy")
+                    }}>Privacy Policy</Button>
+                  </Typography>
                 </Grid>
               </Grid>
               <Button

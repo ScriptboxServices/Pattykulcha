@@ -25,7 +25,7 @@ const reviews: Review[] = [
       "These kulchas are amazing—crispy on the outside, soft inside, and packed with flavor. The creamy lassi is also a perfect match. Authentic taste worth trying!",
     author: "Harpreet Kaur",
     rating: 4,
-    avatarUrl: "/images/avatars/1.png",
+    avatarUrl: "/images/avatars/2.png",
     date: "2024-08-18",
   },
   {
@@ -34,7 +34,7 @@ const reviews: Review[] = [
       "Super fast delivery, fresh and warm. The paneer kulcha was generously filled and flavorful. Added a cold coffee, and it was a hit. Highly recommend!",
     author: "Manish Gupta",
     rating: 5,
-    avatarUrl: "/images/avatars/2.png",
+    avatarUrl: "/images/avatars/1.png",
     date: "2024-08-15",
   },
   {
@@ -52,7 +52,7 @@ const reviews: Review[] = [
       "Kulchas just like back home—stuffed, spiced, and full of flavor. Tangy chutney and refreshing drinks. A must-try for those craving authentic Indian street food.",
     author: "Kunal Singh",
     rating: 4,
-    avatarUrl: "/images/avatars/4.png",
+    avatarUrl: "/images/avatars/5.png",
     date: "2024-08-17",
   },
   {
@@ -61,7 +61,7 @@ const reviews: Review[] = [
       "Quick delivery! The kulcha was warm, crunchy, and flavorful. Great service and delicious food. It’s now my go-to comfort food for a filling, tasty meal.",
     author: "Kiranpreet Kaur",
     rating: 4,
-    avatarUrl: "/images/avatars/5.png",
+    avatarUrl: "/images/avatars/4.png",
     date: "2024-08-21",
   },
   {
@@ -70,7 +70,7 @@ const reviews: Review[] = [
       "Wonderful kulchas! Paired with hot chai, it’s true comfort food. Consistent quality and flavors that never disappoint. Perfect for a cozy evening.",
     author: "Aarav Sharma",
     rating: 5,
-    avatarUrl: "/images/avatars/6.png",
+    avatarUrl: "/images/avatars/7.png",
     date: "2024-08-16",
   },
   {
@@ -79,7 +79,7 @@ const reviews: Review[] = [
       "Tried the paneer kulcha and masala chai. Perfect homestyle meal. Authentic and satisfying. If you’re after real, homestyle food, this is the place.",
     author: "Prabhleen Kaur",
     rating: 4,
-    avatarUrl: "/images/avatars/7.png",
+    avatarUrl: "/images/avatars/6.png",
     date: "2024-08-17",
   },
   {
@@ -88,7 +88,7 @@ const reviews: Review[] = [
       "Crispy kulchas, generously stuffed. My favorite is the gobi kulcha with iced coffee. Great food and service—highly recommended!",
     author: "Kunwarpal Singh",
     rating: 5,
-    avatarUrl: "/images/avatars/8.png",
+    avatarUrl: "/images/avatars/1.png",
     date: "2024-08-20",
   },
   {
@@ -97,7 +97,7 @@ const reviews: Review[] = [
       "Ordered aloo kulcha, packed with flavor. Sweet lassi was the perfect pairing. Prompt delivery and perfect for a quick, tasty lunch.",
     author: "Sanjana",
     rating: 5,
-    avatarUrl: "/images/avatars/1.png",
+    avatarUrl: "/images/avatars/8.png",
     date: "2024-08-21",
   },
   {
@@ -106,7 +106,7 @@ const reviews: Review[] = [
       "Mix kulcha is a favorite—well-spiced and perfectly baked. Great quality and taste with a kick from the chutney. Feels homemade.",
     author: "Divjot Singh",
     rating: 4,
-    avatarUrl: "/images/avatars/2.png",
+    avatarUrl: "/images/avatars/3.png",
     date: "2024-08-19",
   },
   {
@@ -115,7 +115,7 @@ const reviews: Review[] = [
       "Well-prepared kulchas with balanced flavors. Enjoyed the paneer stuffing with chai. Highly recommended for quick, delicious meals.",
     author: "Priya Sharma",
     rating: 4,
-    avatarUrl: "/images/avatars/3.png",
+    avatarUrl: "/images/avatars/2.png",
     date: "2024-08-14",
   },
   {
@@ -124,7 +124,7 @@ const reviews: Review[] = [
       "Ordered for a family gathering and everyone loved it. The gobi kulcha and sweet lassi were hits. Fresh, warm, and an instant favorite.",
     author: "Suresh Sharma",
     rating: 5,
-    avatarUrl: "/images/avatars/4.png",
+    avatarUrl: "/images/avatars/5.png",
     date: "2024-08-13",
   },
   {
@@ -133,7 +133,7 @@ const reviews: Review[] = [
       "Authentic flavors that remind me of home. Spot-on chutneys and perfect texture. A must-try if you crave Indian street food.",
     author: "Sneha Patel",
     rating: 5,
-    avatarUrl: "/images/avatars/5.png",
+    avatarUrl: "/images/avatars/4.png",
     date: "2024-08-12",
   },
   {
@@ -142,7 +142,7 @@ const reviews: Review[] = [
       "Consistent quality in every order. Mix kulcha is my go-to. Flavorful stuffing and reliable service. Perfect for quick meals or groups.",
     author: "Amit Singh",
     rating: 4,
-    avatarUrl: "/images/avatars/6.png",
+    avatarUrl: "/images/avatars/7.png",
     date: "2024-08-11",
   },
   {
@@ -151,7 +151,7 @@ const reviews: Review[] = [
       "Quick delivery and delicious kulchas. Loved the paneer kulcha with lassi. Rich flavors and generous portions. Great comfort food.",
     author: "Ramanpreet Kaur",
     rating: 4,
-    avatarUrl: "/images/avatars/7.png",
+    avatarUrl: "/images/avatars/6.png",
     date: "2024-08-10",
   },
   {
@@ -160,7 +160,7 @@ const reviews: Review[] = [
       "If you’re after authentic kulchas, this is the place. Rich flavors and generous portions. Highly recommend the gobi kulcha!",
     author: "Ravi Verma",
     rating: 5,
-    avatarUrl: "/images/avatars/8.png",
+    avatarUrl: "/images/avatars/1.png",
     date: "2024-08-09",
   },
   {
@@ -169,7 +169,7 @@ const reviews: Review[] = [
       "Flavorful kulchas with just the right spice. Prompt delivery and the food was still hot. Ideal comfort food for a quick, satisfying meal.",
     author: "Arpit Mahajan",
     rating: 5,
-    avatarUrl: "/images/avatars/1.png",
+    avatarUrl: "/images/avatars/3.png",
     date: "2024-08-08",
   },
   {
@@ -178,7 +178,7 @@ const reviews: Review[] = [
       "Loved the taste and freshness. The cold coffee was the perfect match. Well-balanced and convenient. Definitely ordering again.",
     author: "Harsimran Singh",
     rating: 5,
-    avatarUrl: "/images/avatars/2.png",
+    avatarUrl: "/images/avatars/5.png",
     date: "2024-08-07",
   },
   {
@@ -187,7 +187,7 @@ const reviews: Review[] = [
       "Crispy kulchas and sweet lassi—perfect combo. Great for a light meal. Service was excellent. Definitely ordering again!",
     author: "Hargun",
     rating: 4,
-    avatarUrl: "/images/avatars/3.png",
+    avatarUrl: "/images/avatars/8.png",
     date: "2024-08-06",
   },
   {
@@ -196,7 +196,7 @@ const reviews: Review[] = [
       "Tried the aloo kulcha and was impressed. Well-seasoned stuffing and flavorful chutney. Great value and perfect for a delicious meal.",
     author: "Gurkirat Singh",
     rating: 4,
-    avatarUrl: "/images/avatars/4.png",
+    avatarUrl: "/images/avatars/7.png",
     date: "2024-08-05",
   },
 ];

@@ -576,13 +576,13 @@ const OrdersPage: React.FC = () => {
                         justifyContent: "flex-start",
                       }}
                     >
-                      <Typography
+                      {/* <Typography
                         variant="body2"
                         fontWeight="bold"
                         textAlign="left"
                       >
                         Total Tax: {orderDoc?.total_tax}
-                      </Typography>
+                      </Typography> */}
                       <Typography
                         variant="body2"
                         fontWeight="bold"
@@ -757,7 +757,7 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
   const statusColors = {
     "Out For Delivery": "#FFAB00",
     Delivered: "#4CAF50",
-    Canceled: "#F44336",
+    "Canceled": "#F44336",
     "New Order": "#FFAB00",
   };
 

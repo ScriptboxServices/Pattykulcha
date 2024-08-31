@@ -1,22 +1,18 @@
 "use client";
 
 import React from "react";
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  Rating,
-} from "@mui/material";
+import { Box, TextField, Typography, Button, Rating } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   comments: yup.string().required("Comments are required"),
-  rating: yup.number().required("Rating is required").min(1, "Rating is required"),
+  rating: yup
+    .number()
+    .required("Rating is required")
+    .min(1, "Rating is required"),
 });
 
 const ReviewForm: React.FC = () => {
@@ -29,7 +25,7 @@ const ReviewForm: React.FC = () => {
     defaultValues: {
       name: "",
       comments: "",
-      rating: 5, 
+      rating: 5,
     },
   });
 
@@ -50,14 +46,14 @@ const ReviewForm: React.FC = () => {
       }}
     >
       <Typography variant="h4" component="h1" textAlign="center" mb={2}>
-        Feedback Form
+        User feedback
       </Typography>
 
       <Box
         sx={{
           backgroundColor: "white",
           padding: "24px",
-          width: {xs:'350px',lg:'400px'},
+          width: { xs: "350px", lg: "400px" },
           borderRadius: "12px",
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
         }}

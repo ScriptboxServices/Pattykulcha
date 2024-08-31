@@ -263,11 +263,10 @@ const Navbar: React.FC = () => {
                 <>
                   <Chip
                     label="Online"
-                    color="success"
                     variant="outlined"
                     sx={{
                       mr: 1,
-                      backgroundColor: "green",
+                      backgroundColor: "#4CAF50",
                       color: "white",
                       fontWeight: "600",
                     }}

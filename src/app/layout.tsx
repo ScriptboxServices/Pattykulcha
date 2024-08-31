@@ -8,7 +8,7 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Patty Kulcha",
   description:
-    "PattyKulcha - Authentic Jamaican patties and deliciously stuffed kulchas delivered right to your doorstep. Experience a fusion of vibrant flavors, freshly made and served with love. Perfect for any occasion – breakfast, lunch, dinner, or a tasty snack!",
+    "Special Amritsari Kulcha, Paneer Kulcha, Aloo Kulcha, Gobi Kulcha, Onion Kulcha—at PattyKulcha, we deliver the authentic flavors of Punjab. Each dish is made fresh to order, bringing tradition to your table. Explore our menu and order online today!",
 };
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,6 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+
+        <link rel="icon" href="/images/logo.png" type="image/png" sizes="132x132" />
+
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-TZBK3DHJXT"
@@ -35,8 +38,17 @@ export default function RootLayout({
         <Script
           async
           defer
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places`}>
-        </Script>
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places`}
+        ></Script>
+        {/* <Script id="structured-data" type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            url: "https://www.pattykulcha.com/",
+            logo: "/images/logo.png",
+            name: "Patty Kulcha",
+          })}
+        </Script> */}
       </head>
       <body>
         <AuthProvider>
