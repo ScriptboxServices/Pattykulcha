@@ -11,7 +11,7 @@ import {
   Container,
 } from "@mui/material";
 import Link from "next/link";
-import { useAuthContext, useMenuContext } from "@/context";
+import { useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
@@ -20,19 +20,24 @@ import { auth, db } from "@/firebase";
 const StyledRoot = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "flex-start",
   height: "100vh",
   margin: "0 auto",
   width: "100%",
+  paddingTop: theme.spacing(4),
+  alignItems: "center",
   [theme.breakpoints.up("sm")]: {
-    width: "80%",
+    paddingTop: theme.spacing(10),
   },
   [theme.breakpoints.up("md")]: {
+    justifyContent: "center",
+    paddingTop: 0,
     width: "60%",
+    alignItems: "center",
   },
   [theme.breakpoints.up("lg")]: {
     width: "28%",
+    alignItems: "center",
   },
 }));
 
@@ -71,7 +76,6 @@ const VerificationPage: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState<string[]>(
     Array(6).fill("")
   );
-  const {setMetaData} = useAuthContext()
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { confirmationResult, setConfirmationResult } = useMenuContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -172,14 +176,6 @@ const VerificationPage: React.FC = () => {
             foodTruckId: "",
             enable: true,
           });
-          const userSaved = await getDoc(doc(db,'users',user?.uid));
-
-          if(userSaved.exists()){
-            setMetaData({
-              ...userSaved.data()
-            })
-            
-          }
         }
       }
       setConfirmationResult(null);
@@ -222,7 +218,7 @@ const VerificationPage: React.FC = () => {
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: {xs:"flex-start",sm:"center"},
           backgroundColor: "white",
           padding: { xs: 1, sm: 4, md: 4 },
           overflow: "hidden",

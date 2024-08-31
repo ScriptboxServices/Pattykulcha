@@ -16,26 +16,20 @@ import {
   Grid,
   Autocomplete,
   InputAdornment,
-  CircularProgress,
   Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Icon, IconifyIcon } from "@iconify/react";
-import { countryCodes } from "@/utils/constants";
-import {
-  ConfirmationResult,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
+import { countries } from "@/utils/constants";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useAuthContext, useMenuContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
 
-export interface CountryCode {
-  name: string;
-  phone: number;
+interface CountryType {
   code: string;
-  icon: IconifyIcon | string;
+  label: string;
+  phone: string;
+  suggested?: boolean;
 }
 
 // Define the Yup schema
@@ -45,20 +39,16 @@ const schema = yup.object().shape({
     .matches(/^\d+$/, "Phone number is not valid")
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
-  countryCode: yup.string().required(),
+  countryCode: yup.mixed<CountryType>().required(),
 });
 
 type IFormInput = yup.InferType<typeof schema>;
 
-const filterOptions = (options: CountryCode[], state: any) =>
-  options.filter((option) =>
-    option.name.toLowerCase().includes(state.inputValue.toLowerCase())
-  );
-
 const Login: React.FC = () => {
-  const [defaultCountry, setDefaultCountry] = useState<CountryCode | null>(
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
     null
   );
+
   const {
     control,
     handleSubmit,
@@ -66,32 +56,29 @@ const Login: React.FC = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
-      countryCode: countryCodes.find((country) => country.name == "Canada")
-        ?.phone.toString(),
+      countryCode: countries.find((country) => country.label === "Canada"),
     },
   });
 
-  const {user} = useAuthContext()
-  
+  const { user } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [recaptchaVerifier, setRecaptchaVerifier] =
-  useState<RecaptchaVerifier | null>(null);
+    useState<RecaptchaVerifier | null>(null);
   const router = useRouter();
   const { confirmationResult, setConfirmationResult } = useMenuContext();
-  
+
   useEffect(() => {
     if (user) {
-      return router.push('/home')
+      router.push("/home");
     }
   }, [user]);
+
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
       auth,
       "recaptcha-container",
-      {
-        size: "invisible",
-      }
+      { size: "invisible" }
     );
 
     setRecaptchaVerifier(recaptchaVerifier);
@@ -106,9 +93,9 @@ const Login: React.FC = () => {
   }, [confirmationResult]);
 
   useEffect(() => {
-    setDefaultCountry(
-      countryCodes.find((country) => country.name == "India") || null
-    );
+    const defaultCountry =
+      countries.find((country) => country.label === "Canada") || null;
+     setSelectedCountry(defaultCountry);
   }, []);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -119,20 +106,21 @@ const Login: React.FC = () => {
       setLoading(true);
       const confirmation = await signInWithPhoneNumber(
         auth,
-        `+${data?.countryCode}${data?.phoneNumber}`,
+        `+${selectedCountry?.phone}${data.phoneNumber}`,
         recaptchaVerifier
       );
+
       setLoading(false);
 
       setConfirmationResult(confirmation);
     } catch (err: any) {
       console.log(err.code);
       setLoading(false);
-      if (err.code == "auth/invalid-phone-number") {
-        setError("Invalid phone number.");
-      } else {
-        setError("Failed to send otp.");
-      }
+      setError(
+        err.code === "auth/invalid-phone-number"
+          ? "Invalid phone number."
+          : "Failed to send OTP."
+      );
     }
   };
 
@@ -147,7 +135,7 @@ const Login: React.FC = () => {
           height: "100dvh",
           display: "flex",
           justifyContent: "center",
-          alignItems: {xs:"center",sm:"center"},
+          alignItems: { xs: "flex-start", sm: "center" },
           overflow: "hidden", // Prevent overflow issues
         }}
       >
@@ -155,11 +143,12 @@ const Login: React.FC = () => {
           component="main"
           maxWidth="xs"
           sx={{
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            backgroundColor: { xs: "none", sm: "rgba(255, 255, 255, 0.9)" },
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
-            overflow: "hidden", // Prevent content overflow
+            overflow: "hidden",
+            marginTop: { xs: 8 },
           }}
         >
           <Box
@@ -184,7 +173,7 @@ const Login: React.FC = () => {
               component="h2"
               variant="subtitle1"
               align="left"
-              sx={{ width: "100%", mt: 2,fontWeight:'bold' }}
+              sx={{ width: "100%", mt: 2, fontWeight: "bold" }}
             >
               Welcome to Patty kulcha!
             </Typography>
@@ -209,53 +198,60 @@ const Login: React.FC = () => {
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <Autocomplete
+                        id="country-select-demo"
                         fullWidth
-                        options={countryCodes}
-                        filterOptions={filterOptions}
-                        getOptionLabel={(option: CountryCode) =>
-                          `${option.name} (${option.phone}) `
-                        }
-                        renderOption={(props, option: CountryCode) => (
-                          <Box component="li" {...props}>
-                            <Icon
-                              icon={option.icon as IconifyIcon}
-                              width={20}
-                              height={20}
-                            />
-                            {option.name} ({option.phone})
-                          </Box>
-                        )}
-                        value={
-                          countryCodes.find(
-                            (code) => code.phone == Number(value)
-                          ) || defaultCountry
-                        }
-                        onChange={(event, newValue) =>
-                          onChange(newValue?.phone ?? "")
-                        }
+                        options={countries}
+                        autoHighlight
+                        getOptionLabel={(option) => option.label}
+                        renderOption={(props, option) => {
+                          const { key, ...optionProps } = props;
+                          return (
+                            <Box
+                              key={key}
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...optionProps}
+                            >
+                              <Image
+                                loading="lazy"
+                                width={20}
+                                height={15} // Maintain aspect ratio similar to the original `img`
+                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                alt={`${option.label} flag`}
+                              />
+                              {option.label} ({option.code}) +{option.phone}
+                            </Box>
+                          );
+                        }}
+                        value={selectedCountry}
+                        onChange={(event, newValue) => {
+                          onChange(newValue);
+                          setSelectedCountry(newValue || (null as any));
+                        }}
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Country Code"
-                            placeholder="Select Country Code"
-                            required
+                            label="Choose a country code"
+                            inputProps={{
+                              ...params.inputProps,
+                              autoComplete: "new-password", // Correct way to pass autoComplete
+                            }}
                             InputProps={{
                               ...params.InputProps,
-                              startAdornment: (
-                                <>
-                                  {params.InputProps.startAdornment}
-                                  <InputAdornment position="start">
-                                    <Icon
-                                      icon={
-                                        (countryCodes.find(
-                                          (option) =>
-                                            option.phone == Number(value)
-                                        )?.icon ||
-                                          defaultCountry?.icon) as IconifyIcon
-                                      }
-                                    />
-                                  </InputAdornment>
-                                </>
+                              startAdornment: selectedCountry && (
+                                <InputAdornment position="start">
+                                  <Image
+                                    loading="eager"
+                                    width={20}
+                                    height={15} // Maintain aspect ratio similar to the original `img`
+                                    src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
+                                    priority
+                                    alt="#"
+                                  />
+                                  <Typography sx={{ ml: 1 }}>
+                                    +{selectedCountry.phone}
+                                  </Typography>
+                                </InputAdornment>
                               ),
                             }}
                           />
@@ -284,9 +280,9 @@ const Login: React.FC = () => {
                           pattern: "[0-9]*",
                         }}
                         InputProps={{
-                          startAdornment: (
+                          startAdornment: selectedCountry && (
                             <InputAdornment position="start">
-                              <i className="ri-phone-fill" />
+                              <Typography>+{selectedCountry.phone}</Typography>
                             </InputAdornment>
                           ),
                         }}
@@ -299,10 +295,10 @@ const Login: React.FC = () => {
                         onKeyDown={(e) => {
                           if (
                             !/[0-9]/.test(e.key) &&
-                            e.key != "Backspace" &&
-                            e.key != "Delete" &&
-                            e.key != "ArrowLeft" &&
-                            e.key != "ArrowRight"
+                            e.key !== "Backspace" &&
+                            e.key !== "Delete" &&
+                            e.key !== "ArrowLeft" &&
+                            e.key !== "ArrowRight"
                           ) {
                             e.preventDefault();
                           }
@@ -337,6 +333,26 @@ const Login: React.FC = () => {
                 </Alert>
               )}
             </Box>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{
+                color: "#ECAB21",
+                borderColor: "#ECAB21",
+                paddingX: 4,
+                paddingY: 1,
+                mt: 2,
+                fontWeight: "bold",
+                "&:hover": {
+                  borderColor: "#FFC107",
+                  color: "#FFC107",
+                },
+              }}
+              component="a"
+              href="tel:+16476400701"
+            >
+              Need Help?
+            </Button>
           </Box>
         </Container>
       </Box>

@@ -485,24 +485,6 @@ const OrdersPage: React.FC = () => {
                       flexDirection: { xs: "column", sm: "row" },
                     }}
                   >
-                    <LocationOnIcon
-                      sx={{
-                        marginRight: 1,
-                        display: { xs: "none", sm: "block" },
-                      }}
-                    />
-                    <Typography variant="body2" sx={{ marginRight: 1 }}>
-                      Estimated arrival: 30 min
-                    </Typography>
-                    <Divider
-                      orientation="vertical"
-                      flexItem
-                      sx={{ marginX: 1 }}
-                    />
-                    <Typography variant="body2">
-                      {orderDoc?.address?.seperate?.city},{" "}
-                      {orderDoc?.address?.seperate?.state}, Canada
-                    </Typography>
                   </Box>
                   {order?.map((item: any, index: number) => {
                     const { kulcha, additional } = item.order;
@@ -563,21 +545,21 @@ const OrdersPage: React.FC = () => {
                     >
                       Billing Address :
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    {/*<Typography variant="body2" color="textSecondary">
                       Name: {orderDoc?.customer?.name}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                       Phone: {orderDoc?.customer?.phoneNumber}
-                    </Typography>
+                    </Typography>*/}
                     <Typography variant="body2" color="textSecondary">
                       Address: {orderDoc?.address?.raw || orderDoc?.address}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    {/* <Typography variant="body2" color="textSecondary">
                       Distance: {orderDoc?.address?.distance?.text || ""}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                       Instructions: {orderDoc?.instructions}
-                    </Typography>
+                    </Typography> */}
                   </Box>
                   <Divider sx={{ marginY: 2 }} />
                   <Box

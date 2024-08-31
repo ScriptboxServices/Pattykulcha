@@ -215,25 +215,16 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
     setIsDrinkDialogOpen(false);
   };
 
-  const handleLassiDialogOpen = () => {
-    setIsLassiDialogOpen(true);
-  };
-
   const handleLassiDialogClose = () => {
     setIsLassiDialogOpen(false);
   };
 
-  const handleTeaDialogOpen = () => {
-    setIsTeaDialogOpen(true);
-  };
-
+  
   const handleTeaDialogClose = () => {
     setIsTeaDialogOpen(false);
   };
 
-  const handleCoffeeDialogOpen = () => {
-    setIsCoffeeDialogOpen(true);
-  };
+  
 
   const handleCoffeeDialogClose = () => {
     setIsCoffeeDialogOpen(false);
@@ -287,6 +278,7 @@ const MenuPage = ({kulcha} : {kulcha : any}) => {
     if (item.quantity > 1) {
       item.quantity = item.quantity - 1;
     }
+    
     localStorage.setItem("kulcha", JSON.stringify(item));
     setKulcha({
       ...item,

@@ -7,9 +7,7 @@ import {
   CardContent,
   Rating,
   useMediaQuery,
-  Button,
 } from "@mui/material";
-import { useState, useEffect, useRef } from "react";
 
 type Review = {
   id: number;
@@ -19,6 +17,7 @@ type Review = {
   avatarUrl: string;
   date: string;
 };
+
 const reviews: Review[] = [
   {
     id: 1,
@@ -33,7 +32,7 @@ const reviews: Review[] = [
     id: 2,
     content:
       "Super fast delivery, fresh and warm. The paneer kulcha was generously filled and flavorful. Added a cold coffee, and it was a hit. Highly recommend!",
-    author: "Liam Anderson",
+    author: "Manish Gupta",
     rating: 5,
     avatarUrl: "/images/avatars/2.png",
     date: "2024-08-15",
@@ -60,7 +59,7 @@ const reviews: Review[] = [
     id: 5,
     content:
       "Quick delivery! The kulcha was warm, crunchy, and flavorful. Great service and delicious food. It’s now my go-to comfort food for a filling, tasty meal.",
-    author: "Chris Lee",
+    author: "Kiranpreet Kaur",
     rating: 4,
     avatarUrl: "/images/avatars/5.png",
     date: "2024-08-21",
@@ -69,7 +68,7 @@ const reviews: Review[] = [
     id: 6,
     content:
       "Wonderful kulchas! Paired with hot chai, it’s true comfort food. Consistent quality and flavors that never disappoint. Perfect for a cozy evening.",
-    author: "Emma Turner",
+    author: "Aarav Sharma",
     rating: 5,
     avatarUrl: "/images/avatars/6.png",
     date: "2024-08-16",
@@ -78,7 +77,7 @@ const reviews: Review[] = [
     id: 7,
     content:
       "Tried the paneer kulcha and masala chai. Perfect homestyle meal. Authentic and satisfying. If you’re after real, homestyle food, this is the place.",
-    author: "Riya Sethi",
+    author: "Prabhleen Kaur",
     rating: 4,
     avatarUrl: "/images/avatars/7.png",
     date: "2024-08-17",
@@ -87,7 +86,7 @@ const reviews: Review[] = [
     id: 8,
     content:
       "Crispy kulchas, generously stuffed. My favorite is the gobi kulcha with iced coffee. Great food and service—highly recommended!",
-    author: "Anjali Kapoor",
+    author: "Kunwarpal Singh",
     rating: 5,
     avatarUrl: "/images/avatars/8.png",
     date: "2024-08-20",
@@ -96,7 +95,7 @@ const reviews: Review[] = [
     id: 9,
     content:
       "Ordered aloo kulcha, packed with flavor. Sweet lassi was the perfect pairing. Prompt delivery and perfect for a quick, tasty lunch.",
-    author: "Sana Ali",
+    author: "Sanjana",
     rating: 5,
     avatarUrl: "/images/avatars/1.png",
     date: "2024-08-21",
@@ -105,7 +104,7 @@ const reviews: Review[] = [
     id: 10,
     content:
       "Mix kulcha is a favorite—well-spiced and perfectly baked. Great quality and taste with a kick from the chutney. Feels homemade.",
-    author: "Daniel Miller",
+    author: "Divjot Singh",
     rating: 4,
     avatarUrl: "/images/avatars/2.png",
     date: "2024-08-19",
@@ -123,7 +122,7 @@ const reviews: Review[] = [
     id: 12,
     content:
       "Ordered for a family gathering and everyone loved it. The gobi kulcha and sweet lassi were hits. Fresh, warm, and an instant favorite.",
-    author: "David Brown",
+    author: "Suresh Sharma",
     rating: 5,
     avatarUrl: "/images/avatars/4.png",
     date: "2024-08-13",
@@ -150,7 +149,7 @@ const reviews: Review[] = [
     id: 15,
     content:
       "Quick delivery and delicious kulchas. Loved the paneer kulcha with lassi. Rich flavors and generous portions. Great comfort food.",
-    author: "Laura Johnson",
+    author: "Ramanpreet Kaur",
     rating: 4,
     avatarUrl: "/images/avatars/7.png",
     date: "2024-08-10",
@@ -168,7 +167,7 @@ const reviews: Review[] = [
     id: 17,
     content:
       "Flavorful kulchas with just the right spice. Prompt delivery and the food was still hot. Ideal comfort food for a quick, satisfying meal.",
-    author: "Jessica Lee",
+    author: "Arpit Mahajan",
     rating: 5,
     avatarUrl: "/images/avatars/1.png",
     date: "2024-08-08",
@@ -177,7 +176,7 @@ const reviews: Review[] = [
     id: 18,
     content:
       "Loved the taste and freshness. The cold coffee was the perfect match. Well-balanced and convenient. Definitely ordering again.",
-    author: "Aditya Kumar",
+    author: "Harsimran Singh",
     rating: 5,
     avatarUrl: "/images/avatars/2.png",
     date: "2024-08-07",
@@ -186,7 +185,7 @@ const reviews: Review[] = [
     id: 19,
     content:
       "Crispy kulchas and sweet lassi—perfect combo. Great for a light meal. Service was excellent. Definitely ordering again!",
-    author: "Sarah Wilson",
+    author: "Hargun",
     rating: 4,
     avatarUrl: "/images/avatars/3.png",
     date: "2024-08-06",
@@ -195,7 +194,7 @@ const reviews: Review[] = [
     id: 20,
     content:
       "Tried the aloo kulcha and was impressed. Well-seasoned stuffing and flavorful chutney. Great value and perfect for a delicious meal.",
-    author: "Michael Davis",
+    author: "Gurkirat Singh",
     rating: 4,
     avatarUrl: "/images/avatars/4.png",
     date: "2024-08-05",
@@ -226,7 +225,7 @@ const ReviewSlider = () => {
           display: "flex",
           justifyContent: "center",
           flexDirection: "row",
-          gap:'2rem',
+          gap: "2rem",
           animation: `scrolling 120s linear infinite`,
           "&:hover": {
             animationPlayState: "paused", // Pauses the animation on hover
@@ -255,15 +254,15 @@ const ReviewSlider = () => {
                   display: "flex",
                   alignItems: "center",
                   marginBottom: 2,
-                  width: isMobile ? '220px' : '100%',
+                  width: isMobile ? "220px" : "100%",
                   justifyContent: "space-around",
-                  flexDirection: 'column'
+                  flexDirection: "column",
                 }}
               >
                 <Avatar
                   src={review.avatarUrl}
                   alt={review.author}
-                  sx={{ width: 60, height: 60,mb:2}}
+                  sx={{ width: 60, height: 60, mb: 2 }}
                 />
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -289,7 +288,7 @@ const ReviewSlider = () => {
                 {review.content}
               </Typography>
             </CardContent>
-            <Box sx={{ paddingBottom: 2}}>
+            <Box sx={{ paddingBottom: 2 }}>
               <Rating value={review.rating} readOnly size="small" />
             </Box>
           </Card>
@@ -309,7 +308,5 @@ const ReviewSlider = () => {
     </Box>
   );
 };
-
-
 
 export default ReviewSlider;
