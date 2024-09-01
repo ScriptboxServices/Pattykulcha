@@ -407,15 +407,6 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
             sx={{
               textAlign: "center",
             }}>
-            <Box
-              sx={{
-                width: "60%",
-                height: "1px",
-                backgroundColor: "#dcdcdc",
-                margin: "0 auto",
-                marginBottom: "23px",
-              }}
-            />
             {/* <Typography
               variant='h4'
               gutterBottom
@@ -594,15 +585,6 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
               marginBottom: "0rem",
               textAlign: "center",
             }}>
-            <Box
-              sx={{
-                width: "65%",
-                height: "1px",
-                backgroundColor: "#dcdcdc",
-                margin: "0 auto",
-                marginBottom: "23px",
-              }}
-            />
             <Typography
               variant='h4'
               gutterBottom

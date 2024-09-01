@@ -11,7 +11,7 @@ import {
   Container,
 } from "@mui/material";
 import Link from "next/link";
-import { useMenuContext } from "@/context";
+import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
@@ -81,6 +81,7 @@ const VerificationPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  const {setMetaData} = useAuthContext()
   const [timer, setTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
 
@@ -176,6 +177,12 @@ const VerificationPage: React.FC = () => {
             foodTruckId: "",
             enable: true,
           });
+          const userSaved = await getDoc(doc(db,'users',user?.uid));
+          if(userSaved.exists()){
+            setMetaData({
+              ...userSaved.data()
+            })
+          }
         }
       }
       setConfirmationResult(null);
