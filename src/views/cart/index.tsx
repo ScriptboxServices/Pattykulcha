@@ -497,7 +497,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             >
               Other Kulchas
             </Typography>
-            <Grid container spacing={1} justifyContent="center">
+            <Grid container spacing={1}>
               {otherKulchas
                 ?.filter((item: any) => item?.name !== kulcha?.name)
                 .map((item: any) => (
@@ -522,7 +522,6 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                         margin: "0.5rem 0",
                         width: { xs: "100%", md: "60%" },
                       }}
-                      onClick={() => addOtherKulchas(item.name)}
                     >
                       <Box display="flex" alignItems="center">
                         <Image
@@ -550,15 +549,22 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                         justifyContent="center"
                         sx={{ marginRight: 2 }}
                       >
+                        <Typography variant="body2" color="textSecondary" sx={{marginTop: "0.5rem",}}>
+                          ${item?.price.toFixed(2)}
+                        </Typography>
                         {item?.added ? (
-                          <>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginTop: "0.5rem",
+                            }}
+                          >
                             {item?.quantity == 1 ? (
                               <>
                                 <IconButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeOtherKulchas(item.name);
-                                  }}
+                                  onClick={() => removeOtherKulchas(item.name)}
                                   sx={{
                                     color: "red",
                                   }}
@@ -569,10 +575,9 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                             ) : (
                               <>
                                 <IconButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    decreaseQTYOtherKulchas(item.name);
-                                  }}
+                                  onClick={() =>
+                                    decreaseQTYOtherKulchas(item.name)
+                                  }
                                   sx={{
                                     color: "#336195",
                                   }}
@@ -587,20 +592,18 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                               {item?.quantity}
                             </Typography>
                             <IconButton
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                increaseQTYOtherKulchas(item.name);
-                              }}
+                              onClick={() => increaseQTYOtherKulchas(item.name)}
                               sx={{
                                 color: "#336195",
                               }}
                             >
                               <AddCircleOutlineIcon sx={{ fontSize: "2rem" }} />
                             </IconButton>
-                          </>
+                          </Box>
                         ) : (
                           <>
                             <IconButton
+                              onClick={() => addOtherKulchas(item.name)}
                               sx={{
                                 color: "#336195",
                               }}
@@ -614,7 +617,6 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                   </Grid>
                 ))}
             </Grid>
-
             {/* <Typography
               variant='h4'
               gutterBottom
