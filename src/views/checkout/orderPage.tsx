@@ -37,7 +37,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [address, setAddress] = useState<any>({ ...metaData.address });
+  const [address, setAddress] = useState<any>({ ...metaData?.address });
   const [openDialog, setOpenDialog] = useState(false);
   const [openInstructionsDialog, setOpenInstructionsDialog] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);

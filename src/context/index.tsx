@@ -20,6 +20,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import { menuItems } from "@/constants/MenuOptions";
 
 export interface IncludedItem {
   id: string;
@@ -91,6 +92,8 @@ interface MenuContextType {
   setGrandTotal: React.Dispatch<React.SetStateAction<string | number>>;
   isAddressReachable: boolean;
   setIsAddressReachable: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherKulchas : any;
+  otherKulchas : any;
 }
 
 interface AuthContextType {
@@ -323,6 +326,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [instructions, setInstructions] = useState("");
   const [count, setCount] = useState(0);
   const [grandTotal, setGrandTotal] = useState<string | number>(0);
+  const [otherKulchas, setOtherKulchas] = useState<any[]>([...menuItems]);
 
   const getData = async (_id: string) => {
     if (_id) {
@@ -343,6 +347,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     getData(user?.uid);
     setKulcha(getStoredData("kulcha", {}));
     setIncludedItems2(getStoredData("includedItems2", []));
+    setOtherKulchas(getStoredData("otherKulchas", [...menuItems]));
     setInstructions(localStorage.getItem("instructions") || "");
   }, [user]);
 
@@ -392,6 +397,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setGrandTotal,
     setIsAddressReachable,
     isAddressReachable,
+    setOtherKulchas,
+    otherKulchas
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

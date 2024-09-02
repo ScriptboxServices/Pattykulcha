@@ -22,7 +22,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LockIcon from "@mui/icons-material/Lock";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAuthContext } from "@/context";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
 import Link from "next/link";
@@ -127,7 +127,7 @@ const OrdersPage: React.FC = () => {
     const init = async () => {
       try {
         const colRef = collection(db, "orders");
-        const q = query(colRef, where("userId", "==", user?.uid));
+        const q = query(colRef, where("userId", "==", user?.uid),orderBy('createdAt','desc'));
         setLoading(true);
         const docs = await getDocs(q);
         let orders: any[] = [];

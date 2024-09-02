@@ -29,12 +29,14 @@ import { useRouter } from "next/navigation";
 import CircularLodar from "@/components/CircularLodar";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   drinkOptions,
   lassiOptions,
   coffeeOptions,
   teaOptions,
+  menuItems,
 } from "@/constants/MenuOptions";
 
 export const getImageSrc = (item: string) => {
@@ -94,6 +96,8 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
     setSelectedDrinks,
     selectedLassis,
     setSelectedLassis,
+    otherKulchas,
+    setOtherKulchas,
   } = useMenuContext();
 
   const { user, metaData } = useAuthContext();
@@ -269,8 +273,36 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
       await addDoc(colRef, {
         ...data,
       });
+
+      const extra = otherKulchas?.map((item : any) => {
+        if(item?.added === true){
+          return (
+            addDoc(colRef, {
+              userId: user?.uid,
+              customer: {
+                name: metaData?.name,
+                phoneNumber: metaData?.phoneNumber,
+                address: metaData?.address,
+              },
+              order: {
+                kulcha: item,
+                withKulcha: [...FIXED_INCLUDE_ITEMS],
+                additional: [],
+              },
+              total_amount: (
+                (Number(item.price) * Number(item.quantity)) +
+                (Number(item.price) * Number(item.quantity)) * 0.13
+              ).toFixed(2),
+              createdAt: Timestamp.now(),
+            })
+          )
+        }
+      })
+
+      await Promise.all([...extra])
+      localStorage.setItem("otherKulchas", JSON.stringify([...menuItems]));
+
       setLoading(false);
-      setCount(count + 1);
       router.push("/checkout");
     } catch (err :any) {
       console.log(err);
@@ -297,6 +329,54 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
     setKulcha({
       ...item,
     });
+  };
+
+  const addOtherKulchas = (name: string) => {
+    let arr = otherKulchas.map((item: any) => {
+      let clonedItem = { ...item };
+      if (clonedItem.name === name) {
+        clonedItem.added = true;
+      }
+      return clonedItem;
+    });
+    setOtherKulchas([...arr]);
+    localStorage.setItem("otherKulchas", JSON.stringify([...arr]));
+  };
+
+  const removeOtherKulchas = (name: string) => {
+    let arr = otherKulchas.map((item: any) => {
+      let clonedItem = { ...item };
+      if (clonedItem.name === name) {
+        delete clonedItem.added;
+      }
+      return clonedItem;
+    });
+    setOtherKulchas([...arr]);
+    localStorage.setItem("otherKulchas", JSON.stringify([...arr]));
+  };
+
+  const increaseQTYOtherKulchas = (name: string) => {
+    let arr = otherKulchas.map((item: any) => {
+      let clonedItem = { ...item };
+      if (clonedItem.name === name) {
+        clonedItem.quantity = clonedItem.quantity + 1;
+      }
+      return clonedItem;
+    });
+    setOtherKulchas([...arr]);
+    localStorage.setItem("otherKulchas", JSON.stringify([...arr]));
+  };
+
+  const decreaseQTYOtherKulchas = (name: string) => {
+    let arr = otherKulchas.map((item: any) => {
+      let clonedItem = { ...item };
+      if (clonedItem.name === name) {
+        clonedItem.quantity = clonedItem.quantity - 1;
+      }
+      return clonedItem;
+    });
+    setOtherKulchas([...arr]);
+    localStorage.setItem("otherKulchas", JSON.stringify([...arr]));
   };
 
   return (
@@ -405,6 +485,118 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
             sx={{
               textAlign: "center",
             }}>
+                 <Typography
+              variant="h4"
+              gutterBottom
+              sx={{ color: "#021e3a", fontWeight: "bold" }}
+            >
+              Other Kulchas
+            </Typography>
+            <Grid container spacing={2} justifyContent="center">
+              {otherKulchas
+                ?.filter((item: any) => item?.name !== kulcha?.name)
+                .map((item: any) => (
+                  <Grid item xs={6} sm={4} md={1.6} key={item.name}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "1rem",
+                        backgroundColor: "white",
+                        border: "2px solid #87939f",
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        position: "relative",
+                        cursor: "pointer",
+                        height: { xs: "270px", sm: "270px" },
+                        width: { xs: "130px", sm: "175px" },
+                        margin: "0.5rem",
+                        boxShadow: "2px 2px 3px #4e5664",
+                      }}
+                    >
+                      <Image
+                        src={item?.image}
+                        alt={item?.name}
+                        width={150}
+                        height={150}
+                        style={{
+                          width: "65%",
+                          height: "55%",
+                          objectFit: "contain",
+                        }}
+                      />
+                      <Typography variant="body1" color="textPrimary">
+                        {item?.name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        ${item?.price.toFixed(2)}
+                      </Typography>
+                      {item?.added ? (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginTop: "0.5rem",
+                          }}
+                        >
+                          {item?.quantity == 1 ? (
+                            <>
+                              <IconButton
+                                onClick={() =>
+                                  removeOtherKulchas(item.name)
+                                }
+                                sx={{
+                                  color: 'red',
+                                }}
+                              >
+                                <DeleteIcon sx={{fontSize:'2rem'}}/>
+                              </IconButton>
+                            </>
+                          ) : (
+                            <>
+                              <IconButton
+                                onClick={() =>
+                                  decreaseQTYOtherKulchas(item.name)
+                                }
+                                sx={{
+                                  color: "#336195",
+                                }}
+                              >
+                                <RemoveCircleOutlineIcon sx={{fontSize:'2rem'}} />
+                              </IconButton>
+                            </>
+                          )}
+                          <Typography variant="body1" color="textPrimary">
+                            {item?.quantity}
+                          </Typography>
+                          <IconButton
+                            onClick={() => increaseQTYOtherKulchas(item.name)}
+                            sx={{
+                              color: "#336195",
+                            }}
+                          >
+                            <AddCircleOutlineIcon sx={{fontSize:'2rem'}}/>
+                          </IconButton>
+                        </Box>
+                      ) : (
+                        <>
+                            <IconButton
+                            onClick={() => addOtherKulchas(item.name)}
+                            sx={{
+                              color: "#336195",
+                            }}
+                          >
+                            <AddCircleOutlineIcon sx={{fontSize:'2rem'}} />
+                          </IconButton>
+                        </>
+                      )}
+                    </Box>
+                  </Grid>
+                ))}
+            </Grid>
             {/* <Typography
               variant='h4'
               gutterBottom

@@ -464,7 +464,7 @@ const ProfilePage: React.FC = () => {
                             alignItems: "center",
                             border: "1px solid grey",
                             borderRadius: "8px",
-                            padding: "6px 10px",
+                            padding: "6px 10px 6px 13px",
                             width: "100%",
                             position: "relative",
                           }}>
