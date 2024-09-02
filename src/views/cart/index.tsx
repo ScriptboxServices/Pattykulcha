@@ -683,7 +683,7 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
                   onClick={handleDrinkDialogOpen}>
                   <Box display='flex' alignItems='center'>
                     <Image
-                      src='/images/landingpage/Drinks.svg'
+                      src='/images/image.png'
                       alt='Add a Drink'
                       layout='fixed'
                       width={50}
