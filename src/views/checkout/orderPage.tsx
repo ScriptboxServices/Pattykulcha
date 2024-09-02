@@ -39,6 +39,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [address, setAddress] = useState<any>({ ...metaData.address });
   const [openDialog, setOpenDialog] = useState(false);
+  const [openInstructionsDialog, setOpenInstructionsDialog] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
   const handleOptionChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -91,7 +92,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     if (field == "address") {
       setOpenDialog(true);
     } else if (field == "instructions") {
-      setIsEditingInstructions(true);
+      setOpenInstructionsDialog(true);
     }
   };
 
@@ -108,6 +109,8 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     } else if (field == "instructions") {
       localStorage.setItem("instructions", instructions);
       setIsEditingInstructions(false);
+      setLoading(false);
+      setOpenInstructionsDialog(false);
     }
   };
 
@@ -203,10 +206,10 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                   },
                 }}
               >
-                <ToggleButton value="delivery">
+                {/* <ToggleButton value="delivery">
                   <LocalShippingIcon sx={{ mr: 1 }} />
                   Delivery
-                </ToggleButton>
+                </ToggleButton> */}
               </ToggleButtonGroup>
             </Box>
 
@@ -231,15 +234,15 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                 <Box>
                   <Box sx={{ mb: 2 }}>
                     <Typography
-                      variant="h6"
+                      // variant="h6"
                       color="text.secondary"
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
+                        fontSize: { xs: "16px", lg: "18px" },
                       }}
                     >
                       Address: {address?.raw}
@@ -260,58 +263,32 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                   </Box>
 
                   <Box sx={{ mb: 3 }}>
-                    {isEditingInstructions ? (
-                      <Box display="flex" alignItems="center">
-                        <TextField
-                          fullWidth
-                          variant="outlined"
-                          value={instructions}
-                          onChange={handleInstructionsChange}
-                          sx={{ mr: 2 }}
-                        />
-                        <IconButton
-                          sx={{
-                            background: "#F59E0B",
-                            borderRadius: "50%",
-                            "&:hover": {
-                              backgroundColor: "#FFC107",
-                              color: "white",
-                            },
-                          }}
-                          onClick={() => handleSaveClick("instructions")}
-                        >
-                          <SaveIcon sx={{ color: "#ffffff" }} />
-                        </IconButton>
-                      </Box>
-                    ) : (
-                      <Typography
-                        variant="h6"
-                        color="text.secondary"
+                    <Typography
+                      color="text.secondary"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        color: "#1F2937",
+                        paddingBottom: "4px",
+                        fontSize: { xs: "16px", lg: "18px" },
+                      }}
+                    >
+                      Delivery Instructions: {instructions}
+                      <IconButton
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          fontWeight: "bold",
-                          color: "#1F2937",
-                          paddingBottom: "4px",
+                          background: "#F59E0B",
+                          borderRadius: "50%",
+                          "&:hover": {
+                            backgroundColor: "#FFC107",
+                            color: "white",
+                          },
                         }}
+                        onClick={() => handleEditClick("instructions")}
                       >
-                        Delivery Instructions: {instructions}
-                        <IconButton
-                          sx={{
-                            background: "#F59E0B",
-                            borderRadius: "50%",
-                            "&:hover": {
-                              backgroundColor: "#FFC107",
-                              color: "white",
-                            },
-                          }}
-                          onClick={() => handleEditClick("instructions")}
-                        >
-                          <EditIcon sx={{ color: "#ffffff" }} />
-                        </IconButton>
-                      </Typography>
-                    )}
+                        <EditIcon sx={{ color: "#ffffff" }} />
+                      </IconButton>
+                    </Typography>
                   </Box>
                 </Box>
               )}
@@ -326,7 +303,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
         fullWidth
         sx={{ zIndex: "999" }}
         PaperProps={{
-          sx: { borderRadius: "10px" }, // Set border radius
+          sx: { borderRadius: "10px" },
         }}
       >
         <DialogTitle
@@ -471,6 +448,62 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                 },
               }}
               onClick={() => handleSaveClick("address")}
+            >
+              Submit
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openInstructionsDialog}
+        onClose={() => setOpenInstructionsDialog(!openInstructionsDialog)}
+        maxWidth="xs"
+        fullWidth
+        sx={{ zIndex: "999" }}
+        PaperProps={{
+          sx: { borderRadius: "10px" },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Enter Delivery Instructions
+          <IconButton
+            onClick={() => setOpenInstructionsDialog(!openInstructionsDialog)}
+          >
+            <CloseIcon sx={{ color: "#ECAB21" }} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            multiline
+            variant="outlined"
+            value={instructions}
+            onChange={handleInstructionsChange}
+            placeholder="Enter your delivery instructions here"
+            sx={{ mt: 2 }}
+          />
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#ECAB21",
+                color: "white",
+                paddingX: 4,
+                paddingY: 1,
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#FFC107",
+                  color: "white",
+                },
+              }}
+              onClick={() => handleSaveClick("instructions")}
             >
               Submit
             </Button>

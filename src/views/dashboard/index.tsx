@@ -116,21 +116,21 @@ export default function ResponsiveDrawer(props: Props) {
       icon: "/images/dashboard/orderdetail.png",
       component: <KanbanBoard />,
     },
-    {
-      text: "Order List",
-      icon: "/images/dashboard/orderlist.png",
-      component: <CustomPaginationActionsTable />,
-    },
-    {
-      text: "Payment details",
-      icon: "/images/dashboard/payment_details.png",
-      component: <PaymentDetailsTable />,
-    },
-    {
-      text: "Profile",
-      icon: "/images/dashboard/profile.png",
-      component: <DashboardProfile />,
-    },
+    // {
+    //   text: "Order List",
+    //   icon: "/images/dashboard/orderlist.png",
+    //   component: <CustomPaginationActionsTable />,
+    // },
+    // {
+    //   text: "Payment details",
+    //   icon: "/images/dashboard/payment_details.png",
+    //   component: <PaymentDetailsTable />,
+    // },
+    // {
+    //   text: "Profile",
+    //   icon: "/images/dashboard/profile.png",
+    //   component: <DashboardProfile />,
+    // },
     {
       text: "Make Order",
       icon: "/images/dashboard/profile.png",
@@ -175,11 +175,11 @@ export default function ResponsiveDrawer(props: Props) {
               sx={{
                 justifyContent:'center',
                 backgroundColor:
-                  activeTab === item.text ? "black" : "transparent",
+                  activeTab === item.text ? "#ECAB21" : "transparent",
                 color: activeTab === item.text ? "white" : "inherit",
                 "&:hover": {
                   backgroundColor:
-                    activeTab === item.text ? "black" : "transparent",
+                    activeTab === item.text ? "#FFC107" : "transparent",
                   color: activeTab === item.text ? "white" : "inherit",
                 },
               }}

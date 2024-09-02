@@ -13,9 +13,9 @@ import {
   TableContainer,
   TableRow,
   useMediaQuery,
-  Button
+  Button,
 } from "@mui/material";
-import { useAuthContext, useMenuContext } from "@/context"; 
+import { useAuthContext, useMenuContext } from "@/context";
 import { getCartData } from "@/context";
 import {
   collection,
@@ -28,18 +28,18 @@ import {
 import { db } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
 import { formatTimestampToDDMMYYYY } from "@/utils/commonFunctions";
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 
 const OrdersPage = ({ data }: { data: any }) => {
   const theme = useTheme();
   const { setCount } = useMenuContext();
   const [loading, setLoading] = useState(false);
-  const [issue,setIssue] = useState(false)
+  const [issue, setIssue] = useState(false);
   const [orderData, setOrderData] = useState<any>();
   const [payment, setPayment] = useState<any>();
   const { user } = useAuthContext();
-  const router = useRouter()
+  const router = useRouter();
   const { payment_id } = data;
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -77,8 +77,8 @@ const OrdersPage = ({ data }: { data: any }) => {
             setOrderData(docSnap.data());
           }
           setCount(0);
-        }else{
-          setIssue(true)
+        } else {
+          setIssue(true);
         }
         setLoading(false);
       } catch (err) {
@@ -92,8 +92,7 @@ const OrdersPage = ({ data }: { data: any }) => {
   return (
     <>
       <CircularLodar isLoading={loading} />
-      {
-        !issue ? 
+      {!issue ? (
         <Box
           maxWidth="xl"
           sx={{ backgroundColor: "#FFF5EE", minHeight: "90vh", padding: 2 }}
@@ -108,7 +107,7 @@ const OrdersPage = ({ data }: { data: any }) => {
               borderRadius: "16px",
             }}
           >
-            <Grid container spacing={4} >
+            <Grid container spacing={4}>
               <Grid item xs={12} md={12} mt={5}>
                 <Typography variant="h4" gutterBottom fontWeight="bold">
                   Thank you for your order!
@@ -116,27 +115,27 @@ const OrdersPage = ({ data }: { data: any }) => {
                 <Typography variant="body1" paragraph>
                   Your order will be delivered shortly.
                 </Typography>
-                <Box sx={{display:'flex',justifyContent:'center'}}>
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
                   <Button
-                      onClick={() => {
-                        return router.push("/home");
-                      }}
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#ECAB21",
+                    onClick={() => {
+                      return router.push("/my-orders");
+                    }}
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      paddingX: 4,
+                      paddingY: 1,
+                      mt: 2,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#FFC107",
                         color: "white",
-                        paddingX: 4,
-                        paddingY: 1,
-                        mt: 2,
-                        fontWeight: "bold",
-                        "&:hover": {
-                          backgroundColor: "#FFC107",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      Back to Main Menu
-              </Button>
+                      },
+                    }}
+                  >
+                    Track your orders
+                  </Button>
                 </Box>
                 {/* <Typography variant="h6" gutterBottom>
                   Billing Address
@@ -289,52 +288,60 @@ const OrdersPage = ({ data }: { data: any }) => {
               </Grid> */}
             </Grid>
           </Paper>
-        </Box> : 
-       <Box
-       maxWidth="xl"
-       sx={{ backgroundColor: "#FFF5EE", minHeight: "90vh", padding: 2 }}
-     >
-       <Paper
-         elevation={3}
-         sx={{
-           maxWidth: "1000px",
-           margin: "0 auto",
-           mt: 5,
-           padding: 4,
-           borderRadius: "16px",
-         }}
-       >
-         <Grid container spacing={4}>
-           <Grid item xs={12} md={12} mt={5}>
-             <Typography variant="h6" sx={{textAlign:'center'}} gutterBottom fontWeight="bold">
-             Your payment has been confirmed. However, due to a technical issue with our server, your order was not placed. We will process your refund shortly.
-             </Typography>
-            <Button
-                    onClick={() => {
-                      return router.push("/home");
-                    }}
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#ECAB21",
+        </Box>
+      ) : (
+        <Box
+          maxWidth="xl"
+          sx={{ backgroundColor: "#FFF5EE", minHeight: "90vh", padding: 2 }}
+        >
+          <Paper
+            elevation={3}
+            sx={{
+              maxWidth: "1000px",
+              margin: "0 auto",
+              mt: 5,
+              padding: 4,
+              borderRadius: "16px",
+            }}
+          >
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={12} mt={5}>
+                <Typography
+                  variant="h6"
+                  sx={{ textAlign: "center" }}
+                  gutterBottom
+                  fontWeight="bold"
+                >
+                  Your payment has been confirmed. However, due to a technical
+                  issue with our server, your order was not placed. We will
+                  process your refund shortly.
+                </Typography>
+                <Button
+                  onClick={() => {
+                    return router.push("/home");
+                  }}
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    paddingX: 4,
+                    paddingY: 1,
+                    mt: 2,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
                       color: "white",
-                      paddingX: 4,
-                      paddingY: 1,
-                      mt: 2,
-                      fontWeight: "bold",
-                      "&:hover": {
-                        backgroundColor: "#FFC107",
-                        color: "white",
-                      },
-                    }}
-                  >
-                    Back to Main Menu
-            </Button>
-           </Grid>
-         </Grid>
-       </Paper>
-     </Box>
-      }
+                    },
+                  }}
+                >
+                  Back to Main Menu
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Box>
+      )}
     </>
   );
 };

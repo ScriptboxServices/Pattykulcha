@@ -211,21 +211,22 @@ const ReviewSlider = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         marginTop: 3,
         position: "relative",
         overflow: "hidden",
         height: "auto",
         paddingBottom: 6,
+        flex:2
       }}
     >
       <Box
         className="review-container" // Target this class for animation control
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-evenly",
           flexDirection: "row",
-          gap: "2rem",
+          gap: {xs:"1.23rem",sm:"2rem"},
           animation: `scrolling 120s linear infinite`,
           "&:hover": {
             animationPlayState: "paused", // Pauses the animation on hover
@@ -239,7 +240,7 @@ const ReviewSlider = () => {
               width: isMobile ? "100%" : 350,
               // maxHeight: 270,
               borderRadius: "16px",
-              padding: 2,
+              padding: 1,
               marginRight: isMobile ? 0 : "16px",
               marginBottom: isMobile ? "16px" : 0,
               boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",

@@ -1,182 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receipt</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fffaeb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100vh;
+        background-color: #f7f7f7;
+      }
 
-        .container {
-            max-width: 800px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
+      .invoice-container {
+        background-color: white;
+        padding: 20px;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        width: 900px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
 
-        .logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-        .logo img {
-            height: 150px;
-            width: 170px;
-        }
+      .header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
 
-        h6 {
-            margin: 20px 0;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-        }
+      .invoice-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
 
-        .divider {
-            border-bottom: 1px solid #e0e0e0;
-            margin: 20px 0;
-        }
+      .invoice-details .left,
+      .invoice-details .right {
+        font-size: 14px;
+        line-height: 1.5;
+      }
 
-        .grid {
-            display: flex;
-            justify-content: space-between;
-        }
+      .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
 
-        .list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+      .invoice-table th,
+      .invoice-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        font-size: 14px;
+      }
 
-        .list-item {
-            margin-bottom: 10px;
-        }
+      .invoice-table th {
+        background-color: #f4f4f4;
+      }
 
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            margin-right: 10px;
-        }
+      .total {
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-align: right;
+      }
 
-        .list-item-text {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      .total p {
+        margin: 5px 0;
+      }
 
-        .amount {
-            font-weight: bold;
-        }
+      .total strong {
+        font-size: 16px;
+      }
 
-        .items-ordered {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+      .footer {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 20px;
+        color: #555;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="logo">
-            <img src="images/logo.png" alt="logo">
+  </head>
+  <body>
+    <div class="invoice-container">
+      <div class="header">
+        <h2>Tax Invoice</h2>
+      </div>
+      <div class="invoice-details">
+        <div class="left">
+          <p>Canada</p>
+          <p>Invoice number: FAJFBDDB-03-2024-0000001</p>
+       
+          <p>Invoice date: Aug 26, 2024</p>
         </div>
-
-        <div class="divider"></div>
-
-        <h6>Order Details</h6>
-        <div class="grid">
-            <ul class="list">
-                <li class="list-item">
-                    <div class="list-item-text">
-                        <span>Order ID</span>
-                        <span>ORD-5678</span>
-                    </div>
-                </li>
-                <li class="list-item">
-                    <div class="list-item-text">
-                        <span>Phone Number</span>
-                        <span>+1 (555) 123-4567</span>
-                    </div>
-                </li>
-            </ul>
-            <ul class="list">
-                <li class="list-item">
-                    <div class="list-item-text">
-                        <span>Name</span>
-                        <span>John Doe</span>
-                    </div>
-                </li>
-                <li class="list-item">
-                    <div class="list-item-text">
-                        <span>Address</span>
-                        <span>1234 Elm Street, Los Angeles, USA</span>
-                    </div>
-                </li>
-            </ul>
+        <div class="right">
+          <p>Invoice issued by Patty Kulcha Limited.</p>
+          <p>HST number: 75491142RT0001</p>
+          <p>GST number: 75491142RT0001</p>
+          <!-- <p>on behalf of:</p>
+          <p>OLGA SOSNORA</p>
+          <p>Canada</p> -->
         </div>
-
-        <div class="divider"></div>
-
-        <h6>Items Ordered</h6>
-        <div class="items-ordered">
-            <img class="avatar" src="images/Img/5.jpg" alt="Aloo Kulcha">
-            <div class="list-item-text">
-                <span>Aloo Kulcha</span>
-                <span>$12.99</span>
-            </div>
-        </div>
-        <ul class="list">
-            <li class="list-item">
-                <div class="list-item-text">
-                    <span>Normal Butter</span>
-                    <span>$0.50</span>
-                </div>
-            </li>
-            <li class="list-item">
-                <div class="list-item-text">
-                    <span>Hot Coffee</span>
-                    <span>$3.50</span>
-                </div>
-            </li>
-        </ul>
-
-        <div class="divider"></div>
-
-        <ul class="list">
-            <li class="list-item">
-                <div class="list-item-text">
-                    <span>Subtotal</span>
-                    <span>$15.86</span>
-                </div>
-            </li>
-            <li class="list-item">
-                <div class="list-item-text">
-                    <span>Tax</span>
-                    <span>$1.39</span>
-                </div>
-            </li>
-        </ul>
-
-        <div class="divider"></div>
-
-        <div class="list-item-text">
-            <h6>Amount Charged</h6>
-            <span class="amount">$11.98</span>
-        </div>
+      </div>
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Order item</th>
+            <th>Quantity</th>
+            <th>Tax</th>
+            <th>Tax Amount</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Aloo kulcha</td>
+            <td>1</td>
+            <td>13%</td>
+            <td>$2.20</td>
+            <td>$16.88</td>
+          </tr>
+          <tr>
+            <td>Paneer kulcha</td>
+            <td>1</td>
+            <td>13%</td>
+            <td>$0.21</td>
+            <td>$1.65</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="total">
+        <p>Total net amount: $18.53</p>
+        <p>Total HST 13%: $2.41</p>
+        <p>Total amount payable: $20.94</p>
+      </div>
+      <div class="footer">
+        <p>Issued on behalf of OLGA SOSNORA by:</p>
+        <p>
+          UBER RASIER CANADA INC. // GST: 764945663RC0001 / QST: 1228538970
+          TQ0001
+        </p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

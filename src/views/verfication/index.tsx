@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
 import { auth, db } from "@/firebase";
+import { encrypt } from "@/utils/commonFunctions";
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -81,9 +82,10 @@ const VerificationPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
-  const {setMetaData} = useAuthContext()
+  const { setMetaData } = useAuthContext();
   const [timer, setTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
+  const { kulcha } = useMenuContext();
 
   const handleCodeChange =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,17 +179,24 @@ const VerificationPage: React.FC = () => {
             foodTruckId: "",
             enable: true,
           });
-          const userSaved = await getDoc(doc(db,'users',user?.uid));
-          if(userSaved.exists()){
+
+          const userSaved = await getDoc(doc(db, "users", user?.uid));
+          if (userSaved.exists()) {
             setMetaData({
-              ...userSaved.data()
-            })
+              ...userSaved.data(),
+            });
           }
         }
       }
       setConfirmationResult(null);
       setLoading(false);
-      router.push("/home");
+      if (!localStorage.getItem("kulcha")) {
+        router.push("/home");
+      } else {
+        router.push(
+          `/cart/${encodeURIComponent(encrypt({ kulcha_name:localStorage.getItem("kulcha.name") }))}`
+        );
+      }
     } catch (err: any) {
       console.log(err.code);
       setLoading(false);
@@ -248,7 +257,7 @@ const VerificationPage: React.FC = () => {
               >
                 Enter OTP
               </Typography>
-              <div style={{display:"flex",justifyContent:"space-evenly"}}>
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
                 {verificationCode.map((code, index) => (
                   <TextField
                     key={index}
@@ -279,7 +288,7 @@ const VerificationPage: React.FC = () => {
                   />
                 ))}
               </div>
-              <Box mt={2}>
+              <Box mt={1.25}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -311,7 +320,7 @@ const VerificationPage: React.FC = () => {
                     paddingX: 4,
                     paddingY: 1,
                     fontWeight: "bold",
-                    marginTop: "1rem",
+                    marginTop: "0.5rem",
                     color: "black",
                   }}
                 >

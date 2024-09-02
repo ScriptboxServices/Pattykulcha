@@ -302,9 +302,9 @@ const Login: React.FC = () => {
                   />
                   <Typography variant="subtitle1" sx={{mt:0.5,fontSize:"11px"}}>
                     We’ll call or text you to confirm your number. Standard
-                    message and data rates apply.<Button sx={{fontSize:"11px",textDecoration:"underline",ml:-1,mt:-0.3}} onClick={()=>{
+                    message and data rates apply.<Button sx={{fontSize:"11px",color:'black',ml:-1,mt:-0.3,textTransform: "none",textDecoration:'underline',fontWeight:500}} onClick={()=>{
                       router.push("/privacypolicy")
-                    }}>Privacy Policy</Button>
+                    }}>{" "}Privacy Policy</Button>
                   </Typography>
                 </Grid>
               </Grid>

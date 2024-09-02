@@ -398,7 +398,7 @@ const KanbanBoard = () => {
                       position: "sticky",
                       top: 0,
                       zIndex: 10,
-                      backgroundColor: "#3f51b5",
+                      backgroundColor: "#ECAB21",
                       color: "#fff",
                       textAlign: "center",
                       padding: 2,
@@ -554,7 +554,7 @@ const KanbanBoard = () => {
                                           )}
                                         </Box>
                                       </Box>
-                                      {!isExpanded && (
+                                      {/* {!isExpanded && (
                                         <Box
                                           sx={{ textAlign: "center", mt: 1 }}
                                         >
@@ -572,9 +572,9 @@ const KanbanBoard = () => {
                                             Show More
                                           </Button>
                                         </Box>
-                                      )}
-                                      {isExpanded && (
-                                        <>
+                                      )} */}
+                                      {/* {isExpanded && (
+                                        <> */}
                                           <Box>
                                             <Divider sx={{ my: 1 }} />
                                             <Box
@@ -647,7 +647,7 @@ const KanbanBoard = () => {
                                               </Typography>
                                             </Box>
                                           </Box>
-                                          <Box>
+                                          {/* <Box>
                                             <Divider sx={{ my: 1 }} />
                                             <Box
                                               sx={{
@@ -723,9 +723,9 @@ const KanbanBoard = () => {
                                                 Show Less
                                               </Button>
                                             </Box>
-                                          </Box>
-                                        </>
-                                      )}
+                                          </Box> */}
+                                        {/* </>
+                                      )} */}
                                     </CardContent>
                                   </Card>
                                 </Box>
@@ -962,7 +962,7 @@ const KanbanBoard = () => {
                                       <Box>
                                         <Divider sx={{ my: 1 }} />
                                         <Box sx={{ px: 2 }}>
-                                          <Typography
+                                          {/* <Typography
                                             variant="body2"
                                             sx={{
                                               fontWeight: "bold",
@@ -970,7 +970,7 @@ const KanbanBoard = () => {
                                             }}
                                           >
                                             Billing Address :
-                                          </Typography>
+                                          </Typography> */}
                                           <Typography variant="body2">
                                             <Typography
                                               variant="body2"

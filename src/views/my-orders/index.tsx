@@ -519,7 +519,7 @@ const OrdersPage: React.FC = () => {
                           <Grid item xs={12} sx={{ marginTop: 1 }}>
                             <Typography
                               variant="body2"
-                              sx={{ fontWeight: "bold", marginBottom: 1 }}
+                              sx={{ fontWeight: "bold", marginBottom: 0 }}
                             >
                               Additional Items:
                             </Typography>
@@ -537,14 +537,16 @@ const OrdersPage: React.FC = () => {
                       </Grid>
                     );
                   })}
+                  <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        textAlign="right"
+                        sx={{mt:-2}}
+                      >
+                        Total: {orderDoc?.grand_total}
+                      </Typography>
                   <Divider sx={{ my: 2 }} />
                   <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ fontWeight: "bold", marginBottom: 1 }}
-                    >
-                      Billing Address :
-                    </Typography>
                     {/*<Typography variant="body2" color="textSecondary">
                       Name: {orderDoc?.customer?.name}
                     </Typography>
@@ -552,7 +554,7 @@ const OrdersPage: React.FC = () => {
                       Phone: {orderDoc?.customer?.phoneNumber}
                     </Typography>*/}
                     <Typography variant="body2" color="textSecondary">
-                      Address: {orderDoc?.address?.raw || orderDoc?.address}
+                      <b style={{color:'black'}}>Address:</b> {orderDoc?.address?.raw || orderDoc?.address}
                     </Typography>
                     {/* <Typography variant="body2" color="textSecondary">
                       Distance: {orderDoc?.address?.distance?.text || ""}
@@ -561,7 +563,7 @@ const OrdersPage: React.FC = () => {
                       Instructions: {orderDoc?.instructions}
                     </Typography> */}
                   </Box>
-                  <Divider sx={{ marginY: 2 }} />
+                  <Divider sx={{ marginY: 1}} />
                   <Box
                     sx={{
                       display: "flex",
@@ -569,28 +571,6 @@ const OrdersPage: React.FC = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 0.56,
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      {/* <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        textAlign="left"
-                      >
-                        Total Tax: {orderDoc?.total_tax}
-                      </Typography> */}
-                      <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        textAlign="left"
-                      >
-                        Total: {orderDoc?.grand_total}
-                      </Typography>
-                    </Box>
                     {orderDoc?.delivery?.message == "Delivered" && (
                       <Box
                         sx={{
@@ -759,6 +739,7 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
     Delivered: "#4CAF50",
     "Canceled": "#F44336",
     "New Order": "#FFAB00",
+    "Refunded" : "#1E90FF"
   };
 
   return (
@@ -775,6 +756,7 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
               | "Delivered"
               | "Canceled"
               | "New Order"
+              | "Refunded"
           ],
         color: "#fff",
       }}

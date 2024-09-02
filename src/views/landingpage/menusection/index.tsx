@@ -170,7 +170,9 @@ const MenuSection = () => {
                   }}
                 >
                   <Image
-                    src={"https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2F5.jpg?alt=media&token=27fded59-049a-4d7f-b8d4-918ca647ac4b"}
+                    src={
+                      "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2F5.jpg?alt=media&token=27fded59-049a-4d7f-b8d4-918ca647ac4b"
+                    }
                     alt={item.name}
                     width={220}
                     height={300}
@@ -249,8 +251,6 @@ const MenuSection = () => {
                         },
                       }}
                       onClick={() => {
-                        if (!isLoggedIn) return router.push("/login");
-
                         handleAddItem(
                           item.name,
                           item.desc,
@@ -258,9 +258,14 @@ const MenuSection = () => {
                           item.price,
                           item.quantity
                         );
-                        router.push(`/cart/${encodeURIComponent(
-                          encrypt({ kulcha_name: item.name })
-                        )}`);
+
+                        if (!isLoggedIn) return router.push("/login");
+
+                        router.push(
+                          `/cart/${encodeURIComponent(
+                            encrypt({ kulcha_name: item.name })
+                          )}`
+                        );
                       }}
                     >
                       Order Now
@@ -278,7 +283,7 @@ const MenuSection = () => {
         >
           Customer&apos;s review
         </Typography>
-        <ReviewSlider/>
+        <ReviewSlider />
       </Container>
     </Box>
   );

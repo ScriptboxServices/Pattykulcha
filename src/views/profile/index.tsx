@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
   Card,
   CardContent,
@@ -77,11 +77,17 @@ const ProfilePage: React.FC = () => {
   const [isEditingSecondaryAddress, setIsEditingSecondaryAddress] =
     useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
 
   const handleNameEdit = () => {
     if (isEditingName) {
       updateUser("name");
     }
+    setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 0);
+
     setIsEditingName((prev) => !prev);
   };
 
@@ -89,6 +95,10 @@ const ProfilePage: React.FC = () => {
     if (isEditingEmail) {
       updateUser("email");
     }
+    setTimeout(() => {
+      emailInputRef.current?.focus();
+    }, 0);
+
     setIsEditingEmail((prev) => !prev);
   };
 
@@ -289,6 +299,7 @@ const ProfilePage: React.FC = () => {
                             height: "100%",
                           },
                         }}
+                        inputRef={nameInputRef}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position='start'>
@@ -384,6 +395,7 @@ const ProfilePage: React.FC = () => {
                             height: "100%",
                           },
                         }}
+                        inputRef={emailInputRef}
                         disabled={!isEditingEmail}
                         InputProps={{
                           startAdornment: (

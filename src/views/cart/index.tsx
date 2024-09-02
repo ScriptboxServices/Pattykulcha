@@ -39,11 +39,10 @@ import {
 
 export const getImageSrc = (item: string) => {
   const images: { [key: string]: string } = {
-    Chana: "/images/landingpage/Chana.svg",
-    "Imli Pyaz Chutney": "/images/landingpage/Chutney.svg",
-    "Amul Butter": "/images/landingpage/butter_6587237.svg",
-    Butter: "/images/landingpage/butter_6587237.svg",
-    "Normal Butter": "/images/landingpage/butter_6587237.svg",
+    "Chana": "/images/Channa.png",
+    "Imli Pyaz Chutney": "/images/Imlipyaazchutney.png",
+    "Amul Butter": "/images/AmulButter.png",
+    "Normal Butter": "/images/Normalbutter.png",
     Coke: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FCoke.png?alt=media&token=6fe53f5d-d772-41c7-8a54-ac40a6d80cbb",
     "Diet Coke":
       "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FDiet_coke.png?alt=media&token=ba40e428-2511-43ce-a012-cfe941f9f38c",
@@ -344,10 +343,9 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
               sx={{
                 marginBottom: "1rem",
                 color: "#000000",
-                fontSize: '14px',
-                fontWeight:'bold'
+                fontSize: { xs: "1rem", sm: "1.2rem" },
               }}>
-              What&apos;s Included :- Chana | Imli-Pyaz-Chutney | Amul Butter
+              What&apos;s Included:- Chana. | Imli-Pyaz-Chutney. | Amul Butter.
             </Typography>
           </Box>
         </Grid>
@@ -580,7 +578,6 @@ const MenuPage = ({_kulcha} : {_kulcha : any}) => {
         <Grid item xs={12}>
           <Box
             sx={{
-              marginTop: "2rem",
               paddingTop: "0rem",
               marginBottom: "0rem",
               textAlign: "center",

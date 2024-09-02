@@ -138,8 +138,8 @@ const MakeOrder: React.FC = () => {
           : itemName == "Normal Butter"
           ? 1.5
           : itemName == "Pickle"
-          ? 1 // Assuming the price for Pickle is 1.5
-          : 0); // Default price if item is not in the above lists
+          ? 1 
+          : 0); 
 
       const newItem = {
         id: itemId,
@@ -346,12 +346,14 @@ const MakeOrder: React.FC = () => {
       <Box
         sx={{
           backgroundColor: "white",
-          height: "auto",
+          minHeight: "100dvh", 
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: {xs:"flex-start",sm:"center"},
           alignItems: "center",
           overflowY: "auto",
+          paddingX: { xs: 2, md: 4 }, 
+          paddingY: { xs: 4, md: 8 }, 
         }}>
         <CircularLodar isLoading={loading} />
         <Typography variant='h4' sx={{ marginBottom: 2, marginTop: 2 }}>
@@ -362,7 +364,7 @@ const MakeOrder: React.FC = () => {
           maxWidth='md'
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
-            padding: 4,
+            padding: { xs: 2, md: 4 }, 
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
@@ -384,7 +386,7 @@ const MakeOrder: React.FC = () => {
               }}
               onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={6} md={4}>
                   <Controller
                     name='countryCode'
                     control={control}
@@ -406,7 +408,7 @@ const MakeOrder: React.FC = () => {
                               <Image
                                 loading='lazy'
                                 width={20}
-                                height={15} // Maintain aspect ratio similar to the original `img`
+                                height={15} 
                                 src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                                 alt={`${option.label} flag`}
                               />
@@ -425,7 +427,7 @@ const MakeOrder: React.FC = () => {
                             label='Choose a country code'
                             inputProps={{
                               ...params.inputProps,
-                              autoComplete: "new-password", // Correct way to pass autoComplete
+                              autoComplete: "new-password", 
                             }}
                             InputProps={{
                               ...params.InputProps,
@@ -451,7 +453,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={6} md={8}>
                   <Controller
                     name='phoneNumber'
                     control={control}
@@ -493,7 +495,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={6} md={6}>
                   <Controller
                     name='name'
                     control={control}
@@ -512,7 +514,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={6} md={6}>
                   <GoogleAddressAutocomplete
                     key={address?.raw || "default"}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
@@ -615,10 +617,13 @@ const MakeOrder: React.FC = () => {
                 <Grid
                   item
                   xs={12}
-                  display='flex'
-                  justifyContent='center'
-                  flexDirection='column'
-                  alignItems='center'>
+                  sx={{
+                    display:'flex',
+                    justifyContent:{xs:"flex-start",sm:"center"},
+                    flexDirection:'column',
+                    alignItems:'center',
+                  }}
+>
                   {allKulcha?.map((kulcha: any, index: number) => {
                     return (
                       <Box sx={{ mb: 2 }} key={index}>
@@ -627,7 +632,10 @@ const MakeOrder: React.FC = () => {
                           sx={{
                             display: "flex",
                             alignItems: "center",
-                            width: "850px",
+                            width: {xs:"85dvw",sm:"65dvw",lg:"60dvw",xl:'50dvw'},
+                            "@media (min-width: 1920px)": {
+                              width: "25dvw",  
+                            },
                             border: includedItems1.some(
                               (item: any) => item.name === kulcha.name
                             )
@@ -736,7 +744,7 @@ const MakeOrder: React.FC = () => {
                               md: "150px",
                               lg: "150px",
                             },
-                            boxShadow: "1px 1px 3px #4e5664", // Updated box-shadow
+                            boxShadow: "1px 1px 3px #4e5664", 
                             border: includedItems2.some((_item: any) => {
                               return item === _item.items[0].name;
                             })
@@ -751,8 +759,8 @@ const MakeOrder: React.FC = () => {
                             width={150}
                             height={150}
                             style={{
-                              width: "50%", // Set the width to 65% of the container
-                              height: "50%", // Set the height to 55% of the container
+                              width: "50%", 
+                              height: "50%", 
                               objectFit: "contain",
                               marginTop: 1,
                             }}
@@ -784,7 +792,7 @@ const MakeOrder: React.FC = () => {
                         cursor: "pointer",
                         marginLeft: "15px",
                         // margin: "0.3rem 0",
-                        width: { xs: "100%", md: "843px" },
+                        width: { xs: "97%", md: "843px" },
                       }}
                       onClick={handleDrinkDialog}>
                       <Box display='flex' alignItems='center'>
@@ -948,13 +956,15 @@ const MakeOrder: React.FC = () => {
                 type='submit'
                 variant='contained'
                 sx={{
-                  marginLeft: "40%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center", 
                   backgroundColor: "#ECAB21",
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
-
                   mt: 2,
+                  mx: "auto", 
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
@@ -1011,11 +1021,11 @@ const MakeOrder: React.FC = () => {
                       : "1px solid #ddd",
                     position: "relative",
                     cursor: "pointer",
-                    height: "270px", // Ensure all cards have the same height
+                    height: "270px", 
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center", // Align items center horizontally
+                    alignItems: "center", 
                   }}>
                   <Image
                     alt={drink.name}
@@ -1023,11 +1033,11 @@ const MakeOrder: React.FC = () => {
                     width={150}
                     height={150}
                     style={{
-                      width: "65%", // Set the width to 65% of the container
-                      height: "55%", // Set the height to 55% of the container
+                      width: "65%", 
+                      height: "55%", 
                       objectFit: "contain",
-                      display: "block", // Ensures the image is treated as a block-level element
-                      margin: "0 auto", // Center horizontally within the container
+                      display: "block", 
+                      margin: "0 auto",
                     }}
                   />
                   <CardContent sx={{ textAlign: "center" }}>

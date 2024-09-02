@@ -113,7 +113,8 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
             <Paper
               sx={{
                 width: "100%",
-                padding: "24px",
+                paddingY: "20px",
+                paddingX: "32px",
                 backgroundColor: "#FFFFFF",
                 textAlign: "center",
                 margin: "0 auto",
@@ -121,13 +122,24 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 borderRadius: "12px",
               }}
             >
+              <Image
+                height={150}
+                width={150}
+                layout="fixed"
+                style={{
+                  marginInline: "auto",
+                }}
+                src="/images/cart.webp"
+                alt="#"
+              />
               <Typography
                 variant="h6"
                 sx={{
                   paddingBottom: "4px",
                   fontWeight: 700,
                   color: "#162548",
-                  my: 3,
+                  my: 1.34,
+                  ml: 2,
                 }}
               >
                 Your cart is empty.
@@ -141,6 +153,8 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     borderRadius: 20,
                     paddingX: 4,
                     paddingY: 1,
+                    marginBottom:"16px",
+                    marginLeft: 2,
                     fontWeight: "bold",
                     "&:hover": {
                       backgroundColor: "#FFC107",
@@ -206,7 +220,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                       sx={{ ml: isSmallScreen ? 0 : 3, flex: 1, width: "90%" }}
                     >
                       <Typography
-                        variant="h6"
+                        variant="body1"
                         sx={{
                           display: "flex",
                           alignItems: "center",

@@ -9,11 +9,11 @@ import TikTokIcon from '@mui/icons-material/MusicNote';
 const Footer: React.FC = () => {
 
   return (
-    <Box component="footer" sx={{ bgcolor: '#162548', color: 'white', py: 6 }}>
+    <Box component="footer" sx={{ bgcolor: '#162548', color: 'white', py: 2 }}>
       <Container maxWidth="lg">
         <Box 
           sx={{ 
-            mt: 4, 
+            mt: 2, 
             display: 'flex', 
             flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between', 
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
             © 2024 All Rights Reserved
           </Typography>
         </Box>
-        <Typography variant="body2" sx={{ mt: 2, textAlign: { xs: 'center', md: 'right',width:'100%' } }}>
+        <Typography variant="body2" sx={{ mt: 2, textAlign: { xs: 'center', md: 'right',width:'100%',mb:4 } }}>
           <Link href="/privacypolicy" color="inherit" underline="hover">
             Privacy Policy
           </Link>
