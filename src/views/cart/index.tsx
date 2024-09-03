@@ -45,9 +45,7 @@ export const getImageSrc = (item: string) => {
     "Imli Pyaz Chutney": "/images/Imlipyaazchutney.png",
     "Amul Butter": "/images/AmulButter.png",
     "Normal Butter": "/images/Normalbutter.png",
-    Coke: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FCoke.png?alt=media&token=6fe53f5d-d772-41c7-8a54-ac40a6d80cbb",
-    "Diet Coke":
-      "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FDiet_coke.png?alt=media&token=ba40e428-2511-43ce-a012-cfe941f9f38c",
+    Coke: "/images/Cokecan.png",
     Sprite:
       "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FSprite.png?alt=media&token=4dda8bdb-80cf-4ddf-b26e-1138d054e96d",
     "Mountain Dew":
@@ -510,8 +508,9 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                     <Box
                       sx={{
                         display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent: { xs: "center", sm: "space-between" },
                         padding: "1rem",
                         backgroundColor: "white",
                         border: "2px solid #dcdcdc",
@@ -549,7 +548,11 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                         justifyContent="center"
                         sx={{ marginRight: 2 }}
                       >
-                        <Typography variant="body2" color="textSecondary" sx={{marginTop: "0.5rem",}}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ marginTop: "0.2rem" }}
+                        >
                           ${item?.price.toFixed(2)}
                         </Typography>
                         {item?.added ? (
@@ -865,12 +868,124 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
         <Grid item xs={12}>
           <Box
             sx={{
+              paddingTop: "0rem",
+              marginBottom: "0rem",
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{ color: "#021e3a", fontWeight: "bold" }}
+            >
+              Add drinks
+            </Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {drinkOptions.map((drink, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "1rem",
+                      backgroundColor: "white",
+                      // border: "2px solid #dcdcdc",
+                      borderRadius: "8px",
+                      textAlign: "left",
+                      position: "relative",
+                      cursor: "pointer",
+                      margin: "0.5rem 0",
+                      width: { xs: "100%", md: "60%" },
+                      border: includedItems2.some((item) =>
+                        item.items.some((i: any) => i.name === drink.name)
+                      )
+                        ? "2px solid green"
+                        : "1px solid #ddd",
+                    }}
+                    onClick={() => handleDrinkSelect(drink.name)}
+                  >
+                    <Box display="flex" alignItems="center" sx={{}}>
+                      <Image
+                        alt={drink.name}
+                        src={drink.image}
+                        layout="fixed"
+                        width={50}
+                        height={50}
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Typography
+                        variant="body1"
+                        color="textPrimary"
+                        sx={{ marginLeft: "1rem" }}
+                      >
+                        {drink.name}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" color="textSecondary">
+                      ${drink.price.toFixed(2)}
+                    </Typography>
+                    {includedItems2.some((item) =>
+                      item.items.some((i: any) => i.name === drink.name)
+                    ) && (
+                      <CheckCircleIcon
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          color: "green",
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
               // marginTop: "2.7rem",
               paddingTop: "0rem",
               marginBottom: "0.5rem",
               textAlign: "center",
             }}
           >
+            <Box display="flex" justifyContent="center" alignItems="center">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      borderRadius: 10,
+                      marginTop: 2,
+                      paddingX: 4,
+                      paddingY: 1,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#FFC107",
+                        color: "white",
+                      },
+                    }}
+                    onClick={handleAddToCart}
+                  >
+                    Add to cart
+                  </Button>
+                </Box>
             {/* <Box
               sx={{
                 width: "65%",
@@ -880,15 +995,15 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 marginBottom: "23px", // Add space between the line and the text
               }}
             /> */}
-            <Typography
+            {/* <Typography
               variant="h4"
               gutterBottom
               sx={{ color: "#021e3a", fontWeight: "bold" }}
             >
               Make it a Meal
-            </Typography>
+            </Typography> */}
             <Grid container spacing={1} justifyContent="center">
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -950,7 +1065,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                     Add to cart
                   </Button>
                 </Box>
-              </Grid>
+              </Grid> */}
               {/* <Grid item xs={12}>
                 <Box
                   sx={{

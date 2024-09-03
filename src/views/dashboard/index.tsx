@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
 import CustomPaginationActionsTable from "./orderlist";
 import PaymentDetailsTable from "./paymentdetails";
 import Image from "next/image";
@@ -207,56 +209,63 @@ export default function ResponsiveDrawer(props: Props) {
         ))}
       </List>
       <Box sx={{ flexGrow: 1 }} />
-
-      {menuExpanded && (
-        <Box
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+         <Button
+          type="submit"
+          variant="contained"
+          startIcon={!menuExpanded ? <PersonIcon /> : null}
+          onClick={() => router.push("/home")}
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
+            width: menuExpanded ? "178px" : "50px",
+            minWidth: menuExpanded ? "178px" : "50px",
+            justifyContent: menuExpanded ? "center" : "center",
+            backgroundColor: "#ECAB21",
+            color: "white",
+            fontSize: "12px",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#FFC107",
+              color: "white",
+            },
+            paddingLeft: menuExpanded ? "16px" : 0,
+            paddingRight: menuExpanded ? "16px" : 0,
           }}
         >
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={() => router.push("/home")}
-            sx={{
-              width: "178px",
-              backgroundColor: "#ECAB21",
+          {menuExpanded && "Switch to customer"}
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={!menuExpanded ? <LogoutIcon /> : null}
+          onClick={handleLogout}
+          sx={{
+            width: menuExpanded ? "178px" : "50px",
+            minWidth: menuExpanded ? "178px" : "50px",
+            justifyContent: menuExpanded ? "center" : "center",
+            backgroundColor: "#ECAB21",
+            color: "white",
+            mb: 4,
+            mt: 2,
+            fontSize: "12px",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#FFC107",
               color: "white",
-              fontSize: "12px",
-              fontWeight: "bold",
-              "&:hover": {
-                backgroundColor: "#FFC107",
-                color: "white",
-              },
-            }}
-          >
-            Switch to customer
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={handleLogout}
-            sx={{
-              width: "178px",
-              backgroundColor: "#ECAB21",
-              color: "white",
-              mb: 4,
-              mt: 2,
-              fontSize: "12px",
-              fontWeight: "bold",
-              "&:hover": {
-                backgroundColor: "#FFC107",
-                color: "white",
-              },
-            }}
-          >
-            Logout
-          </Button>
-        </Box>
-      )}
+            },
+            paddingLeft: menuExpanded ? "16px" : 0,
+            paddingRight: menuExpanded ? "16px" : 0,
+          }}
+        >
+          {menuExpanded && "Logout"}
+        </Button>
+      </Box>
     </Box>
   );
 

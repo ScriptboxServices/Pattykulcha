@@ -822,7 +822,7 @@ const MakeOrder: React.FC = () => {
                       <></>
                     ) : (
                       includedItems2.map((item) => (
-                        <Grid item xs={6} sm={4} md={1.6} key={item.id}>
+                        <Grid item xs={6} sm={4} md={3} lg={2} key={item.id}>
                           <Box
                             sx={{
                               display: "flex",

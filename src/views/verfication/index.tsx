@@ -27,17 +27,26 @@ const StyledRoot = styled(Box)(({ theme }) => ({
   width: "100%",
   paddingTop: theme.spacing(4),
   alignItems: "center",
+  [theme.breakpoints.up("xs")]: {
+    paddingTop: theme.spacing(4),
+    width: "90%", 
+  },
   [theme.breakpoints.up("sm")]: {
     paddingTop: theme.spacing(10),
+    width: "70%",
   },
   [theme.breakpoints.up("md")]: {
     justifyContent: "center",
     paddingTop: 0,
-    width: "60%",
+    width: "40%",
     alignItems: "center",
   },
   [theme.breakpoints.up("lg")]: {
-    width: "28%",
+    width: "35%", 
+    alignItems: "center",
+  },
+  [theme.breakpoints.up("xl")]: {
+    width: "30%", 
     alignItems: "center",
   },
 }));
@@ -320,7 +329,6 @@ const VerificationPage: React.FC = () => {
                     paddingX: 4,
                     paddingY: 1,
                     fontWeight: "bold",
-                    marginTop: "0.5rem",
                     color: "black",
                   }}
                 >

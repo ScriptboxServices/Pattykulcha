@@ -48,7 +48,7 @@ export const drinkOptions = [
     name: "Coke",
     desc: "Coca-Cola – The Original Sparkle of Refreshment, Loved by Generations.",
     price: 3 ,
-    image: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FCoke.png?alt=media&token=6fe53f5d-d772-41c7-8a54-ac40a6d80cbb",
+    image: "/images/Cokecan.png",
   },
   {
     name: "Diet Coke",

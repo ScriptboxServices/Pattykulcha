@@ -139,7 +139,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   fontWeight: 700,
                   color: "#162548",
                   my: 1.34,
-                  ml: 2,
+        
                 }}
               >
                 Your cart is empty.
@@ -154,7 +154,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     paddingX: 4,
                     paddingY: 1,
                     marginBottom:"16px",
-                    marginLeft: 2,
+                    
                     fontWeight: "bold",
                     "&:hover": {
                       backgroundColor: "#FFC107",

@@ -272,6 +272,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                         color: "#1F2937",
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
+                        wordBreak:'break-all'
                       }}
                     >
                       Delivery Instructions: {instructions}

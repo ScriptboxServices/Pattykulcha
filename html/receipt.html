@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .receipt {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+            height: 70px;
+            width: 190px;
+            margin-inline: auto;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .subtotal,
+        .amount-charged {
+            margin-top: 20px;
+        }
+
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .amount-charged {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .amount {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="receipt">
+      <img class="logo" src="logo.png" alt="Logo" >
+        <div class="item">
+            <div><span>2</span> <span>Mix kulcha</span></div>
+            <span>$16.00</span>
+        </div>
+        <div class="item">
+            <div><span>2</span> <span>Paneer kulcha</span></div>
+            <span>$16.00</span>
+        </div>
+
+        <div class="subtotal">
+            <div class="line-item"><span>Subtotal</span><span>$23.58</span></div>
+            <div class="line-item"><span>Tax</span><span>$2.12</span></div>
+            <div class="line-item"><span>Service Fee</span><span>$3.54</span></div>
+            <!-- <div class="line-item">
+                <span>CA Driver Benefits</span><span>$2.00</span>
+            </div> -->
+            <div class="line-item"><span>Delivery Fee</span><span>$0.49</span></div>
+            <!-- <div class="line-item">
+                <span>Delivery person tip</span><span>$5.94</span>
+            </div> -->
+        </div>
+
+        <div class="amount-charged">
+            <div class="line-item">
+                <span>Total Amount</span>
+                <span class="amount">$31.73</span>
+            </div>
+            <!-- <div class="line-item">
+                <span>Uber Cash</span>
+                <span class="amount">$5.94</span>
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>
