@@ -571,7 +571,7 @@ const OrdersPage: React.FC = () => {
                       flexDirection: "column",
                     }}
                   >
-                    {orderDoc?.delivery?.message == "Delivered" && (
+                    {orderDoc?.delivery?.message != "Refunded" && (
                       <Box
                         sx={{
                           display: "flex",

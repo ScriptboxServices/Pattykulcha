@@ -419,7 +419,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                         >
                           Remove
                         </Button>
-                        <Box
+                        {/* <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -444,7 +444,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           >
                             <AddCircleOutlineIcon />
                           </IconButton>
-                        </Box>
+                        </Box> */}
                       </Box>
                     </Box>
                   </Paper>
