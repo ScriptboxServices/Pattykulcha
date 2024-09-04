@@ -18,6 +18,13 @@ import { RootState } from "@/redux-store";
 import ReviewSlider from "@/views/review-slider";
 import { encrypt } from "@/utils/commonFunctions";
 
+import { Metadata } from 'next'
+
+export const metadata:Metadata={
+  title:'Home page',
+}
+
+
 type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
 
 interface MenuCategory {

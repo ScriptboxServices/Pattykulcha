@@ -46,6 +46,7 @@ export const getImageSrc = (item: string) => {
     "Amul Butter": "/images/AmulButter.png",
     "Normal Butter": "/images/Normalbutter.png",
     Coke: "/images/Cokecan.png",
+    "Diet Coke":"https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FDiet_coke.png?alt=media&token=ba40e428-2511-43ce-a012-cfe941f9f38c",
     Sprite:
       "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FSprite.png?alt=media&token=4dda8bdb-80cf-4ddf-b26e-1138d054e96d",
     "Mountain Dew":
@@ -421,6 +422,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 marginBottom: "1rem",
                 color: "#000000",
                 fontSize: { xs: "1rem", sm: "1.2rem" },
+                fontWeight: "bold",
               }}
             >
               What&apos;s Included:- Chana. | Imli-Pyaz-Chutney. | Amul Butter.
@@ -493,9 +495,97 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
               gutterBottom
               sx={{ color: "#021e3a", fontWeight: "bold" }}
             >
-              Other Kulchas
+              Kulchas
             </Typography>
-            <Grid container spacing={1}>
+            <Grid
+              container
+              spacing={1}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                pl:1
+              }}
+            >
+              {/* <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: "center",
+                  justifyContent: { xs: "center", sm: "space-between" },
+                  padding: "1rem",
+                  backgroundColor: "white",
+                  border: "2px solid #336195",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  position: "relative",
+                  cursor: "pointer",
+                  margin: "0.5rem 0",
+                  width: { xs: "100%", md: "59%" },
+                }}
+              >
+                <Box display="flex" alignItems="center">
+                  <Image
+                    src={kulcha?.image}
+                    alt={kulcha?.name}
+                    layout="fixed"
+                    width={50}
+                    height={50}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="textPrimary"
+                    sx={{ marginLeft: "1rem" }}
+                  >
+                    {kulcha?.name}
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{ marginRight: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ marginTop: "0.2rem" }}
+                  >
+                    ${kulcha?.price?.toFixed(2)}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => handleDecreaseKulchaQTY()}
+                      sx={{
+                        color: "#336195",
+                      }}
+                    >
+                      <RemoveCircleOutlineIcon sx={{ fontSize: "2rem" }} />
+                    </IconButton>
+                    <Typography variant="body1" color="textPrimary">
+                      {kulcha?.quantity}
+                    </Typography>
+                    <IconButton
+                      onClick={() => handleIncreaseKulchaQTY()}
+                      sx={{
+                        color: "#336195",
+                      }}
+                    >
+                      <AddCircleOutlineIcon sx={{ fontSize: "2rem" }} />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Box> */}
               {otherKulchas
                 ?.filter((item: any) => item?.name !== kulcha?.name)
                 .map((item: any) => (
@@ -966,26 +1056,26 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             }}
           >
             <Box display="flex" justifyContent="center" alignItems="center">
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#ECAB21",
-                      color: "white",
-                      borderRadius: 10,
-                      marginTop: 2,
-                      paddingX: 4,
-                      paddingY: 1,
-                      fontWeight: "bold",
-                      "&:hover": {
-                        backgroundColor: "#FFC107",
-                        color: "white",
-                      },
-                    }}
-                    onClick={handleAddToCart}
-                  >
-                    Add to cart
-                  </Button>
-                </Box>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#ECAB21",
+                  color: "white",
+                  borderRadius: 10,
+                  marginTop: 2,
+                  paddingX: 4,
+                  paddingY: 1,
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#FFC107",
+                    color: "white",
+                  },
+                }}
+                onClick={handleAddToCart}
+              >
+                Add to cart
+              </Button>
+            </Box>
             {/* <Box
               sx={{
                 width: "65%",

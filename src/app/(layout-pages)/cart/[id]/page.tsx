@@ -4,6 +4,10 @@ import React from "react";
 import { decrypt } from '@/utils/commonFunctions';
 import { menuItems } from "@/constants/MenuOptions";
 
+export const metadata={
+  title:"Pattykulcha - Cart",
+}
+
 const CartPage = ({params} : {params : any}) => {
 
   const { id } = params

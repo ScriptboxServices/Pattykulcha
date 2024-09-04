@@ -29,6 +29,9 @@ import { db } from "@/firebase";
 import Link from "next/link";
 import WarningIcon from "@mui/icons-material/Warning";
 import CloseIcon from "@mui/icons-material/Close";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,7 +45,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
     setGrandTotal,
     carts,
     isAddressReachable,
-  } = useMenuContext();
+  } = useMenuContext()
 
   const router = useRouter();
   const pathName = usePathname();
@@ -185,7 +188,6 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                       backgroundColor: "#FFFFFF",
                       width: isSmallScreen ? "100%" : "57%",
                       boxShadow: "none",
-                      mb: 2,
                       flexDirection: isSmallScreen ? "column" : "row",
                       borderRadius: "12px",
                       border: "1px solid #E5E7EB",
@@ -395,11 +397,10 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                       <Box
                         sx={{
                           display: "flex",
-                          justifyContent: isSmallScreen
-                            ? "center"
-                            : "space-between",
+                          justifyContent: "space-between",
                           width: "100%",
                           mt: 2,
+                          flexDirection: isSmallScreen ? "row" : "row",
                         }}
                       >
                         <Button
@@ -418,7 +419,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                         >
                           Remove
                         </Button>
-                        {/* <Box
+                        <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -443,7 +444,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                           >
                             <AddCircleOutlineIcon />
                           </IconButton>
-                        </Box> */}
+                        </Box>
                       </Box>
                     </Box>
                   </Paper>

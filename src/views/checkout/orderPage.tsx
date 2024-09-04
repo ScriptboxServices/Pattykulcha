@@ -178,13 +178,13 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
               <Typography
                 variant="h3"
                 component="h1"
-                sx={{ fontWeight: 700, color: "#162548", mb: 3 }}
+                sx={{ fontWeight: 700, color: "#162548", mb: 1}}
               >
                 YOUR
                 <br />
                 ORDER
               </Typography>
-
+{/* 
               <ToggleButtonGroup
                 value={selectedOption}
                 exclusive
@@ -206,11 +206,11 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                   },
                 }}
               >
-                {/* <ToggleButton value="delivery">
+                <ToggleButton value="delivery">
                   <LocalShippingIcon sx={{ mr: 1 }} />
                   Delivery
-                </ToggleButton> */}
-              </ToggleButtonGroup>
+                </ToggleButton>
+              </ToggleButtonGroup> */}
             </Box>
 
             <Box sx={{ width: { xs: "100%", md: "50%" } }}>
@@ -232,7 +232,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
               </Box>
               {selectedOption == "delivery" && (
                 <Box>
-                  <Box sx={{ mb: 2 }}>
+                  <Box sx={{ mb: 2 }} onClick={() => handleEditClick("instructions")}>
                     <Typography
                       // variant="h6"
                       color="text.secondary"
@@ -262,7 +262,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mb: 3 }}>
+                  <Box sx={{ mb: 3 }} onClick={() => handleEditClick("instructions")}>
                     <Typography
                       color="text.secondary"
                       sx={{

@@ -6,11 +6,10 @@ import ReduxProvider from "@/redux-store/ReduxProvider";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Patty Kulcha",
+  title: "Pattykulcha",
   description:
     "Special Amritsari Kulcha, Paneer Kulcha, Aloo Kulcha, Gobi Kulcha, Onion Kulcha—at PattyKulcha, we deliver the authentic flavors of Punjab. Each dish is made fresh to order, bringing tradition to your table. Explore our menu and order online today!",
   keywords: [
-    "Patty Kulcha",
     "Special Amritsari Kulcha",
     "Paneer Kulcha",
     "Aloo Kulcha",
@@ -50,7 +49,7 @@ export default function RootLayout({
             "@type": "Article",
             url: "https://www.pattykulcha.com/",
             logo: "/images/logo.png",
-            name: "Patty Kulcha",
+            // name: "Patty Kulcha",
           })}
         </Script>
 

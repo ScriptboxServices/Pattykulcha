@@ -1,7 +1,6 @@
 'use client'
 import React from 'react';
 
-// MUI Imports
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -45,218 +44,380 @@ const PrivacyPolicyPage = () => {
       <Container maxWidth="md" sx={{paddingY:6}}>
         <ContentCard className=' mt-4'>
           <Typography variant='h5' component='h1'>
-            <strong>PRIVACY NOTICE</strong>
+            <strong>Privacy Policy</strong>
           </Typography>
           <Typography paragraph>
-            <strong>Last Updated on August 8, 2024</strong>
+            <strong>Last updated: August 8, 2024</strong>
           </Typography>
           <Typography paragraph>
-            At Patty Kuchla (&rdquo;Patty Kuchla&rdquo;, &rdquo;we&rdquo;, or &rdquo;us&rdquo;), we value your privacy and want to explain the types of information we may gather, why we gather your information, how we use your information, when we might disclose your information, and how you can manage your information. This privacy policy applies to our website located at www.pattykuchla.com, and our services. This Privacy Notice does not apply to third-party websites and applications linked to or from the Site. We are not responsible for the actions and privacy policies of these third-party websites and applications.
+            This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
           </Typography>
           <Typography paragraph>
-            By using our Services, you accept the practices described in this Privacy Notice. We may update this Privacy Notice from time to time. Your continued use of our Services following the posting of changes will mean you accept those changes.
+            We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.
           </Typography>
         </ContentCard>
 
         <ContentCard>
           <SectionTitle variant='h5'>
-            INFORMATION WE COLLECT
+            Interpretation and Definitions
           </SectionTitle>
           <Typography paragraph>
-            <strong>Information We Collect from You</strong>
+            <strong>Interpretation</strong>
           </Typography>
           <Typography paragraph>
-            We may collect non-personal and personal information directly from you when you use the website, such as when you register for an account, place an order, or access certain features or content. The information we collect includes:
+            The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.
+          </Typography>
+          <Typography paragraph>
+            <strong>Definitions</strong>
+          </Typography>
+          <Typography paragraph>
+            For the purposes of this Privacy Policy:
           </Typography>
           <Typography component="ul">
-            <li>Contact information: such as your name, phone number.</li>
-            <li>Ordering information: such as your favourite items and order history.</li>
-            <li>Delivery information: such as your delivery address.</li>
-            <li>Payment and financial details: such as payment card number, expiration date, authentication code, and billing address, processed by a third-party processor.</li>
-            <li>Login information: such as your username and password.</li>
-            <li>Demographic information: such as your state and county of residence.</li>
+            <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
+            <li><strong>Affiliate</strong> means an entity that controls, is controlled by or is under common control with a party, where control means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.</li>
+            <li><strong>Application</strong> refers to Pattykulcha, the software program provided by the Company.</li>
+            <li><strong>Company</strong> (referred to as either the Company, We, Us or Our in this Agreement) refers to Pattykulcha Ltd., 7159 Magistrate Terrace, Mississauga, ON L5W 1E3.</li>
+            <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</li>
+            <li><strong>Country</strong> refers to: Ontario, Canada.</li>
+            <li><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</li>
+            <li><strong>Personal Data</strong> is any information that relates to an identified or identifiable individual.</li>
+            <li><strong>Service</strong> refers to the Application or the Website or both.</li>
+            <li><strong>Service Provider</strong> means any natural or legal person who processes the data on behalf of the Company. It refers to third-party companies or individuals employed by the Company to facilitate the Service, to provide the Service on behalf of the Company, to perform services related to the Service or to assist the Company in analyzing how the Service is used.</li>
+            <li><strong>Usage Data</strong> refers to data collected automatically, either generated by the use of the Service or from the Service infrastructure itself (for example, the duration of a page visit).</li>
+            <li><strong>Website</strong> refers to Pattykulcha, accessible from https://www.pattykulcha.com.</li>
+            <li><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
           </Typography>
+        </ContentCard>
 
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Collecting Your Personal Data
+          </SectionTitle>
           <Typography paragraph>
-            <strong>Collection of Information from Social Media Websites and Other Sources</strong>
+            <strong>Types of Data Collected</strong>
           </Typography>
           <Typography paragraph>
-            When you interact with Patty Kuchla on a social media platform, we may collect information you make available on that page, including your account ID or username. If you log into your Patty Kuchla account through a social networking service, we may share certain information about you and your activities with that service.
+            <strong>Personal Data</strong>
           </Typography>
           <Typography paragraph>
-            We may also collect information from other sources, including business partners, vendors, or public sources.
-          </Typography>
-
-          <Typography paragraph>
-            <strong>Information We Collect from Website Visitors</strong>
-          </Typography>
-          <Typography paragraph>
-            We collect information when users interact with the Services. This includes:
+            While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to:
           </Typography>
           <Typography component="ul">
-            <li>Demographic data: such as age, gender, and ZIP code.</li>
-            <li>Device information: about devices used to access the website.</li>
-            <li>Usage and traffic information: such as pages viewed, date and time of access, and referring website addresses.</li>
-          </Typography>
-
-          <Typography paragraph>
-            <strong>Collection of Your Location Information</strong>
-          </Typography>
-          <Typography paragraph>
-            You may send us information that discloses your general location. The Site can deliver content based on your specific location if you enable that feature.
-          </Typography>
-
-          <Typography paragraph>
-            <strong>Use of Cookies, Web Beacons, and Other Technologies</strong>
-          </Typography>
-          <Typography paragraph>
-            We use cookies, web beacons, and other technologies to track use of our Site, improve the Site, and provide a better user experience. Cookies are small text files stored on your device when you visit certain online pages. Most web browsers automatically accept cookies, but you can modify your browser settings to disable or reject cookies. Note that some features of the Site may not function properly if cookies are disabled.
-          </Typography>
-          <Typography paragraph>
-            We use Google Analytics to help us analyse how users interact with the website. Google Analytics collects information such as your IP address, time of visit, and referring website. The information generated by Google Analytics will be transmitted to and stored by Google and will be subject to Google&rsquo;s privacy policies.
+            <li>First name and last name</li>
+            <li>Phone number</li>
+            <li>Address, State, Province, ZIP/Postal code, City</li>
           </Typography>
         </ContentCard>
 
         <ContentCard>
           <SectionTitle variant='h5'>
-            HOW WE USE YOUR INFORMATION
+            Usage Data
           </SectionTitle>
           <Typography paragraph>
-            We use your information to personalise and improve your experience with the Services. Uses include:
+            Usage Data is collected automatically when using the Service.
+          </Typography>
+          <Typography paragraph>
+            Usage Data may include information such as Your Device&pos; Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that You visit, the time and date of Your visit, the time spent on those pages, unique device identifiers and other diagnostic data.
+          </Typography>
+          <Typography paragraph>
+            When You access the Service by or through a mobile device, We may collect certain information automatically, including, but not limited to, the type of mobile device You use, Your mobile device unique ID, the IP address of Your mobile device, Your mobile operating system, the type of mobile Internet browser You use, unique device identifiers and other diagnostic data.
+          </Typography>
+          <Typography paragraph>
+            We may also collect information that Your browser sends whenever You visit our Service or when You access the Service by or through a mobile device.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Information Collected while Using the Application
+          </SectionTitle>
+          <Typography paragraph>
+            While using Our Application, in order to provide features of Our Application, We may collect, with Your prior permission:
           </Typography>
           <Typography component="ul">
-            <li>Providing you with content, products, and services you request.</li>
-            <li>Communicating with you about your account or transactions.</li>
-            <li>Sending you information about features and enhancements.</li>
-            <li>Sending newsletters, offers, promotions, or other communications.</li>
-            <li>Advertising our products and services.</li>
-            <li>Administering contests, sweepstakes, promotions, and surveys.</li>
-            <li>Detecting and preventing activities that may violate our policies or be illegal.</li>
-            <li>Enforcing our agreements.</li>
-            <li>Improving our menu offerings and operations.</li>
-            <li>Protecting the rights, safety, health, and security of our customers, employees, and the general public.</li>
-            <li>Performing statistical, demographic, and marketing analyses.</li>
+            <li>Information regarding your location</li>
           </Typography>
           <Typography paragraph>
-            We may combine information collected on one portion of the Services with information collected on other portions of the Services, and we may combine that information with information collected offline or from third-party sources.
+            We use this information to provide features of Our Service, to improve and customize Our Service. The information may be uploaded to the Company&pos; servers and/or a Service Provider&pos; server or it may be simply stored on Your device.
+          </Typography>
+          <Typography paragraph>
+            You can enable or disable access to this information at any time, through Your Device settings.
           </Typography>
         </ContentCard>
 
         <ContentCard>
           <SectionTitle variant='h5'>
-            HOW WE SHARE YOUR INFORMATION
+            Tracking Technologies and Cookies
           </SectionTitle>
           <Typography paragraph>
-            <strong>Third-Party Service Providers</strong>
+            We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:
           </Typography>
-          <Typography paragraph>
-            We use third-party service providers, agents, and affiliates to perform functions on our behalf, including hosting, content management, marketing, analytics, customer service, and payment processing. These entities may have access to your information to perform their services and are restricted from using it for any other purpose.
-          </Typography>
-
-          <Typography paragraph>
-            <strong>Assignment</strong>
-          </Typography>
-          <Typography paragraph>
-            In the event of a change in ownership or corporate organisation, or a sale of assets associated with the Services, we may transfer your information to the acquiring entity. We will request that the acquiring entity follow the practices described in this Privacy Notice.
-          </Typography>
-
-          <Typography paragraph>
-            <strong>Law Enforcement, Legal Process, and Emergency Situations</strong>
-          </Typography>
-          <Typography paragraph>
-            We may use or disclose personal information if required by law or in good faith that such action is necessary to comply with legal requirements, protect our rights or property, or act to protect the personal safety of users or the public.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            PROTECTING YOUR INFORMATION
-          </SectionTitle>
-          <Typography paragraph>
-            We use commercially reasonable efforts to protect your personal information. However, no data transmission over the Internet or any public network can be guaranteed to be 100% secure.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            STORING YOUR INFORMATION
-          </SectionTitle>
-          <Typography paragraph>
-            The retention period for your information varies according to its intended use. Unless legally required to retain it, we will keep your information no longer than necessary for the purposes for which it was collected.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            CHILDREN’S INFORMATION
-          </SectionTitle>
-          <Typography paragraph>
-            The Services are not directed at children under 13 years of age. We do not knowingly collect personal information from children under 18 years of age without parental consent. If we discover that a child under 13 has provided us with personal information without parental consent, we will delete that information. If you believe a child has provided us with personal information without parental consent, please notify us immediately.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            PUBLIC AREAS OF THE SITE
-          </SectionTitle>
-          <Typography paragraph>
-            Any information you share in public areas of the Site becomes public. Please be careful about what you disclose in these areas.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            CONTESTS AND PROMOTIONS
-          </SectionTitle>
-          <Typography paragraph>
-            Specific rules apply to promotions that explain how the information you provide will be used and disclosed.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            NOTICE TO USERS OUTSIDE THE CANADA
-          </SectionTitle>
-          <Typography paragraph>
-            The Services are directed to individuals in the United States. If you access the Services from outside Canada, you do so at your own risk and are responsible for compliance with local laws. By using the Services, you consent to the transfer of your personal information to Canada.
-          </Typography>
-        </ContentCard>
-
-        <ContentCard>
-          <SectionTitle variant='h5'>
-            CHOICES ABOUT HOW WE USE AND DISCLOSE YOUR INFORMATION
-          </SectionTitle>
           <Typography component="ul">
-            <li>Tracking Technologies and Advertising: Set your browser to refuse cookies or alert you when cookies are being sent. Some parts of the Site may be inaccessible if cookies are disabled.</li>
-            <li>Promotional Offers: Opt out of promotional emails by following the instructions on the promotion or by emailing email.</li>
-            <li>Do Not Track Signals: The Services do not respond to Do Not Track signals. We may continue to collect information as described in this Privacy Notice.</li>
-            <li>Account Information: Review and change your information by logging into your account or contacting us at email. We may not be able to delete your personal information without deleting your user account.</li>
+            <li><strong>Cookies or Browser Cookies</strong>. A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies.</li>
+            <li><strong>Web Beacons</strong>. Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity).</li>
+          </Typography>
+          <Typography paragraph>
+            Cookies can be Persistent or Session Cookies. Persistent Cookies remain on Your personal computer or mobile device when You go offline, while Session Cookies are deleted as soon as You close Your web browser.
+          </Typography>
+          <Typography paragraph>
+            We use both Session and Persistent Cookies for the purposes set out below:
+          </Typography>
+          <Typography paragraph>
+            <strong>Necessary / Essential Cookies</strong>
+          </Typography>
+          <Typography component="ul">
+            <li>Type: Session Cookies</li>
+            <li>Administered by: Us</li>
+            <li>Purpose: These Cookies are essential to provide You with services available through the Website and to enable You to use some of its features. They help to authenticate users and prevent fraudulent use of user accounts. Without these Cookies, the services that You have asked for cannot be provided, and We only use these Cookies to provide You with those services.</li>
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Cookies Policy / Notice Acceptance Cookies</strong>
+          </Typography>
+          <Typography component="ul">
+            <li>Type: Persistent Cookies</li>
+            <li>Administered by: Us</li>
+            <li>Purpose: These Cookies identify if users have accepted the use of cookies on the Website.</li>
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Functionality Cookies</strong>
+          </Typography>
+          <Typography component="ul">
+            <li>Type: Persistent Cookies</li>
+            <li>Administered by: Us</li>
+            <li>Purpose: These Cookies allow us to remember choices You make when You use the Website, such as remembering your login details or language preference. The purpose of these Cookies is to provide You with a more personal experience and to avoid You having to re-enter your preferences every time You use the Website.</li>
+          </Typography>
+
+          <Typography paragraph>
+            <strong>Tracking and Performance Cookies</strong>
+          </Typography>
+          <Typography component="ul">
+            <li>Type: Persistent Cookies</li>
+            <li>Administered by: Third-Parties</li>
+            <li>Purpose: These Cookies are used to track information about traffic to the Website and how users use the Website. The information gathered via these Cookies may directly or indirectly identify you as an individual visitor. This is because the information collected is typically linked to a pseudonymous identifier associated with the device you use to access the Website. We may also use these Cookies to test new pages, features or new functionality of the Website to see how our users react to them.</li>
+          </Typography>
+          <Typography paragraph>
+            For more information about the cookies we use and your choices regarding cookies, please visit our Cookies Policy or the Cookies section of our Privacy Policy.
           </Typography>
         </ContentCard>
 
         <ContentCard>
           <SectionTitle variant='h5'>
-            CHANGES TO OUR PRIVACY NOTICE
+            Using Your Personal Data
           </SectionTitle>
           <Typography paragraph>
-            We may update this Privacy Notice from time to time. Changes will be posted on the Site, and we will only use data collected from the time of the Privacy Notice change forward for new or different purposes. If we make a material change, we will provide an opportunity to opt out of such use. The date of the last revision is at the top of this page. You are responsible for reviewing this Privacy Notice periodically.
+            The Company may use Personal Data for the following purposes:
+          </Typography>
+          <Typography component="ul">
+            <li>To provide and maintain our Service, including to monitor the usage of our Service.</li>
+            <li>To manage Your Account: to manage Your registration as a user of the Service. The Personal Data You provide can give You access to different functionalities of the Service that are available to You as a registered user.</li>
+            <li>For the performance of a contract: the development, compliance and undertaking of the purchase contract for the products, items or services You have purchased or of any other contract with Us through the Service.</li>
+            <li>To contact You: To contact You by email, telephone calls, SMS, or other equivalent forms of electronic communication, such as a mobile application&pos; push notifications regarding updates or informative communications related to the functionalities, products or contracted services, including the security updates, when necessary or reasonable for their implementation.</li>
+            <li>To provide You with news, special offers and general information about other goods, services and events which we offer that are similar to those that you have already purchased or enquired about unless You have opted not to receive such information.</li>
+            <li>To manage Your requests: To attend and manage Your requests to Us.</li>
+            <li>For business transfers: We may use Your information to evaluate or conduct a merger, divestiture, restructuring, reorganization, dissolution, or other sale or transfer of some or all of Our assets, whether as a going concern or as part of bankruptcy, liquidation, or similar proceeding, in which Personal Data held by Us about our Service users is among the assets transferred.</li>
+            <li>For other purposes: We may use Your information for other purposes, such as data analysis, identifying usage trends, determining the effectiveness of our promotional campaigns and to evaluate and improve our Service, products, services, marketing and your experience.</li>
           </Typography>
         </ContentCard>
 
         <ContentCard>
           <SectionTitle variant='h5'>
-            STATE-SPECIFIC RIGHTS
+            Retention of Your Personal Data
           </SectionTitle>
           <Typography paragraph>
-            If you are a resident of certain states within Canada, you may have additional rights. Please refer to the relevant state-specific notices regarding these rights.
+            The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations (for example, if we are required to retain your data to comply with applicable laws), resolve disputes, and enforce our legal agreements and policies.
+          </Typography>
+          <Typography paragraph>
+            The Company will also retain Usage Data for internal analysis purposes. Usage Data is generally retained for a shorter period of time, except when this data is used to strengthen the security or to improve the functionality of Our Service, or We are legally obligated to retain this data for longer time periods.
           </Typography>
         </ContentCard>
 
         <ContentCard>
+          <SectionTitle variant='h5'>
+            Transfer of Your Personal Data
+          </SectionTitle>
           <Typography paragraph>
-            <strong>Copyright © 2024 PattyKuchla. All rights reserved.</strong>
+            Your information, including Personal Data, is processed at the Company&pos; operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from Your jurisdiction.
+          </Typography>
+          <Typography paragraph>
+            Your consent to this Privacy Policy followed by Your submission of such information represents Your agreement to that transfer.
+          </Typography>
+          <Typography paragraph>
+            The Company will take all steps reasonably necessary to ensure that Your data is treated securely and in accordance with this Privacy Policy and no transfer of Your Personal Data will take place to an organization or a country unless there are adequate controls in place including the security of Your data and other personal information.
           </Typography>
         </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Delete Your Personal Data
+          </SectionTitle>
+          <Typography paragraph>
+            You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.
+          </Typography>
+          <Typography paragraph>
+            Our Service may give You the ability to delete certain information about You from within the Service.
+          </Typography>
+          <Typography paragraph>
+            You may update, amend, or delete Your information at any time by signing in to Your Account, if you have one, and visiting the profile settings section that allows you to manage Your personal information. You may also contact Us to request access to, correct, or delete any personal information that You have provided to Us.
+          </Typography>
+          <Typography paragraph>
+            Please note, however, that We may need to retain certain information when we have a legal obligation or lawful basis to do so.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Disclosure of Your Personal Data
+          </SectionTitle>
+          <Typography paragraph>
+            <strong>Business Transactions</strong>
+          </Typography>
+          <Typography paragraph>
+            If the Company is involved in a merger, acquisition or asset sale, Your Personal Data may be transferred. We will provide notice before Your Personal Data is transferred and becomes subject to a different Privacy Policy.
+          </Typography>
+          <Typography paragraph>
+            <strong>Law enforcement</strong>
+          </Typography>
+          <Typography paragraph>
+            Under certain circumstances, the Company may be required to disclose Your Personal Data if required to do so by law or in response to valid requests by public authorities (e.g. a court or a government agency).
+          </Typography>
+          <Typography paragraph>
+            <strong>Other legal requirements</strong>
+          </Typography>
+          <Typography paragraph>
+            The Company may disclose Your Personal Data in the good faith belief that such action is necessary to:
+          </Typography>
+          <Typography component="ul">
+            <li>Comply with a legal obligation</li>
+            <li>Protect and defend the rights or property of the Company</li>
+            <li>Prevent or investigate possible wrongdoing in connection with the Service</li>
+            <li>Protect the personal safety of Users of the Service or the public</li>
+            <li>Protect against legal liability</li>
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Security of Your Personal Data
+          </SectionTitle>
+          <Typography paragraph>
+            The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While We strive to use commercially acceptable means to protect Your Personal Data, We cannot guarantee its absolute security.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Detailed Information on the Processing of Your Personal Data
+          </SectionTitle>
+          <Typography paragraph>
+            The Service Providers We use may have access to Your Personal Data. These third-party vendors collect, store, use, process and transfer information about Your activity on Our Service in accordance with their Privacy Policies.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Children&pos; Privacy
+          </SectionTitle>
+          <Typography paragraph>
+            Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If You are a parent or guardian and You are aware that Your child has provided Us with Personal Data, please contact Us. If We become aware that We have collected Personal Data from anyone under the age of 13 without verification of parental consent, We take steps to remove that information from Our servers.
+          </Typography>
+          <Typography paragraph>
+            If We need to rely on consent as a legal basis for processing Your information and Your country requires consent from a parent, We may require Your parent&pos; consent before We collect and use that information.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Analytics
+          </SectionTitle>
+          <Typography paragraph>
+            We may use third-party Service providers to monitor and analyze the use of our Service.
+          </Typography>
+          <Typography paragraph>
+            <strong>Google Analytics</strong>
+          </Typography>
+          <Typography paragraph>
+            Google Analytics is a web analytics service offered by Google that tracks and reports website traffic. Google uses the data collected to track and monitor the use of our Service. This data is shared with other Google services. Google may use the collected data to contextualize and personalize the ads of its own advertising network.
+          </Typography>
+          <Typography paragraph>
+            You can opt-out of having made your activity on the Service available to Google Analytics by installing the Google Analytics opt-out browser add-on. The add-on prevents the Google Analytics JavaScript (ga.js, analytics.js and dc.js) from sharing information with Google Analytics about visits activity.
+          </Typography>
+          <Typography paragraph>
+            For more information on the privacy practices of Google, please visit the Google Privacy & Terms web page: https://policies.google.com/privacy.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Your California Privacy Rights
+          </SectionTitle>
+          <Typography paragraph>
+            <strong>(California&pos; Shine the Light law)</strong>
+          </Typography>
+          <Typography paragraph>
+            Under California Civil Code Section 1798 (California&pos; Shine the Light law), California residents with an established business relationship with us can request information once a year about sharing their Personal Data with third parties for the third parties direct marketing purposes.
+          </Typography>
+          <Typography paragraph>
+            If you would like to request more information under the California Shine the Light law, and if You are a California resident, You can contact Us using the contact information provided below.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            California Privacy Rights for Minor Users (California Business and Professions Code Section 22581)
+          </SectionTitle>
+          <Typography paragraph>
+            California Business and Professions Code Section 22581 allows California residents under the age of 18 who are registered users of online sites, services or applications to request and obtain removal of content or information they have publicly posted.
+          </Typography>
+          <Typography paragraph>
+            To request removal of such data, and if You are a California resident, You can contact Us using the contact information provided below, and include the email address associated with Your account.
+          </Typography>
+          <Typography paragraph>
+            Be aware that Your request does not guarantee complete or comprehensive removal of content or information posted online and that the law may not permit or require removal in certain circumstances.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Links to Other Websites
+          </SectionTitle>
+          <Typography paragraph>
+            Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party&pos; site. We strongly advise You to review the Privacy Policy of every site You visit.
+          </Typography>
+          <Typography paragraph>
+            We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Changes to this Privacy Policy
+          </SectionTitle>
+          <Typography paragraph>
+            We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.
+          </Typography>
+          <Typography paragraph>
+            We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the Last updated date at the top of this Privacy Policy.
+          </Typography>
+          <Typography paragraph>
+            You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
+          </Typography>
+        </ContentCard>
+
+        <ContentCard>
+          <SectionTitle variant='h5'>
+            Contact Us
+          </SectionTitle>
+          <Typography paragraph>
+            If you have any questions about this Privacy Policy, You can contact us:
+          </Typography>
+          <Typography component="ul">
+            <li>By visiting this page on our website: <a href='https://www.pattykulcha.com/contact-us'>https://www.pattykulcha.com/contact-us</a></li>
+          </Typography>
+        </ContentCard>
+
       </Container>
     </Box>
   )
