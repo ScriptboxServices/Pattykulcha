@@ -63,6 +63,7 @@ const Navbar: React.FC = () => {
       localStorage.removeItem("instructions");
       localStorage.removeItem("kulcha");
       localStorage.removeItem("includedItems2");
+      localStorage.removeItem("otherKulchas");
       router.push("/login");
     } catch (err) {
       console.log(err);

@@ -183,6 +183,7 @@ const VerificationPage: React.FC = () => {
                 line1: "",
               },
             },
+            savedAddress:[],
             role: "customer",
             isKitchen: false,
             foodTruckId: "",
