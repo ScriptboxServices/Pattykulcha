@@ -209,7 +209,10 @@ const ProfilePage: React.FC = () => {
       }
 
       if (type === "address") {
-        console.log("first");
+        console.log("first",address1,metaData?.savedAddress,[
+          { ...address1, isPrimary: false, _id: v4() },
+          ...(metaData?.savedAddress ? metaData?.savedAddress : []),
+        ]);
         await updateDoc(docRef, {
           savedAddress: [
             { ...address1, isPrimary: false, _id: v4() },
