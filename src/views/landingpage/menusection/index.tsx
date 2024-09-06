@@ -85,6 +85,7 @@ const MenuSection = () => {
 
   useEffect(() => {
     localStorage.removeItem("includedItems2");
+    localStorage.removeItem("otherKulchas");
     setIncludedItems2([]);
   }, []);
 
