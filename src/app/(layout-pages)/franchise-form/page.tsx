@@ -1,16 +1,16 @@
-import FranchiseForm from '@/views/franchise-form'
-import React from 'react'
+import FranchiseForm from "@/views/franchise-form";
+import React from "react";
 
-export const metadata={
-    title:"Pattykulcha - Franchise form",
-}
+export const metadata = {
+  title: "Pattykulcha - Franchise form",
+};
 
 const FranchiseFormPage = () => {
   return (
     <>
-    <FranchiseForm/>
+      <FranchiseForm />
     </>
-  )
-}
+  );
+};
 
-export default FranchiseFormPage
+export default FranchiseFormPage;

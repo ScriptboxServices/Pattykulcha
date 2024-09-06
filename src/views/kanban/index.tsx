@@ -420,8 +420,8 @@ const KanbanBoard = () => {
                       sx={{
                         position: "sticky",
                         top: 12,
-                        zIndex: 10,
-                        right:4,
+                        zIndex: 15,
+                        right: 4,
                         backgroundColor: "white",
                         borderRadius: "50%", // Set to 50% to make the border circular
                         color: "#ECAB21",
