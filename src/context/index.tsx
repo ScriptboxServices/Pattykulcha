@@ -214,7 +214,7 @@ export const calculateDistance = (source : string , destinations : string) => {
       service.getDistanceMatrix(request, (response : any, status: any) => {
         if (status === "OK") {
           const distance = response.rows[0].elements[0].distance;
-          if (distance.value > 10000) {
+          if (distance.value > 20000) {
             resolve({distance,flag : false})
           } else {
             resolve({distance,flag : true})
