@@ -333,7 +333,7 @@ const ProfilePage: React.FC = () => {
                   borderRadius: "20px",
                 }}
               >
-                <CardContent sx={{ p: 0 }}>
+                <CardContent sx={{ p: 0.5 }}>
                   <List>
                     <ListItem>
                       <TextField
@@ -524,7 +524,7 @@ const ProfilePage: React.FC = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "flex-start",
-                                border: "1px solid grey",
+                                border: `${addr.isPrimary ? 2 : 1}px solid ${addr.isPrimary ? 'green' : 'grey'}`,
                                 borderRadius: "8px",
                                 padding: {xs:"6px 15px 6px 13px",sm:"6px 35px 6px 13px"},
                                 width: "100%",
@@ -558,19 +558,20 @@ const ProfilePage: React.FC = () => {
                                   }}
                                 />
                                 {addr.isPrimary ? (
-                                  <CheckCircleIcon
-                                    sx={{
-                                      position: "absolute",
-                                      top:  "10px" ,
-                                      right: "7px",
-                                      // transform: {
-                                      //   xs: "translateY(0%)",
-                                      // },
-                                      color: "green",
-                                      backgroundColor: "white",
-                                      borderRadius: "50%",
-                                    }}
-                                  />
+                                  // <CheckCircleIcon
+                                  //   sx={{
+                                  //     position: "absolute",
+                                  //     top:  "10px" ,
+                                  //     right: "7px",
+                                  //     // transform: {
+                                  //     //   xs: "translateY(0%)",
+                                  //     // },
+                                  //     color: "green",
+                                  //     backgroundColor: "white",
+                                  //     borderRadius: "50%",
+                                  //   }}
+                                  // />
+                                  <></>
                                 ) : (
                                   <Radio
                                     {...{
@@ -658,8 +659,6 @@ const ProfilePage: React.FC = () => {
                           sx={{
                             backgroundColor: "#ECAB21",
                             color: "white",
-                            paddingX: 4,
-                            paddingY: 1,
                             marginTop: "0.5rem",
                             fontWeight: "bold",
                             width: "80%",
