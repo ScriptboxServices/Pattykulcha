@@ -219,6 +219,7 @@ const ProfilePage: React.FC = () => {
         setMetaData({ ..._metaData });
         setLoading(false);
         setOpenDialog(false);
+        setAddress1({})
         return;
       }
     } catch (err) {
@@ -226,8 +227,6 @@ const ProfilePage: React.FC = () => {
       setLoading(false);
     }
   };
-
-  console.log(address1,"Address");
 
   const handleAddressSelection = (type: string) => {
     setSelectedAddress(type);
@@ -289,7 +288,7 @@ const ProfilePage: React.FC = () => {
           pb: { xs: 6, xl: 8 },
           alignItem: "center",
           background: "#FAF3E0",
-          minHeight: { xs: "100%", xl: "100d%" },
+          minHeight: { xs: "80dvh", xl: "100d%" },
         }}
       >
         <Grid
@@ -720,7 +719,7 @@ const ProfilePage: React.FC = () => {
               style={{
                 outline: "none",
                 color: "#8F8996",
-                padding: "10px",
+                padding: "10px 8px",
                 fontWeight: "bold",
                 border: "none",
                 fontSize: "1rem",

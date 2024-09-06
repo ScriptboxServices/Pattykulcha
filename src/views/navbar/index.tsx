@@ -249,9 +249,9 @@ const Navbar: React.FC = () => {
             <Link href='/home' passHref>
               <NavButton>Menu</NavButton>
             </Link>
-            <Link href='/contact-us' passHref>
+            {/* <Link href='/contact-us' passHref>
               <NavButton>Contact us</NavButton>
-            </Link>
+            </Link> */}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {kitchenMetaData &&
