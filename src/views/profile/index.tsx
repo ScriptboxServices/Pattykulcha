@@ -19,6 +19,8 @@ import {
   DialogActions,
   InputAdornment,
 } from "@mui/material";
+import Radio from '@mui/material/Radio';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Person,
   Phone,
@@ -42,6 +44,7 @@ import {
 import { db } from "@/firebase";
 import { updateProfile } from "firebase/auth";
 import Autocomplete from "react-google-autocomplete";
+import {v4} from "uuid"
 
 type User = {
   name: string;
@@ -60,16 +63,15 @@ type User = {
 };
 
 const ProfilePage: React.FC = () => {
-  const { user, setMetaData, kitchenMetaData } = useAuthContext();
+  const { user, setMetaData, kitchenMetaData,metaData } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState<string | undefined>("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState<any | undefined>();
   const [address1, setAddress1] = useState<any | undefined>();
   const [email, setEmail] = useState<string | undefined>("");
-  const [secondaryAddress, setSecondaryAddress] = useState<any | undefined>();
+  const [selectedAddr, setSelectedAddr] = useState<string>('');
   const [selectedAddress, setSelectedAddress] = useState<string>("primary"); // Track selected address
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -112,9 +114,6 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     setName(me?.name);
     setEmail(me?.email);
-    setAddress({
-      ...me?.address,
-    });
   }, [me]);
 
   const getUser = async () => {
@@ -210,12 +209,17 @@ const ProfilePage: React.FC = () => {
       }
 
       if (type === "address") {
+        console.log("first")
         await updateDoc(docRef, {
-          address: address,
+          savedAddress: [
+            {...address1, isPrimary : false, _id : v4()},
+            ...(metaData?.savedAddress ? metaData?.savedAddress : []),
+          ],
         });
-        const metaData: any = await getUser();
-        setMetaData({ ...metaData });
+        const _metaData: any = await getUser();
+        setMetaData({ ..._metaData });
         setLoading(false);
+        setOpenDialog(false)
         return;
       }
     } catch (err) {
@@ -231,6 +235,48 @@ const ProfilePage: React.FC = () => {
   const handleDialogOpen = () => {
     setOpenDialog(!openDialog);
   };
+
+  const removeAddress = async (_id : string) => {
+    const docRef = doc(db,'users',user?.uid)
+    setLoading(true)
+    let filteredAddress = metaData?.savedAddress?.filter(((item : any) => item._id !== _id))
+    await updateDoc(docRef, {
+      savedAddress: [
+        ...filteredAddress,
+      ],
+    });
+    const _metaData: any = await getUser();
+    setMetaData({ ..._metaData });
+    setLoading(false);
+  }
+
+  const handleChange = async (_id : string) => {
+    setSelectedAddr(_id)
+    const docRef = doc(db,'users',user?.uid)
+    setLoading(true)
+    let addr = metaData?.savedAddress?.find(((item : any) => item._id === _id))
+    let editAddress = metaData?.savedAddress?.map(((item : any) => {
+      let isPrimary = false
+      if(item._id === _id) isPrimary = true
+      return {
+        ...item,
+        isPrimary
+      }
+    }))
+    await updateDoc(docRef, {
+      address : {
+        seperate : addr.seperate,
+        raw : addr.raw,
+        distance : addr.distance
+    },
+      savedAddress: [
+        ...editAddress,
+      ],
+    });
+    const _metaData: any = await getUser();
+    setMetaData({ ..._metaData });
+    setLoading(false);
+  }
 
   return (
     <>
@@ -454,76 +500,120 @@ const ProfilePage: React.FC = () => {
                       }}
                     > */}
 
-                    {/* </ListItem>  */}
-                      <ListItem
-                        onClick={() => handleAddressSelection("primary")}
-                        sx={{ cursor: "pointer" }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            border: "1px solid grey",
-                            borderRadius: "8px",
-                            padding: "6px 10px 6px 13px",
-                            width: "100%",
-                            position: "relative",
-                          }}>
-                          <Home
-                            sx={{
-                              background: "black",
-                              color: "white",
-                              borderRadius: "50%",
-                              fontSize: "32px", // Adjust the fontSize as needed
-                              padding: "6px",
-                            }}
-                          />
-                          <ListItemText
-                            secondary={me?.address?.raw}
-                            sx={{ ml: 2 }}
-                          />
-                          {/* {selectedAddress === "primary" && (
-                          <CheckCircle sx={{ color: "green", ml: 2 }} />
-                        )} */}
-                          <IconButton onClick={handleAddressEdit} sx={{ ml: 1 }}>
-                            <Typography
+                    {
+                      metaData?.savedAddress?.sort((a : any,b : any) => b.isPrimary - a.isPrimary)?.map((addr : any) => {
+                        return(
+                          <ListItem
+                            key={addr._id}
+                            onClick={() => handleAddressSelection("primary")}
+                            sx={{ cursor: "pointer" }}>
+                            <Box
                               sx={{
-                                cursor: "pointer",
-                                color: "black",
-                                textDecoration: "underline",
-                                ml: 1,
-                                fontSize: "14px",
+                                display: "flex",
+                                alignItems: "center",
+                                border: "1px solid grey",
+                                borderRadius: "8px",
+                                padding: "6px 25px 6px 13px",
+                                width: "100%",
+                                position: "relative",
                               }}>
-                              Remove
-                            </Typography>
-                          </IconButton>
-                        </Box>
-                      </ListItem>
-                    <ListItem
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "100%",
-                      }}>
-                      <Button
-                        startIcon={<Add />}
-                        variant='contained'
+                              <Home
+                                sx={{
+                                  background: "black",
+                                  color: "white",
+                                  borderRadius: "50%",
+                                  fontSize: "32px", // Adjust the fontSize as needed
+                                  padding: "6px",
+                                }}
+                              />
+                              <ListItemText
+                                secondary={addr.raw}
+                                sx={{ ml: 2 }}
+                              />
+                                {(addr.isPrimary) ? (
+                                  <CheckCircleIcon
+                                    sx={{
+                                      position: "absolute",
+                                      top: "50%",
+                                      transform:'translateY(-50%)',
+                                      right: "0px",
+                                      color: "green",
+                                      backgroundColor: "white",
+                                      borderRadius: "50%",
+                                    }}
+                                  />
+                                ) : (
+                                  <>
+                                      <Radio
+                                          {...{
+                                            onChange: () => handleChange(addr._id),
+                                            name: 'color-radio-button-demo',
+                                            checked : selectedAddr === addr._id
+                                          }}
+                                          sx={{
+                                            position: "absolute",
+                                            top: "50%",
+                                            transform:'translateY(-50%)',
+                                            right: "0px",
+                                            padding:0,
+                                            color: 'green',
+                                            '&.Mui-checked': {
+                                              color: 'green',
+                                            },
+                                          }}
+                                        />
+                                  </>
+                                )}
+                                {
+                                  (!addr.isPrimary) && (
+                                    <IconButton onClick={() => removeAddress(addr._id)} sx={{ ml: 1 }}>
+                                      <Typography
+                                        sx={{
+                                          cursor: "pointer",
+                                          color: "black",
+                                          textDecoration: "underline",
+                                          ml: 1,
+                                          fontSize: "14px",
+                                        }}>
+                                        Remove
+                                      </Typography>
+                                    </IconButton>
+                                  )
+                                }
+                            </Box>
+                          </ListItem>
+                        )
+                      })
+                    }
+                    {
+                      (metaData?.savedAddress?.length < 5 || metaData?.savedAddress === undefined) &&
+                      <ListItem
                         sx={{
-                          backgroundColor: "#ECAB21",
-                          color: "white",
-                          paddingX: 4,
-                          paddingY: 1,
-                          marginTop: "0.5rem",
-                          fontWeight: "bold",
-                          width: "80%",
-                          "&:hover": {
-                            backgroundColor: "#FFC107",
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "100%",
+                        }}>
+                        <Button
+                          startIcon={<Add />}
+                          variant='contained'
+                          sx={{
+                            backgroundColor: "#ECAB21",
                             color: "white",
-                          },
-                        }}
-                        onClick={handleDialogOpen}>
-                        Add new Address
-                      </Button>
-                    </ListItem>
+                            paddingX: 4,
+                            paddingY: 1,
+                            marginTop: "0.5rem",
+                            fontWeight: "bold",
+                            width: "80%",
+                            "&:hover": {
+                              backgroundColor: "#FFC107",
+                              color: "white",
+                            },
+                          }}
+                          onClick={handleDialogOpen}>
+                          Add new Address
+                        </Button>
+                      </ListItem>
+                    }
                   </List>
                 </CardContent>
               </Card>
@@ -573,7 +663,7 @@ const ProfilePage: React.FC = () => {
                 fontSize: "1rem",
                 flex: "1",
               }}
-              defaultValue={address1?.raw}
+              // defaultValue={address1?.raw}
               onPlaceSelected={(place) => {
                 if (!place) return;
 
@@ -667,6 +757,7 @@ const ProfilePage: React.FC = () => {
           </Box>
           <DialogActions>
             <Button
+              onClick={() => updateUser("address")}
               variant='contained'
               sx={{
                 backgroundColor: "#ECAB21",

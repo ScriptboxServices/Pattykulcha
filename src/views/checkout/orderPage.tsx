@@ -25,7 +25,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { getUserMetaData, useAuthContext, useMenuContext } from "@/context";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
-import { rejects } from "assert";
+import { v4 } from "uuid";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -99,11 +99,17 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
   const handleSaveClick = async (field: string) => {
     if (field == "address") {
       setLoading(true);
+      let editAddress = (metaData?.savedAddress !== undefined) ? metaData?.savedAddress?.map((addr : any)=> {
+        return {
+          ...addr,
+          isPrimary: false,
+        }
+      }) : []
       await updateDoc(doc(db, "users", user.uid), {
         address: address,
         savedAddress: [
-          { ...address, isPrimary: true },
-          ...metaData.savedAddress,
+          { ...address, isPrimary: true,_id : v4()},
+          ...editAddress,
         ],
       });
       const userData: any = await getUserMetaData(user?.uid);
