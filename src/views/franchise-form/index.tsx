@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
@@ -15,51 +15,56 @@ import {
   CssBaseline,
   Grid,
   Alert,
-  Autocomplete,
-  InputAdornment,
-  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { countries } from "@/utils/constants";
 import { useAuthContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
-import { CountryType } from "@/context/types";
-import { Close } from '@mui/icons-material';
+import { Close } from "@mui/icons-material";
 
 // Define the Yup schema
 const schema = yup.object().shape({
-  fullName: yup.string().required("Full Name is required"),
-  contactInfo: yup.object().shape({
-    phoneNumber: yup
-      .string()
-      .matches(/^\d+$/, "Phone number is not valid")
-      .min(10, "Phone number must be at least 10 digits")
-      .required("Phone number is required"),
-    email: yup.string().email("Invalid email address").required("Email is required"),
-    address: yup.string().required("Address is required"),
-  }),
-  nationality: yup.mixed<CountryType>().required("Nationality is required"),
-  currentOccupation: yup.string().required("Current Occupation is required"),
-  businessExperience: yup.string().required("Relevant Business Experience is required"),
-  yearsOfExperience: yup
-    .number()
-    .typeError("Must be a number")
-    .min(0, "Years of Experience cannot be negative")
-    .required("Years of Experience is required"),
+  fullName: yup.string().required("Name is required"),
+  phoneNumber: yup
+    .string()
+    .matches(/^\d+$/, "Phone number is not valid")
+    .min(10, "Phone number must be at least 10 digits")
+    .required("Phone number is required"),
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  statusInCanada: yup
+    .string()
+    .oneOf(["Work Permit"], "Please select a valid status in Canada")
+    .required("Status in Canada is required"),
+  workPermitExpiry: yup.date(),
+
+  hasFoodTrucks: yup
+    .string()
+    .oneOf(["Yes", "No"], "Please select Yes or No")
+    .required("Please indicate if you have food trucks"),
   document: yup
     .mixed<File>()
     .required("Please attach a relevant document")
-    .test("fileSize", "The file is too large", (value) => !value || (value && value.size <= 2000000)), // 2MB limit
+    .test(
+      "fileSize",
+      "The file is too large",
+      (value) => !value || (value && value.size <= 2000000)
+    ), // 2MB limit
 });
 
 type IFormInput = yup.InferType<typeof schema>;
 
 const FranchiseForm: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<File | null>(null);
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
@@ -70,11 +75,7 @@ const FranchiseForm: React.FC = () => {
   const [error, setError] = useState<string>("");
   const router = useRouter();
 
-  useEffect(() => {
-    const defaultCountry =
-      countries.find((country) => country.label === "Canada") || null;
-    setSelectedCountry(defaultCountry);
-  }, []);
+  const statusInCanada = watch("statusInCanada");
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setError("");
@@ -114,7 +115,7 @@ const FranchiseForm: React.FC = () => {
           justifyContent: "center",
           alignItems: { xs: "flex-start", sm: "center" },
           overflow: "hidden",
-          pb: 2
+          pb: 2,
         }}
       >
         <Container
@@ -127,7 +128,7 @@ const FranchiseForm: React.FC = () => {
             boxShadow: 3,
             overflow: "hidden",
             marginTop: { xs: 4.24 },
-            m: { xs: 2 }
+            m: { xs: 2 },
           }}
         >
           <Box
@@ -171,7 +172,7 @@ const FranchiseForm: React.FC = () => {
                         {...field}
                         required
                         fullWidth
-                        label="Full Name"
+                        label="Name"
                         error={!!errors.fullName}
                         helperText={errors.fullName?.message}
                       />
@@ -180,114 +181,23 @@ const FranchiseForm: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name="nationality"
+                    name="phoneNumber"
                     control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <Autocomplete
-                        id="country-select-demo"
-                        fullWidth
-                        options={countries}
-                        autoHighlight
-                        getOptionLabel={(option) => option.label}
-                        renderOption={(props, option) => {
-                          const { key, ...optionProps } = props;
-                          return (
-                            <Box
-                              key={key}
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...optionProps}
-                            >
-                              <Image
-                                loading="lazy"
-                                width={20}
-                                height={15}
-                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                alt={`${option.label} flag`}
-                              />
-                              {option.label} ({option.code}) +{option.phone}
-                            </Box>
-                          );
-                        }}
-                        value={selectedCountry}
-                        onChange={(event, newValue) => {
-                          onChange(newValue);
-                          setSelectedCountry(newValue || (null as any));
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Choose Nationality"
-                            inputProps={{
-                              ...params.inputProps,
-                              autoComplete: "new-password",
-                            }}
-                            InputProps={{
-                              ...params.InputProps,
-                              startAdornment: selectedCountry && (
-                                <InputAdornment position="start">
-                                  <Image
-                                    loading="eager"
-                                    width={20}
-                                    height={15}
-                                    src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
-                                    priority
-                                    alt="#"
-                                  />
-                                  <Typography sx={{ ml: 1 }}>
-                                    +{selectedCountry.phone}
-                                  </Typography>
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="contactInfo.phoneNumber"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
+                    render={({ field }) => (
                       <TextField
                         required
                         fullWidth
                         type="tel"
                         label="Phone Number"
-                        value={value}
-                        onChange={onChange}
-                        error={!!errors.contactInfo?.phoneNumber}
-                        helperText={errors.contactInfo?.phoneNumber?.message}
-                        InputProps={{
-                          startAdornment: selectedCountry && (
-                            <InputAdornment position="start">
-                              <Typography>+{selectedCountry.phone}</Typography>
-                            </InputAdornment>
-                          ),
-                        }}
-                        inputProps={{
-                          maxLength: 10,
-                        }}
-                        onKeyDown={(e) => {
-                          if (
-                            !/[0-9]/.test(e.key) &&
-                            e.key !== "Backspace" &&
-                            e.key !== "Delete" &&
-                            e.key !== "ArrowLeft" &&
-                            e.key !== "ArrowRight"
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
+                        error={!!errors.phoneNumber}
+                        helperText={errors.phoneNumber?.message}
                       />
                     )}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name="contactInfo.email"
+                    name="email"
                     control={control}
                     render={({ field }) => (
                       <TextField
@@ -296,105 +206,72 @@ const FranchiseForm: React.FC = () => {
                         fullWidth
                         type="email"
                         label="Email"
-                        error={!!errors.contactInfo?.email}
-                        helperText={errors.contactInfo?.email?.message}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
                       />
                     )}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name="contactInfo.address"
+                    name="statusInCanada"
                     control={control}
                     render={({ field }) => (
                       <TextField
                         {...field}
                         required
                         fullWidth
-                        label="Address"
-                        error={!!errors.contactInfo?.address}
-                        helperText={errors.contactInfo?.address?.message}
+                        label="Status in Canada"
+                        error={!!errors.statusInCanada}
+                        helperText={errors.statusInCanada?.message}
                       />
                     )}
                   />
                 </Grid>
+                {statusInCanada === "Work Permit" && (
+                  <Grid item xs={12}>
+                    <Controller
+                      name="workPermitExpiry"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          required
+                          fullWidth
+                          label="Work Permit Expiry"
+                          type="date"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          InputProps={{
+                            inputProps: {
+                              min: new Date().toISOString().split("T")[0], // Ensures no dates before today
+                            },
+                          }}
+                          error={!!errors.workPermitExpiry}
+                          helperText={errors.workPermitExpiry?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <Controller
-                    name="currentOccupation"
+                    name="hasFoodTrucks"
                     control={control}
                     render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        label="Current Occupation"
-                        error={!!errors.currentOccupation}
-                        helperText={errors.currentOccupation?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="businessExperience"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        label="Relevant Business Experience"
-                        multiline
-                        rows={4}
-                        error={!!errors.businessExperience}
-                        helperText={errors.businessExperience?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="yearsOfExperience"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        label="Years of Experience"
-                        type="number"
-                        error={!!errors.yearsOfExperience}
-                        helperText={errors.yearsOfExperience?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="document"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        fullWidth
-                        label="Upload Document"
-                        error={!!errors.document}
-                        helperText={errors.document?.message}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        InputProps={{
-                          endAdornment: selectedDocument && (
-                            <IconButton onClick={handleDocumentRemove}>
-                              <Close />
-                            </IconButton>
-                          ),
-                          inputProps: {
-                            type: "file",
-                            accept: ".pdf,.doc,.docx,.jpg,.png",
-                            onChange: handleDocumentChange,
-                          },
-                        }}
-                      />
+                      <FormControl fullWidth error={!!errors.hasFoodTrucks}>
+                        <InputLabel>Do you have food trucks?</InputLabel>
+                        <Select {...field} label="Do you have food trucks?">
+                          <MenuItem value="Yes">Yes</MenuItem>
+                          <MenuItem value="No">No</MenuItem>
+                        </Select>
+                        {errors.hasFoodTrucks && (
+                          <Typography variant="body2" color="error">
+                            {errors.hasFoodTrucks.message}
+                          </Typography>
+                        )}
+                      </FormControl>
                     )}
                   />
                 </Grid>
@@ -404,25 +281,25 @@ const FranchiseForm: React.FC = () => {
                   {error}
                 </Alert>
               )}
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  backgroundColor: "#ECAB21",
-                  marginInline:"auto",
-                  color: "white",
-                  paddingX: 4,
-                  paddingY: 1,
-                  mt: 2,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
+              <Box sx={{ textAlign: "center", mt: 2 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ECAB21",
                     color: "white",
-                  },
-                }}
-              >
-                Submit Application
-              </Button>
+                    paddingX: 4,
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Submit Application
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Container>
