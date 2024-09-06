@@ -65,7 +65,7 @@ const KanbanBoard = () => {
   const [showDriverDropdown, setShowDriverDropdown] = useState<string | null>(
     null
   );
-  
+
   const [openDialog, setOpenDialog] = useState<string | null>(null);
   const [selectedDriver, setSelectedDriver] = useState<{
     [key: string]: string;
@@ -159,7 +159,8 @@ const KanbanBoard = () => {
         }
       });
       sortedOrders.sort(
-        (a: any, b: any) => a.address?.distance?.value - b.address?.distance?.value
+        (a: any, b: any) =>
+          a.address?.distance?.value - b.address?.distance?.value
       );
       setSortedOrders([...sortedOrders]);
       setNewOrders([...newOrders]);
@@ -392,21 +393,51 @@ const KanbanBoard = () => {
                     backgroundColor: "#fff",
                   }}
                 >
-                  <Typography
-                    variant="h6"
+                  <Box
                     sx={{
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 10,
+                      display: "flex",
+                      justifyContent: "space-between",
                       backgroundColor: "#ECAB21",
-                      color: "#fff",
-                      textAlign: "center",
-                      padding: 2,
-                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
                     }}
                   >
-                    {container.title}
-                  </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: "#ECAB21",
+                        color: "#fff",
+                        textAlign: "center",
+                        padding: 2,
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                      }}
+                    >
+                      {container.title}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        position: "sticky",
+                        top: 12,
+                        zIndex: 10,
+                        right:4,
+                        backgroundColor: "white",
+                        borderRadius: "50%", // Set to 50% to make the border circular
+                        color: "#ECAB21",
+                        textAlign: "center",
+                        padding: "8px 16px", // Adjust padding to ensure content fits within the circle
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                        width: "40px", // Set width and height to make sure the box is circular
+                        height: "40px",
+                        display: "flex",
+                        alignItems: "center", // Center the text vertically
+                        justifyContent: "center", // Center the text horizontally
+                      }}
+                    >
+                      {allOrders[container.id]?.length}
+                    </Typography>
+                  </Box>
                   <SortableContext items={[]}>
                     {allOrders[container.id]?.length === 0 ? (
                       <>
@@ -575,79 +606,79 @@ const KanbanBoard = () => {
                                       )} */}
                                       {/* {isExpanded && (
                                         <> */}
-                                          <Box>
-                                            <Divider sx={{ my: 1 }} />
-                                            <Box
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            justifyContent: "flex-start",
+                                            alignItems: "center",
+                                            gap: 0.56,
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Time:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                          >
+                                            {formatTimestampToCustomDate(
+                                              order.createdAt
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                        <Box>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
                                               sx={{
-                                                display: "flex",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
-                                                gap: 0.56,
+                                                fontWeight: "bold",
                                               }}
                                             >
-                                              <Typography
-                                                variant="body2"
-                                                component="span"
-                                                sx={{
-                                                  fontWeight: "bold",
-                                                }}
-                                              >
-                                                Time:
-                                              </Typography>
-                                              <Typography
-                                                variant="body2"
-                                                component="span"
-                                              >
-                                                {formatTimestampToCustomDate(
-                                                  order.createdAt
-                                                )}
-                                              </Typography>
-                                            </Box>
-                                            <Box>
-                                              <Typography variant="body2">
-                                                <Typography
-                                                  variant="body2"
-                                                  component="span"
-                                                  sx={{
-                                                    fontWeight: "bold",
-                                                  }}
-                                                >
-                                                  Name:
-                                                </Typography>{" "}
-                                                {order?.customer?.name}
-                                              </Typography>
-                                            </Box>
-                                            <Box>
-                                              <Typography variant="body2">
-                                                <Typography
-                                                  variant="body2"
-                                                  component="span"
-                                                  sx={{
-                                                    fontWeight: "bold",
-                                                  }}
-                                                >
-                                                  Phone:
-                                                </Typography>{" "}
-                                                {order?.customer?.phoneNumber}
-                                              </Typography>
-                                            </Box>
-                                            <Box>
-                                              <Typography variant="body2">
-                                                <Typography
-                                                  variant="body2"
-                                                  component="span"
-                                                  sx={{
-                                                    fontWeight: "bold",
-                                                  }}
-                                                >
-                                                  Address:
-                                                </Typography>{" "}
-                                                {order?.customer?.address
-                                                  ?.raw || ""}
-                                              </Typography>
-                                            </Box>
-                                          </Box>
-                                          {/* <Box>
+                                              Name:
+                                            </Typography>{" "}
+                                            {order?.customer?.name}
+                                          </Typography>
+                                        </Box>
+                                        <Box>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Phone:
+                                            </Typography>{" "}
+                                            {order?.customer?.phoneNumber}
+                                          </Typography>
+                                        </Box>
+                                        <Box>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Address:
+                                            </Typography>{" "}
+                                            {order?.customer?.address?.raw ||
+                                              ""}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      {/* <Box>
                                             <Divider sx={{ my: 1 }} />
                                             <Box
                                               sx={{
@@ -724,7 +755,7 @@ const KanbanBoard = () => {
                                               </Button>
                                             </Box>
                                           </Box> */}
-                                        {/* </>
+                                      {/* </>
                                       )} */}
                                     </CardContent>
                                   </Card>
@@ -1258,7 +1289,7 @@ const KanbanBoard = () => {
                                           sx={{
                                             textAlign: "center",
                                             mt: 1,
-                                            mb:1,
+                                            mb: 1,
                                           }}
                                         >
                                           <Button
