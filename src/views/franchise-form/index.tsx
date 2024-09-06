@@ -47,7 +47,7 @@ const schema = yup.object().shape({
     .min(0, "Years of Experience cannot be negative")
     .required("Years of Experience is required"),
   document: yup
-    .mixed()
+    .mixed<File>()
     .required("Please attach a relevant document")
     .test("fileSize", "The file is too large", (value) => !value || (value && value.size <= 2000000)), // 2MB limit
 });
