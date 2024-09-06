@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState<string | undefined>("");
   const [phone, setPhone] = useState("");
-  const [address1, setAddress1] = useState<any | undefined>();
+  const [address1, setAddress1] = useState<any>({});
   const [email, setEmail] = useState<string | undefined>("");
   const [selectedAddr, setSelectedAddr] = useState<string>("");
   const [selectedAddress, setSelectedAddress] = useState<string>("primary"); // Track selected address
@@ -209,10 +209,6 @@ const ProfilePage: React.FC = () => {
       }
 
       if (type === "address") {
-        console.log("first",address1,metaData?.savedAddress,[
-          { ...address1, isPrimary: false, _id: v4() },
-          ...(metaData?.savedAddress ? metaData?.savedAddress : []),
-        ]);
         await updateDoc(docRef, {
           savedAddress: [
             { ...address1, isPrimary: false, _id: v4() },
@@ -230,6 +226,8 @@ const ProfilePage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  console.log(address1,"Address");
 
   const handleAddressSelection = (type: string) => {
     setSelectedAddress(type);
@@ -789,7 +787,6 @@ const ProfilePage: React.FC = () => {
                             }
                           }
                         }
-
                         const distance = await calculateDistance(
                           kitchenMetaData?.address?.raw,
                           place.formatted_address || ""
@@ -805,6 +802,7 @@ const ProfilePage: React.FC = () => {
                           },
                           distance,
                         });
+                  
                       } else {
                         console.error("No results found");
                       }
@@ -824,6 +822,7 @@ const ProfilePage: React.FC = () => {
             <Button
               onClick={() => updateUser("address")}
               variant="contained"
+              disabled={address1?.raw === '' || address1?.raw === undefined}
               sx={{
                 backgroundColor: "#ECAB21",
                 color: "white",
