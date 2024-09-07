@@ -19,7 +19,7 @@ export const POST = async (req) => {
     const html = generateInvoiceHtml(order)
     let puppeteer;
     let browser;
-    if(process.env.NEXT_PUBLIC_ENVIRONMENT === 'Production'){
+    // if(process.env.NEXT_PUBLIC_ENVIRONMENT === 'Production'){
       puppeteer = require("puppeteer-core");
       browser = await puppeteer.launch({
         args: chromium.args,
@@ -27,14 +27,14 @@ export const POST = async (req) => {
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
       });
-    }else{
-      puppeteer = require("puppeteer");
-      browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox','--font-render-hinting=none'],
-        headless : 'new',
-        ignoreHTTPSErrors: true,
-      })
-    }
+    // }else{
+    //   puppeteer = require("puppeteer");
+    //   browser = await puppeteer.launch({
+    //     args: ['--no-sandbox', '--disable-setuid-sandbox','--font-render-hinting=none'],
+    //     headless : 'new',
+    //     ignoreHTTPSErrors: true,
+    //   })
+    // }
   
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle2" });
