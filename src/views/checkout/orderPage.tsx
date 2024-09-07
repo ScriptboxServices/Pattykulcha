@@ -22,7 +22,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SaveIcon from "@mui/icons-material/Save";
-import { getUserMetaData, useAuthContext, useMenuContext } from "@/context";
+import { getUserMetaData, useAuthContext, useMenuContext,calculateDistance } from "@/context";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { v4 } from "uuid";
@@ -33,11 +33,11 @@ interface Props {
 
 const OrderPage: React.FC<Props> = ({ setLoading }) => {
   const { user, metaData, setMetaData, kitchenMetaData } = useAuthContext();
-  const { instructions, setInstructions, setIsAddressReachable } =
+  const { instructions, setInstructions, setIsAddressReachable,isAddressReachable } =
     useMenuContext();
   const [selectedOption, setSelectedOption] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [address, setAddress] = useState<any>({ ...metaData?.address });
+  const [address, setAddress] = useState<any>({});
   const [openDialog, setOpenDialog] = useState(false);
   const [openInstructionsDialog, setOpenInstructionsDialog] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
@@ -50,42 +50,14 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
     }
   };
 
-  const calculateDistance = (source: string, destinations: string) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const service = new google.maps.DistanceMatrixService();
-        const request: any = {
-          origins: [source],
-          destinations: [destinations],
-          travelMode: window.google.maps.TravelMode.DRIVING,
-          unitSystem: window.google.maps.UnitSystem.METRIC,
-          avoidHighways: false,
-          avoidTolls: false,
-        };
-
-        service.getDistanceMatrix(request, (response: any, status: any) => {
-          if (status === "OK") {
-            const distance = response.rows[0].elements[0].distance;
-            if (distance.value > 10000) {
-              setIsAddressReachable(false);
-            } else {
-              setIsAddressReachable(true);
-            }
-            resolve(distance);
-          } else {
-            console.error("Distance failed due to: " + status);
-          }
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  };
-
   useEffect(() => {
-    if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
-      calculateDistance(kitchenMetaData?.address?.raw, metaData?.address?.raw);
+    const init = async () =>{
+      if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
+        const {flag} : any = await calculateDistance(kitchenMetaData?.address?.raw, metaData?.address?.raw);
+        setIsAddressReachable(flag)
+      }
     }
+    init()
   }, [metaData, kitchenMetaData]);
 
   const handleEditClick = (field: string) => {
@@ -95,7 +67,6 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
       setOpenInstructionsDialog(true);
     }
   };
-
   const handleSaveClick = async (field: string) => {
     if (field == "address") {
       setLoading(true);
@@ -249,7 +220,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      Address: {address?.raw}
+                      Address: {metaData?.address?.raw}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -404,11 +375,10 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                           }
                         }
 
-                        const distance = await calculateDistance(
+                        const { distance } : any = await calculateDistance(
                           kitchenMetaData?.address?.raw,
                           place.formatted_address || ""
                         );
-
                         setAddress({
                           raw: place.formatted_address,
                           seperate: {
@@ -448,6 +418,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
                   color: "white",
                 },
               }}
+              disabled={address?.raw === '' || address?.raw === undefined}
               onClick={() => handleSaveClick("address")}>
               Submit
             </Button>

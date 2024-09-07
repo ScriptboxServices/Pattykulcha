@@ -29,6 +29,7 @@ export const POST = async (req, res) => {
     if (event.type === "payment_intent.succeeded") {
       const data = event.data.object;
       const { id, metadata, latest_charge, customer } = data;
+      const kitchenId = '0bXJJJIHMgu5MNGSArY2'
 
       const batch = db.batch()
       const cartResult = await db
@@ -42,12 +43,31 @@ export const POST = async (req, res) => {
         });
       }
 
+      
       const orderDocRef = db.collection("orders").doc();
       const paymentDocRef = db.collection("payments").doc();
       const charge = await stripe.charges.retrieve(latest_charge);
       const cardDetails = charge.payment_method_details.card;
       const { brand, last4, exp_month, exp_year } = cardDetails;
-      const kitchenId = '0bXJJJIHMgu5MNGSArY2'
+      const kitchenData = await db.collection('foodtrucks').doc(kitchenId).get()
+      console.log(kitchenData);
+      console.log(kitchenData.exists);
+
+      const today = new Date();
+      const startOfToday = admin.firestore.Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+      const endOfToday = admin.firestore.Timestamp.fromDate(
+        new Date(today.setHours(23, 59, 59, 999))
+      );
+      const latestOrderInKitchen = await db.collection('orders')
+      .where('kitchenId', '==', kitchenId)
+      .where('createdDate', '>=', startOfToday)
+      .where('createdDate', '<=', endOfToday)
+      .orderBy('createdDate', 'desc')
+      .limit(1)
+      .get();
+
+      console.log(latestOrderInKitchen);
+      console.log(latestOrderInKitchen.empty);
 
       await Promise.all([
         orderDocRef.set({
@@ -74,6 +94,10 @@ export const POST = async (req, res) => {
             kitchenId: kitchenId,
             paymentMode : 'Online',
             source:'Website',
+            orderNumber : {
+              forKitchen : "",
+              forCustomer : ""
+            },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({
@@ -93,6 +117,9 @@ export const POST = async (req, res) => {
               phoneNumber : metadata.phoneNumber
             },
             paymentMode : 'Online',
+            orderNumber : {
+
+            },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           })
       ])

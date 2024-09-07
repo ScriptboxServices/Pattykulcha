@@ -210,7 +210,6 @@ export const calculateDistance = (source : string , destinations : string) => {
         avoidHighways: false,
         avoidTolls: false,
       };
-  
       service.getDistanceMatrix(request, (response : any, status: any) => {
         if (status === "OK") {
           const distance = response.rows[0].elements[0].distance;

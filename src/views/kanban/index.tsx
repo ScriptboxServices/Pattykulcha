@@ -677,6 +677,21 @@ const KanbanBoard = () => {
                                               ""}
                                           </Typography>
                                         </Box>
+                                        <Box>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              Distance:
+                                            </Typography>{" "}
+                                            {order?.customer?.address?.distance?.text ||
+                                              ""}
+                                          </Typography>
+                                        </Box>
                                       </Box>
                                       {/* <Box>
                                             <Divider sx={{ my: 1 }} />

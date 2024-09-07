@@ -30,7 +30,7 @@ import {
   Close,
   Search,
 } from "@mui/icons-material";
-import { useAuthContext } from "@/context";
+import { useAuthContext,calculateDistance } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
 import {
   collection,
@@ -153,33 +153,6 @@ const ProfilePage: React.FC = () => {
     };
     init();
   }, [user]);
-
-  const calculateDistance = (source: string, destinations: string) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const service = new google.maps.DistanceMatrixService();
-        const request: any = {
-          origins: [source],
-          destinations: [destinations],
-          travelMode: window.google.maps.TravelMode.DRIVING,
-          unitSystem: window.google.maps.UnitSystem.METRIC,
-          avoidHighways: false,
-          avoidTolls: false,
-        };
-
-        service.getDistanceMatrix(request, (response: any, status: any) => {
-          if (status === "OK") {
-            const distance = response.rows[0].elements[0].distance;
-            resolve(distance);
-          } else {
-            console.error("Distance failed due to: " + status);
-          }
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  };
 
   const updateUser = async (type: string) => {
     const docRef = doc(db, "users", user?.uid);
@@ -786,7 +759,7 @@ const ProfilePage: React.FC = () => {
                             }
                           }
                         }
-                        const distance = await calculateDistance(
+                        const { distance } : any = await calculateDistance(
                           kitchenMetaData?.address?.raw,
                           place.formatted_address || ""
                         );
