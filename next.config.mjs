@@ -15,6 +15,12 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: [
+      'puppeteer-core',
+      '@sparticuz/chromium'
+    ]
+  }
 };
 
 export default nextConfig;
