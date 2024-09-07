@@ -75,6 +75,7 @@ export const POST = async (req) => {
   }
 
   }catch(err) {
+    console.log(err);
     return NextResponse.json(
       {
         code: 0,
