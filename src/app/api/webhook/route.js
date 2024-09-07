@@ -49,9 +49,19 @@ export const POST = async (req, res) => {
       const charge = await stripe.charges.retrieve(latest_charge);
       const cardDetails = charge.payment_method_details.card;
       const { brand, last4, exp_month, exp_year } = cardDetails;
-      const kitchenData = await db.collection('foodtrucks').doc(kitchenId).get()
-      console.log(kitchenData);
-      console.log(kitchenData.exists);
+      
+      let orderNumberForKitchen;
+      let orderNumberForCustomer;
+      let kitchenData;
+      let latestOrder;
+      
+      const kitchenDoc = await db.collection('foodtrucks').doc(kitchenId).get()
+      if(kitchenDoc.exists){
+        kitchenData = kitchenDoc.data();
+        orderNumberForCustomer = `${kitchenData.truckIdentifier}-${Math.floor(Math.random() * 900000)}`
+      }else{
+        orderNumberForCustomer = `${Math.floor(Math.random() * 900000)}`
+      }
 
       const today = new Date();
       const startOfToday = admin.firestore.Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
@@ -60,15 +70,23 @@ export const POST = async (req, res) => {
       );
       const latestOrderInKitchen = await db.collection('orders')
       .where('kitchenId', '==', kitchenId)
-      .where('createdDate', '>=', startOfToday)
-      .where('createdDate', '<=', endOfToday)
-      .orderBy('createdDate', 'desc')
+      .where('createdAt', '>=', startOfToday)
+      .where('createdAt', '<=', endOfToday)
+      .orderBy('createdAt', 'desc')
       .limit(1)
       .get();
 
-      console.log(latestOrderInKitchen);
-      console.log(latestOrderInKitchen.empty);
-
+      if (!latestOrderInKitchen.empty) {
+          latestOrder = latestOrderInKitchen.docs[0].data();
+          if(latestOrder.orderNumber){
+            orderNumberForKitchen = Number(latestOrder.orderNumber.forKitchen) + 1
+          }else{
+            orderNumberForKitchen = 1
+          }
+      }else{
+        orderNumberForKitchen = 1
+      }
+      
       await Promise.all([
         orderDocRef.set({
             address: JSON.parse(metadata.address),
@@ -80,7 +98,7 @@ export const POST = async (req, res) => {
             total_tax: metadata.total_tax,
             paymentId: paymentDocRef.id,
             delivery : {
-              message : 'New Order',
+              message : 'Preparing',
               status : false
             },
             transactionId : id,
@@ -95,8 +113,8 @@ export const POST = async (req, res) => {
             paymentMode : 'Online',
             source:'Website',
             orderNumber : {
-              forKitchen : "",
-              forCustomer : ""
+              forKitchen : orderNumberForKitchen,
+              forCustomer : orderNumberForCustomer
             },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
@@ -118,7 +136,8 @@ export const POST = async (req, res) => {
             },
             paymentMode : 'Online',
             orderNumber : {
-
+              forKitchen : orderNumberForKitchen,
+              forCustomer : orderNumberForCustomer
             },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           })

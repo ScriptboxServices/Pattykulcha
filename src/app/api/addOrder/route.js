@@ -146,6 +146,43 @@ export const POST = async (req, res) => {
     const orderDocRef = db.collection("orders").doc();
     const paymentDocRef = db.collection("payments").doc();
     const id = `cash_${v4()}`;
+     
+    let orderNumberForKitchen;
+    let orderNumberForCustomer;
+    let kitchenData;
+    let latestOrder;
+    
+    const kitchenDoc = await db.collection('foodtrucks').doc(kitchenId).get()
+    if(kitchenDoc.exists){
+      kitchenData = kitchenDoc.data();
+      orderNumberForCustomer = `${kitchenData.truckIdentifier}-${Math.floor(Math.random() * 900000)}`
+    }else{
+      orderNumberForCustomer = `${Math.floor(Math.random() * 900000)}`
+    }
+
+    const today = new Date();
+    const startOfToday = admin.firestore.Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+    const endOfToday = admin.firestore.Timestamp.fromDate(
+      new Date(today.setHours(23, 59, 59, 999))
+    );
+    const latestOrderInKitchen = await db.collection('orders')
+    .where('kitchenId', '==', kitchenId)
+    .where('createdAt', '>=', startOfToday)
+    .where('createdAt', '<=', endOfToday)
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+
+    if (!latestOrderInKitchen.empty) {
+        latestOrder = latestOrderInKitchen.docs[0].data();
+        if(latestOrder.orderNumber){
+          orderNumberForKitchen = Number(latestOrder.orderNumber.forKitchen) + 1
+        }else{
+          orderNumberForKitchen = 1
+        }
+    }else{
+      orderNumberForKitchen = 1
+    }
 
     await Promise.all([
       orderDocRef.set({
@@ -158,7 +195,7 @@ export const POST = async (req, res) => {
         total_tax: total_tax,
         paymentId: paymentDocRef.id,
         delivery: {
-          message: "New Order",
+          message: "Preparing",
           status: false,
         },
         transactionId: id,
@@ -168,6 +205,10 @@ export const POST = async (req, res) => {
           _id: `cus_${userId}`,
           name: name,
           phoneNumber: phoneNumber,
+        },
+        orderNumber : {
+          forKitchen : orderNumberForKitchen,
+          forCustomer : orderNumberForCustomer
         },
         kitchenId: kitchenId,
         source: "Shop",
@@ -192,6 +233,10 @@ export const POST = async (req, res) => {
           _id: `cus_${userId}`,
           name: name,
           phoneNumber: phoneNumber,
+        },
+        orderNumber : {
+          forKitchen : orderNumberForKitchen,
+          forCustomer : orderNumberForCustomer
         },
         paymentMode: paymentmethod,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),

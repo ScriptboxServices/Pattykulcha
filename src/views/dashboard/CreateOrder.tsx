@@ -386,7 +386,7 @@ const MakeOrder: React.FC = () => {
               }}
               onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
-                <Grid item xs={6} md={4}>
+                <Grid item xs={12} md={12}>
                   <Controller
                     name='countryCode'
                     control={control}
@@ -453,7 +453,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={6} md={8}>
+                <Grid item xs={12} md={12}>
                   <Controller
                     name='phoneNumber'
                     control={control}
@@ -495,7 +495,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={6} md={6}>
+                <Grid item xs={12} md={12}>
                   <Controller
                     name='name'
                     control={control}
@@ -514,7 +514,7 @@ const MakeOrder: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={6} md={6}>
+                <Grid item xs={12} md={12}>
                   <GoogleAddressAutocomplete
                     key={address?.raw || "default"}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}

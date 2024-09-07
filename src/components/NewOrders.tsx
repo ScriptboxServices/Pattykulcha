@@ -45,7 +45,7 @@ const NewOrders: React.FC = () => {
       let newOrders: any[] = [];
       snapshot.forEach((doc) => {
         const { delivery } = doc.data()
-        if(delivery.status === false && delivery.message === 'New Order'){
+        if(delivery.status === false && delivery.message === 'Preparing'){
             newOrders.push({
               id: doc.id,
               ...doc.data(),

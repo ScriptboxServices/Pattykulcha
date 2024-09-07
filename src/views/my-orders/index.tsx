@@ -125,6 +125,7 @@ const OrdersPage: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
+      if(!user?.uid) return
       try {
         const colRef = collection(db, "orders");
         const q = query(colRef, where("userId", "==", user?.uid),orderBy('createdAt','desc'));
@@ -427,7 +428,7 @@ const OrdersPage: React.FC = () => {
           {myOrders.length > 0 ? (
             myOrders.map((orderDoc: any) => {
               const { order } = orderDoc;
-
+              console.log(order);
               return (
                 <Paper
                   key={order.id}
@@ -474,7 +475,7 @@ const OrdersPage: React.FC = () => {
                   >
                     <LockIcon sx={{ marginRight: 1 }} />
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      ORD-1234
+                      ORD-{orderDoc?.orderNumber?.forCustomer}
                     </Typography>
                   </Box>
                   <Box

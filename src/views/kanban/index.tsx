@@ -145,7 +145,7 @@ const KanbanBoard = () => {
       let sortedOrders: any[] = [];
       snapshot.forEach((doc) => {
         const { delivery, canceled, refunded } = doc.data();
-        if (delivery.status === false && delivery.message === "New Order") {
+        if (delivery.status === false && delivery.message === "Preparing") {
           newOrders.push({
             id: doc.id,
             ...doc.data(),
@@ -802,7 +802,7 @@ const KanbanBoard = () => {
                                           variant="h6"
                                           sx={{ fontWeight: "bold", mb: 1 }}
                                         >
-                                          Order #1234
+                                          Order #{order?.orderNumber?.forKitchen}
                                         </Typography>
                                         <Typography
                                           variant="body2"
