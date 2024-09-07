@@ -30,7 +30,7 @@
     "firebase-admin": "^12.3.1",
     "newpattykulcha": "file:",
     "next": "14.2.5",
-    "puppeteer-core": "^21.5.0",
+    "puppeteer-core": "^22.11.0",
     "react": "^18",
     "react-dom": "^18",
     "react-google-autocomplete": "^2.7.3",
