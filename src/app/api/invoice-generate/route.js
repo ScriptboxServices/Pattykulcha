@@ -4,6 +4,7 @@ import { generateInvoiceHtml } from "../../../utils/generateInvoiceHtml";
 const chromium = require("@sparticuz/chromium");
 
 const db = admin.firestore();
+const bucket = admin.storage().bucket()
 
 export const POST = async (req) => {
   try{
@@ -19,7 +20,8 @@ export const POST = async (req) => {
     const html = generateInvoiceHtml(order)
     let puppeteer;
     let browser;
-    // if(process.env.NEXT_PUBLIC_ENVIRONMENT === 'Production'){
+
+    if(process.env.NEXT_PUBLIC_ENVIRONMENT === 'Production'){
       puppeteer = require("puppeteer-core");
       browser = await puppeteer.launch({
         args: chromium.args,
@@ -27,14 +29,14 @@ export const POST = async (req) => {
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
       });
-    // }else{
-    //   puppeteer = require("puppeteer");
-    //   browser = await puppeteer.launch({
-    //     args: ['--no-sandbox', '--disable-setuid-sandbox','--font-render-hinting=none'],
-    //     headless : 'new',
-    //     ignoreHTTPSErrors: true,
-    //   })
-    // }
+    }else{
+      puppeteer = require("puppeteer");
+      browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox','--font-render-hinting=none'],
+        headless : 'new',
+        ignoreHTTPSErrors: true,
+      })
+    }
   
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle2" });
@@ -52,11 +54,29 @@ export const POST = async (req) => {
     });
   
     await browser.close();
-    console.log(pdfBuffer);
+
+    const filePath = `invoices/${userId}/orderNumber_${orderId}.pdf`;
+
+    const file = bucket.file(filePath);
+
+    await file.save(pdfBuffer, {
+      metadata: {
+        contentType: 'application/pdf',
+      },
+    });
+
+    await db.collection('orders').doc(orderId).update({
+      invoices : {
+        key: filePath,
+        generated: true
+      },
+    })
+
     return NextResponse.json(
       {
         code: 1,
         message: "Invoice generated successfully.",
+        filePath
       },
       {
         status: 200,

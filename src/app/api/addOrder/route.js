@@ -213,6 +213,10 @@ export const POST = async (req, res) => {
         kitchenId: kitchenId,
         source: "Shop",
         paymentMode: paymentmethod,
+        invoices :{
+          key:'',
+          generated: false
+        },
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       }),
       paymentDocRef.set({

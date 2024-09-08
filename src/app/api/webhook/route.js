@@ -116,6 +116,10 @@ export const POST = async (req, res) => {
               forKitchen : orderNumberForKitchen,
               forCustomer : orderNumberForCustomer
             },
+            invoices :{
+              key:'',
+              generated: false
+            },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }),
           paymentDocRef.set({
