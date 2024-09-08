@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { useAuthContext, useMenuContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import CircularLodar from "@/components/CircularLodar";
 import { auth, db } from "@/firebase";
 import { encrypt } from "@/utils/commonFunctions";
@@ -188,6 +188,7 @@ const VerificationPage: React.FC = () => {
             isKitchen: false,
             foodTruckId: "",
             enable: true,
+            createdAt :Timestamp.now()
           });
 
           const userSaved = await getDoc(doc(db, "users", user?.uid));
