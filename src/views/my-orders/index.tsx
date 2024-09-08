@@ -507,7 +507,7 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
     "Out For Delivery": "#FFAB00",
     Delivered: "#4CAF50",
     Canceled: "#F44336",
-    "New Order": "#FFAB00",
+    Preparing: "#FFAB00",
     Refunded: "#1E90FF",
   };
 
@@ -524,7 +524,7 @@ const OrderStatusChip: React.FC<{ status: string }> = ({ status }) => {
               | "Out For Delivery"
               | "Delivered"
               | "Canceled"
-              | "New Order"
+              | "Preparing"
               | "Refunded"
           ],
         color: "#fff",
