@@ -116,7 +116,6 @@ const OrdersPage: React.FC = () => {
   };
 
   const handleViewInvoice = async (order: any) => {
-    console.log(order);
     setLoading(true);
     try {
       let filePath = order?.invoices?.key;

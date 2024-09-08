@@ -13,7 +13,9 @@ import {
   Switch,
   FormControlLabel,
   Button,
-  IconButton
+  IconButton,
+  Slider,
+  styled,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -38,16 +40,57 @@ interface Props {
   window?: () => Window;
 }
 
-const Home = () => <Typography variant="h6">Home</Typography>;
+const Home = () => <Typography variant='h6'>Home</Typography>;
+
+const IncreaseDistanceSlider = styled(Slider)({
+  color: '#52af77',
+  padding:0,
+  height: 12,
+  '& .MuiSlider-track': {
+    border: 'none',
+  },
+  '& .MuiSlider-thumb': {
+    height: 25,
+    width: 25,
+    backgroundColor: '#fff',
+    border: '2px solid currentColor',
+    '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+      boxShadow: 'inherit',
+    },
+    '&::before': {
+      display: 'none',
+    },
+  },
+  '& .MuiSlider-valueLabel': {
+    lineHeight: 1,
+    fontSize: 12,
+    background: 'unset',
+    padding: 0,
+    width: 32,
+    height: 32,
+    borderRadius: '50% 50% 50% 0',
+    backgroundColor: '#52af77',
+    transformOrigin: 'bottom left',
+    transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+    '&::before': { display: 'none' },
+    '&.MuiSlider-valueLabelOpen': {
+      transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+    },
+    '& > *': {
+      transform: 'rotate(45deg)',
+    },
+  },
+});
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Order Detail");
   const { user, kitchenMetaData } = useAuthContext();
-  const [menuExpanded, setMenuExpanded] = useState(false); 
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [distance, setDistance] = useState(kitchenMetaData?.orderRange || 0);
+  const [activeTab, setActiveTab] = useState("Order Detail");
+  const [menuExpanded, setMenuExpanded] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -58,9 +101,9 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   useEffect(() => {
-    if (kitchenMetaData?.userId !== user?.uid) {
-      return router.push('/home')
-    }
+    // if (kitchenMetaData?.userId !== user?.uid) {
+    //   return router.push('/home')
+    // }
   }, [user, kitchenMetaData]);
 
   const isFirstLoad = useRef(true);
@@ -85,14 +128,14 @@ export default function ResponsiveDrawer(props: Props) {
   }, []);
 
   const handleLogout = async () => {
-    try{
+    try {
       await auth.signOut();
       localStorage.removeItem("instructions");
       localStorage.removeItem("kulcha");
       localStorage.removeItem("includedItems2");
       localStorage.removeItem("otherKulchas");
       router.push("/login");
-    }catch(err) {
+    } catch (err) {
       console.log(err);
       router.push("/login");
     }
@@ -109,7 +152,6 @@ export default function ResponsiveDrawer(props: Props) {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      return err;
     }
   };
 
@@ -150,14 +192,13 @@ export default function ResponsiveDrawer(props: Props) {
             justifyContent: "space-between",
             alignItems: "center",
             padding: "16px",
-          }}
-        >
-          <Link href="/home" passHref>
+          }}>
+          <Link href='/home' passHref>
             <Image
-              src="/images/logo.png"
-              alt="logo"
+              src='/images/logo.png'
+              alt='logo'
               height={150}
-              layout="fixed"
+              layout='fixed'
               width={170}
               priority
               style={{
@@ -166,7 +207,7 @@ export default function ResponsiveDrawer(props: Props) {
             />
           </Link>
           <IconButton onClick={toggleMenu}>
-            <ArrowBackIcon /> 
+            <ArrowBackIcon />
           </IconButton>
         </Box>
       )}
@@ -176,7 +217,7 @@ export default function ResponsiveDrawer(props: Props) {
             <ListItemButton
               onClick={() => setActiveTab(item.text)}
               sx={{
-                justifyContent:'center',
+                justifyContent: "center",
                 backgroundColor:
                   activeTab === item.text ? "#ECAB21" : "transparent",
                 color: activeTab === item.text ? "white" : "inherit",
@@ -185,8 +226,7 @@ export default function ResponsiveDrawer(props: Props) {
                     activeTab === item.text ? "#FFC107" : "transparent",
                   color: activeTab === item.text ? "white" : "inherit",
                 },
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   backgroundColor: activeTab === item.text ? "white" : "white",
@@ -195,8 +235,7 @@ export default function ResponsiveDrawer(props: Props) {
                   borderRadius: "20%",
                   padding: "4px",
                   marginRight: menuExpanded ? "12px" : "0",
-                }}
-              >
+                }}>
                 <Image
                   src={item.icon}
                   alt={`${item.text} icon`}
@@ -216,11 +255,10 @@ export default function ResponsiveDrawer(props: Props) {
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
-        }}
-      >
-         <Button
-          type="submit"
-          variant="contained"
+        }}>
+        <Button
+          type='submit'
+          variant='contained'
           startIcon={!menuExpanded ? <PersonIcon /> : null}
           onClick={() => router.push("/home")}
           sx={{
@@ -237,13 +275,12 @@ export default function ResponsiveDrawer(props: Props) {
             },
             paddingLeft: menuExpanded ? "16px" : 0,
             paddingRight: menuExpanded ? "16px" : 0,
-          }}
-        >
+          }}>
           {menuExpanded && "Switch to customer"}
         </Button>
         <Button
-          type="submit"
-          variant="contained"
+          type='submit'
+          variant='contained'
           startIcon={!menuExpanded ? <LogoutIcon /> : null}
           onClick={handleLogout}
           sx={{
@@ -262,8 +299,7 @@ export default function ResponsiveDrawer(props: Props) {
             },
             paddingLeft: menuExpanded ? "16px" : 0,
             paddingRight: menuExpanded ? "16px" : 0,
-          }}
-        >
+          }}>
           {menuExpanded && "Logout"}
         </Button>
       </Box>
@@ -278,22 +314,54 @@ export default function ResponsiveDrawer(props: Props) {
     return activeItem?.component;
   };
 
+  const distanceHandler = async (e : any) => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, "foodtrucks", kitchenMetaData?.id);
+      await updateDoc(docRef, {
+        orderRange: distance,
+      });
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  }
+
+  const marks = [
+    {
+      value: 0,
+      label: '0 Km',
+    },
+    {
+      value: 20,
+      label: '20 Km',
+    },
+    {
+      value: 50,
+      label: '50 Km',
+    },
+    {
+      value: 100,
+      label: '100 Km',
+    },
+  ];
+
   return (
     <>
       <CircularLodar isLoading={loading} />
       <Box sx={{ display: "flex", bgcolor: "white", height: "100vh" }}>
         <Box
-          component="nav"
+          component='nav'
           sx={{
             width: menuExpanded ? { sm: drawerWidth } : { sm: 80 },
             flexShrink: { sm: 0 },
             bgcolor: "white",
           }}
-          aria-label="sidebar options"
-        >
+          aria-label='sidebar options'>
           <Drawer
             container={container}
-            variant="temporary"
+            variant='temporary'
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
@@ -306,12 +374,11 @@ export default function ResponsiveDrawer(props: Props) {
                 width: drawerWidth,
                 bgcolor: "white",
               },
-            }}
-          >
+            }}>
             {drawer}
           </Drawer>
           <Drawer
-            variant="permanent"
+            variant='permanent'
             sx={{
               display: { xs: "none", sm: "block" },
               "& .MuiDrawer-paper": {
@@ -321,12 +388,11 @@ export default function ResponsiveDrawer(props: Props) {
                 bgcolor: "white",
               },
             }}
-            open
-          >
+            open>
             {!menuExpanded && (
               <Box sx={{ padding: "8px", mt: 2, textAlign: "center" }}>
                 <IconButton onClick={toggleMenu}>
-                  <MenuIcon /> 
+                  <MenuIcon />
                 </IconButton>
               </Box>
             )}
@@ -334,68 +400,84 @@ export default function ResponsiveDrawer(props: Props) {
           </Drawer>
         </Box>
         <Box
-          component="main"
+          component='main'
           sx={{
             width: { sm: `calc(100% - ${menuExpanded ? drawerWidth : 80}px)` },
             bgcolor: "white",
             pr: 0,
-          }}
-        >
+          }}>
           {renderContent()}
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: kitchenMetaData?.isShopOpen
-                ? "#e0f7fa"
-                : "#ffebee",
-              padding: "8px 16px",
-              borderRadius: "25px",
-              width: "220px",
-              boxShadow: 1,
               position: "absolute",
               right: 20,
-              top: 20,
-            }}
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  value={kitchenMetaData?.isShopOpen}
-                  checked={kitchenMetaData?.isShopOpen}
-                  onChange={onlineOfflineHandler}
-                  color="primary"
-                  sx={{
-                    "& .MuiSwitch-switchBase.Mui-checked": {
-                      color: kitchenMetaData?.isShopOpen
-                        ? "#4caf50"
-                        : "#f44336",
-                    },
-                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                      backgroundColor: kitchenMetaData?.isShopOpen
-                        ? "#4caf50"
-                        : "#f44336",
-                    },
-                  }}
+              top: 45,
+              display: "flex",
+              gap: "2rem",
+              alignItems: "end",
+            }}>
+            <Box sx={{ width: "220px" }}>
+               <IncreaseDistanceSlider
+                  onChange={(e : any) => setDistance(Number(e.target.value))}
+                  onMouseUp={distanceHandler}
+                  key={kitchenMetaData?.orderRange}
+                  valueLabelDisplay="on"
+                  aria-label="distance slider"
+                  defaultValue={Number(kitchenMetaData?.orderRange)}
+                  marks={marks}
                 />
-              }
-              label={
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    color: kitchenMetaData?.isShopOpen
-                      ? "#388e3c"
-                      : "#d32f2f",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {kitchenMetaData?.isShopOpen
-                    ? "We are online"
-                    : "We are offline"}
-                </Typography>
-              }
-              sx={{ margin: 0 }}
-            />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: kitchenMetaData?.isShopOpen
+                  ? "#e0f7fa"
+                  : "#ffebee",
+                padding: "8px 16px",
+                borderRadius: "25px",
+                width: "220px",
+                boxShadow: 1,
+              }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    value={kitchenMetaData?.isShopOpen}
+                    checked={kitchenMetaData?.isShopOpen}
+                    onChange={onlineOfflineHandler}
+                    color='primary'
+                    sx={{
+                      "& .MuiSwitch-switchBase.Mui-checked": {
+                        color: kitchenMetaData?.isShopOpen
+                          ? "#4caf50"
+                          : "#f44336",
+                      },
+                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                        {
+                          backgroundColor: kitchenMetaData?.isShopOpen
+                            ? "#4caf50"
+                            : "#f44336",
+                        },
+                    }}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      color: kitchenMetaData?.isShopOpen
+                        ? "#388e3c"
+                        : "#d32f2f",
+                      fontSize: "1rem",
+                    }}>
+                    {kitchenMetaData?.isShopOpen
+                      ? "We are online"
+                      : "We are offline"}
+                  </Typography>
+                }
+                sx={{ margin: 0 }}
+              />
+            </Box>
           </Box>
         </Box>
       </Box>

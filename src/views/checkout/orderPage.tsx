@@ -53,7 +53,7 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
   useEffect(() => {
     const init = async () =>{
       if (metaData?.address?.raw !== "" && kitchenMetaData?.address?.raw !== "") {
-        const {flag} : any = await calculateDistance(kitchenMetaData?.address?.raw, metaData?.address?.raw);
+        const {flag} : any = await calculateDistance(kitchenMetaData?.address?.raw, metaData?.address?.raw,Number(kitchenMetaData?.orderRange));
         setIsAddressReachable(flag)
       }
     }
@@ -377,7 +377,8 @@ const OrderPage: React.FC<Props> = ({ setLoading }) => {
 
                         const { distance } : any = await calculateDistance(
                           kitchenMetaData?.address?.raw,
-                          place.formatted_address || ""
+                          place.formatted_address || "",
+                          Number(kitchenMetaData?.orderRange)
                         );
                         setAddress({
                           raw: place.formatted_address,

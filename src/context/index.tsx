@@ -146,25 +146,6 @@ export const getCartData = async (_id: string) => {
   }
 };
 
-export const getKithenInfo = async (_id: string) => {
-  try {
-    const docRef = doc(db, "foodtrucks", _id);
-
-    onSnapshot(docRef, (snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.data());
-        return {
-          id: snapshot.id,
-          ...snapshot.data(),
-        };
-      }
-    });
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-};
-
 export const getUserMetaData = async (_id: string) => {
   try {
     const metaData = await getDoc(doc(db, "users", _id));
@@ -198,7 +179,7 @@ interface AuthProps {
   children: ReactNode;
 }
 
-export const calculateDistance = (source : string , destinations : string) => {
+export const calculateDistance = (source : string , destinations : string,_distance : number) => {
   return new Promise((resolve,reject) => {
     try{
       const service = new google.maps.DistanceMatrixService();
@@ -213,7 +194,7 @@ export const calculateDistance = (source : string , destinations : string) => {
       service.getDistanceMatrix(request, (response : any, status: any) => {
         if (status === "OK") {
           const distance = response.rows[0].elements[0].distance;
-          if (distance.value > 20000) {
+          if (distance.value > ( _distance * 1000)) {
             resolve({distance,flag : false})
           } else {
             resolve({distance,flag : true})
@@ -241,7 +222,6 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     if(user){
       const unsubscribe = onSnapshot(docRef, (snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.data());
           setKitchenMetaData({
             id: snapshot.id,
             ...snapshot.data(),

@@ -29,15 +29,6 @@ export const POST = async (req, res) => {
   const { address, instructions, name } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
-
-    if (!xToken)
-      return NextResponse.json({
-        code: 0,
-        message: "Unauthorized User",
-      },{
-        status : 401
-    });
-
     const decodeToken = await admin.auth().verifyIdToken(xToken);
 
     if (!decodeToken)

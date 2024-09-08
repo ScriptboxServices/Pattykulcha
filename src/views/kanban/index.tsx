@@ -353,8 +353,6 @@ const KanbanBoard = () => {
     }));
   };
 
-  console.log(cart);
-
   return (
     <Box
       sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}
@@ -379,7 +377,7 @@ const KanbanBoard = () => {
               justifyContent="space-evenly"
               gap={2}
               minWidth="2300px"
-              marginTop={3}
+              marginTop={5.5}
             >
               {containers.map((container) => (
                 <Box

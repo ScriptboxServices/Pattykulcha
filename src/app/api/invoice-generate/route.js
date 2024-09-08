@@ -9,7 +9,18 @@ const bucket = admin.storage().bucket()
 export const POST = async (req) => {
   try{
     const {  userId,orderId } = await req.json();
-  
+    const xToken = req.headers.get("x-token").split(" ")[1];
+    const decodeToken = await admin.auth().verifyIdToken(xToken);
+    if (!decodeToken)
+      return NextResponse.json(
+        {
+          code: 0,
+          message: "Unauthorized User",
+        },
+        {
+          status: 401,
+        }
+    );
     const orderDoc = await db.collection('orders').doc(orderId).get();
     let order;
   if (orderDoc.exists && orderDoc.data().userId === userId) {

@@ -761,7 +761,8 @@ const ProfilePage: React.FC = () => {
                         }
                         const { distance } : any = await calculateDistance(
                           kitchenMetaData?.address?.raw,
-                          place.formatted_address || ""
+                          place.formatted_address || "",
+                          Number(kitchenMetaData?.orderRange)
                         );
 
                         setAddress1({
