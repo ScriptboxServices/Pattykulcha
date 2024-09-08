@@ -46,9 +46,7 @@ export const generateInvoiceHtml = (order) => {
         background-color: white;
         padding: 20px;
         margin-top: 10px;
-        border: 1px solid #ddd;
         width: 900px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
 
       .header {
@@ -152,13 +150,6 @@ export const generateInvoiceHtml = (order) => {
         <p>Total net amount: $${Number(order.basic_amount).toFixed(2)}</p>
         <p>Total HST 13%: $${Number(order.total_tax).toFixed(2)}</p>
         <p>Total amount payable: $${Number(order.grand_total).toFixed(2)}</p>
-      </div>
-      <div class="footer">
-        <p>Issued on behalf of OLGA SOSNORA by:</p>
-        <p>
-          UBER RASIER CANADA INC. // GST: 764945663RC0001 / QST: 1228538970
-          TQ0001
-        </p>
       </div>
     </div>
   </body>

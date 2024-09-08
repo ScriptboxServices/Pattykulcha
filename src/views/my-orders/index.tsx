@@ -120,7 +120,7 @@ const OrdersPage: React.FC = () => {
     setLoading(true);
     try {
       let filePath = order?.invoices?.key;
-      if (!order.invoices && !order?.invoices?.generated) {
+      if (!order?.invoices?.generated) {
         const token = await getIdToken(user);
         const result = await axios.post(
           "/api/invoice-generate",
@@ -454,7 +454,9 @@ const OrdersPage: React.FC = () => {
           setInvoiceUrl('')
         }}
         maxWidth='md'
-        fullWidth>
+        fullWidth
+        sx={{ zIndex: "999" }}
+        >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <DialogTitle>Invoice</DialogTitle>
           <IconButton onClick={() =>{
