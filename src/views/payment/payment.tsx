@@ -269,7 +269,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                   borderRadius={2}
                   sx={{ boxShadow: 2 }}
                 >
-                  <Typography variant="h6" mb={2}>
+                  {/* <Typography variant="h6" mb={2}>
                     Payment Method
                   </Typography>
                   <Controller
@@ -294,7 +294,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                       </RadioGroup>
                     )}
                   />
-                  <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 3 }} /> */}
                   <Typography variant="h5" mb={3} textAlign="center">
                     Order Summary
                   </Typography>

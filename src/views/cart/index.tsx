@@ -23,7 +23,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useAuthContext, useMenuContext, FIXED_INCLUDE_ITEMS } from "@/context";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
-import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, Timestamp, where } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import CircularLodar from "@/components/CircularLodar";
@@ -247,6 +247,9 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
   const handleAddToCart = async () => {
     try {
       setLoading(true);
+      const orderRef = collection(db,'orders')
+      const q = query(orderRef,where('userId','==',user?.uid))
+      const hasOrders = await getDocs(q)
       const colRef = collection(db, "carts");
       const data = {
         userId: user?.uid,
@@ -265,6 +268,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
           Number(calculateAmount()) * 0.13
         ).toFixed(2),
         createdAt: Timestamp.now(),
+        isUserExist : hasOrders.size > 0
       };
       await addDoc(colRef, {
         ...data,

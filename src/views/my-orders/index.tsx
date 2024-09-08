@@ -302,6 +302,10 @@ const OrdersPage: React.FC = () => {
                       <b style={{ color: "black" }}>Address:</b>{" "}
                       {orderDoc?.address?.raw || orderDoc?.address}
                     </Typography>
+                    <Typography variant='body2' color='textSecondary'>
+                      <b style={{ color: "black" }}>Payment Mode:</b>{" "}
+                      {orderDoc?.paymentMode}
+                    </Typography>
                     {/* <Typography variant="body2" color="textSecondary">
                       Distance: {orderDoc?.address?.distance?.text || ""}
                     </Typography>
@@ -339,20 +343,23 @@ const OrdersPage: React.FC = () => {
                             Review
                           </Button>
                         </Link>
-                        <Button
-                          variant='contained'
-                          sx={{
-                            backgroundColor: "#ECAB21",
-                            color: "white",
-                            fontWeight: "bold",
-                            "&:hover": {
-                              backgroundColor: "#FFC107",
-                              color: "white",
-                            },
-                          }}
-                          onClick={() => handleViewInvoice(orderDoc)}>
-                          Invoice
-                        </Button>
+                        {
+                          orderDoc?.paymentMode === 'Online' && orderDoc?.delivery?.status === true &&
+                            <Button
+                              variant='contained'
+                              sx={{
+                                backgroundColor: "#ECAB21",
+                                color: "white",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                  backgroundColor: "#FFC107",
+                                  color: "white",
+                                },
+                              }}
+                              onClick={() => handleViewInvoice(orderDoc)}>
+                              Invoice
+                            </Button>
+                        }
 
                         {/* <Link href={`/recipt/${orderDoc.id}`}>
                           <Button

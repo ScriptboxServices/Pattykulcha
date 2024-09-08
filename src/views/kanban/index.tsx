@@ -690,6 +690,20 @@ const KanbanBoard = () => {
                                               ""}
                                           </Typography>
                                         </Box>
+                                        <Box>
+                                          <Typography variant="body2">
+                                            <Typography
+                                              variant="body2"
+                                              component="span"
+                                              sx={{
+                                                fontWeight: "bold",
+                                              }}
+                                            >
+                                              User:
+                                            </Typography>{" "}
+                                            {order.isUserExist ? 'Existing User' : 'New User'}
+                                          </Typography>
+                                        </Box>
                                       </Box>
                                       {/* <Box>
                                             <Divider sx={{ my: 1 }} />
@@ -915,6 +929,57 @@ const KanbanBoard = () => {
                                   )}
                                   {isExpanded && (
                                     <>
+                                      <Box>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Payment Mode:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            {order.paymentMode}
+                                          </Typography>
+                                        </Box>
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Source:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            {order.source}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
                                       <Box>
                                         <Divider sx={{ my: 1 }} />
                                         <Box
