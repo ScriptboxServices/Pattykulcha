@@ -1400,7 +1400,6 @@ const KanbanBoard = () => {
                                           <Typography component='div' sx={{width:'100%'}}>
                                           <Button
                                                   fullWidth
-                                                  disabled={order.driverId === ''}
                                                   variant="contained"
                                                   sx={{
                                                     backgroundColor: "#ECAB21",
