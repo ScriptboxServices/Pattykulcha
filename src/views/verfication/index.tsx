@@ -187,6 +187,8 @@ const VerificationPage: React.FC = () => {
             role: "customer",
             isKitchen: false,
             foodTruckId: "",
+            isDriver: false,
+            driverId: "",
             enable: true,
             createdAt :Timestamp.now()
           });

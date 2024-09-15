@@ -102,12 +102,14 @@ interface AuthContextType {
   metaData: any;
   setMetaData: any;
   kitchenMetaData: any;
+  driverMetaData : any
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const KITCHEN_ID: string = "0bXJJJIHMgu5MNGSArY2";
+export const DRIVER_ID: string = "Lh5ZrEoZo2kDG0rViY0Y";
 
 export const useMenuContext = () => {
   const context = useContext(MenuContext);
@@ -116,6 +118,11 @@ export const useMenuContext = () => {
   }
   return context;
 };
+
+export const calculateDeliveryCharges = (distance : number) => {
+  const delivery_charges = distance > 3000 ? ((distance / 1000 ) * 0.70) > 6 ? 6 : ((distance / 1000 ) * 0.70) : 0  
+  return Number(delivery_charges)
+}
 
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
@@ -214,28 +221,51 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const pathname = usePathname();
   const [user, setUser] = useState<object | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [metaData, setMetaData] = useState<object | null>(null);
+  const [metaData, setMetaData] = useState<object | null | any>(null);
   const [kitchenMetaData, setKitchenMetaData] = useState<object | null>(null);
+  const [driverMetaData, setDriverMetaData] = useState<object | null>(null);
+
+  // console.log = () => {}
 
   useEffect(() => {
-    const docRef = doc(db, "foodtrucks", KITCHEN_ID);
     if(user){
-      const unsubscribe = onSnapshot(docRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setKitchenMetaData({
-            id: snapshot.id,
-            ...snapshot.data(),
-          });
-        } else {
-          setKitchenMetaData(null);
-        }
-      });
+      let unsubscribeKitchen : any;
+      let unsubscribeDriver :any;
+      if(metaData?.isKitchen){
+        const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
+        unsubscribeKitchen = onSnapshot(kitchenRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setKitchenMetaData({
+              id: snapshot.id,
+              ...snapshot.data(),
+            });
+          } else {
+            setKitchenMetaData(null);
+          }
+        });
+        
+      }
+
+      if(metaData?.isDriver){
+        const driverRef = doc(db, "drivers", metaData?.driverId);
+        unsubscribeDriver = onSnapshot(driverRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setDriverMetaData({
+              id: snapshot.id,
+              ...snapshot.data(),
+            });
+          } else {
+            setDriverMetaData(null);
+          }
+        });
+      }
       return () => {
-        unsubscribe();
+        unsubscribeKitchen();
+        unsubscribeDriver()
       };
     }
 
-  }, [user]);
+  }, [user,metaData]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -259,7 +289,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, metaData, setMetaData, kitchenMetaData }}>
+      value={{ user, isLoggedIn, metaData, setMetaData, kitchenMetaData,driverMetaData }}>
       {children}
     </AuthContext.Provider>
   );

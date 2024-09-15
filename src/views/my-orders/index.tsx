@@ -328,7 +328,7 @@ const OrdersPage: React.FC = () => {
                           marginTop: 1.45,
                           gap: { xs: 0.73 },
                         }}>
-                        <Link href={`/product-review/${orderDoc.id}`}>
+                        {/* <Link href={`/product-review/${orderDoc.id}`}>
                           <Button
                             variant='contained'
                             sx={{
@@ -342,7 +342,7 @@ const OrdersPage: React.FC = () => {
                             }}>
                             Review
                           </Button>
-                        </Link>
+                        </Link> */}
                         {
                           orderDoc?.paymentMode === 'Online' && orderDoc?.delivery?.status === true &&
                             <Button

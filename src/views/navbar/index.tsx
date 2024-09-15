@@ -50,9 +50,8 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useMenuContext();
-  const { isLoggedIn, kitchenMetaData, metaData } = useAuthContext();
+  const { isLoggedIn, kitchenMetaData, metaData,driverMetaData } = useAuthContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -170,9 +169,9 @@ const Navbar: React.FC = () => {
           </>
         ) : (
           <>
-            {metaData?.role === "kitchen" &&
-              metaData?.foodTruckId === KITCHEN_ID &&
-              metaData?.isKitchen && (
+            {(metaData?.role === "kitchen" &&
+              metaData?.foodTruckId === kitchenMetaData.id &&
+              metaData?.isKitchen) && (
                 <ListItem button>
                   <Button
                     onClick={(e) => {
@@ -193,6 +192,32 @@ const Navbar: React.FC = () => {
                       },
                     }}>
                     Switch to kitchen
+                  </Button>
+                </ListItem>
+              )}
+                   {(metaData?.role === "driver" &&
+              metaData?.driverId === driverMetaData.id &&
+              metaData?.isDriver)  && (
+                <ListItem button>
+                  <Button
+                    onClick={(e) => {
+                      handleLinkClick();
+                      router.push("/driver-home");
+                    }}
+                    sx={{
+                      textTransform: "none",
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      paddingX: 4,
+                      width: "100%",
+                      paddingY: 1,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#FFC107",
+                        color: "white",
+                      },
+                    }}>
+                    Switch to Driver
                   </Button>
                 </ListItem>
               )}
@@ -357,11 +382,18 @@ const Navbar: React.FC = () => {
                         <Typography>My Orders</Typography>
                       </Link>
                     </MenuItem>
-                    {metaData?.role === "kitchen" &&
-                      metaData?.foodTruckId === KITCHEN_ID &&
-                      metaData?.isKitchen && (
+                    {(metaData?.role === "kitchen" &&
+                      metaData?.foodTruckId === kitchenMetaData.id &&
+                      metaData?.isKitchen) || true && (
                         <MenuItem onClick={() => router.push("/dashboard")}>
-                          Switch to kitchen
+                          Switch to Kitchen
+                        </MenuItem>
+                      )}
+                        {(metaData?.role === "driver" &&
+                      metaData?.driverId === driverMetaData.id &&
+                      metaData?.isDriver) || true && (
+                        <MenuItem onClick={() => router.push("/driver-home")}>
+                          Switch to Driver
                         </MenuItem>
                       )}
                     <MenuItem

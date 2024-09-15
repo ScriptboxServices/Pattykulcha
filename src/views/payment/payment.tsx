@@ -21,6 +21,7 @@ import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
+  calculateDeliveryCharges,
   IncludedItem,
   Kulcha,
   useAuthContext,
@@ -230,6 +231,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
 
   const router = useRouter();
   const { count, grandTotal } = useMenuContext();
+  const {metaData} = useAuthContext()
   const [error, setError] = useState("");
 
   const errorFunc = (error: string) => {
@@ -304,9 +306,17 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                     <Typography>{count}</Typography>
                   </Box>
                   <Divider sx={{ my: 3 }} />
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="h6" sx={{fontSize:'16px'}}>Sub Total</Typography>
+                    <Typography variant="h6" sx={{fontSize:'16px'}}>${grandTotal}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="h6" sx={{fontSize:'16px'}}>Delivery Charges</Typography>
+                    <Typography variant="h6" sx={{fontSize:'16px'}}>${calculateDeliveryCharges(metaData?.address?.distance?.value)}</Typography>
+                  </Box>
                   <Box display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h6">Total</Typography>
-                    <Typography variant="h6">${grandTotal}</Typography>
+                    <Typography variant="h6">${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value)}</Typography>
                   </Box>
                   <Typography
                     variant="body2"

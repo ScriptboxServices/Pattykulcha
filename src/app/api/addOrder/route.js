@@ -42,6 +42,7 @@ export const POST = async (req, res) => {
   } = await req.json();
 
   const kitchenId = "0bXJJJIHMgu5MNGSArY2";
+
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
   
@@ -202,6 +203,8 @@ export const POST = async (req, res) => {
           forCustomer : orderNumberForCustomer
         },
         kitchenId: kitchenId,
+        driverId: '',
+        deliverCharge : 0,
         source: "Shop",
         paymentMode: paymentmethod,
         invoices :{
@@ -218,6 +221,8 @@ export const POST = async (req, res) => {
         orderId: orderDocRef.id,
         userId: userId,
         transactionId: id,
+        deliverCharge : 0,
+        driverId: '',
         card: {
           brand: "",
           last4: "",

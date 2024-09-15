@@ -47,31 +47,31 @@ export const drinkOptions = [
   {
     name: "Coke",
     desc: "Coca-Cola – The Original Sparkle of Refreshment, Loved by Generations.",
-    price: 3 ,
+    price: 2 ,
     image: "/images/Cokecan.png",
   },
   {
     name: "Diet Coke",
     desc: "Diet Coke – The Classic You Love, with a Lighter Twist for Any Occasion." ,
-    price: 3,
+    price: 2,
     image: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FDiet_coke.png?alt=media&token=ba40e428-2511-43ce-a012-cfe941f9f38c"
   },
   {
     name: "Sprite",
     desc: "Sprite – The Perfect Balance of Lemon-Lime Zing and Refreshing Coolness.",
-    price: 3,
+    price: 2,
     image: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FSprite.png?alt=media&token=4dda8bdb-80cf-4ddf-b26e-1138d054e96d"
   },
   {
     name: "Mountain Dew",
     desc: "Unleash the Energy – Mountain Dew, The Bold Citrus Blast You Crave.",
-    price: 3,
+    price: 2,
     image: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FMountain_Dew.png?alt=media&token=179fef8f-ee19-4488-a99b-aa90d8719adb"
   },
   {
     name: "Minute Maid Lemonade",
     desc: "Minute Maid Lemonade – The Ultimate Summer Refreshment, Anytime You Need It." ,
-    price: 3,
+    price: 2,
     image: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2FPK%2Fsoftdrinks%2FMinute-maid.png?alt=media&token=e7eb2ea0-d692-457f-b97a-faa73971c0db"
   }
 ];

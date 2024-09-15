@@ -39,9 +39,11 @@ export const POST = async (req, res) => {
         status : 401
     });
 
+    
     const { uid, phone_number } = decodeToken;
     const { city, state, line1, postal_code } = address.seperate;
-
+    const delivery_charges = address?.distance?.value > 3000 ? ((address?.distance?.value / 1000 ) * 0.70) > 6 ? 6 : ((address?.distance?.value / 1000 ) * 0.70) : 0 
+    
     const cartResult = await db
       .collection("carts")
       .where("userId", "==", uid)
@@ -82,6 +84,7 @@ export const POST = async (req, res) => {
       address: JSON.stringify(address),
       name : name ? name : `Customer_${uid}`,
       phoneNumber : phone_number,
+      delivery_charges
     };
 
     const _address = {
@@ -115,7 +118,7 @@ export const POST = async (req, res) => {
     );
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(grand_total * 100),
+      amount: Math.round((Number(grand_total) + Number(delivery_charges)) * 100),
       description,
       currency: "cad",
       customer: customer.id,

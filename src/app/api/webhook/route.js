@@ -110,6 +110,8 @@ export const POST = async (req, res) => {
               phoneNumber : metadata.phoneNumber
             },
             kitchenId: kitchenId,
+            deliverCharge : metadata.delivery_charges,
+            driverId: '',
             paymentMode : 'Online',
             source:'Website',
             orderNumber : {
@@ -130,6 +132,8 @@ export const POST = async (req, res) => {
             orderId: orderDocRef.id,
             userId: metadata.uid,
             transactionId : id,
+            driverId: '',
+            deliverCharge : metadata.delivery_charges,
             card:{
                 brand, last4, exp_month, exp_year
             },

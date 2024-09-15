@@ -7,12 +7,13 @@ import {
   KeyboardSensor,
   closestCorners,
 } from "@dnd-kit/core";
-import { KITCHEN_ID, useAuthContext } from "@/context";
+import { useAuthContext } from "@/context";
 import { db } from "@/firebase";
 import {
   Timestamp,
   collection,
   doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -57,19 +58,12 @@ const KanbanBoard = () => {
     { id: `container-6`, title: "Sorted order" },
   ]);
 
-  const [drivers] = useState([
-    { id: "driver-1", name: "John Doe" },
-    { id: "driver-2", name: "Jane Smith" },
-    { id: "driver-3", name: "Alex Johnson" },
-  ]);
+  const [drivers,setDrivers] = useState<any>([]);
   const [showDriverDropdown, setShowDriverDropdown] = useState<string | null>(
     null
   );
 
   const [openDialog, setOpenDialog] = useState<string | null>(null);
-  const [selectedDriver, setSelectedDriver] = useState<{
-    [key: string]: string;
-  }>({});
 
   const handleOpenDialog = (orderId: string) => {
     setOpenDialog(orderId);
@@ -79,11 +73,13 @@ const KanbanBoard = () => {
     setOpenDialog(null);
   };
 
-  const handleDriverSelect = (orderId: string, driverId: string) => {
-    setSelectedDriver((prev) => ({
-      ...prev,
-      [orderId]: driverId,
-    }));
+  const handleDriverSelect = async (orderId: string, driverId: string) => {
+    const docRef = doc(db,'orders',orderId)
+    setLoading(true)
+    await updateDoc(docRef,{
+      driverId : driverId
+    })
+    setLoading(false)
     handleCloseDialog();
   };
 
@@ -111,9 +107,32 @@ const KanbanBoard = () => {
     new Date(today.setHours(23, 59, 59, 999))
   );
 
+  const getDrivers = async () => {
+    const driverColRef = collection(db, "drivers");
+    const drivers = await getDocs(driverColRef)
+
+    console.log(drivers);
+    let arr : any = []
+    if(drivers.size > 0){
+      drivers.forEach(doc => {
+        arr.push({
+          id : doc.id,
+          ...doc.data()
+        })
+      })
+      setDrivers([...arr])
+    }
+
+  }
+
   useEffect(() => {
+
+    if(!metaData?.isKitchen) return
+
     const colRef = collection(db, "orders");
     const cartColRef = collection(db, "carts");
+
+    getDrivers()
 
     const cartsQuery = query(
       cartColRef,
@@ -135,7 +154,7 @@ const KanbanBoard = () => {
 
     const newOrderQuery = query(
       colRef,
-      where("kitchenId", "==", KITCHEN_ID),
+      where("kitchenId", "==", metaData?.foodTruckId),
       where("createdAt", ">=", startOfToday),
       where("createdAt", "<=", endOfToday),
       orderBy("createdAt", "desc")
@@ -168,7 +187,7 @@ const KanbanBoard = () => {
 
     const outForDeliveryQuery = query(
       colRef,
-      where("kitchenId", "==", KITCHEN_ID),
+      where("kitchenId", "==", metaData?.foodTruckId),
       where("createdAt", ">=", startOfToday),
       where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", false),
@@ -198,7 +217,7 @@ const KanbanBoard = () => {
 
     const deliveredOrderQuery = query(
       colRef,
-      where("kitchenId", "==", KITCHEN_ID),
+      where("kitchenId", "==", metaData?.foodTruckId),
       where("createdAt", ">=", startOfToday),
       where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", true),
@@ -221,7 +240,7 @@ const KanbanBoard = () => {
 
     const canceledOrderQuery = query(
       colRef,
-      where("kitchenId", "==", KITCHEN_ID),
+      where("kitchenId", "==", metaData?.foodTruckId),
       where("createdAt", ">=", startOfToday),
       where("createdAt", "<=", endOfToday),
       where("delivery.status", "==", false),
@@ -254,7 +273,7 @@ const KanbanBoard = () => {
       unsubscribeCanceled();
       unsubscribeCart();
     };
-  }, [user]);
+  }, [user,metaData]);
 
   useEffect(() => {
     setAllOrders({
@@ -265,7 +284,7 @@ const KanbanBoard = () => {
       "container-5": [...canceledOrders],
       "container-6": [...sortedOrders],
     });
-  }, [user, newOrders, outForDelivery, deliveredOrder, canceledOrders, cart]);
+  }, [user, metaData, newOrders, outForDelivery, deliveredOrder, canceledOrders, cart]);
 
   const updateOrderStatus = async (
     _id: string,
@@ -466,7 +485,6 @@ const KanbanBoard = () => {
                             const isExpanded = expandedCards[order.id] || false;
                             if (container.id === "container-1") {
                               let { additional } = order.order;
-
                               return (
                                 <Box key={order.orderId} sx={{ padding: 2 }}>
                                   <Card
@@ -1026,6 +1044,35 @@ const KanbanBoard = () => {
                                               fontWeight: "bold",
                                             }}
                                           >
+                                            Delivery Charges:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            $
+                                            {Number(order?.deliverCharge || 0).toFixed(
+                                              2
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
                                             Total Tax:
                                           </Typography>
                                           <Typography
@@ -1062,7 +1109,7 @@ const KanbanBoard = () => {
                                             color="textSecondary"
                                           >
                                             $
-                                            {Number(order?.grand_total).toFixed(
+                                            {Number(Number(order?.grand_total) + Number(order.deliverCharge || 0)).toFixed(
                                               2
                                             )}
                                           </Typography>
@@ -1170,29 +1217,6 @@ const KanbanBoard = () => {
                                               <>
                                                 <Button
                                                   onClick={() =>
-                                                    updateOrderStatus(
-                                                      order.id,
-                                                      "Out For Delivery",
-                                                      false
-                                                    )
-                                                  }
-                                                  variant="contained"
-                                                  sx={{
-                                                    backgroundColor: "#ECAB21",
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                    fontSize: "10px",
-                                                    marginTop: 2,
-                                                    "&:hover": {
-                                                      backgroundColor: "white",
-                                                      color: "#ECAB21",
-                                                    },
-                                                  }}
-                                                >
-                                                  Out For Delivery
-                                                </Button>
-                                                <Button
-                                                  onClick={() =>
                                                     handleOpenDialog(order.id)
                                                   }
                                                   variant="contained"
@@ -1208,10 +1232,35 @@ const KanbanBoard = () => {
                                                     },
                                                   }}
                                                 >
-                                                  Assigned to
+                                                  Assigned Driver
+                                                </Button>
+                                                <Button
+                                                  onClick={() =>
+                                                    updateOrderStatus(
+                                                      order.id,
+                                                      "Out For Delivery",
+                                                      false
+                                                    )
+                                                  }
+                                                  disabled={order?.driverId === '' || order?.driverId === undefined}
+                                                  variant="contained"
+                                                  sx={{
+                                                    backgroundColor: "#ECAB21",
+                                                    color: "white",
+                                                    fontWeight: "bold",
+                                                    fontSize: "10px",
+                                                    marginTop: 2,
+                                                    "&:hover": {
+                                                      backgroundColor: "white",
+                                                      color: "#ECAB21",
+                                                    },
+                                                  }}
+                                                >
+                                                  Out For Delivery
                                                 </Button>
                                                 <Dialog
                                                   open={openDialog === order.id}
+                                                  sx={{zIndex:'999'}}
                                                   onClose={handleCloseDialog}
                                                   PaperProps={{
                                                     sx: {
@@ -1234,11 +1283,7 @@ const KanbanBoard = () => {
                                                         Select Driver
                                                       </InputLabel>
                                                       <Select
-                                                        value={
-                                                          selectedDriver[
-                                                            order.id
-                                                          ] || ""
-                                                        }
+                                                        value={order.driverId}
                                                         onChange={(e) =>
                                                           handleDriverSelect(
                                                             order.id,
@@ -1248,11 +1293,11 @@ const KanbanBoard = () => {
                                                         label="Select Driver"
                                                         fullWidth
                                                         sx={{
-                                                          borderRadius: 2, // Rounds the corners of the Select component
+                                                          borderRadius: 2,
                                                         }}
                                                       >
                                                         {drivers.map(
-                                                          (driver) => (
+                                                          (driver : any) => (
                                                             <MenuItem
                                                               key={driver.id}
                                                               value={driver.id}
@@ -1272,50 +1317,40 @@ const KanbanBoard = () => {
                                                     >
                                                       Cancel
                                                     </Button>
-                                                    <Button
-                                                      onClick={() =>
-                                                        handleDriverSelect(
-                                                          order.id,
-                                                          selectedDriver[
-                                                            order.id
-                                                          ] || ""
-                                                        )
-                                                      }
-                                                      disabled={
-                                                        !selectedDriver[
-                                                          order.id
-                                                        ]
-                                                      }
-                                                    >
-                                                      Assign
-                                                    </Button>
                                                   </DialogActions>
                                                 </Dialog>
                                               </>
                                             )}
                                             {container.id === "container-3" && (
-                                              <Button
-                                                onClick={() =>
-                                                  updateOrderStatus(
-                                                    order.id,
-                                                    "Delivered",
-                                                    true
-                                                  )
-                                                }
-                                                variant="contained"
-                                                sx={{
-                                                  backgroundColor: "#ECAB21",
-                                                  color: "white",
-                                                  fontWeight: "bold",
-                                                  fontSize: "10px",
-                                                  "&:hover": {
-                                                    backgroundColor: "white",
-                                                    color: "#ECAB21",
-                                                  },
-                                                }}
-                                              >
-                                                Delivered
-                                              </Button>
+                                                  <Typography
+                                                  variant="body2"
+                                                  color="textSecondary"
+                                                  sx={{ display: "flex", gap: 1 }}
+                                                >
+                                                    <Button
+                                                      onClick={() =>
+                                                        updateOrderStatus(
+                                                          order.id,
+                                                          "Delivered",
+                                                          true
+                                                        )
+                                                      }
+                                                      variant="contained"
+                                                      sx={{
+                                                        backgroundColor: "#ECAB21",
+                                                        color: "white",
+                                                        marginTop: 2,
+                                                        fontWeight: "bold",
+                                                        fontSize: "10px",
+                                                        "&:hover": {
+                                                          backgroundColor: "white",
+                                                          color: "#ECAB21",
+                                                        },
+                                                      }}
+                                                    >
+                                                      Delivered
+                                                    </Button>
+                                                </Typography>
                                             )}
                                             {(container.id === "container-3" ||
                                               container.id ===
@@ -1361,6 +1396,26 @@ const KanbanBoard = () => {
                                                 Refund
                                               </Button>
                                             )}
+                                          </Typography>
+                                          <Typography component='div' sx={{width:'100%'}}>
+                                          <Button
+                                                  fullWidth
+                                                  disabled={order.driverId === ''}
+                                                  variant="contained"
+                                                  sx={{
+                                                    backgroundColor: "#ECAB21",
+                                                    color: "white",
+                                                    fontWeight: "bold",
+                                                    fontSize: "12px",
+                                                    marginTop: 2,
+                                                    "&:hover": {
+                                                      backgroundColor: "white",
+                                                      color: "#ECAB21",
+                                                    },
+                                                  }}
+                                                >
+                                                  Print Receipt
+                                                </Button>
                                           </Typography>
                                         </Box>
                                         <Box

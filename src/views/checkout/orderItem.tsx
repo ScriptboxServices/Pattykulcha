@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import {
+  calculateDeliveryCharges,
   calculateGrandTotal,
   getCartData,
   useAuthContext,
@@ -471,11 +472,27 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 }}
               >
                 <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Typography variant="h6" style={{ fontWeight: 600,fontSize:'16px' }}>
+                    Sub Total
+                  </Typography>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
+                    ${grandTotal}
+                  </Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Typography variant="h6" style={{ fontWeight: 600,fontSize:'16px' }}>
+                    Delivery Charges
+                  </Typography>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
+                    ${calculateDeliveryCharges(metaData?.address?.distance?.value)}
+                  </Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between" gap={2}>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Total
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    ${grandTotal}
+                    ${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value)}
                   </Typography>
                 </Box>
                 <Button
@@ -513,7 +530,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     },
                   }}
                 >
-                  Proceed to Payment
+                  Continue
                 </Button>
                 {error && (
                   <Alert sx={{ mt: 2 }} variant="outlined" severity="error">
