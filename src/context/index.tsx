@@ -231,8 +231,9 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     if(user){
       let unsubscribeKitchen : any;
       let unsubscribeDriver :any;
-      if(metaData?.isKitchen){
-        const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
+      // if(metaData?.isKitchen){
+        // const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
+        const kitchenRef = doc(db, "foodtrucks",KITCHEN_ID);
         unsubscribeKitchen = onSnapshot(kitchenRef, (snapshot) => {
           if (snapshot.exists()) {
             setKitchenMetaData({
@@ -243,25 +244,18 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
             setKitchenMetaData(null);
           }
         }); 
-      }
+      // }
 
       if(metaData?.isDriver){
-        console.log("Call");
         const driverRef = doc(db, "drivers", metaData?.driverId);
         unsubscribeDriver = onSnapshot(driverRef, (snapshot) => {
           if (snapshot.exists()) {
-            console.log({
-              id: snapshot.id,
-              ...snapshot.data(),
-            });
             setDriverMetaData({
               id: snapshot.id,
               ...snapshot.data(),
             });
 
           } else {
-        console.log("Not Exist");
-
             setDriverMetaData(null);
           }
         });
