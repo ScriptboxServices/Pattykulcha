@@ -229,8 +229,8 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   useEffect(() => {
     if(user){
-      let unsubscribeKitchen : any;
-      let unsubscribeDriver :any;
+      let unsubscribeKitchen : any = undefined;
+      let unsubscribeDriver : any = undefined;
       // if(metaData?.isKitchen){
         // const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
         const kitchenRef = doc(db, "foodtrucks",KITCHEN_ID);
@@ -261,8 +261,13 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
         });
       }
       return () => {
-        unsubscribeKitchen();
-        unsubscribeDriver()
+        if(unsubscribeKitchen){
+          unsubscribeKitchen();
+        }  
+
+        if(unsubscribeDriver){
+          unsubscribeDriver()
+        }
       };
     }
 
