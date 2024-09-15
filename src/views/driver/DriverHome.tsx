@@ -74,9 +74,9 @@ const DriverOrders: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (driverMetaData?.userId !== user?.uid) {
-      return router.push('/home')
-    }
+    // if (driverMetaData?.userId !== user?.uid) {
+    //   return router.push('/home')
+    // }
   }, [user, driverMetaData]);
 
   useEffect(() => {
@@ -216,8 +216,7 @@ const DriverOrders: React.FC = () => {
           {newOrders.length > 0 ? (
             newOrders?.map((_order: any) => {
               const { order } = _order;
-              return order?.map((order_: any) => {
-                return (
+              return (
                   <Paper
                     key={_order.id}
                     sx={{
@@ -249,59 +248,65 @@ const DriverOrders: React.FC = () => {
                       }}>
                       <LockIcon sx={{ marginRight: 1 }} />
                       <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-                        {_order.id}
+                        {_order?.orderNumber?.forKitchen}
                       </Typography>
                     </Box>
 
-                    <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-                      <Grid item xs={12} sm={6} sx={{ display: "flex" }}>
-                        <Avatar
-                          variant='square'
-                          src={order_?.order?.kulcha?.image}
-                          sx={{
-                            width: 80,
-                            height: 80,
-                            borderRadius: 2,
-                            marginRight: 2,
-                          }}
-                        />
-                        <Box>
-                          <Typography variant='body2' fontWeight='bold'>
-                            {order_?.order?.kulcha?.name}
-                          </Typography>
-                          <Typography variant='body2'>
-                            ${order_?.order?.kulcha?.price.toFixed(2)} x
-                            {order_?.order?.kulcha?.quantity}
-                          </Typography>
-                        </Box>
-                      </Grid>
-                      {order_?.order?.additional?.length > 0 && (
-                        <Grid item xs={12} sx={{ marginTop: 1 }}>
-                          <Typography
-                            variant='body2'
-                            sx={{ fontWeight: "bold", marginBottom: 0 }}>
-                            Additional Items:
-                          </Typography>
-                          {order_?.order?.additional.map(
-                            (item: any, itemIndex: number) => (
-                              <Typography
-                                key={itemIndex}
-                                variant='body2'
-                                sx={{ display: "inline", marginRight: 2 }}>
-                                {item.items[0].name} ({item.items[0].quantity})
-                              </Typography>
-                            )
-                          )}
+                  {
+                    order?.map((order_: any) => {
+                      
+                      return (
+                        <Grid key={_order.id}  container spacing={2} sx={{ marginBottom: 2 }}>
+                        <Grid item xs={12} sm={6} sx={{ display: "flex" }}>
+                          <Avatar
+                            variant='square'
+                            src={order_?.order?.kulcha?.image}
+                            sx={{
+                              width: 80,
+                              height: 80,
+                              borderRadius: 2,
+                              marginRight: 2,
+                            }}
+                          />
+                          <Box>
+                            <Typography variant='body2' fontWeight='bold'>
+                              {order_?.order?.kulcha?.name}
+                            </Typography>
+                            <Typography variant='body2'>
+                              ${order_?.order?.kulcha?.price.toFixed(2)} x
+                              {order_?.order?.kulcha?.quantity}
+                            </Typography>
+                          </Box>
                         </Grid>
-                      )}
-                    </Grid>
+                        {order_?.order?.additional?.length > 0 && (
+                          <Grid item xs={12} sx={{ marginTop: 1 }}>
+                            <Typography
+                              variant='body2'
+                              sx={{ fontWeight: "bold", marginBottom: 0 }}>
+                              Additional Items:
+                            </Typography>
+                            {order_?.order?.additional.map(
+                              (item: any, itemIndex: number) => (
+                                <Typography
+                                  key={itemIndex}
+                                  variant='body2'
+                                  sx={{ display: "inline", marginRight: 2 }}>
+                                  {item.items[0].name} ({item.items[0].quantity})
+                                </Typography>
+                              )
+                            )}
+                          </Grid>
+                        )}
+                      </Grid>
+                      )})
+                  }
 
                     <Typography
                       variant='body2'
                       fontWeight='bold'
                       textAlign='right'
                       sx={{ mt: -2 }}>
-                      Total: ${}
+                      Total: ${Number(Number(_order?.grand_total) + Number(_order.deliverCharge || 0)).toFixed(2)}
                     </Typography>
 
                     <Divider sx={{ my: 2 }} />
@@ -409,7 +414,6 @@ const DriverOrders: React.FC = () => {
                     </Typography>
                   </Paper>
                 );
-              });
             })
           ) : (
             <Box
