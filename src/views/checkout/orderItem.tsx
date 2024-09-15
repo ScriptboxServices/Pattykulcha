@@ -492,7 +492,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     Total
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    ${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value)}
+                    ${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value).toFixed(2)}
                   </Typography>
                 </Box>
                 <Button
@@ -530,7 +530,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     },
                   }}
                 >
-                  Continue
+                  Proceed to Payment
                 </Button>
                 {error && (
                   <Alert sx={{ mt: 2 }} variant="outlined" severity="error">
