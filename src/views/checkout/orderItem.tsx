@@ -492,7 +492,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     Total
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    ${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value).toFixed(2)}
+                    ${Number(grandTotal) + Number(calculateDeliveryCharges(metaData?.address?.distance?.value)).toFixed(2)}
                   </Typography>
                 </Box>
                 <Button
