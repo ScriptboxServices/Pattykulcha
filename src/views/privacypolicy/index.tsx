@@ -406,7 +406,7 @@ const PrivacyPolicyPage = () => {
           </Typography>
         </ContentCard>
 
-        <ContentCard>
+        {/* <ContentCard>
           <SectionTitle variant='h5'>
             Contact Us
           </SectionTitle>
@@ -416,7 +416,7 @@ const PrivacyPolicyPage = () => {
           <Typography component="ul">
             <li>By visiting this page on our website: <a href='https://www.pattykulcha.com/contact-us'>https://www.pattykulcha.com/contact-us</a></li>
           </Typography>
-        </ContentCard>
+        </ContentCard> */}
 
       </Container>
     </Box>
