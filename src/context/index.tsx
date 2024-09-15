@@ -242,19 +242,26 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
           } else {
             setKitchenMetaData(null);
           }
-        });
-        
+        }); 
       }
 
       if(metaData?.isDriver){
+        console.log("Call");
         const driverRef = doc(db, "drivers", metaData?.driverId);
         unsubscribeDriver = onSnapshot(driverRef, (snapshot) => {
           if (snapshot.exists()) {
+            console.log({
+              id: snapshot.id,
+              ...snapshot.data(),
+            });
             setDriverMetaData({
               id: snapshot.id,
               ...snapshot.data(),
             });
+
           } else {
+        console.log("Not Exist");
+
             setDriverMetaData(null);
           }
         });
