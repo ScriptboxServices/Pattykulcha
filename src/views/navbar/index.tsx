@@ -384,14 +384,14 @@ const Navbar: React.FC = () => {
                     </MenuItem>
                     {(metaData?.role === "kitchen" &&
                       metaData?.foodTruckId === kitchenMetaData.id &&
-                      metaData?.isKitchen) || true && (
+                      metaData?.isKitchen) && (
                         <MenuItem onClick={() => router.push("/dashboard")}>
                           Switch to Kitchen
                         </MenuItem>
                       )}
                         {(metaData?.role === "driver" &&
                       metaData?.driverId === driverMetaData.id &&
-                      metaData?.isDriver) || true && (
+                      metaData?.isDriver) && (
                         <MenuItem onClick={() => router.push("/driver-home")}>
                           Switch to Driver
                         </MenuItem>
