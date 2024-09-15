@@ -56,6 +56,8 @@ const Navbar: React.FC = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  console.log(metaData,kitchenMetaData,driverMetaData);
+
   const handleLogout = async () => {
     try {
       await auth.signOut();
