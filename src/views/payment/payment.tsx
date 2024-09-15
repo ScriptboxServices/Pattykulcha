@@ -316,7 +316,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                   </Box>
                   <Box display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h6">Total</Typography>
-                    <Typography variant="h6">${Number(grandTotal) + calculateDeliveryCharges(metaData?.address?.distance?.value)}</Typography>
+                    <Typography variant="h6">${Number(Number(grandTotal) + Number(calculateDeliveryCharges(metaData?.address?.distance?.value))).toFixed(2)}</Typography>
                   </Box>
                   <Typography
                     variant="body2"
