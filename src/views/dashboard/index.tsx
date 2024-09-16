@@ -33,6 +33,7 @@ import KanbanBoard from "../kanban";
 import MakeOrder from "./CreateOrder";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ContactUsection from "./ContactUsSection";
 
 const drawerWidth = 240;
 
@@ -160,6 +161,11 @@ export default function ResponsiveDrawer(props: Props) {
       text: "Order Detail",
       icon: "/images/dashboard/orderdetail.png",
       component: <KanbanBoard />,
+    },
+    {
+      text: "Contact Us section",
+      icon: "/images/dashboard/orderdetail.png",
+      component: <ContactUsection />,
     },
     // {
     //   text: "Order List",

@@ -1,346 +1,203 @@
 "use client";
 
-import React, { useState,useEffect } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Link from "next/link";
-import Image from "next/image";
-import * as yup from "yup";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import {
-  Box,
-  Button,
   Container,
   TextField,
-  Typography,
-  CssBaseline,
+  Button,
+  MenuItem,
+  Switch,
+  FormControlLabel,
+  Checkbox,
+  Box,
   Grid,
-  Autocomplete,
-  InputAdornment,
-  Alert,
+  Typography,
 } from "@mui/material";
-import { Icon, IconifyIcon } from "@iconify/react";
-import { countries } from "@/utils/constants";
-import { CountryType } from "@/context/types";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/system";
+import { AvailabilityState } from "@/context/types";
 
-export interface CountryCode {
-  name: string;
-  phone: number;
-  code: string;
-  icon: IconifyIcon | string;
-}
-
-// Define the Yup schema for validation
-const schema = yup.object().shape({
-  fullName: yup.string().required("Full name is required"),
-  email: yup
-    .string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  phoneNumber: yup
-    .string()
-    .matches(/^\d+$/, "Phone number is not valid")
-    .min(10, "Phone number must be at least 10 digits")
-    .required("Phone number is required"),
-  countryCode: yup.mixed<CountryType>().required(),
-  vehicleDetails: yup.string().required("Vehicle details are required"),
+const StyledContainer = styled(Container)({
+  padding: "2rem",
+  backgroundColor: "white",
+  borderRadius: "8px",
+  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  textAlign: "center",
 });
 
-type IFormInput = yup.InferType<typeof schema>;
+const StyledButton = styled(Button)({
+  border: "2px dashed #ccc",
+  color: "#777",
+  padding: "1rem",
+  textTransform: "none",
+  display: "flex",
+  justifyContent: "space-between",
+});
 
-const filterOptions = (options: CountryCode[], state: any) =>
-  options.filter((option) =>
-    option.name.toLowerCase().includes(state.inputValue.toLowerCase())
-  );
+const AvailabilityGrid = styled(Grid)({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0.5rem 1rem",
+  backgroundColor: "#ffffff",
+  borderRadius: "8px",
+  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+  marginBottom: "1rem",
+});
 
 const DriverPage: React.FC = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInput>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      countryCode:  countries.find((country) => country.label === "Canada"),
-    },
+  const [permitType, setPermitType] = useState<string>("");
+  const [licenseType, setLicenseType] = useState<string>("");
+  const [drivingLicense, setDrivingLicense] = useState<File | null>(null);
+  const [carInsurance, setCarInsurance] = useState<File | null>(null);
+  const [availability, setAvailability] = useState<AvailabilityState>({
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
   });
+  const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
 
-  const [error, setError] = useState<string>("");
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
-    null
-  );
-
-  useEffect(() => {
-    const defaultCountry =
-      countries.find((country) => country.label === "Canada") || null;
-    setSelectedCountry(defaultCountry);
-  }, []);
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setError("");
-    try {
-      // Simulate form submission
-      console.log("Driver Details:", data);
-      alert("Driver details submitted successfully!");
-    } catch (err: any) {
-      setError("Failed to submit driver details.");
+  const handleFileChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    setFile: React.Dispatch<React.SetStateAction<File | null>>
+  ) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
     }
   };
 
+  const handleAvailabilityChange = (day: keyof AvailabilityState) => {
+    setAvailability({ ...availability, [day]: !availability[day] });
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "80vh",
-        backgroundColor: "white",
-        marginBottom:3,
-      }}
-    >
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: "md",
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          padding: 4,
-          borderRadius: 2,
-          boxShadow: 3,
-          overflow: "hidden", // Prevent content overflow
-        }}
-      >
-        <CssBaseline />
-        <Box
+    <Box sx={{ backgroundColor: "#FAF3E0",paddingY:8,minHeight:"100dvh" }}>
+      <StyledContainer maxWidth="sm">
+        <Typography variant="h5" style={{ marginBottom: "1rem" }}>
+          Drive With Pattykulcha
+        </Typography>
+
+        <TextField
+          fullWidth
+          select
+          label="Select Permit Type"
+          value={permitType}
+          onChange={(e) => setPermitType(e.target.value as string)}
+          margin="normal"
+          variant="outlined"
+        >
+          <MenuItem value="study">Study Permit</MenuItem>
+          <MenuItem value="work">Work Permit</MenuItem>
+          <MenuItem value="Permanent Residence">Permanent Residence</MenuItem>
+          <MenuItem value="Citizen">Citizen</MenuItem>
+        </TextField>
+
+        <TextField
+          fullWidth
+          select
+          label="Select License Type"
+          value={licenseType}
+          onChange={(e) => setLicenseType(e.target.value as string)}
+          margin="normal"
+          variant="outlined"
+        >
+          <MenuItem value="G2">G2</MenuItem>
+          <MenuItem value="G">G</MenuItem>
+          <MenuItem value="AZ">AZ</MenuItem>
+        </TextField>
+
+        <Box my={1.23}>
+          <StyledButton
+            variant="outlined"
+            startIcon={<CloudUploadIcon />}
+            fullWidth
+            style={{ marginBottom: "1rem" }}
+          >
+            {drivingLicense
+              ? drivingLicense.name
+              : "Click to upload driving license"}
+            <input
+              type="file"
+              hidden
+              onChange={(e) => handleFileChange(e, setDrivingLicense)}
+            />
+          </StyledButton>
+
+          <StyledButton
+            variant="outlined"
+            startIcon={<CloudUploadIcon />}
+            fullWidth
+          >
+            {carInsurance ? carInsurance.name : "Click to upload car insurance"}
+            <input
+              type="file"
+              hidden
+              onChange={(e) => handleFileChange(e, setCarInsurance)}
+            />
+          </StyledButton>
+        </Box>
+
+        <Box my={2} style={{ marginBottom: "1.5rem" }}>
+          <Typography variant="h6" style={{ textAlign: "center",marginBottom:"1rem" }}>
+            Your Availability
+          </Typography>
+          {Object.keys(availability).map((day) => (
+            <AvailabilityGrid key={day} container>
+              <Grid item>{day.charAt(0).toUpperCase() + day.slice(1)}</Grid>
+              <Grid item>
+                <Switch
+                  checked={availability[day as keyof AvailabilityState]}
+                  onChange={() =>
+                    handleAvailabilityChange(day as keyof AvailabilityState)
+                  }
+                  color="primary"
+                />
+              </Grid>
+            </AvailabilityGrid>
+          ))}
+        </Box>
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="I accept the terms and condition & privacy policy"
+          style={{ marginBottom: "1.5rem" }}
+        />
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleSubmit}
+          // disabled={!acceptedTerms}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
+            backgroundColor: "#ECAB21",
+            color: "white",
+            paddingX: 4,
+            paddingY: 1,
+            mt: 2,
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#FFC107",
+              color: "white",
+            },
           }}
         >
-          <Typography
-            component="h2"
-            variant="subtitle1"
-            align="center"
-            sx={{
-              width: "100%",
-              mt: 2,
-              fontWeight: "bold",
-            }}
-          >
-            Join PattyKulcha as a Driver!
-          </Typography>
-          <Typography
-            variant="body2"
-            align="center"
-            sx={{ width: "100%", mt: 0.5, mb: 3 }}
-            gutterBottom
-          >
-            Please fill in your details to get started.
-          </Typography>
-          <Box
-            component="form"
-            noValidate
-            sx={{ mt: 1, width: "100%" }}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Controller
-                  name="fullName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      required
-                      fullWidth
-                      label="Full Name"
-                      placeholder="John Doe"
-                      {...field}
-                      error={!!errors.fullName}
-                      helperText={errors.fullName?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      required
-                      fullWidth
-                      label="Email"
-                      placeholder="john.doe@example.com"
-                      {...field}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Controller
-                  name="countryCode"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <Autocomplete
-                    id='country-select-demo'
-                    fullWidth
-                    options={countries}
-                    autoHighlight
-                    getOptionLabel={(option) => option.label}
-                    renderOption={(props, option) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <Box
-                          key={key}
-                          component='li'
-                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                          {...optionProps}>
-                          <Image
-                            loading='lazy'
-                            width={20}
-                            height={15} // Maintain aspect ratio similar to the original `img`
-                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                            alt={`${option.label} flag`}
-                          />
-                          {option.label} ({option.code}) +{option.phone}
-                        </Box>
-                      );
-                    }}
-                    value={selectedCountry}
-                    onChange={(event, newValue) => {
-                      onChange(newValue);
-                      setSelectedCountry(newValue || (null as any));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Choose a country code'
-                        inputProps={{
-                          ...params.inputProps,
-                          autoComplete: "new-password", // Correct way to pass autoComplete
-                        }}
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: selectedCountry && (
-                            <InputAdornment position='start'>
-                              <Image
-                                loading='eager'
-                                width={20}
-                                height={15} // Maintain aspect ratio similar to the original `img`
-                                src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
-                                priority
-                                alt='#'
-                              />
-                              <Typography sx={{ ml: 1 }}>
-                                +{selectedCountry.phone}
-                              </Typography>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    )}
-                  />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      required
-                      fullWidth
-                      type="tel"
-                      label="Phone Number"
-                      placeholder="123-456-7890"
-                      value={value}
-                      onChange={onChange}
-                      error={!!errors.phoneNumber}
-                      helperText={errors.phoneNumber?.message ?? ""}
-                      inputProps={{
-                        maxLength: 10,
-                        pattern: "[0-9]*",
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <i className="ri-phone-fill" />
-                          </InputAdornment>
-                        ),
-                      }}
-                      InputLabelProps={{ style: { color: "black" } }}
-                      sx={{
-                        "@media (max-width: 600px)": {
-                          marginTop: "7px",
-                        },
-                      }}
-                      onKeyDown={(e) => {
-                        if (
-                          !/[0-9]/.test(e.key) &&
-                          e.key != "Backspace" &&
-                          e.key != "Delete" &&
-                          e.key != "ArrowLeft" &&
-                          e.key != "ArrowRight"
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  name="vehicleDetails"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      required
-                      fullWidth
-                      label="Vehicle Details"
-                      placeholder="Vehicle Make, Model, License Plate"
-                      {...field}
-                      error={!!errors.vehicleDetails}
-                      helperText={errors.vehicleDetails?.message}
-                      multiline
-                      rows={4}
-                    />
-                  )}
-                />
-              </Grid>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  backgroundColor: "#ECAB21",
-                  color: "white",
-                  paddingX: 4,
-                  paddingY: 1,
-                  margin: "0 auto",
-                  mt: 2,
-                  fontWeight: "bold",
-
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
-                    color: "white",
-                  },
-                }}
-              >
-                Submit Details
-              </Button>
-            </Grid>
-
-            {error && (
-              <Alert severity="error" className=" mt-2">
-                {error}
-              </Alert>
-            )}
-          </Box>
-        </Box>
-      </Box>
+          Submit
+        </Button>
+      </StyledContainer>
     </Box>
   );
 };

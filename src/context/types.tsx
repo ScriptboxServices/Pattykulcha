@@ -19,3 +19,11 @@ export interface CountryType {
   phone: string;
   suggested?: boolean;
 }
+
+export interface AvailabilityState {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+}

@@ -50,13 +50,14 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useMenuContext();
-  const { isLoggedIn, kitchenMetaData, metaData,driverMetaData } = useAuthContext();
+  const { isLoggedIn, kitchenMetaData, metaData, driverMetaData } =
+    useAuthContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  console.log(metaData,kitchenMetaData,driverMetaData);
+  console.log(metaData, kitchenMetaData, driverMetaData);
 
   const handleLogout = async () => {
     try {
@@ -67,7 +68,6 @@ const Navbar: React.FC = () => {
       localStorage.removeItem("otherKulchas");
       router.push("/login");
     } catch (err) {
-      console.log(err);
       router.push("/login");
     }
   };
@@ -86,12 +86,12 @@ const Navbar: React.FC = () => {
 
   const drawer = (
     <Box sx={{ width: 250 }}>
-      <Link href='/home' passHref>
+      <Link href="/home" passHref>
         <Image
-          src='/images/logo.png'
-          alt='logo'
+          src="/images/logo.png"
+          alt="logo"
           height={150}
-          layout='fixed'
+          layout="fixed"
           width={170}
           priority
         />
@@ -100,7 +100,7 @@ const Navbar: React.FC = () => {
       <List>
         {isLoggedIn && (
           <>
-            <Link href='/profile' passHref>
+            <Link href="/profile" passHref>
               <ListItem
                 button
                 onClick={handleLinkClick}
@@ -109,11 +109,12 @@ const Navbar: React.FC = () => {
                     backgroundColor: "black",
                     color: "white",
                   },
-                }}>
-                <ListItemText primary='My Profile' />
+                }}
+              >
+                <ListItemText primary="My Profile" />
               </ListItem>
             </Link>
-            <Link href='/my-orders' passHref>
+            <Link href="/my-orders" passHref>
               <ListItem
                 button
                 onClick={handleLinkClick}
@@ -122,13 +123,14 @@ const Navbar: React.FC = () => {
                     backgroundColor: "black",
                     color: "white",
                   },
-                }}>
-                <ListItemText primary='My Orders' />
+                }}
+              >
+                <ListItemText primary="My Orders" />
               </ListItem>
             </Link>
           </>
         )}
-        <Link href='/home' passHref>
+        <Link href="/home" passHref>
           <ListItem
             button
             onClick={handleLinkClick}
@@ -137,8 +139,37 @@ const Navbar: React.FC = () => {
                 backgroundColor: "black",
                 color: "white",
               },
-            }}>
-            <ListItemText primary='Menu' />
+            }}
+          >
+            <ListItemText primary="Menu" />
+          </ListItem>
+        </Link>
+        <Link href="/contact-us" passHref>
+          <ListItem
+            button
+            onClick={handleLinkClick}
+            sx={{
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+              },
+            }}
+          >
+            <ListItemText primary="Contact us" />
+          </ListItem>
+        </Link>
+        <Link href="/add-driver" passHref>
+          <ListItem
+            button
+            onClick={handleLinkClick}
+            sx={{
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+              },
+            }}
+          >
+            <ListItemText primary="Career" />
           </ListItem>
         </Link>
       </List>
@@ -164,16 +195,17 @@ const Navbar: React.FC = () => {
                     backgroundColor: "#FFC107",
                     color: "white",
                   },
-                }}>
+                }}
+              >
                 Log In
               </Button>
             </ListItem>
           </>
         ) : (
           <>
-            {(metaData?.role === "kitchen" &&
+            {metaData?.role === "kitchen" &&
               metaData?.foodTruckId === kitchenMetaData?.id &&
-              metaData?.isKitchen) && (
+              metaData?.isKitchen && (
                 <ListItem button>
                   <Button
                     onClick={(e) => {
@@ -192,14 +224,15 @@ const Navbar: React.FC = () => {
                         backgroundColor: "#FFC107",
                         color: "white",
                       },
-                    }}>
+                    }}
+                  >
                     Switch to kitchen
                   </Button>
                 </ListItem>
               )}
-                   {(metaData?.role === "driver" &&
+            {metaData?.role === "driver" &&
               metaData?.driverId === driverMetaData?.id &&
-              metaData?.isDriver)  && (
+              metaData?.isDriver && (
                 <ListItem button>
                   <Button
                     onClick={(e) => {
@@ -218,7 +251,8 @@ const Navbar: React.FC = () => {
                         backgroundColor: "#FFC107",
                         color: "white",
                       },
-                    }}>
+                    }}
+                  >
                     Switch to Driver
                   </Button>
                 </ListItem>
@@ -241,7 +275,8 @@ const Navbar: React.FC = () => {
                 onClick={() => {
                   handleLinkClick();
                   handleLogout();
-                }}>
+                }}
+              >
                 Logout
               </Button>
             </ListItem>
@@ -253,15 +288,15 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <StyledAppBar position='static'>
+      <StyledAppBar position="static">
         <StyledToolbar>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Link href='/home' passHref>
+            <Link href="/home" passHref>
               <Image
-                src='/images/logo.png'
-                alt='logo'
+                src="/images/logo.png"
+                alt="logo"
                 height={150}
-                layout='fixed'
+                layout="fixed"
                 width={170}
                 priority
               />
@@ -272,13 +307,17 @@ const Navbar: React.FC = () => {
               flexGrow: 1,
               display: { xs: "none", md: "flex" },
               justifyContent: "left",
-            }}>
-            <Link href='/home' passHref>
+            }}
+          >
+            <Link href="/home" passHref>
               <NavButton>Menu</NavButton>
             </Link>
-            {/* <Link href='/contact-us' passHref>
+            <Link href='/contact-us' passHref>
               <NavButton>Contact us</NavButton>
-            </Link> */}
+            </Link>
+            <Link href='/add-driver' passHref>
+              <NavButton>Career</NavButton>
+            </Link>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {kitchenMetaData &&
@@ -286,8 +325,8 @@ const Navbar: React.FC = () => {
               (kitchenMetaData.isShopOpen ? (
                 <>
                   <Chip
-                    label='Online'
-                    variant='outlined'
+                    label="Online"
+                    variant="outlined"
                     sx={{
                       mr: 1,
                       backgroundColor: "#4CAF50",
@@ -299,9 +338,9 @@ const Navbar: React.FC = () => {
               ) : (
                 <>
                   <Chip
-                    label='Offline'
-                    color='warning'
-                    variant='outlined'
+                    label="Offline"
+                    color="warning"
+                    variant="outlined"
                     sx={{
                       mr: 1,
                       backgroundColor: "red",
@@ -312,27 +351,30 @@ const Navbar: React.FC = () => {
                 </>
               ))}
             {isLoggedIn && (
-              <Link href='/checkout' passHref>
+              <Link href="/checkout" passHref>
                 <IconButton
-                  edge='end'
-                  color='inherit'
-                  aria-label='cart'
-                  sx={{ mr: 2 }}>
+                  edge="end"
+                  color="inherit"
+                  aria-label="cart"
+                  sx={{ mr: 2 }}
+                >
                   <Badge
                     badgeContent={count > 0 ? count : undefined}
-                    color='error'
-                    invisible={count === 0}>
+                    color="error"
+                    invisible={count === 0}
+                  >
                     <ShoppingCartIcon />
                   </Badge>
                 </IconButton>
               </Link>
             )}
             <IconButton
-              edge='start'
-              color='inherit'
-              aria-label='menu'
+              edge="start"
+              color="inherit"
+              aria-label="menu"
               sx={{ display: { xs: "flex", md: "none" } }}
-              onClick={handleDrawerToggle}>
+              onClick={handleDrawerToggle}
+            >
               <MenuIcon />
             </IconButton>
             {/* Desktop Links */}
@@ -340,9 +382,10 @@ const Navbar: React.FC = () => {
               sx={{
                 display: { xs: "none", md: "flex" },
                 alignItems: "center",
-              }}>
+              }}
+            >
               {!isLoggedIn ? (
-                <Link href='/login' passHref>
+                <Link href="/login" passHref>
                   <NavButton>Log In</NavButton>
                 </Link>
               ) : (
@@ -359,7 +402,8 @@ const Navbar: React.FC = () => {
                         marginTop: "5px",
                         marginRight: "10px",
                       },
-                    }}>
+                    }}
+                  >
                     <MenuItem
                       onClick={handleMenuClose}
                       sx={{
@@ -367,8 +411,9 @@ const Navbar: React.FC = () => {
                           backgroundColor: "black",
                           color: "white",
                         },
-                      }}>
-                      <Link href='/profile' passHref>
+                      }}
+                    >
+                      <Link href="/profile" passHref>
                         <Typography>My Profile</Typography>
                       </Link>
                     </MenuItem>
@@ -379,21 +424,22 @@ const Navbar: React.FC = () => {
                           backgroundColor: "black",
                           color: "white",
                         },
-                      }}>
-                      <Link href='/my-orders' passHref>
+                      }}
+                    >
+                      <Link href="/my-orders" passHref>
                         <Typography>My Orders</Typography>
                       </Link>
                     </MenuItem>
-                    {(metaData?.role === "kitchen" &&
+                    {metaData?.role === "kitchen" &&
                       metaData?.foodTruckId === kitchenMetaData?.id &&
-                      metaData?.isKitchen) && (
+                      metaData?.isKitchen && (
                         <MenuItem onClick={() => router.push("/dashboard")}>
                           Switch to Kitchen
                         </MenuItem>
                       )}
-                        {(metaData?.role === "driver" &&
+                    {metaData?.role === "driver" &&
                       metaData?.driverId === driverMetaData?.id &&
-                      metaData?.isDriver) && (
+                      metaData?.isDriver && (
                         <MenuItem onClick={() => router.push("/driver-home")}>
                           Switch to Driver
                         </MenuItem>
@@ -408,7 +454,8 @@ const Navbar: React.FC = () => {
                           backgroundColor: "black",
                           color: "white",
                         },
-                      }}>
+                      }}
+                    >
                       Logout
                     </MenuItem>
                   </Menu>
@@ -416,14 +463,15 @@ const Navbar: React.FC = () => {
               )}
               {!isLoggedIn && (
                 <Box sx={{ display: { xs: "none", md: "block" } }}>
-                  <Link href='/login' passHref>
+                  <Link href="/login" passHref>
                     <Button
-                      variant='contained'
+                      variant="contained"
                       sx={{
                         backgroundColor: "#f39c12",
                         color: "white",
                         "&:hover": { backgroundColor: "#e67e22" },
-                      }}>
+                      }}
+                    >
                       Order Now
                     </Button>
                   </Link>
@@ -434,12 +482,13 @@ const Navbar: React.FC = () => {
         </StyledToolbar>
       </StyledAppBar>
       <Drawer
-        anchor='right'
+        anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true,
-        }}>
+        }}
+      >
         {drawer}
       </Drawer>
     </>
