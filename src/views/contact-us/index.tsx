@@ -31,8 +31,10 @@ const schema = yup.object().shape({
 });
 
 const ContactUs: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
-  
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
+    null
+  );
+
   const {
     handleSubmit,
     control,
@@ -145,7 +147,7 @@ const ContactUs: React.FC = () => {
                           label="Choose a country code"
                           inputProps={{
                             ...params.inputProps,
-                            autoComplete: "new-password", 
+                            autoComplete: "new-password",
                           }}
                           InputProps={{
                             ...params.InputProps,
@@ -154,7 +156,7 @@ const ContactUs: React.FC = () => {
                                 <Image
                                   loading="eager"
                                   width={20}
-                                  height={15} 
+                                  height={15}
                                   src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
                                   priority
                                   alt="#"
@@ -251,13 +253,16 @@ const ContactUs: React.FC = () => {
                     type="submit"
                     variant="contained"
                     sx={{
+                      backgroundColor: "#ECAB21",
+                      color: "white",
+                      paddingX: 4,
+                      paddingY: 1,
                       mt: 2,
-                      backgroundColor: "#000",
-                      color: "#fff",
-                      borderRadius: "10px",
-                      "&:hover": { backgroundColor: "#333" },
-                      fontSize: "1rem",
-                      padding: "10px 20px",
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#FFC107",
+                        color: "white",
+                      },
                     }}
                   >
                     Send Message
