@@ -68,6 +68,7 @@ const Navbar: React.FC = () => {
       localStorage.removeItem("otherKulchas");
       router.push("/login");
     } catch (err) {
+      console.log(err);
       router.push("/login");
     }
   };
@@ -155,7 +156,7 @@ const Navbar: React.FC = () => {
               },
             }}
           >
-            <ListItemText primary="Contact us" />
+            <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
         <Link href="/add-driver" passHref>
