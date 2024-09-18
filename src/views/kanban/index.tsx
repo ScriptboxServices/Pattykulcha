@@ -48,17 +48,7 @@ import CircularLodar from "@/components/CircularLodar";
 import axios from "axios";
 import { getIdToken } from "firebase/auth";
 import { formatTimestampToCustomDate } from "@/utils/commonFunctions";
-import { styled } from "@mui/system";
-import { menuItems } from "@/constants/MenuOptions";
-
-const StyledCard = styled(Card)({
-  borderRadius: "16px",
-  backgroundColor: "#FAF3E0",
-  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-  textAlign: "center",
-  width: "135px", // Ensure minimum width for each card
-  height:"110px",
-});
+import KulchaCard from "@/components/KulchaCard";
 
 const KanbanBoard = () => {
   const [containers] = useState([
@@ -106,6 +96,11 @@ const KanbanBoard = () => {
   }>({});
   const { user, metaData } = useAuthContext();
   const [allOrders, setAllOrders] = useState<any>({});
+  const [alooKulcha, setAlooKulcha] = useState<number>(0);
+  const [paneerKulcha, setPaneerKulcha] = useState<number>(0);
+  const [gobiKulcha, setGobiKulcha] = useState<number>(0);
+  const [mixKulcha, setMixKulcha] = useState<number>(0);
+  const [onionKulcha, setOnionKulcha] = useState<number>(0);
   const [cart, setCart] = useState<any[]>([]);
   const [newOrders, setNewOrders] = useState<any[]>([]);
   const [sortedOrders, setSortedOrders] = useState<any[]>([]);
@@ -123,7 +118,6 @@ const KanbanBoard = () => {
     const driverColRef = collection(db, "drivers");
     const drivers = await getDocs(driverColRef);
 
-    console.log(drivers);
     let arr: any = [];
     if (drivers.size > 0) {
       drivers.forEach((doc) => {
@@ -172,6 +166,11 @@ const KanbanBoard = () => {
     const unsubscribeNewOrder = onSnapshot(newOrderQuery, (snapshot) => {
       let newOrders: any[] = [];
       let sortedOrders: any[] = [];
+      let alooKulcha = 0
+      let gobiKulcha = 0
+      let paneerKulcha = 0
+      let mixKulcha = 0
+      let onionKulcha = 0
       snapshot.forEach((doc) => {
         const { delivery, canceled, refunded } = doc.data();
         if (delivery.status === false && delivery.message === "Preparing") {
@@ -179,6 +178,36 @@ const KanbanBoard = () => {
             id: doc.id,
             ...doc.data(),
           });
+         console.log(doc.data()); 
+         const { order} = doc.data()
+         for(let i=0;i < order.length;i++){
+            const {kulcha} = order[i].order
+            if(kulcha?.name === 'Mix Kulcha'){
+              mixKulcha = (mixKulcha + 1) * kulcha?.quantity
+            }
+
+            if(kulcha?.name === 'Onion Kulcha'){
+              onionKulcha = (onionKulcha + 1) * kulcha?.quantity
+            }
+
+            if(kulcha?.name === 'Paneer Kulcha'){
+              paneerKulcha = (paneerKulcha + 1) * kulcha?.quantity
+            }
+
+            if(kulcha?.name === 'Gobi Kulcha'){
+              gobiKulcha = (gobiKulcha + 1) * kulcha?.quantity
+            }
+
+            if(kulcha?.name === 'Aloo Kulcha'){
+              alooKulcha = (alooKulcha + 1) * kulcha?.quantity
+            }
+         }
+
+         setAlooKulcha(alooKulcha)
+         setPaneerKulcha(paneerKulcha)
+         setGobiKulcha(gobiKulcha)
+         setMixKulcha(mixKulcha)
+         setOnionKulcha(onionKulcha)
         }
         if (delivery.status === false && !canceled && !refunded) {
           sortedOrders.push({
@@ -398,32 +427,16 @@ const KanbanBoard = () => {
       <Box sx={{display:"flex",alignItems:"center",mt:2}}>
         <Typography
           variant="h5"
-          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: 4.5,width:"248px" }}
+          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: 4.5,width:"228px" }}
         >
           Order Details
         </Typography>
-        <Grid container spacing={2} justifyContent="flex-start">
-          {menuItems.map((item, index) => (
-            <Grid item key={index}>
-              <StyledCard>
-                <CardContent sx={{paddingBottom:0}}>
-                  <Typography
-                    variant="h6"
-                    style={{
-                      textAlign: "center",
-                      fontWeight: "bold",
-                      fontSize: "2rem",
-                    }}
-                  >
-                    3
-                  </Typography>
-                  <Typography variant="h6" sx={{fontSize:"15px"}}>
-                    {item.name}
-                  </Typography>
-                </CardContent>
-              </StyledCard>
-            </Grid>
-          ))}
+        <Grid container spacing={0} justifyContent="flex-start" gap={2}>
+          <KulchaCard name="Mix Kulcha" count={mixKulcha}/>
+          <KulchaCard name="Aloo Kulcha" count={alooKulcha}/>
+          <KulchaCard name="Gobi Kulcha" count={gobiKulcha}/>
+          <KulchaCard name="Onion Kulcha" count={onionKulcha}/>
+          <KulchaCard name="Paneer Kulcha" count={paneerKulcha}/>
         </Grid>
       </Box>
       <Box

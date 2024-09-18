@@ -316,9 +316,12 @@ const Navbar: React.FC = () => {
             <Link href='/contact-us' passHref>
               <NavButton>Contact us</NavButton>
             </Link>
-            <Link href='/add-driver' passHref>
-              <NavButton>Career</NavButton>
-            </Link>
+            {
+              isLoggedIn &&
+              <Link href='/add-driver' passHref>
+                <NavButton>Career</NavButton>
+              </Link>
+            }
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {kitchenMetaData &&
