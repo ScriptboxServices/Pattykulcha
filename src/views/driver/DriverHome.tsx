@@ -349,6 +349,10 @@ const DriverOrders: React.FC = () => {
                       <b style={{ color: "black" }}>Distance:</b>{" "}
                       {_order?.address?.distance?.text}
                     </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      <b style={{ color: "black" }}>Instructions:</b>{" "}
+                      {_order?.Instructions}
+                    </Typography>
                   </Box>
                   <Divider sx={{ marginY: 1 }} />
                   <Typography

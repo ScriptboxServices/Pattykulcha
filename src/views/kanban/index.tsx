@@ -203,11 +203,6 @@ const KanbanBoard = () => {
             }
          }
 
-         setAlooKulcha(alooKulcha)
-         setPaneerKulcha(paneerKulcha)
-         setGobiKulcha(gobiKulcha)
-         setMixKulcha(mixKulcha)
-         setOnionKulcha(onionKulcha)
         }
         if (delivery.status === false && !canceled && !refunded) {
           sortedOrders.push({
@@ -216,6 +211,11 @@ const KanbanBoard = () => {
           });
         }
       });
+      setAlooKulcha(alooKulcha)
+      setPaneerKulcha(paneerKulcha)
+      setGobiKulcha(gobiKulcha)
+      setMixKulcha(mixKulcha)
+      setOnionKulcha(onionKulcha)
       sortedOrders.sort(
         (a: any, b: any) =>
           a.address?.distance?.value - b.address?.distance?.value
