@@ -178,28 +178,28 @@ const KanbanBoard = () => {
             id: doc.id,
             ...doc.data(),
           });
-         console.log(doc.data()); 
          const { order} = doc.data()
          for(let i=0;i < order.length;i++){
             const {kulcha} = order[i].order
             if(kulcha?.name === 'Mix Kulcha'){
-              mixKulcha = (mixKulcha + 1) * kulcha?.quantity
+              mixKulcha = mixKulcha + kulcha?.quantity
+              console.log(kulcha?.quantity,i);
             }
 
             if(kulcha?.name === 'Onion Kulcha'){
-              onionKulcha = (onionKulcha + 1) * kulcha?.quantity
+              onionKulcha = onionKulcha +  kulcha?.quantity
             }
 
             if(kulcha?.name === 'Paneer Kulcha'){
-              paneerKulcha = (paneerKulcha + 1) * kulcha?.quantity
+              paneerKulcha = paneerKulcha + kulcha?.quantity
             }
 
             if(kulcha?.name === 'Gobi Kulcha'){
-              gobiKulcha = (gobiKulcha + 1) * kulcha?.quantity
+              gobiKulcha = gobiKulcha + kulcha?.quantity
             }
 
             if(kulcha?.name === 'Aloo Kulcha'){
-              alooKulcha = (alooKulcha + 1) * kulcha?.quantity
+              alooKulcha = alooKulcha + kulcha?.quantity
             }
          }
 
