@@ -156,6 +156,7 @@ const TipPage: React.FC = () => {
                 onChange={handleCustomTipChange}
                 InputProps={{
                   inputProps: { min: 0 },
+                  inputMode:'numeric'
                 }}
                 sx={{ mt: 2 ,background:'#fff'}}
               />
