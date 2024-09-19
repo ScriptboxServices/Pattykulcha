@@ -46,9 +46,6 @@ const TipPage: React.FC = () => {
   };
 
   const { grandTotal } = useMenuContext();
-
-  console.log(customTip);
-
   return (
     <Box
       sx={{
