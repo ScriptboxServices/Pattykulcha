@@ -152,10 +152,9 @@ export const POST = async (req, res) => {
       orderNumberForCustomer = `${Math.floor(Math.random() * 900000)}`
     }
 
-    const today = new Date();
-    const startOfToday = admin.firestore.Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+    const startOfToday = admin.firestore.Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
     const endOfToday = admin.firestore.Timestamp.fromDate(
-      new Date(today.setHours(23, 59, 59, 999))
+      new Date(new Date().setHours(23, 59, 59, 999))
     );
     const latestOrderInKitchen = await db.collection('orders')
     .where('kitchenId', '==', kitchenId)
@@ -205,6 +204,7 @@ export const POST = async (req, res) => {
         kitchenId: kitchenId,
         driverId: '',
         deliverCharge : 0,
+        tip : 0,
         source: "Shop",
         paymentMode: paymentmethod,
         invoices :{
@@ -222,6 +222,7 @@ export const POST = async (req, res) => {
         userId: userId,
         transactionId: id,
         deliverCharge : 0,
+        tip : 0,
         driverId: '',
         card: {
           brand: "",

@@ -33,7 +33,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -46,7 +45,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
     setGrandTotal,
     carts,
     isAddressReachable,
-  } = useMenuContext()
+  } = useMenuContext();
 
   const router = useRouter();
   const pathName = usePathname();
@@ -143,7 +142,6 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   fontWeight: 700,
                   color: "#162548",
                   my: 1.34,
-        
                 }}
               >
                 Your cart is empty.
@@ -157,8 +155,8 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     borderRadius: 20,
                     paddingX: 4,
                     paddingY: 1,
-                    marginBottom:"16px",
-                    
+                    marginBottom: "16px",
+
                     fontWeight: "bold",
                     "&:hover": {
                       backgroundColor: "#FFC107",
@@ -472,7 +470,10 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                 }}
               >
                 <Box display="flex" justifyContent="space-between" gap={2}>
-                  <Typography variant="h6" style={{ fontWeight: 600,fontSize:'16px' }}>
+                  <Typography
+                    variant="h6"
+                    style={{ fontWeight: 600, fontSize: "16px" }}
+                  >
                     Sub Total
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
@@ -480,11 +481,19 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between" gap={2}>
-                  <Typography variant="h6" style={{ fontWeight: 600,fontSize:'16px' }}>
+                  <Typography
+                    variant="h6"
+                    style={{ fontWeight: 600, fontSize: "16px" }}
+                  >
                     Delivery Charges
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    ${calculateDeliveryCharges(metaData?.address?.distance?.value)}
+                    $
+                    {Number(
+                      calculateDeliveryCharges(
+                        metaData?.address?.distance?.value
+                      )
+                    ).toFixed(2)}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between" gap={2}>
@@ -492,7 +501,15 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     Total
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    ${Number(Number(grandTotal) + Number(calculateDeliveryCharges(metaData?.address?.distance?.value))).toFixed(2)}
+                    $
+                    {Number(
+                      Number(grandTotal) +
+                        Number(
+                          calculateDeliveryCharges(
+                            metaData?.address?.distance?.value
+                          )
+                        )
+                    ).toFixed(2)}
                   </Typography>
                 </Box>
                 <Button
@@ -513,7 +530,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     }
 
                     setError(false);
-                    router.push("/payment");
+                    router.push("/tip");
                   }}
                   fullWidth
                   variant="contained"
@@ -530,7 +547,7 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     },
                   }}
                 >
-                  Proceed to Payment
+                  Continue
                 </Button>
                 {error && (
                   <Alert sx={{ mt: 2 }} variant="outlined" severity="error">
@@ -580,10 +597,34 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     variant="body1"
                     color="textPrimary"
                     align="center"
-                    sx={{ fontSize: "18px", mt: 2 }}
+                    sx={{ fontSize: "16px", mt: 2 }}
                   >
-                    We&apos;re unable to deliver to your area at the moment.
-                    Thank you for your understanding!
+                    <p>
+                      We&apos;re unable to deliver to your area at the moment.
+                      Thank you for your understanding!
+                      {/* Your location is currently outside our delivery zone, but you're welcome to place an order and <strong style={{fontSize:'1.4rem'}}>pick it up</strong> from our store. The delivery charge is set to <strong style={{fontSize:'1.4rem'}}>$0</strong>, and the distance between your location and our kitchen is <strong style={{fontSize:'1.4rem'}}>{metaData?.address?.distance?.text}.</strong> We look forward to serving you! */}
+                    </p>
+                    {/* <Button
+                      onClick={() => {
+                        setError(false);
+                        router.push("/tip");
+                      }}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#ECAB21",
+                        color: "white",
+                        paddingX: 4,
+                        paddingY: 1,
+                        mt: 2,
+                        fontWeight: "bold",
+                        "&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      Continue
+                    </Button> */}
                   </Typography>
                 </Box>
               </>

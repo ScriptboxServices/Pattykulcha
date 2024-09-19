@@ -64,10 +64,9 @@ const DriverOrders: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("Out For Delivery");
   const { user, metaData, driverMetaData } = useAuthContext();
-  const today = new Date();
-  const startOfToday = Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+  const startOfToday = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
   const endOfToday = Timestamp.fromDate(
-    new Date(today.setHours(23, 59, 59, 999))
+    new Date(new Date().setHours(23, 59, 59, 999))
   );
   const [newOrders, setNewOrders] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);

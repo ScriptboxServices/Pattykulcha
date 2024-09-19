@@ -159,20 +159,23 @@ const Navbar: React.FC = () => {
             <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
-        <Link href="/add-driver" passHref>
-          <ListItem
-            button
-            onClick={handleLinkClick}
-            sx={{
-              "&:hover": {
-                backgroundColor: "black",
-                color: "white",
-              },
-            }}
-          >
-            <ListItemText primary="Career" />
-          </ListItem>
-        </Link>
+        {
+              isLoggedIn &&       
+                <Link href="/add-driver" passHref>
+                  <ListItem
+                    button
+                    onClick={handleLinkClick}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "black",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    <ListItemText primary="Career" />
+                  </ListItem>
+                </Link>
+              }
       </List>
       <Divider />
       <List>

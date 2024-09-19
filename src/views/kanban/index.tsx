@@ -108,10 +108,9 @@ const KanbanBoard = () => {
   const [outForDelivery, setOutForDelivery] = useState<any[]>([]);
   const [canceledOrders, setCanceledOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const today = new Date();
-  const startOfToday = Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+  const startOfToday = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
   const endOfToday = Timestamp.fromDate(
-    new Date(today.setHours(23, 59, 59, 999))
+    new Date(new Date().setHours(23, 59, 59, 999))
   );
 
   const getDrivers = async () => {

@@ -9,7 +9,7 @@ import axios from "axios"
 import { auth } from "@/firebase"
 import { getIdToken } from "firebase/auth"
 
-const PaymentPage = () => {
+const PaymentPage = ({tip} : {tip : any}) => {
   const [loading,setLoading] = useState(false)
   const [{ clientSecret, customer, ephemeralKey,payment_id }, setStripeCred] = useState({
     clientSecret: "",
@@ -60,7 +60,8 @@ const PaymentPage = () => {
         data: {
           address : metaData?.address,
           instructions,
-          name : metaData?.name
+          name : metaData?.name,
+          tip
         },
       })
       .then((response : any) => response.data)
@@ -80,7 +81,7 @@ const PaymentPage = () => {
         <CircularLodar isLoading={loading} />
         {/* <OrderPage setLoading = {setLoading}/>
         <OrderHome setLoading = {setLoading}/> */}
-        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading}/>
+        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading} tip={tip}/>
     </>
   )
 }

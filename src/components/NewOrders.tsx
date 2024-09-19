@@ -27,10 +27,9 @@ import { Visibility } from "@mui/icons-material";
 const NewOrders: React.FC = () => {
   const { user } = useAuthContext();
   const [newOrders, setNewOrders] = useState<any[]>([]);
-  const today = new Date();
-  const startOfToday = Timestamp.fromDate(new Date(today.setHours(0, 0, 0, 0)));
+  const startOfToday = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
   const endOfToday = Timestamp.fromDate(
-    new Date(today.setHours(23, 59, 59, 999))
+    new Date(new Date().setHours(23, 59, 59, 999))
   );
   useEffect(() => {
     const colRef = collection(db, "orders");

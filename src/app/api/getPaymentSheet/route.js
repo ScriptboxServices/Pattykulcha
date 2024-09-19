@@ -26,7 +26,7 @@ const calculateGrandTotal = (_cart) => {
 };
 
 export const POST = async (req, res) => {
-  const { address, instructions, name } = await req.json();
+  const { address, instructions, name,tip } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
     const decodeToken = await admin.auth().verifyIdToken(xToken);
@@ -84,7 +84,8 @@ export const POST = async (req, res) => {
       address: JSON.stringify(address),
       name : name ? name : `Customer_${uid}`,
       phoneNumber : phone_number,
-      delivery_charges
+      delivery_charges,
+      tip
     };
 
     const _address = {
@@ -117,8 +118,9 @@ export const POST = async (req, res) => {
       { apiVersion: "2024-06-20" }
     );
 
+    const totalAmount = Number(grand_total) + Number(delivery_charges) + Number(tip)
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round((Number(grand_total) + Number(delivery_charges)) * 100),
+      amount: Math.round((totalAmount) * 100),
       description,
       currency: "cad",
       customer: customer.id,

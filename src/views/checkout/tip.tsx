@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { calculateGrandTotal, useMenuContext } from "@/context";
+import { encrypt } from "@/utils/commonFunctions";
 
 const TipPage: React.FC = () => {
   const router = useRouter();
@@ -30,11 +31,11 @@ const TipPage: React.FC = () => {
   };
 
   const handleCustomTipClick = () => {
-    setIsCustomTipSelected(!isCustomTipSelected); // Toggle custom tip selection
+    setIsCustomTipSelected(true); 
     if (isCustomTipSelected) {
-      setCustomTip(null); // Clear custom tip if de-selecting
+      setCustomTip(null);
     }
-    setSelectedTip(null); // Deselect other tip options
+    setSelectedTip(null);
   };
 
   const handleCustomTipChange = (
@@ -159,7 +160,7 @@ const TipPage: React.FC = () => {
                 InputProps={{
                   inputProps: { min: 0 },
                 }}
-                sx={{ mt: 2 }}
+                sx={{ mt: 2 ,background:'#fff'}}
               />
             </Box>
           )}
@@ -168,7 +169,11 @@ const TipPage: React.FC = () => {
         {/* Place Order Button */}
         <Button
           onClick={() => {
-            router.push("/payment");
+            router.push(`/payment/${encodeURIComponent(
+              encrypt({ tip: isCustomTipSelected && customTip
+                ? customTip.toFixed(2)
+                : ((Number(grandTotal) * (selectedTip || 0)) / 100).toFixed(2) })
+            )}`);
           }}
           variant="contained"
           fullWidth
