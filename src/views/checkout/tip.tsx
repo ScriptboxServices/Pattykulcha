@@ -150,7 +150,7 @@ const TipPage: React.FC = () => {
             <Box sx={{ mt: 2 }}>
               <TextField
                 fullWidth
-                type="number"
+                type="tel"
                 label="Enter custom tip amount"
                 value={customTip !== null ? customTip : ""}
                 onChange={handleCustomTipChange}
