@@ -424,8 +424,13 @@ const KanbanBoard = () => {
   const [printStatus, setPrintStatus] = useState("");
 
   const receiptPrinterHandler = async () => {
-
-    const result =  await axios.post(`/api/print-receipt`)
+    const token = await getIdToken(user);
+    const result =  await axios.post(`/api/print-receipt`,{},{
+      headers: {
+        "x-token": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
     console.log(result);
   
   }
