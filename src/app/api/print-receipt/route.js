@@ -19,7 +19,7 @@ export const POST = async (req) => {
     // Connect to the printer via network (TCP)
     const conn = connect(
       {
-        host: "192.168.0.99",  // Printer IP address
+        host: "192.168.1.87",  // Printer IP address
         port: 9100,            // Printer port (commonly 9100 for network printers)
         timeout: 3000,         // Timeout of 3 seconds
       },
@@ -38,6 +38,8 @@ export const POST = async (req) => {
         });
       }
     );
+
+    console.log(conn,"PPPPPPPPPPPPPPPPPPPPPPPPP");
 
     // Handle connection errors
     conn.on('error', (err) => {
