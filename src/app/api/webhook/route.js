@@ -63,6 +63,10 @@ export const POST = async (req, res) => {
         orderNumberForCustomer = `${Math.floor(Math.random() * 900000)}`
       }
 
+      // const now = new Date();
+      // const estOffset = now.getTimezoneOffset() - 300;
+      // const startOfToday = new Date(now.setHours(0 - estOffset / 60, 0, 0, 0));
+      // const endOfToday = new Date(now.setHours(23 - estOffset / 60, 59, 59, 999));
       const startOfToday = admin.firestore.Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
       const endOfToday = admin.firestore.Timestamp.fromDate(new Date(new Date().setHours(23, 59, 59, 999)));
 
