@@ -14,6 +14,8 @@ export const POST = async (req) => {
     // Ensure the data is in the correct buffer format
     const printData = Buffer.from(data);
 
+    console.log(printData,"GGGGGGGGGGGGGGGGGGGGGG");
+
     // Connect to the printer via network (TCP)
     const conn = connect(
       {
