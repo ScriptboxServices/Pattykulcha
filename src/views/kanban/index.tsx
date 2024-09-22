@@ -449,7 +449,6 @@ const KanbanBoard = () => {
     setSelectedOrderId(id)
   }
 
-
   return (
     <Box
       sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}

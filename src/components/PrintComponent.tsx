@@ -19,14 +19,15 @@ const PrintComponent = forwardRef<HTMLDivElement,PrintComponentProps>((_props: a
   return (
     <div ref={_ref} className='receipt'>
       <div className='receipt-header center'>
-        <Image
+        {/* <Image
           src='/images/logo.png'
           alt='Logo'
           height={85}
           layout='fixed'
           width={195}
           priority
-        />
+        /> */}
+        <h1>PATTY KULCHA</h1>
       </div>
       <div className='receipt-section'>
         <p>{_props?.address}</p>
