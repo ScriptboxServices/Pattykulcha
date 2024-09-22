@@ -84,7 +84,6 @@ const KanbanBoard = () => {
     const driverRef = doc(db, "drivers", driverId);
     setLoading(true);
     let name = ''
-    console.log(driverId);
     const _driver = await getDoc(driverRef)
     console.log(_driver.exists());
     if(_driver.exists()){
@@ -441,6 +440,8 @@ const KanbanBoard = () => {
 
   const handlePrint = useReactToPrint({
     content: () => (selectedOrderId ? printRef.current[selectedOrderId] : null),
+    documentTitle : 'Receipt',
+    onAfterPrint : () => setSelectedOrderId(''),
   });
 
   const receiptPrinterHandler = async (id:string) => {
