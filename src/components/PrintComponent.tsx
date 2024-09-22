@@ -20,8 +20,7 @@ const PrintComponent = forwardRef<HTMLDivElement, PrintComponentProps>(
   (_props: any, _ref) => {
     return (
       <div ref={_ref} className='receipt'>
-        Abhishek Poddar
-        {/* <div
+        <div
           className='receipt-header'
           style={{ display: "flex", justifyContent: "center" }}>
           <Image
@@ -128,7 +127,7 @@ const PrintComponent = forwardRef<HTMLDivElement, PrintComponentProps>(
             </strong>
           </p>
           <p>We hope to serve you again soon!</p>
-        </div> */}
+        </div>
       </div>
     );
   }
