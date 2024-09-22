@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   DndContext,
   useSensor,
@@ -14,6 +14,7 @@ import {
   Timestamp,
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   orderBy,
@@ -50,6 +51,8 @@ import axios from "axios";
 import { getIdToken } from "firebase/auth";
 import { formatTimestampToCustomDate } from "@/utils/commonFunctions";
 import KulchaCard from "@/components/KulchaCard";
+import PrintComponent from "@/components/PrintComponent";
+import { useReactToPrint } from 'react-to-print';
 
 const KanbanBoard = () => {
   const [containers] = useState([
@@ -65,7 +68,7 @@ const KanbanBoard = () => {
   const [showDriverDropdown, setShowDriverDropdown] = useState<string | null>(
     null
   );
-
+  const printRef = useRef<any>({});
   const [openDialog, setOpenDialog] = useState<string | null>(null);
 
   const handleOpenDialog = (orderId: string) => {
@@ -78,9 +81,18 @@ const KanbanBoard = () => {
 
   const handleDriverSelect = async (orderId: string, driverId: string) => {
     const docRef = doc(db, "orders", orderId);
+    const driverRef = doc(db, "drivers", driverId);
     setLoading(true);
+    let name = ''
+    console.log(driverId);
+    const _driver = await getDoc(driverRef)
+    console.log(_driver.exists());
+    if(_driver.exists()){
+      name = _driver.data().name
+    }
     await updateDoc(docRef, {
       driverId: driverId,
+      driverName: name,
     });
     setLoading(false);
     handleCloseDialog();
@@ -419,21 +431,23 @@ const KanbanBoard = () => {
     }));
   };
 
-  const [port, setPort] = useState(null);
-  const [isPrinting, setIsPrinting] = useState(false); 
-  const [printStatus, setPrintStatus] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState<string>('');
+  const [flagPrint, setFlagPrint] = useState<boolean>(false);
 
-  const receiptPrinterHandler = async () => {
-    const token = await getIdToken(user);
-    const result =  await axios.post(`/api/print-receipt`,{},{
-      headers: {
-        "x-token": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    console.log(result);
-  
+  useEffect(() => {
+    if(!selectedOrderId) return 
+    handlePrint()
+  },[flagPrint])
+
+  const handlePrint = useReactToPrint({
+    content: () => (selectedOrderId ? printRef.current[selectedOrderId] : null),
+  });
+
+  const receiptPrinterHandler = async (id:string) => {
+    setFlagPrint(!flagPrint)
+    setSelectedOrderId(id)
   }
+
 
   return (
     <Box
@@ -795,85 +809,6 @@ const KanbanBoard = () => {
                                           </Typography>
                                         </Box>
                                       </Box>
-                                      {/* <Box>
-                                            <Divider sx={{ my: 1 }} />
-                                            <Box
-                                              sx={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "center",
-                                              }}
-                                            >
-                                              <Typography
-                                                variant="body2"
-                                                component="span"
-                                                sx={{
-                                                  fontWeight: "bold",
-                                                }}
-                                              >
-                                                Total Tax:
-                                              </Typography>
-                                              <Typography
-                                                variant="body2"
-                                                color="textSecondary"
-                                              >
-                                                $
-                                                {(
-                                                  Number(
-                                                    order?.total_amount || 0
-                                                  ) * 0.13
-                                                ).toFixed(2)}
-                                              </Typography>
-                                            </Box>
-                                            <Box
-                                              sx={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "center",
-                                              }}
-                                            >
-                                              <Typography
-                                                variant="body2"
-                                                component="span"
-                                                sx={{
-                                                  fontWeight: "bold",
-                                                }}
-                                              >
-                                                Total Amount:
-                                              </Typography>
-                                              <Typography
-                                                variant="body2"
-                                                color="textSecondary"
-                                              >
-                                                $
-                                                {Number(
-                                                  order?.total_amount || 0
-                                                ).toFixed(2)}
-                                              </Typography>
-                                            </Box>
-                                            <Box
-                                              sx={{
-                                                textAlign: "center",
-                                                mt: 1,
-                                              }}
-                                            >
-                                              <Button
-                                                variant="text"
-                                                onClick={() =>
-                                                  handleToggleExpand(order.id)
-                                                }
-                                                size="small"
-                                                sx={{
-                                                  fontWeight: "bold",
-                                                  fontSize: "10px",
-                                                }}
-                                              >
-                                                Show Less
-                                              </Button>
-                                            </Box>
-                                          </Box> */}
-                                      {/* </>
-                                      )} */}
                                     </CardContent>
                                   </Card>
                                 </Box>
@@ -995,6 +930,31 @@ const KanbanBoard = () => {
                                       }
                                     )}
                                   </CardContent>
+                                  <Divider sx={{ mb: 1 }} />
+                                  <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Driver Name:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            {order?.driverName}
+                                          </Typography>
+                                        </Box>
                                   {!isExpanded && (
                                     <Box
                                       sx={{
@@ -1287,9 +1247,9 @@ const KanbanBoard = () => {
                                             color="textSecondary"
                                             sx={{ display: "flex", gap: 1 }}
                                           >
-                                            {container.id === "container-2" && (
-                                              <>
-                                                <Button
+                                              {(container.id === "container-2" || container.id === "container-3") && (
+                                                <>
+                                                    <Button
                                                   onClick={() =>
                                                     handleOpenDialog(order.id)
                                                   }
@@ -1308,6 +1268,11 @@ const KanbanBoard = () => {
                                                 >
                                                   Assigned Driver
                                                 </Button>
+                                                </>
+
+                                              )}
+                                            {(container.id === "container-2") && (
+                                              <>
                                                 <Button
                                                   onClick={() =>
                                                     updateOrderStatus(
@@ -1486,7 +1451,7 @@ const KanbanBoard = () => {
                                             >
                                               <Button
                                                 fullWidth
-                                                onClick={() => receiptPrinterHandler()}
+                                                onClick={() => receiptPrinterHandler(String(idy))}
                                                 variant="contained"
                                                 sx={{
                                                   backgroundColor: "#ECAB21",
@@ -1502,6 +1467,32 @@ const KanbanBoard = () => {
                                               >
                                                 Print Receipt
                                               </Button>
+                                              <div style={{ display: 'none' }}>
+                                              <PrintComponent 
+                                                address = {order?.address?.raw}
+                                                time={formatTimestampToCustomDate(
+                                                  order.createdAt
+                                                )}
+                                                total = {Number(
+                                                  Number(order?.grand_total) +
+                                                    Number(order.deliverCharge || 0)
+                                                ).toFixed(2)}
+                                                totalTax = {Number(order?.total_tax).toFixed(
+                                                  2
+                                                )}
+                                                deliverCharges= {Number(
+                                                  order?.deliverCharge || 0
+                                                ).toFixed(2)}
+                                                order={order}
+                                                phone= {order?.customer?.phoneNumber}
+                                                distance= {order?.address?.distance?.text ||
+                                                  ""}
+                                                  instructions={order?.instructions}
+                                                name = {order?.customer?.name}
+                                                ref={(el) => {
+                                                  printRef.current[idy] = el;
+                                                }}  />
+                                              </div>
                                             </Typography>
                                           )}
                                         </Box>
