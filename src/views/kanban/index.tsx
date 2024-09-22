@@ -53,6 +53,7 @@ import { formatTimestampToCustomDate } from "@/utils/commonFunctions";
 import KulchaCard from "@/components/KulchaCard";
 import PrintComponent from "@/components/PrintComponent";
 import { useReactToPrint } from 'react-to-print';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
 const KanbanBoard = () => {
   const [containers] = useState([
@@ -108,6 +109,7 @@ const KanbanBoard = () => {
   }>({});
   const { user, metaData } = useAuthContext();
   const [allOrders, setAllOrders] = useState<any>({});
+  const [totalKulcha, setTotalKulcha] = useState<number>(0);
   const [alooKulcha, setAlooKulcha] = useState<number>(0);
   const [paneerKulcha, setPaneerKulcha] = useState<number>(0);
   const [gobiKulcha, setGobiKulcha] = useState<number>(0);
@@ -182,8 +184,13 @@ const KanbanBoard = () => {
       let paneerKulcha = 0
       let mixKulcha = 0
       let onionKulcha = 0
+      let total = 0
       snapshot.forEach((doc) => {
-        const { delivery, canceled, refunded } = doc.data();
+        const { delivery, canceled, refunded,order } = doc.data();
+        for(let i=0;i < order.length;i++){
+          const {kulcha} = order[i].order
+          total = total + Number(kulcha?.quantity)
+       }
         if (delivery.status === false && delivery.message === "Preparing") {
           newOrders.push({
             id: doc.id,
@@ -194,7 +201,6 @@ const KanbanBoard = () => {
             const {kulcha} = order[i].order
             if(kulcha?.name === 'Mix Kulcha'){
               mixKulcha = mixKulcha + kulcha?.quantity
-              console.log(kulcha?.quantity,i);
             }
 
             if(kulcha?.name === 'Onion Kulcha'){
@@ -223,6 +229,7 @@ const KanbanBoard = () => {
         }
       });
       setAlooKulcha(alooKulcha)
+      setTotalKulcha(total)
       setPaneerKulcha(paneerKulcha)
       setGobiKulcha(gobiKulcha)
       setMixKulcha(mixKulcha)
@@ -457,16 +464,17 @@ const KanbanBoard = () => {
       <Box sx={{display:"flex",alignItems:"center",mt:2}}>
         <Typography
           variant="h5"
-          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: 4.5,width:"228px" }}
+          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: '20px',width:"228px" }}
         >
           Order Details
         </Typography>
         <Grid container spacing={0} justifyContent="flex-start" gap={2}>
-          <KulchaCard name="Mix Kulcha" count={mixKulcha}/>
-          <KulchaCard name="Aloo Kulcha" count={alooKulcha}/>
-          <KulchaCard name="Gobi Kulcha" count={gobiKulcha}/>
-          <KulchaCard name="Onion Kulcha" count={onionKulcha}/>
-          <KulchaCard name="Paneer Kulcha" count={paneerKulcha}/>
+          <KulchaCard name="Mix" count={mixKulcha}/>
+          <KulchaCard name="Aloo" count={alooKulcha}/>
+          <KulchaCard name="Gobi" count={gobiKulcha}/>
+          <KulchaCard name="Onion" count={onionKulcha}/>
+          <KulchaCard name="Paneer" count={paneerKulcha}/>
+          <KulchaCard name="Total" count={totalKulcha}/>
         </Grid>
       </Box>
       <Box
@@ -1465,6 +1473,7 @@ const KanbanBoard = () => {
                                                   },
                                                 }}
                                               >
+                                                <LocalPrintshopIcon />&nbsp;
                                                 Print Receipt
                                               </Button>
                                               <div style={{ display: 'none' }}>

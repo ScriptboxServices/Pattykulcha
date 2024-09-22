@@ -5,14 +5,18 @@ import {
   Box,
   Typography,
   TextField,
-  Button,
   Container,
   Autocomplete,
   Grid,
   Paper,
   InputAdornment,
+  Card,
+  IconButton,
+  Button,
+  Alert,
+  Link
 } from "@mui/material";
-import { Person, Email, Phone, Message } from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,7 +27,10 @@ import CircularLodar from "@/components/CircularLodar";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { KITCHEN_ID, useAuthContext } from "@/context";
+import CheckIcon from "@mui/icons-material/Check";
+import { Message, Phone } from "@mui/icons-material";
 
+// Define validation schema
 const schema = yup.object().shape({
   name: yup.string().required("First Name is required"),
   phone: yup
@@ -35,11 +42,29 @@ const schema = yup.object().shape({
 });
 
 const ContactUs: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
-    null
-  );
-  const [isLoading,setIsLoading] = useState(false)
-  const {user} = useAuthContext()
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuthContext();
+  const [error, setError] = useState(true);
+  const [showForm, setShowForm] = useState(false); 
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  const options = [
+    {
+      id: "message",
+      title: "Write a Message",
+      description: "Send us a message and we will respond promptly.",
+      icon: <Message fontSize="large" />,
+      action: () => setShowForm(true), // Show the form when clicked
+    },
+    {
+      id: "call",
+      title: "Call Now",
+      description: "Give us a call for instant support.",
+      icon: <Phone fontSize="large" />,
+      action: () => window.location.href = "tel:+1437996-5431", // Initiate call when clicked
+    },
+  ];
 
   useEffect(() => {
     const defaultCountry =
@@ -61,31 +86,32 @@ const ContactUs: React.FC = () => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    const {name,message,phone,countryCode} = data
-    try{
-      setIsLoading(true)
-      const colRef = collection(db,'contactus')
-      const result = await addDoc(colRef,{
-        createdAt : Timestamp.now(),
-        customer : {
-          name : name,
-          phoneNumber :  `+${countryCode.phone}${phone}`
+    const { name, message, phone, countryCode } = data;
+    try {
+      setIsLoading(true);
+      const colRef = collection(db, "contactus");
+      const result = await addDoc(colRef, {
+        createdAt: Timestamp.now(),
+        customer: {
+          name: name,
+          phoneNumber: `+${countryCode.phone}${phone}`, // Use backticks for dynamic string insertion here
         },
-        foodTruckId : KITCHEN_ID,
-        message : message,
-        track : {
-          message: 'Initiate',
-          status : false
+        foodTruckId: KITCHEN_ID,
+        message: message,
+        track: {
+          message: "Initiate",
+          status: false,
         },
-        userId : user ? user?.uid : ''
-      })
-      setIsLoading(false)
+        userId: user ? user?.uid : "",
+      });
+      setIsLoading(false);
       setValue("name", "");
       setValue("phone", "");
       setValue("message", "");
-    }catch(err){
+      setError(false);
+    } catch (err) {
       console.log(err);
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -95,205 +121,287 @@ const ContactUs: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           minHeight: "100dvh",
           backgroundColor: "#FAF3E0",
-          py: 4,
+          pt:10
+          
         }}
       >
         <Container maxWidth="md">
-          <Paper
-            elevation={4}
-            sx={{
-              borderRadius: "16px",
-              p: 4,
-              backgroundColor: "rgba(255, 255, 255, 0.85)",
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{ fontWeight: 600 }}
-              align="center"
-              gutterBottom
-            >
-              Contact Us
-            </Typography>
+          {/* Interactive Card Component */}
+          {!showForm && (
+            <>
+            <Typography variant="h3" sx={{textAlign:'center',mb:3,fontWeight:'600'}}>CONTACT US</Typography>
+            <Card sx={{ backgroundColor: "#FAF3E0" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "white",
+                  paddingY: 4,
+                }}
+              >
+                <Grid
+                  container
+                  spacing={2}
+                  justifyContent="center"
+                  flexDirection="row"
+                >
+                  {options.map((option) => (
+                    <Grid item xs={10} sm={5} md={5} key={option.id}>
+                      <Card
+                        sx={{
+                          padding: 2,
+                          textAlign: "center",
+                          height:'200px',
+                          border:
+                            selectedOption === option.id
+                              ? "2px solid #3f51b5"
+                              : "1px solid #ccc",
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          "&:hover": {
+                            boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+                          },
+                        }}
+                        onClick={() => {
+                          setSelectedOption(option.id);
+                          option.action();
+                        }}
+                      >
+                        <IconButton
+                          sx={{
+                            backgroundColor:
+                              selectedOption === option.id
+                                ? "#3f51b5"
+                                : "#ECAB21",
+                            color:
+                              selectedOption === option.id ? "white" : "white",
+                            marginBottom: 1,
+                            "&:hover": {
+                              backgroundColor:"#ECAB21",
+                              color: "white",
+                            },
+                          }}
+                        >
+                          {option.icon}
+                        </IconButton>
+                        <Typography variant="h6" sx={{ marginBottom: 1,fontWeight:'600' }}>
+                          {option.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ marginBottom: 2,color:'black' }}
+                        >
+                          {option.description}
+                        </Typography>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            </Card>
+            </>
+          )}
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={3}>
-          
-                <Grid item xs={12}>
-                  <Controller
-                    name="countryCode"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <Autocomplete
-                        id="country-select-demo"
-                        fullWidth
-                        options={countries}
-                        autoHighlight
-                        getOptionLabel={(option) => option.label}
-                        renderOption={(props, option) => {
-                          const { key, ...optionProps } = props;
-                          return (
-                            <Box
-                              key={key}
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...optionProps}
-                            >
-                              <Image
-                                loading="lazy"
-                                width={20}
-                                height={15} // Maintain aspect ratio similar to the original `img`
-                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                alt={`${option.label} flag`}
-                              />
-                              {option.label} ({option.code}) +{option.phone}
-                            </Box>
-                          );
-                        }}
-                        value={selectedCountry}
-                        onChange={(event, newValue) => {
-                          onChange(newValue);
-                          setSelectedCountry(newValue || (null as any));
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Choose a country code"
-                            inputProps={{
-                              ...params.inputProps,
-                              autoComplete: "new-password",
-                            }}
-                            InputProps={{
-                              ...params.InputProps,
-                              startAdornment: selectedCountry && (
-                                <InputAdornment position="start">
-                                  <Image
-                                    loading="eager"
-                                    width={20}
-                                    height={15}
-                                    src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
-                                    priority
-                                    alt="#"
-                                  />
-                                  <Typography sx={{ ml: 1 }}>
-                                    +{selectedCountry.phone}
-                                  </Typography>
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type="tel"
-                        label="Phone"
-                        variant="outlined"
-                        error={!!errors.phone}
-                        helperText={errors.phone?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        type="text"
-                        fullWidth
-                        label="Name"
-                        variant="outlined"
-                        error={!!errors.name}
-                        helperText={errors.name?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="message"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        multiline
-                        rows={4}
-                        label="Message"
-                        placeholder="Write your message..."
-                        variant="outlined"
-                        error={!!errors.message}
-                        helperText={errors.message?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-evenly"
-                    sx={{
-                      flexDirection: { xs: "column", sm: "row" },
-                    }}
-                  >
-                    <Button
-                      variant="contained"
+          {/* Show form when "Write a Message" is clicked */}
+          {showForm && (
+            <Paper
+              elevation={4}
+              sx={{
+                borderRadius: "16px",
+                p: 4,
+                mb:6,
+                backgroundColor: "rgba(255, 255, 255, 0.85)",
+              }}
+            >
+                <Link
+                  onClick= {() => setShowForm(false)}
+                      underline='none'
+                      sx={{ display: "flex", alignItems: "center", mb: 1,cursor:"pointer" }}>
+                      <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
+                      <Typography
+                        variant='body1'
+                        sx={{ ml: 1, fontWeight: 600, color: "#162548" }}>
+                        Back
+                      </Typography>
+                    </Link>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 600 }}
+                align="center"
+                gutterBottom
+              >
+                Contact Us
+              </Typography>
+
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="countryCode"
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <Autocomplete
+                          id="country-select-demo"
+                          fullWidth
+                          options={countries}
+                          autoHighlight
+                          getOptionLabel={(option) => option.label}
+                          renderOption={(props, option) => {
+                            const { key, ...optionProps } = props;
+                            return (
+                              <Box
+                                key={key}
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...optionProps}
+                              >
+                                <Image
+                                  loading="lazy"
+                                  width={20}
+                                  height={15}
+                                  src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`} // Dynamic URL using backticks
+                                  alt={`${option.label} flag`} // Dynamic alt attribute
+                                />
+                                {option.label} ({option.code}) +{option.phone}
+                              </Box>
+                            );
+                          }}
+                          value={selectedCountry}
+                          onChange={(event, newValue) => {
+                            onChange(newValue);
+                            setSelectedCountry(newValue || (null as any));
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Choose a country code"
+                              inputProps={{
+                                ...params.inputProps,
+                                autoComplete: "new-password",
+                              }}
+                              InputProps={{
+                                ...params.InputProps,
+                                startAdornment: selectedCountry && (
+                                  <InputAdornment position="start">
+                                    <Image
+                                      loading="eager"
+                                      width={20}
+                                      height={15}
+                                      src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`} // Dynamic URL
+                                      priority
+                                      alt="#"
+                                    />
+                                    <Typography sx={{ ml: 1 }}>
+                                      +{selectedCountry.phone}
+                                    </Typography>
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="phone"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          type="tel"
+                          label="Phone"
+                          variant="outlined"
+                          error={!!errors.phone}
+                          helperText={errors.phone?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="name"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Name"
+                          variant="outlined"
+                          error={!!errors.name}
+                          helperText={errors.name?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="message"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          multiline
+                          rows={4}
+                          label="Message"
+                          placeholder="Write your message..."
+                          variant="outlined"
+                          error={!!errors.message}
+                          helperText={errors.message?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      justifyContent="space-evenly"
                       sx={{
-                        backgroundColor: "#ECAB21",
-                        color: "white",
-                        paddingX: 4,
-                        paddingY: 1,
-                        mt: 2,
-                        fontWeight: "bold",
-                        "&:hover": {
-                          backgroundColor: "#FFC107",
-                          color: "white",
-                        },
-                      }}
-                      component="a"
-                      href="tel:+1437996-5431"
-                    >
-                      Call now
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#ECAB21",
-                        color: "white",
-                        paddingX: 4,
-                        paddingY: 1,
-                        mt: 2,
-                        fontWeight: "bold",
-                        "&:hover": {
-                          backgroundColor: "#FFC107",
-                          color: "white",
-                        },
+                        flexDirection: { xs: "column", sm: "row" },
                       }}
                     >
-                      Send Message
-                    </Button>
-                  </Box>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#ECAB21",
+                          color: "white",
+                          paddingX: 4,
+                          paddingY: 1,
+                          mt: 2,
+                          fontWeight: "bold",
+                          "&:hover": {
+                            backgroundColor: "#FFC107",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Send Message
+                      </Button>
+                    </Box>
+                    {!error && (
+                      <Alert
+                        icon={<CheckIcon fontSize="inherit" />}
+                        severity="success"
+                        sx={{ marginTop: 2 }}
+                      >
+                        Thank you for contacting us! We&rsquo;ve received your message
+                        and will get back to you as soon as possible.
+                      </Alert>
+                    )}
+                  </Grid>
                 </Grid>
-              </Grid>
-            </form>
-          </Paper>
+              </form>
+            </Paper>
+          )}
         </Container>
       </Box>
     </>

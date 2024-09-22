@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
 import "../styles/main.css";
 import Image from "next/image";
+
 type PrintComponentProps = {
   address: string;
   time: string;
@@ -17,40 +18,50 @@ type PrintComponentProps = {
 
 const PrintComponent = forwardRef<HTMLDivElement,PrintComponentProps>((_props: any, _ref) => {
   return (
-    <div ref={_ref} className='receipt'>
-      <div className='receipt-header center'>
-        {/* <Image
+    <div ref={_ref} className="receipt">
+      <div className="receipt-header" style={{display:'flex',justifyContent:'center'}}>
+        <Image
           src='/images/logo.png'
           alt='Logo'
           height={85}
           layout='fixed'
           width={195}
           priority
-        /> */}
-        <h1>PATTY KULCHA</h1>
+        /> 
       </div>
-      <div className='receipt-section'>
-        <p>{_props?.address}</p>
-        <p>PATTYKULCHA +1 (647)640-0701</p>
-      </div>
-      <hr />
-      <div className='receipt-section'>
-        <p>Time : {_props.time}.</p>
-        <p>{_props.name}.</p>
-        <p>{_props.phone}.</p>
-        <p>{_props.address}.</p>
-        <p>{_props.distance}.</p>
-        <p>{_props.instructions}.</p>
+
+      <div className="receipt-section">
+        <p className="bold">#Order ID (#{_props.order.orderNumber.forKitchen}): {_props.order.orderNumber.forCustomer}</p>
+        <p>Placed on {_props.time}</p>
+        <p>Due at {_props.time}</p>
+        <p>Delivery Address: <span>{_props.address}</span></p>
+        <p>Distance: <span>{_props.distance}</span></p>
+        <p>Delivery Instructions: <span>{_props.instructions}</span></p>
       </div>
       <hr />
-      <div className='receipt-section center'>
-        <p>
-          <strong style={{ fontSize: "18px" }}>Disposable items No.</strong>
-        </p>
+      <div className="receipt-section">
+        <p>Name: <span>{_props.name}</span></p>
+        <p>Phone Number: <span>{_props.phone}</span></p>
       </div>
       <hr />
-      <div className='receipt-section'>
-        {_props?.order?.order?.map((item: any, idx: number) => {
+      <div className="receipt-section center">
+        <p className="bold">DELIVERY</p>
+        <div style={{display:'flex',justifyContent:'center'}}>
+          <Image
+            src='/images/qr.png'
+            alt='QR Code'
+            height={100}
+            layout='fixed'
+            width={100}
+            priority
+          />
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="receipt-section">
+     {_props?.order?.order?.map((item: any, idx: number) => {
           let { additional } = item?.order;
           let addOnName = "";
           for (let i = 0; i < additional.length; i++) {
@@ -77,64 +88,22 @@ const PrintComponent = forwardRef<HTMLDivElement,PrintComponentProps>((_props: a
           );
         })}
       </div>
+
       <hr />
-      <div className='receipt-section'>
-        <p>
-          DELIVERY CHARGES{" "}
-          <span className='right bold'>${_props?.deliverCharges}</span>
-        </p>
-        <p>
-          TAX <span className='right bold'>${_props?.totalTax}</span>
-        </p>
-        <p>
-          TOTAL <span className='right bold'>${_props?.total}</span>
-        </p>
+
+      <div className="receipt-section">
+        <p>DELIVERY CHARGES<span className="right bold">${_props?.deliverCharges}</span></p>
+        <p>TAX <span className="right bold">${_props?.totalTax}</span></p>
+        <p>TOTAL <span className="right bold">${_props?.total}</span></p>
       </div>
+
       <hr />
-      <div className='receipt-section'>
-        <p>P.O.#/Job Name: 0</p>
-        <p>7132 62 25171 03/09/2024 3664</p>
-        <p>13% HST R135772911</p>
+
+      <div className="receipt-footer center">
+        <p><strong style={{fontSize:'16px'}}>Thank you for ordering from PattyKulcha!</strong></p>
+        <p>We hope to serve you again soon!</p>
       </div>
-      <hr />
-      <div className='receipt-section small-text'>
-        <p className='center bold'>RETURN POLICY DEFINITIONS</p>
-        <div className='return-policy'>
-          <span>POLICY ID</span>
-          <span>DAYS</span>
-          <span>POLICY EXPIRES ON</span>
-          <span>A</span>
-          <span>1</span>
-          <span>0</span>
-          <span>03/09/24</span>
-        </div>
-      </div>
-      <hr />
-      <div className='receipt-footer center'>
-        <p>
-          <strong style={{ fontSize: "21px" }}>DID WE NAIL IT?</strong>
-        </p>
-        <p>Refer a friend and win amazing points!</p>
-        <p>Scan Me</p>
-      </div>
-      <div className='qr-code'>
-        <Image
-          src='/images/qr.jpg'
-          alt='QR Code'
-          height={100}
-          layout='fixed'
-          width={100}
-          priority
-        />
-      </div>
-      <div className='receipt-footer center small-text'>
-        <p>OR GO TO</p>
-        <p>www.pattykulcha.com</p>
-        <p>User ID: H89 57763 50693</p>
-        <p>Password: 24453 50631</p>
-        <p>Entries must be completed within 14 days of purchase.</p>
-        <p>See complete rules on website. No purchase necessary.</p>
-      </div>
+
     </div>
   );
 });

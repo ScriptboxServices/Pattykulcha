@@ -7,12 +7,12 @@ import {
   import { styled } from "@mui/system";
 
   const StyledCard = styled(Card)({
-    borderRadius: "10px",
+    borderRadius: "7px",
     backgroundColor: "#FAF3E0",
     boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
     textAlign: "center",
-    width: "115px", // Ensure minimum width for each card
-    height:"90px",
+    width: "80px", // Ensure minimum width for each card
+    height:"78px",
     display:'flex',
     alignItems:'center',
     justifyContent:'center',
@@ -20,7 +20,7 @@ import {
 const KulchaCard = ({name,count} :{name : string,count : number}) => {
   return (
     <StyledCard>
-      <CardContent sx={{paddingBottom:0,paddingLeft:0,paddingRight:0}}>
+      <CardContent sx={{padding:0}} style={{paddingBottom:'0'}}>
         <Typography
           variant="h6"
           style={{

@@ -13,7 +13,14 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Box, Card, CardContent, Typography, Button, Chip } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Chip,
+} from "@mui/material";
 import { useAuthContext } from "@/context";
 import {
   Timestamp,
@@ -30,20 +37,22 @@ import CircularLodar from "@/components/CircularLodar";
 
 const ContactUsection = () => {
   const [containers] = useState([
-    { id: `container-1`, title: "Today's Complaint" },
-    { id: `container-2`, title: "Inprogress Complaint" },
-    { id: `container-3`, title: "Fullfilled Complaint" },
+    { id: `container-1`, title: "Today's Complaints" },
+    { id: `container-2`, title: "Inprogress Complaints" },
+    { id: `container-3`, title: "Fullfilled Complaints" },
   ]);
   const [contacts, setContacts] = useState<any>([]);
   const [contactsInprogress, setContactsInprogress] = useState<any>([]);
   const [contactsResolved, setContactsResolved] = useState<any>([]);
   const { user, metaData } = useAuthContext();
-  const startOfToday = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
+  const startOfToday = Timestamp.fromDate(
+    new Date(new Date().setHours(0, 0, 0, 0))
+  );
   const endOfToday = Timestamp.fromDate(
     new Date(new Date().setHours(23, 59, 59, 999))
   );
   const [customerQueries, setCustomerQueries] = useState<any>({});
-    const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!metaData) return;
     console.log(metaData);
@@ -135,19 +144,19 @@ const ContactUsection = () => {
     message: string,
     status: boolean
   ) => {
-    try{
-      setLoading(true)
-      const docRef = doc(db,"contactus",_id)
-      await updateDoc(docRef,{
-        track : {
-          status : status,
-          message : message
-        }
-      })
-      setLoading(false)
-    }catch(err) {
-      console.log(err)
-      setLoading(false)
+    try {
+      setLoading(true);
+      const docRef = doc(db, "contactus", _id);
+      await updateDoc(docRef, {
+        track: {
+          status: status,
+          message: message,
+        },
+      });
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
     }
   };
 
@@ -179,7 +188,9 @@ const ContactUsection = () => {
           }}
         >
           <DndContext sensors={sensors} collisionDetection={closestCorners}>
-            <SortableContext items={containers.map((container) => container.id)}>
+            <SortableContext
+              items={containers.map((container) => container.id)}
+            >
               <Box
                 display="flex"
                 justifyContent="center"
@@ -203,51 +214,51 @@ const ContactUsection = () => {
                       flexDirection: "column",
                     }}
                   >
-                            <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      backgroundColor: "#ECAB21",
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
+                    <Box
                       sx={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 10,
-                        backgroundColor: "#ECAB21",
-                        color: "#fff",
-                        textAlign: "center",
-                        padding: 2,
-                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                      }}
-                    >
-                      {container.title}
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        position: "sticky",
-                        top: 12,
-                        zIndex: 15,
-                        right: 4,
-                        backgroundColor: "white",
-                        borderRadius: "50%", // Set to 50% to make the border circular
-                        color: "#ECAB21",
-                        textAlign: "center",
-                        padding: "8px 16px", // Adjust padding to ensure content fits within the circle
-                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                        width: "40px", // Set width and height to make sure the box is circular
-                        height: "40px",
                         display: "flex",
-                        alignItems: "center", // Center the text vertically
-                        justifyContent: "center", // Center the text horizontally
+                        justifyContent: "space-between",
+                        backgroundColor: "#ECAB21",
                       }}
                     >
-                      {customerQueries[container.id]?.length}
-                    </Typography>
-                  </Box>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 10,
+                          backgroundColor: "#ECAB21",
+                          color: "#fff",
+                          textAlign: "center",
+                          padding: 2,
+                          borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                        }}
+                      >
+                        {container.title}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          position: "sticky",
+                          top: 12,
+                          zIndex: 15,
+                          right: 4,
+                          backgroundColor: "white",
+                          borderRadius: "50%", // Set to 50% to make the border circular
+                          color: "#ECAB21",
+                          textAlign: "center",
+                          padding: "8px 16px", // Adjust padding to ensure content fits within the circle
+                          borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                          width: "40px", // Set width and height to make sure the box is circular
+                          height: "40px",
+                          display: "flex",
+                          alignItems: "center", // Center the text vertically
+                          justifyContent: "center", // Center the text horizontally
+                        }}
+                      >
+                        {customerQueries[container.id]?.length}
+                      </Typography>
+                    </Box>
                     <SortableContext items={[]}>
                       {customerQueries[container.id]?.length === 0 ? (
                         <>
@@ -281,6 +292,7 @@ const ContactUsection = () => {
                                   sx={{
                                     // width: "calc(33.333% - 16px)",
                                     margin: 2,
+                                    minHeight: "28%",
                                     borderRadius: 2,
                                     display: "flex",
                                     flexDirection: "column",
@@ -294,7 +306,7 @@ const ContactUsection = () => {
                                         flexDirection: "column",
                                       }}
                                     >
-                                      <Chip
+                                      {/* <Chip
                                         label={complaint?.track?.message}
                                         color={
                                           complaint?.track?.status
@@ -305,10 +317,21 @@ const ContactUsection = () => {
                                           borderRadius: "50px",
                                           textTransform: "none",
                                         }}
-                                      />
+                                      /> */}
+                                      {container.id == "container-3" && (
+                                        <Typography
+                                          variant="body1"
+                                          sx={{
+                                            fontWeight: "bold",
+                                            color: "green",
+                                          }}
+                                        >
+                                          Customer Request Completed
+                                        </Typography>
+                                      )}
                                       <Typography
                                         variant="body2"
-                                        sx={{ fontWeight: "bold",mt:2 }}
+                                        sx={{ fontWeight: "bold", mt: 2 }}
                                       >
                                         Name: {complaint?.customer?.name}
                                       </Typography>
@@ -316,13 +339,14 @@ const ContactUsection = () => {
                                         variant="body2"
                                         sx={{ marginTop: 1 }}
                                       >
-                                        Phone: {complaint?.customer?.phoneNumber}
+                                        Phone:{" "}
+                                        {complaint?.customer?.phoneNumber}
                                       </Typography>
                                       <Box
                                         sx={{
                                           display: "flex",
                                           justifyContent: "space-between",
-                                          mt: 2,
+                                          mt: 1,
                                         }}
                                       >
                                         <Typography variant="body2">
