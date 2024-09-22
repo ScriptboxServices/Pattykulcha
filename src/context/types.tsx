@@ -27,3 +27,20 @@ export interface AvailabilityState {
   thursday: boolean;
   friday: boolean;
 }
+
+export interface FormValues {
+  permitType: string;
+  licenseType: string;
+  drivingLicense: File | null;
+  carInsurance: File | null;
+  availability:  {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
+  acceptedTerms: boolean;
+}
