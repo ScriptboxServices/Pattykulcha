@@ -6,7 +6,7 @@
     background-color: white;
     border: none;
     margin: 0 auto;
-    padding-top:3rem;
+    padding-top:1rem;
     font-size: 12px;
     line-height: 1.2;
   }
@@ -58,6 +58,6 @@
   }
 
   @page {
-    margin: 0;
+    size: 80mm 210mm;
   }
 }
