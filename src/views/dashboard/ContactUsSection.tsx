@@ -35,7 +35,7 @@ import {
 import { db } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
 
-const ContactUsection = () => {
+const ContactUsSection = () => {
   const [containers] = useState([
     { id: `container-1`, title: "Today's Complaints" },
     { id: `container-2`, title: "Inprogress Complaints" },
@@ -440,4 +440,4 @@ const ContactUsection = () => {
   );
 };
 
-export default ContactUsection;
+export default ContactUsSection;
