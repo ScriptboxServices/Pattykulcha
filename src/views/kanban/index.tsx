@@ -1143,6 +1143,35 @@ const KanbanBoard = () => {
                                               fontWeight: "bold",
                                             }}
                                           >
+                                            Tip Amount:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            $
+                                            {Number(order?.tip).toFixed(
+                                              2
+                                            )}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <Box
+                                          sx={{
+                                            px: 2,
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                            sx={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
                                             Total:
                                           </Typography>
                                           <Typography
@@ -1153,6 +1182,7 @@ const KanbanBoard = () => {
                                             {Number(
                                               Number(order?.grand_total) +
                                                 Number(order.deliverCharge || 0)
+                                                + Number(order?.tip)
                                             ).toFixed(2)}
                                           </Typography>
                                         </Box>

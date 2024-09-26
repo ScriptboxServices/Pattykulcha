@@ -120,7 +120,7 @@ export const useMenuContext = () => {
 };
 
 export const calculateDeliveryCharges = (distance : number) => {
-  const delivery_charges = distance > 3000 ? ((distance / 1000 ) * 0.70) > 6 ? 6 : ((distance / 1000 ) * 0.70) : 0  
+  const delivery_charges = distance > 3000 ? ((distance / 1000 ) * 0.70) > 6 ? 6 : ((distance / 1000 ) * 0.70) : 1.99
   return Number(delivery_charges)
 }
 

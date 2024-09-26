@@ -42,7 +42,7 @@ export const POST = async (req, res) => {
     
     const { uid, phone_number } = decodeToken;
     const { city, state, line1, postal_code } = address.seperate;
-    const delivery_charges = address?.distance?.value > 3000 ? ((address?.distance?.value / 1000 ) * 0.70) > 6 ? 6 : ((address?.distance?.value / 1000 ) * 0.70) : 0 
+    const delivery_charges = address?.distance?.value > 3000 ? ((address?.distance?.value / 1000 ) * 0.70) > 6 ? 6 : ((address?.distance?.value / 1000 ) * 0.70) : 1.99
     
     const cartResult = await db
       .collection("carts")

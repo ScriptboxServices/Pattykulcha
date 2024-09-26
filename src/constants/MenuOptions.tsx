@@ -81,35 +81,35 @@ export const menuItems = [
     name: "Mix Kulcha",
     image: "/images/Img/5.jpg",
     desc: "Crisp Indian bread filled with potato, cauliflower, peas, onion, corn, coriander, carrot, ginger, green chilli and beetroot, delivering a savoury taste.",
-    price: 10.00,
+    price: 11.50,
     quantity : 1
   },
   {
     name: "Aloo Kulcha",
     image: "/images/Img/5.jpg",
     desc: "A tender, golden leavened bread stuffed with potato and onion, cooked in a tandoor and served with chana.",
-    price: 10.00,
+    price: 11.50,
     quantity : 1
   },
   {
     name: "Onion Kulcha",
     image: "/images/Img/5.jpg",
     desc: "A warm, flavorful Indian bread stuffed with onion, and topped with rich masala, giving a satisfying taste.",
-    price: 10.00,
+    price: 11.50,
     quantity : 1
   },
   {
     name: "Gobi Kulcha",
     image: "/images/Img/5.jpg",
     desc: "Flavorful Indian bread with gobi and onion, elegantly topped with herbs for a balanced flavour.",
-    price: 10.00,
+    price: 11.50,
     quantity : 1
   },
   {
     name: "Paneer Kulcha",
     image: "/images/Img/5.jpg",
     desc: "A crafted Indian bread stuffed with paneer, potato, and onion, delivering a delightful and flavorful experience.",
-    price: 10.00,
+    price: 11.50,
     quantity : 1
   },
 ];
