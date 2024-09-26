@@ -244,16 +244,16 @@ const ContactUsection = () => {
                           zIndex: 15,
                           right: 4,
                           backgroundColor: "white",
-                          borderRadius: "50%", // Set to 50% to make the border circular
+                          borderRadius: "50%", 
                           color: "#ECAB21",
                           textAlign: "center",
-                          padding: "8px 16px", // Adjust padding to ensure content fits within the circle
+                          padding: "8px 16px", 
                           borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                          width: "40px", // Set width and height to make sure the box is circular
+                          width: "40px", 
                           height: "40px",
                           display: "flex",
-                          alignItems: "center", // Center the text vertically
-                          justifyContent: "center", // Center the text horizontally
+                          alignItems: "center", 
+                          justifyContent: "center", 
                         }}
                       >
                         {customerQueries[container.id]?.length}
@@ -287,16 +287,16 @@ const ContactUsection = () => {
                           {customerQueries[container.id]?.map(
                             (complaint: any) => {
                               return (
-                                <Card
+                                <Box
                                   key={complaint.id}
                                   sx={{
-                                    // width: "calc(33.333% - 16px)",
-                                    margin: 2,
-                                    minHeight: "28%",
+                                    margin: 2, 
+                                    height:'auto',
                                     borderRadius: 2,
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "space-between",
+                                    boxShadow: 3,
                                   }}
                                 >
                                   <CardContent>
@@ -422,7 +422,7 @@ const ContactUsection = () => {
                                       </Typography>
                                     </Box>
                                   </CardContent>
-                                </Card>
+                                </Box>
                               );
                             }
                           )}
