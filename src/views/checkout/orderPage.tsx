@@ -394,7 +394,11 @@ const OrderPage: React.FC<Props> = ({
                   {/* Pickup Time Dialog */}
                   <Dialog
                     open={openPickupTimeDialog}
-                    onClose={() => setOpenPickupTimeDialog(false)}
+                    onClose={() => {
+                      const err : string = handlePickupTimeSave();
+                      if (err) return;
+                      setOpenPickupTimeDialog(false);
+                    }}
                     maxWidth='xs'
                     fullWidth
                     sx={{ zIndex: "999" }}
