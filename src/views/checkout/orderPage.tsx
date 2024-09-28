@@ -477,8 +477,9 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      <b>Address:</b> 7159 Magistrate Terrace, Mississauga, ON
-                      L5W 1T6, Canada
+                      {/* <b>Address:</b> 7159 Magistrate Terrace, Mississauga, ON
+                      L5W 1T6, Canada */}
+                         <b>Address:</b>
                     </Typography>
                   </Box>
 
@@ -491,7 +492,7 @@ const OrderPage: React.FC<Props> = ({
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
                       <b>Pickup Instructions:</b> Once you reach the location,
-                      contact at +1 (437) 996-5431 to get your order.
+                      contact at <b>+1 (437) 996-5431</b> to get your order.
                     </Typography>
                   </Box>
                 </Box>
