@@ -180,7 +180,7 @@ export default function ResponsiveDrawer(props: Props) {
     },
     {
       text: "Contact Us section",
-      icon: "/images/dashboard/orderdetail.png",
+      icon: "/images/dashboard/Contactus.svg",
       component: <ContactUsection />,
     },
     // {
@@ -200,7 +200,7 @@ export default function ResponsiveDrawer(props: Props) {
     // },
     {
       text: "Make Order",
-      icon: "/images/dashboard/profile.png",
+      icon: "/images/dashboard/Make_Order.svg",
       component: <MakeOrder />,
     },
   ];

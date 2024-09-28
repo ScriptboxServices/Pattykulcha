@@ -94,14 +94,14 @@ const DriverOrders: React.FC = () => {
       let sortedOrders: any[] = [];
 
       snapshot.forEach((doc) => {
-        const { delivery } = doc.data();
+        const { delivery, pickUpAction } = doc.data();
         sortedOrders.push({
           id: doc.id,
           ...doc.data(),
         });
         if (
           delivery.status === false &&
-          delivery.message === "Out For Delivery"
+          delivery.message === "Out For Delivery" && !pickUpAction
         ) {
           newOrders.push({
             id: doc.id,

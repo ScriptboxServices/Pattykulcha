@@ -17,7 +17,7 @@ import {
   where,
   getDoc,
   doc,
-  onSnapshot,
+  onSnapshot
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { menuItems } from "@/constants/MenuOptions";

@@ -13,25 +13,30 @@ import {
 import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { calculateGrandTotal, useMenuContext } from "@/context";
+import { useMenuContext } from "@/context";
 import { encrypt } from "@/utils/commonFunctions";
 
-const TipPage: React.FC = () => {
+interface Props {
+  selectedOption : string,
+  pickupTime : string,
+}
+
+const TipPage: React.FC<Props> = ({selectedOption,pickupTime}) => {
   const router = useRouter();
   const [selectedTip, setSelectedTip] = useState<number | null>(0);
   const [customTip, setCustomTip] = useState<number | null>(null);
   const [isCustomTipSelected, setIsCustomTipSelected] = useState(false);
 
-  const tipOptions = [0, 15, 20, 30];
+  const tipOptions = [0, 1, 2, 3, 4, 5];
 
   const handleTipSelection = (tip: number) => {
     setIsCustomTipSelected(false);
     setSelectedTip(tip);
-    setCustomTip(null); // Clear custom tip amount when a percentage is selected
+    setCustomTip(null);
   };
 
   const handleCustomTipClick = () => {
-    setIsCustomTipSelected(true); 
+    setIsCustomTipSelected(true);
     if (isCustomTipSelected) {
       setCustomTip(null);
     }
@@ -46,6 +51,7 @@ const TipPage: React.FC = () => {
   };
 
   const { grandTotal } = useMenuContext();
+
   return (
     <Box
       sx={{
@@ -79,7 +85,9 @@ const TipPage: React.FC = () => {
             Add a tip
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
-            100% of your tip goes to your courier. Tips are based on your order total of <strong>${grandTotal}</strong> before any discounts or promotions.
+            100% of your tip goes to your courier. Tips are based on your order
+            total of <strong>${grandTotal}</strong> before any discounts or
+            promotions.
             <InfoOutlinedIcon
               fontSize="small"
               sx={{ verticalAlign: "middle", ml: 0.5 }}
@@ -87,65 +95,71 @@ const TipPage: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Tip Options */}
-        <Box sx={{ textAlign: "center", mb: 3 }}>
-          <Typography variant="body1" sx={{ mb: 1, fontWeight: "bold" }}>
+        <Box sx={{ textAlign: "center", mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
             Tip amount: $
             {isCustomTipSelected && customTip
               ? customTip.toFixed(2)
-              : ((Number(grandTotal) * (selectedTip || 0)) / 100).toFixed(2)}
+              : selectedTip?.toFixed(2)}
           </Typography>
+
+          {/* Tip buttons in one row */}
           <Grid
             container
             spacing={2}
             justifyContent="center"
-            sx={{ flexWrap: "wrap" }}
+            sx={{ flexWrap: "nowrap" }}
           >
             {tipOptions.map((tip) => (
-              <Grid item key={tip} xs={3}>
+              <Grid item key={tip} xs={2}>
                 <Button
                   variant={selectedTip === tip ? "contained" : "outlined"}
                   onClick={() => handleTipSelection(tip)}
                   sx={{
                     width: "100%",
                     height: 40,
+                    minWidth:'40px',
                     borderRadius: "20px",
-                    backgroundColor: selectedTip === tip ? "#000" : "#fff",
+                    backgroundColor: selectedTip === tip ? "#ECAB21" : "#fff",
                     color: selectedTip === tip ? "#fff" : "#000",
                     border: selectedTip === tip ? "none" : "1px solid #ccc",
                     "&:hover": {
-                      backgroundColor: selectedTip === tip ? "#333" : "#f5f5f5",
+                      backgroundColor: selectedTip === tip ? "#ECAB21" : "#f5f5f5",
                       color: selectedTip === tip ? "#fff" : "#000",
                     },
                   }}
                 >
-                  {tip}%
+                  ${tip}
                 </Button>
               </Grid>
             ))}
+          </Grid>
+
+          {/* Custom tip displayed on the next line */}
+          <Grid container justifyContent="center" sx={{ mt: 2 }}>
             <Grid item xs={12}>
-              <Button
-                variant={isCustomTipSelected ? "contained" : "text"}
-                color="success"
+              <Typography
+                variant="body1"
                 sx={{
-                  height: 40,
-                  borderRadius: "20px",
-                  padding: "0 10px",
+                  textAlign: "right",
                   fontWeight: "bold",
-                  backgroundColor: isCustomTipSelected ? "#000" : "#fff",
-                  color: isCustomTipSelected ? "#fff" : "#ECAB21",
-                  width: "50%",
+                  color: "black",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  width: "100%",
                   "&:hover": {
-                    backgroundColor: isCustomTipSelected ? "#333" : "#f5f5f5",
-                    color: isCustomTipSelected ? "#fff" : "#ECAB21",
+                    textDecoration: "underline",
+                    color: "black",
                   },
                 }}
                 onClick={handleCustomTipClick}
               >
                 Custom tip
-              </Button>
+              </Typography>
             </Grid>
           </Grid>
+
+          {/* Custom tip input */}
           {isCustomTipSelected && (
             <Box sx={{ mt: 2 }}>
               <TextField
@@ -156,22 +170,28 @@ const TipPage: React.FC = () => {
                 onChange={handleCustomTipChange}
                 InputProps={{
                   inputProps: { min: 0 },
-                  inputMode:'numeric'
+                  inputMode: "numeric",
                 }}
-                sx={{ mt: 2 ,background:'#fff'}}
+                sx={{ mt: 2, background: "#fff" }}
               />
             </Box>
           )}
         </Box>
 
-        {/* Place Order Button */}
         <Button
           onClick={() => {
-            router.push(`/payment/${encodeURIComponent(
-              encrypt({ tip: isCustomTipSelected && customTip
-                ? customTip.toFixed(2)
-                : ((Number(grandTotal) * (selectedTip || 0)) / 100).toFixed(2) })
-            )}`);
+            router.push(
+              `/payment/${encodeURIComponent(
+                encrypt({
+                  tip:
+                    isCustomTipSelected && customTip
+                      ? customTip.toFixed(2)
+                      : selectedTip?.toFixed(2),
+                      pickupTime,
+                      selectedOption
+                })
+              )}`
+            );
           }}
           variant="contained"
           fullWidth
@@ -195,4 +215,4 @@ const TipPage: React.FC = () => {
   );
 };
 
-export default TipPage;
+export default TipPage;

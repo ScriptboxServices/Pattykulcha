@@ -55,7 +55,6 @@ const ContactUsSection = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!metaData) return;
-    console.log(metaData);
     const contactRef = collection(db, "contactus");
     const q = query(
       contactRef,
@@ -182,7 +181,7 @@ const ContactUsSection = () => {
         <Box
           sx={{
             display: "flex",
-            height: "calc(100vh - 64px)",
+            height: "calc(100vh - 105px)",
             overflowX: "auto",
             padding: 2,
           }}

@@ -8,8 +8,15 @@ import { getUserMetaData, useAuthContext, useMenuContext } from "@/context"
 import axios from "axios"
 import { auth } from "@/firebase"
 import { getIdToken } from "firebase/auth"
+import { Timestamp } from "firebase/firestore"
 
-const PaymentPage = ({tip} : {tip : any}) => {
+interface Props {
+  tip : string,
+  pickupTime : string,
+  selectedOption : string
+}
+
+const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
   const [loading,setLoading] = useState(false)
   const [{ clientSecret, customer, ephemeralKey,payment_id }, setStripeCred] = useState({
     clientSecret: "",
@@ -41,6 +48,17 @@ const PaymentPage = ({tip} : {tip : any}) => {
     init()
   }, [user,metaData]);
 
+  function convertToFirebaseTimestamp(timeStr : string) {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const now = new Date();
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+
+    return Timestamp.fromDate(now);
+}
+
   const getPaymentSheet = async (metaData : any) => {
 
     if (!auth.currentUser && !isLoggedIn && !metaData) return;
@@ -49,6 +67,9 @@ const PaymentPage = ({tip} : {tip : any}) => {
 
     const isValid = clientSecret && customer && ephemeralKey;
     if (isValid) return;
+
+    const pickupTime_ = convertToFirebaseTimestamp(pickupTime)
+
     return axios
       .request({
         method: "POST",
@@ -61,7 +82,9 @@ const PaymentPage = ({tip} : {tip : any}) => {
           address : metaData?.address,
           instructions,
           name : metaData?.name,
-          tip
+          tip,
+          selectedOption,
+          pickupTime : pickupTime_
         },
       })
       .then((response : any) => response.data)
@@ -81,7 +104,7 @@ const PaymentPage = ({tip} : {tip : any}) => {
         <CircularLodar isLoading={loading} />
         {/* <OrderPage setLoading = {setLoading}/>
         <OrderHome setLoading = {setLoading}/> */}
-        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading} tip={tip}/>
+        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading} tip={tip} selectedOption={selectedOption}/>
     </>
   )
 }

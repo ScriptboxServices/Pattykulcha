@@ -32,12 +32,17 @@ import WarningIcon from "@mui/icons-material/Warning";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { encrypt } from "@/utils/commonFunctions";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
+  selectedOption : string,
+  setPickupTime: React.Dispatch<React.SetStateAction<string>>;
+  pickupTime : string,
 }
 
-const OrderHome: React.FC<Props> = ({ setLoading }) => {
+const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOption ,pickupTime,setPickupTime }) => {
   const {
     setCount,
     grandTotal,
@@ -489,11 +494,15 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     $
-                    {Number(
-                      calculateDeliveryCharges(
-                        metaData?.address?.distance?.value
-                      )
-                    ).toFixed(2)}
+                    {
+                    selectedOption === 'pickup' ? '0.00' : <>      
+                          {Number(
+                            calculateDeliveryCharges(
+                              metaData?.address?.distance?.value
+                            )
+                          ).toFixed(2)}
+                        </>
+}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between" gap={2}>
@@ -503,12 +512,14 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     $
                     {Number(
-                      Number(grandTotal) +
+                      Number(grandTotal) + (
+                        selectedOption === 'pickup' ? 0 :
                         Number(
                           calculateDeliveryCharges(
                             metaData?.address?.distance?.value
                           )
                         )
+                      )
                     ).toFixed(2)}
                   </Typography>
                 </Box>
@@ -530,7 +541,13 @@ const OrderHome: React.FC<Props> = ({ setLoading }) => {
                     }
 
                     setError(false);
-                    router.push("/tip");
+                    const url = encodeURIComponent(
+                      encrypt({
+                        selectedOption,
+                        pickupTime
+                      })
+                    )
+                    router.push(`/tip/${url}`);
                   }}
                   fullWidth
                   variant="contained"

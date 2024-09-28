@@ -212,7 +212,8 @@ interface CheckoutProps {
   ephemeralKey: string;
   payment_id: string;
   customer: string;
-  tip : any
+  tip : string,
+  selectedOption : string
 }
 
 const CheckoutMain: React.FC<CheckoutProps> = ({
@@ -221,7 +222,8 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
   ephemeralKey,
   payment_id,
   customer,
-  tip
+  tip,
+  selectedOption
 }) => {
   const {
     control,
@@ -314,7 +316,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{fontSize:'16px'}}>Delivery Charges</Typography>
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>${Number(calculateDeliveryCharges(metaData?.address?.distance?.value)).toFixed(2)}</Typography>
+                    <Typography variant="h6" sx={{fontSize:'16px'}}>${selectedOption === 'pickup' ?'0.00' : Number(calculateDeliveryCharges(metaData?.address?.distance?.value)).toFixed(2)}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{fontSize:'16px'}}>Tip Amount</Typography>
@@ -322,7 +324,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                   </Box>
                   <Box display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h6">Total</Typography>
-                    <Typography variant="h6">${Number(Number(grandTotal) + Number(calculateDeliveryCharges(metaData?.address?.distance?.value)) + Number(tip)).toFixed(2)}</Typography>
+                    <Typography variant="h6">${Number(Number(grandTotal) + (selectedOption === 'pickup' ?  0 :  Number(calculateDeliveryCharges(metaData?.address?.distance?.value)) ) + Number(tip)).toFixed(2)}</Typography>
                   </Box>
                   <Typography
                     variant="body2"

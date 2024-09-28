@@ -26,7 +26,7 @@ const calculateGrandTotal = (_cart) => {
 };
 
 export const POST = async (req, res) => {
-  const { address, instructions, name,tip } = await req.json();
+  const { address, instructions, name, tip, selectedOption, pickupTime } = await req.json();
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];
     const decodeToken = await admin.auth().verifyIdToken(xToken);
@@ -42,7 +42,7 @@ export const POST = async (req, res) => {
     
     const { uid, phone_number } = decodeToken;
     const { city, state, line1, postal_code } = address.seperate;
-    const delivery_charges = address?.distance?.value > 3000 ? ((address?.distance?.value / 1000 ) * 0.70) > 6 ? 6 : ((address?.distance?.value / 1000 ) * 0.70) : 1.99
+    const delivery_charges = selectedOption === 'pickup' ? 0 : address?.distance?.value > 3000 ? ((address?.distance?.value / 1000 ) * 0.70) > 6 ? 6 : ((address?.distance?.value / 1000 ) * 0.70) : 1.99
     
     const cartResult = await db
       .collection("carts")
@@ -85,7 +85,9 @@ export const POST = async (req, res) => {
       name : name ? name : `Customer_${uid}`,
       phoneNumber : phone_number,
       delivery_charges,
-      tip
+      tip,
+      pickupTime : JSON.stringify(pickupTime),
+      selectedOption 
     };
 
     const _address = {
@@ -119,6 +121,7 @@ export const POST = async (req, res) => {
     );
 
     const totalAmount = Number(grand_total) + Number(delivery_charges) + Number(tip)
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round((totalAmount) * 100),
       description,

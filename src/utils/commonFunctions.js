@@ -41,10 +41,7 @@ export const formatTimestampToCustomDate = (timestamp) => {
 }
 
 export const formatPhoneNumber = (value) => {
-    // Remove all non-numeric characters
     const cleaned = ('' + value).replace(/\D/g, '');
-
-    // Format the number as (XXX) XXX-XXXX
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (match) {
       return (
@@ -55,4 +52,15 @@ export const formatPhoneNumber = (value) => {
     }
 
     return value;
+  };
+
+  export const ShortTime = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+  
+    return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
   };
