@@ -19,14 +19,18 @@ import {
   MenuItem,
   Typography,
   Chip,
+  DialogContent,
+  Dialog,
 } from "@mui/material";
+import WarningIcon from "@mui/icons-material/Warning";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { KITCHEN_ID, useAuthContext, useMenuContext } from "@/context";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { addDoc, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "white",
@@ -57,11 +61,14 @@ const Navbar: React.FC = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  console.log(metaData, kitchenMetaData, driverMetaData);
-
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      if(metaData.role === 'driver') {
+        await updateDoc(doc(db,'driverlocation',driverMetaData?.id),{
+          isOnline : false
+        })
+      }
       localStorage.removeItem("instructions");
       localStorage.removeItem("kulcha");
       localStorage.removeItem("includedItems2");
@@ -83,6 +90,73 @@ const Navbar: React.FC = () => {
 
   const handleLinkClick = () => {
     setMobileOpen(false);
+  };
+
+  const [locError, setLocError] = useState(false);
+
+  const switchToDriverPortal = async () => {
+    handleLinkClick();
+    if (navigator.geolocation && driverMetaData) {
+      const result = await navigator.permissions.query({ name: "geolocation" });
+      if (result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const docRef = doc(db, "driverlocation", driverMetaData?.id);
+            const driverRef = await setDoc(docRef, {
+              driverId: driverMetaData.id,
+              isOnline: true,
+              name: driverMetaData.name,
+              latlng: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              },
+            });
+            router.push("/driver-home");
+
+          },
+          (err) => {
+            console.log(err);
+            setLocError(true);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: Infinity,
+            maximumAge: 0,
+          }
+        );
+      }
+
+      if (result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const docRef = doc(db, "driverlocation", driverMetaData?.id);
+            const driverRef = await setDoc(docRef, {
+              driverId: driverMetaData.id,
+              isOnline: true,
+              name: driverMetaData.name,
+              latlng: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              },
+            });
+            router.push("/driver-home");
+          },
+          (err) => {
+            console.log(err);
+            setLocError(true);
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: Infinity,
+            maximumAge: 0,
+          }
+        );
+      }
+
+      if (result.state === "denied") {
+        setLocError(true);
+      }
+    }
   };
 
   const drawer = (
@@ -159,23 +233,22 @@ const Navbar: React.FC = () => {
             <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
-        {
-              isLoggedIn &&       
-                <Link href="/add-driver" passHref>
-                  <ListItem
-                    button
-                    onClick={handleLinkClick}
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "black",
-                        color: "white",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Career" />
-                  </ListItem>
-                </Link>
-              }
+        {isLoggedIn && (
+          <Link href="/add-driver" passHref>
+            <ListItem
+              button
+              onClick={handleLinkClick}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                },
+              }}
+            >
+              <ListItemText primary="Career" />
+            </ListItem>
+          </Link>
+        )}
       </List>
       <Divider />
       <List>
@@ -239,10 +312,7 @@ const Navbar: React.FC = () => {
               metaData?.isDriver && (
                 <ListItem button>
                   <Button
-                    onClick={(e) => {
-                      handleLinkClick();
-                      router.push("/driver-home");
-                    }}
+                    onClick={switchToDriverPortal}
                     sx={{
                       textTransform: "none",
                       backgroundColor: "#ECAB21",
@@ -316,15 +386,14 @@ const Navbar: React.FC = () => {
             <Link href="/home" passHref>
               <NavButton>Menu</NavButton>
             </Link>
-            <Link href='/contact-us' passHref>
+            <Link href="/contact-us" passHref>
               <NavButton>Contact us</NavButton>
             </Link>
-            {
-              isLoggedIn &&
-              <Link href='/add-driver' passHref>
+            {isLoggedIn && (
+              <Link href="/add-driver" passHref>
                 <NavButton>Career</NavButton>
               </Link>
-            }
+            )}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {kitchenMetaData &&
@@ -498,6 +567,35 @@ const Navbar: React.FC = () => {
       >
         {drawer}
       </Drawer>
+      <Dialog
+        open={locError}
+        onClose={() => setLocError(false)}
+        maxWidth="xs"
+        fullWidth
+        sx={{ zIndex: "999" }}
+        PaperProps={{
+          sx: { borderRadius: "10px" },
+        }}
+      >
+        <DialogContent>
+          <Box sx={{display:'flex',flexDirection:'column',gap:2 ,alignItems:'center'}}>
+            <WarningIcon sx={{ fontSize: "46px",}} />
+            <Typography
+              variant="body1"
+              color="textPrimary"
+              align="center"
+              sx={{ fontSize: "18px", mt: 2 }}
+            >
+              PLEASE ALLOW YOUR LOCATION.
+              <ol>
+                <li>Go to your browser settings.</li>
+                <li>Find the &rdquo;Privacy&rdquo; or &rdquo;Location&rdquo; settings.</li>
+                <li>Allow location access for this site.</li>
+              </ol>
+            </Typography>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

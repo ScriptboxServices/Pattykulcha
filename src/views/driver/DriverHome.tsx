@@ -31,6 +31,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  setDoc,
   Timestamp,
   updateDoc,
   where,
@@ -71,6 +72,38 @@ const DriverOrders: React.FC = () => {
   const [newOrders, setNewOrders] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    let watchPos : any
+    if(navigator.geolocation && driverMetaData){
+      watchPos = navigator.geolocation.watchPosition(async (position) => {
+        console.log(position);
+        const docRef = doc(db, "driverlocation", driverMetaData.id);
+        const driverRef = await setDoc(docRef, {
+          driverId: driverMetaData.id,
+          isOnline: true,
+          name: driverMetaData.name,
+          latlng: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+        });
+      },  
+      async (err) => {
+        await updateDoc(doc(db,'driverlocation',driverMetaData.id),{
+          isOnline : false
+        })
+        console.log(err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: Infinity,
+        maximumAge: 0,
+      })
+    }
+
+    return () => navigator.geolocation.clearWatch(watchPos)
+  },[driverMetaData])
 
   useEffect(() => {
     // if (driverMetaData?.userId !== user?.uid) {

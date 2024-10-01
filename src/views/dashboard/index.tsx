@@ -34,6 +34,7 @@ import MakeOrder from "./CreateOrder";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ContactUsection from "./ContactUsSection";
+import DriversMap from "./DriverLocation";
 
 const drawerWidth = 240;
 
@@ -198,6 +199,11 @@ export default function ResponsiveDrawer(props: Props) {
     //   icon: "/images/dashboard/profile.png",
     //   component: <DashboardProfile />,
     // },
+    {
+      text: "Driver's location",
+      icon: "/images/dashboard/DriverLocation.svg",
+      component: <DriversMap/>,
+    },
     {
       text: "Make Order",
       icon: "/images/dashboard/Make_Order.svg",

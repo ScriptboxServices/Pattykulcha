@@ -20,6 +20,7 @@
     "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.7",
     "@mui/material-nextjs": "^5.16.6",
+    "@react-google-maps/api": "^2.19.3",
     "@reduxjs/toolkit": "^2.2.7",
     "@sparticuz/chromium": "126.0",
     "@stripe/react-stripe-js": "^2.7.3",
