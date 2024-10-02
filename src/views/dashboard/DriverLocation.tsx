@@ -6,6 +6,7 @@ import {
   useJsApiLoader,
   Marker,
   InfoWindow,
+  MarkerF,
 } from "@react-google-maps/api";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
@@ -42,11 +43,11 @@ function DriverLocation() {
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const onLoad = React.useCallback((map: google.maps.Map) => {
-    const bounds = new google.maps.LatLngBounds(initialCenter);
-    map.fitBounds(bounds);
-    setMap(map);
-  }, []);
+  // const onLoad = React.useCallback((map: google.maps.Map) => {
+  //   const bounds = new google.maps.LatLngBounds(initialCenter);
+  //   map.fitBounds(bounds);
+  //   setMap(map);
+  // }, []);
 
   const onUnmount = React.useCallback(() => {
     setMap(null);
@@ -141,12 +142,16 @@ function DriverLocation() {
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={initialCenter}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}>
+            zoom={14}
+            // onLoad={onLoad}
+            onUnmount={onUnmount}
+            options={{
+              
+            }}
+            >
             {locations.map((driver: any) => (
               <React.Fragment key={driver.id}>
-                <Marker
+                <MarkerF
                   position={{ lat: driver.latlng.lat, lng: driver.latlng.lng }}
                   label={driver.name}
                 />

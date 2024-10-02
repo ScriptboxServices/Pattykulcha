@@ -39,28 +39,6 @@ import {
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 
-// Define the types for order and additional items
-interface AdditionalItem {
-  name: string;
-  quantity: number;
-  price: number;
-}
-
-interface Order {
-  id: string;
-  status: string;
-  location: string;
-  phoneno: string;
-  name: string;
-  kulcha: {
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-  };
-  additional: { items: AdditionalItem[] }[];
-}
-
 const DriverOrders: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("Out For Delivery");
@@ -79,7 +57,7 @@ const DriverOrders: React.FC = () => {
       watchPos = navigator.geolocation.watchPosition(async (position) => {
         console.log(position);
         const docRef = doc(db, "driverlocation", driverMetaData.id);
-        const driverRef = await setDoc(docRef, {
+        await setDoc(docRef, {
           driverId: driverMetaData.id,
           isOnline: true,
           name: driverMetaData.name,
@@ -101,8 +79,13 @@ const DriverOrders: React.FC = () => {
         maximumAge: 0,
       })
     }
-
-    return () => navigator.geolocation.clearWatch(watchPos)
+    return () => {
+      if(watchPos){
+        updateDoc(doc(db,'driverlocation',driverMetaData.id),{
+          isOnline : false
+        })
+        navigator.geolocation.clearWatch(watchPos)}
+      }
   },[driverMetaData])
 
   useEffect(() => {
