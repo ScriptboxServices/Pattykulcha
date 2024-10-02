@@ -63,6 +63,11 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      if(metaData.role === 'driver') {
+        await updateDoc(doc(db,'driverlocation',driverMetaData?.id),{
+          isOnline : false
+        })
+      }
       await auth.signOut();
       localStorage.removeItem("instructions");
       localStorage.removeItem("kulcha");
