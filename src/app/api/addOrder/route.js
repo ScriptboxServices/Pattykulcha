@@ -205,6 +205,7 @@ export const POST = async (req, res) => {
         driverId: '',
         deliverCharge : 0,
         pickUpAction : true,
+        iamHere : false,
         pickUpTime : '',
         readyForPickup : false,
         tip : 0,

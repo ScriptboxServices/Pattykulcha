@@ -102,9 +102,9 @@ const Navbar: React.FC = () => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const docRef = doc(db, "driverlocation", driverMetaData?.id);
-            const driverRef = await setDoc(docRef, {
+            await setDoc(docRef, {
               driverId: driverMetaData.id,
-              isOnline: true,
+              isOnline: false,
               name: driverMetaData.name,
               latlng: {
                 lat: position.coords.latitude,
@@ -130,9 +130,9 @@ const Navbar: React.FC = () => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const docRef = doc(db, "driverlocation", driverMetaData?.id);
-            const driverRef = await setDoc(docRef, {
+            await setDoc(docRef, {
               driverId: driverMetaData.id,
-              isOnline: true,
+              isOnline: false,
               name: driverMetaData.name,
               latlng: {
                 lat: position.coords.latitude,
@@ -233,7 +233,7 @@ const Navbar: React.FC = () => {
             <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
-        {isLoggedIn && (
+        {/* {isLoggedIn && (
           <Link href="/add-driver" passHref>
             <ListItem
               button
@@ -248,7 +248,7 @@ const Navbar: React.FC = () => {
               <ListItemText primary="Career" />
             </ListItem>
           </Link>
-        )}
+        )} */}
       </List>
       <Divider />
       <List>
@@ -389,11 +389,11 @@ const Navbar: React.FC = () => {
             <Link href="/contact-us" passHref>
               <NavButton>Contact us</NavButton>
             </Link>
-            {isLoggedIn && (
+            {/* {isLoggedIn && (
               <Link href="/add-driver" passHref>
                 <NavButton>Career</NavButton>
               </Link>
-            )}
+            )} */}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {kitchenMetaData &&

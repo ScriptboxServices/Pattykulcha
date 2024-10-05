@@ -1,7 +1,8 @@
 "use client";
 
 import Autocomplete from "react-google-autocomplete";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -17,6 +18,7 @@ import {
   Button,
   IconButton,
   Alert,
+  InputAdornment,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -32,13 +34,14 @@ import {
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { v4 } from "uuid";
+import { updateProfile } from "firebase/auth";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
   selectedOption: string;
   setPickupTime: React.Dispatch<React.SetStateAction<string>>;
-  pickupTime : string,
+  pickupTime: string;
 }
 
 const OrderPage: React.FC<Props> = ({
@@ -46,30 +49,49 @@ const OrderPage: React.FC<Props> = ({
   setSelectedOption,
   selectedOption,
   setPickupTime,
-  pickupTime
+  pickupTime,
 }) => {
   const { user, metaData, setMetaData, kitchenMetaData } = useAuthContext();
-  const {
-    instructions,
-    setInstructions,
-    setIsAddressReachable,
-    isAddressReachable,
-  } = useMenuContext();
+  const { instructions, setInstructions, setIsAddressReachable } =
+    useMenuContext();
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [address, setAddress] = useState<any>({});
   const [openDialog, setOpenDialog] = useState(false);
   const [openInstructionsDialog, setOpenInstructionsDialog] = useState(false);
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
   const [openPickupTimeDialog, setOpenPickupTimeDialog] = useState(false);
-
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const [timeError, setTimeError] = useState("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [name, setName] = useState<string | undefined>(metaData?.name);
 
   const changeTime = (e: any) => {
     setPickupTime(e.target.value);
   };
 
+  const handleEditName = () => {
+    setIsEditingName(true);
+    setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 0);
+  };
+
   const handlePickupTimeClick = () => {
     setOpenPickupTimeDialog(true);
+  };
+
+  const handleNameSave = async () => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, "users", user?.uid);
+      await updateDoc(docRef, { name });
+      await updateProfile(user, { displayName: name });
+      setMetaData((prev: any) => ({ ...prev, name }));
+      setIsEditingName(false);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
   };
 
   function convertToMinutes(timeStr: string) {
@@ -89,7 +111,7 @@ const OrderPage: React.FC<Props> = ({
     setTimeError("");
     setOpenPickupTimeDialog(false);
 
-    return ""
+    return "";
   };
 
   const handleOptionChange = (
@@ -125,6 +147,7 @@ const OrderPage: React.FC<Props> = ({
       setOpenInstructionsDialog(true);
     }
   };
+
   const handleSaveClick = async (field: string) => {
     if (field == "address") {
       setLoading(true);
@@ -154,14 +177,6 @@ const OrderPage: React.FC<Props> = ({
       setLoading(false);
       setOpenInstructionsDialog(false);
     }
-  };
-
-  const isAddressReach = async (_id: string) => {
-    if (!_id) {
-      return;
-    }
-
-    //Do some logic here regarding address.
   };
 
   // const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,7 +246,7 @@ const OrderPage: React.FC<Props> = ({
                   justifyContent: "flex-start",
                   "& .MuiToggleButton-root": {
                     borderRadius: 25,
-                    px: 4,
+                    px: { xs: 2, sm: 4 },
                     py: 1.5,
                     mr: 1,
                     border: "none",
@@ -358,6 +373,68 @@ const OrderPage: React.FC<Props> = ({
                       </IconButton>
                     </Typography>
                   </Box>
+                  <Box
+                    sx={{ mb: 3, cursor: "pointer" }}
+                    onClick={handleEditName}>
+                    <Typography
+                      variant='h6'
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        color: "#1F2937",
+                        paddingBottom: "4px",
+                        fontSize: { xs: "16px", lg: "18px" },
+                        wordBreak: "break-all",
+                      }}>
+                      {/* Conditionally render the TextField or the name */}
+                      {isEditingName ? (
+                        <TextField
+                          inputRef={nameInputRef}
+                          fullWidth
+                          variant='outlined'
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <Button
+                                  variant='contained'
+                                  onClick={handleNameSave}
+                                  // disabled={!name}
+                                  sx={{
+                                    backgroundColor: "#ECAB21",
+                                    color: "white",
+                                    "&:hover": {
+                                      backgroundColor: "#FFC107",
+                                      color: "white",
+                                    },
+                                  }}>
+                                  Save
+                                </Button>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      ) : (
+                        <>
+                          Name: {metaData?.name}
+                          <IconButton
+                            sx={{
+                              background: "#F59E0B",
+                              borderRadius: "50%",
+                              "&:hover": {
+                                backgroundColor: "#FFC107",
+                                color: "white",
+                              },
+                            }}
+                            onClick={handleEditName}>
+                            <EditIcon sx={{ color: "#ffffff" }} />
+                          </IconButton>
+                        </>
+                      )}
+                    </Typography>
+                  </Box>
                 </Box>
               )}
 
@@ -395,7 +472,7 @@ const OrderPage: React.FC<Props> = ({
                   <Dialog
                     open={openPickupTimeDialog}
                     onClose={() => {
-                      const err : string = handlePickupTimeSave();
+                      const err: string = handlePickupTimeSave();
                       if (err) return;
                       setOpenPickupTimeDialog(false);
                     }}
@@ -415,7 +492,7 @@ const OrderPage: React.FC<Props> = ({
                       Edit Pickup Time
                       <IconButton
                         onClick={() => {
-                          const err : string = handlePickupTimeSave();
+                          const err: string = handlePickupTimeSave();
                           if (err) return;
                           setOpenPickupTimeDialog(false);
                         }}>
@@ -424,8 +501,8 @@ const OrderPage: React.FC<Props> = ({
                     </DialogTitle>
                     <DialogContent>
                       <Typography variant='body1' sx={{ mb: 2 }}>
-                        <strong>From:</strong> 7159 Magistrate Terrace,
-                        Mississauga, ON L5W 1T6, Canada
+                        <strong>From:</strong>20 Lockport Ave, Etobicoke, ON M8Z
+                        2R7
                       </Typography>
 
                       <TextField
@@ -481,9 +558,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      {/* <b>Address:</b> 7159 Magistrate Terrace, Mississauga, ON
-                      L5W 1T6, Canada */}
-                         <b>Address:</b>
+                      <b>Address:</b> 20 Lockport Ave, Etobicoke, ON M8Z 2R7
                     </Typography>
                   </Box>
 
@@ -496,7 +571,7 @@ const OrderPage: React.FC<Props> = ({
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
                       <b>Pickup Instructions:</b> Once you reach the location,
-                      contact at <b>+1 (437) 996-5431</b> to get your order.
+                      press <b>I am here</b> from my orders.
                     </Typography>
                   </Box>
                 </Box>

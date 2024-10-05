@@ -58,7 +58,10 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { user, metaData, kitchenMetaData } = useAuthContext();
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({
+    status : false,
+    message : ''
+  });
   const [dialogboxOpen, setDialogboxOpen] = useState(false);
 
   const calculateTotal = (item: any, addon: any[]) => {
@@ -526,21 +529,31 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                 <Button
                   onClick={() => {
                     if (!metaData?.address?.raw) {
-                      setError(true);
+                      setError({
+                        status : true,
+                        message : 'Before proceeding, please update address.'
+                      });
                       return;
                     }
-
+                    if (!metaData?.name) {
+                      setError({
+                        status : true,
+                        message : 'A name is necessary to proceed.'
+                      });
+                      return;
+                    }
                     if (!kitchenMetaData?.isShopOpen) {
                       setDialogboxOpen(true);
                       return;
                     }
-
                     if (!isAddressReachable) {
                       setDialogboxOpen(true);
                       return;
                     }
-
-                    setError(false);
+                    setError({
+                      status : false,
+                      message : ""
+                    });
                     const url = encodeURIComponent(
                       encrypt({
                         selectedOption,
@@ -566,9 +579,9 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                 >
                   Continue
                 </Button>
-                {error && (
+                {error?.status && (
                   <Alert sx={{ mt: 2 }} variant="outlined" severity="error">
-                    Before proceeding, please update address.
+                    {error?.message}
                   </Alert>
                 )}
               </Paper>

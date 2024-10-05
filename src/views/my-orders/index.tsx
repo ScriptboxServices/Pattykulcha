@@ -22,7 +22,15 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LockIcon from "@mui/icons-material/Lock";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAuthContext } from "@/context";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db, storage } from "@/firebase";
 import CircularLodar from "@/components/CircularLodar";
 import Link from "next/link";
@@ -52,7 +60,7 @@ const OrdersPage: React.FC = () => {
   const [myOrders, setMyOrders] = useState<any>([]);
   const [invoiceUrl, setInvoiceUrl] = useState("");
 
-  const init = async (initial : boolean) => {
+  const init = async (initial?: boolean) => {
     if (!user?.uid) return;
     try {
       const colRef = collection(db, "orders");
@@ -61,7 +69,7 @@ const OrdersPage: React.FC = () => {
         where("userId", "==", user?.uid),
         orderBy("createdAt", "desc")
       );
-      if(initial) setLoading(true);
+      if (initial) setLoading(true);
       const docs = await getDocs(q);
       let orders: any[] = [];
       if (docs.size > 0) {
@@ -73,11 +81,11 @@ const OrdersPage: React.FC = () => {
         });
         setMyOrders([...orders]);
       }
-      if(initial) setLoading(false);
+      if (initial) setLoading(false);
     } catch (err) {
       console.log(err);
     } finally {
-      if(initial) setLoading(false);
+      if (initial) setLoading(false);
     }
   };
   useEffect(() => {
@@ -96,10 +104,10 @@ const OrdersPage: React.FC = () => {
 
   const handleDownloadInvoice = async () => {
     try {
-      setLoading(true)
-      const blob = await axios.get(invoiceUrl,{
-        responseType : 'blob'
-      })
+      setLoading(true);
+      const blob = await axios.get(invoiceUrl, {
+        responseType: "blob",
+      });
       const url = window.URL.createObjectURL(blob.data);
       const a = document.createElement("a");
       a.href = url;
@@ -108,10 +116,10 @@ const OrdersPage: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       console.error("Error:", error);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -141,13 +149,31 @@ const OrdersPage: React.FC = () => {
 
       const storageRef = ref(storage, filePath);
 
-      const [url] = await Promise.all([getDownloadURL(storageRef),init(false)]) ;
+      const [url] = await Promise.all([
+        getDownloadURL(storageRef),
+        init(false),
+      ]);
 
       setInvoiceUrl(url);
       setOpen(!open);
       setLoading(false);
     } catch (err) {
       console.log(err);
+      setLoading(false);
+    }
+  };
+
+  const handleIamHere = async (_id: string) => {
+    const docRef = doc(db, "orders", _id);
+    setLoading(true)
+    try {
+      await updateDoc(docRef, {
+        iamHere: true,
+      });
+      await init()
+    } catch (err) {
+      console.log(err);
+    } finally {
       setLoading(false);
     }
   };
@@ -180,7 +206,6 @@ const OrdersPage: React.FC = () => {
           {myOrders.length > 0 ? (
             myOrders.map((orderDoc: any) => {
               const { order } = orderDoc;
-              console.log(order);
               return (
                 <Paper
                   key={order.id}
@@ -343,8 +368,8 @@ const OrdersPage: React.FC = () => {
                             Review
                           </Button>
                         </Link> */}
-                        {
-                          orderDoc?.paymentMode === 'Online' && orderDoc?.delivery?.status === true &&
+                        {orderDoc?.paymentMode === "Online" &&
+                          orderDoc?.delivery?.status === true && (
                             <Button
                               variant='contained'
                               sx={{
@@ -359,7 +384,28 @@ const OrdersPage: React.FC = () => {
                               onClick={() => handleViewInvoice(orderDoc)}>
                               Invoice
                             </Button>
-                        }
+                          )}
+
+                        {orderDoc?.pickUpAction &&
+                          !orderDoc?.canceled &&
+                          orderDoc?.readyForPickup &&
+                          !orderDoc?.delivery?.status && (
+                            <Button
+                              disabled={orderDoc?.iamHere}
+                              variant='contained'
+                              sx={{
+                                backgroundColor: "#ECAB21",
+                                color: "white",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                  backgroundColor: "#FFC107",
+                                  color: "white",
+                                },
+                              }}
+                              onClick={() => handleIamHere(orderDoc?.id)}>
+                              I am here
+                            </Button>
+                          )}
 
                         {/* <Link href={`/recipt/${orderDoc.id}`}>
                           <Button
@@ -456,19 +502,19 @@ const OrdersPage: React.FC = () => {
       <Dialog
         open={open}
         onClose={() => {
-          setOpen(!open)
-          setInvoiceUrl('')
+          setOpen(!open);
+          setInvoiceUrl("");
         }}
         maxWidth='md'
         fullWidth
-        sx={{ zIndex: "999" }}
-        >
+        sx={{ zIndex: "999" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <DialogTitle>Invoice</DialogTitle>
-          <IconButton onClick={() =>{
-          setOpen(!open)
-          setInvoiceUrl('')
-        }}>
+          <IconButton
+            onClick={() => {
+              setOpen(!open);
+              setInvoiceUrl("");
+            }}>
             <CancelIcon />
           </IconButton>
         </Box>

@@ -45,7 +45,7 @@ import {
   Select,
   Grid,
   Paper,
-  TextField
+  TextField,
 } from "@mui/material";
 import CircularLodar from "@/components/CircularLodar";
 import axios from "axios";
@@ -67,7 +67,7 @@ const KanbanBoard = () => {
     { id: `container-1`, title: "Today's Cart" },
     { id: `container-2`, title: "Today's Order" },
     { id: `container-3`, title: "Out For delivery" },
-    { id: `container-7`, title: "Ready For Pickup"},
+    { id: `container-7`, title: "Ready For Pickup" },
     { id: `container-4`, title: "Delivered" },
     { id: `container-5`, title: "Cancelled" },
     { id: `container-6`, title: "Sorted order" },
@@ -128,6 +128,7 @@ const KanbanBoard = () => {
   const [sortedOrders, setSortedOrders] = useState<any[]>([]);
   const [deliveredOrder, setDeliveredOrder] = useState<any[]>([]);
   const [pickupOrder, setPickupOrder] = useState<any[]>([]);
+  const [searchValue, setSeachValue] = useState<any>("");
   const [outForDelivery, setOutForDelivery] = useState<any[]>([]);
   const [canceledOrders, setCanceledOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -136,16 +137,16 @@ const KanbanBoard = () => {
     top: 0,
     left: 0,
   });
-  const [noteText, setNoteText] = useState(""); 
+  const [noteText, setNoteText] = useState("");
   const handleSaveNote = () => {
     console.log("Note saved:", noteText);
-    setShowStickyNote(false); 
+    setShowStickyNote(false);
   };
   const handleNotesClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     setStickyNotePosition({
       top: rect.top + window.scrollY - 10,
-      left: rect.left + window.scrollX+50,
+      left: rect.left + window.scrollX + 50,
     });
     setShowStickyNote(true);
   };
@@ -224,7 +225,14 @@ const KanbanBoard = () => {
       let onionKulcha = 0;
       let total = 0;
       snapshot.forEach((doc) => {
-        const { delivery, canceled, refunded, order, pickUpAction, readyForPickup} = doc.data();
+        const {
+          delivery,
+          canceled,
+          refunded,
+          order,
+          pickUpAction,
+          readyForPickup,
+        } = doc.data();
         for (let i = 0; i < order.length; i++) {
           const { kulcha } = order[i].order;
           total = total + Number(kulcha?.quantity);
@@ -265,21 +273,25 @@ const KanbanBoard = () => {
           });
         }
 
-        if (delivery.status === false && delivery.message === 'Out For Delivery' && !pickUpAction) {
+        if (
+          delivery.status === false &&
+          delivery.message === "Out For Delivery" &&
+          !pickUpAction
+        ) {
           outForDelivery.push({
             id: doc.id,
             ...doc.data(),
           });
         }
 
-        if (delivery.message === 'Out For Delivery' && readyForPickup) {
+        if (delivery.message === "Out For Delivery" && readyForPickup) {
           pickupOrder.push({
             id: doc.id,
             ...doc.data(),
           });
         }
 
-        if (delivery.status === true && delivery.message === 'Delivered') {
+        if (delivery.status === true && delivery.message === "Delivered") {
           deliveredOrder.push({
             id: doc.id,
             ...doc.data(),
@@ -333,7 +345,7 @@ const KanbanBoard = () => {
     deliveredOrder,
     canceledOrders,
     cart,
-    pickupOrder
+    pickupOrder,
   ]);
 
   const updateOrderStatus = async (
@@ -358,26 +370,28 @@ const KanbanBoard = () => {
     }
   };
 
-  const readyForPickUp = async ( _id: string,
+  const readyForPickUp = async (
+    _id: string,
     message: string,
-    status: boolean) => {
-      try {
-        setLoading(true);
-        const docRef = doc(db, "orders", _id);
-        await updateDoc(docRef, {
-          delivery: {
-            message,
-            status,
-          },
-          readyForPickup : true
-        });
-        setLoading(false);
-      } catch (err) {
-        return err;
-      } finally {
-        setLoading(false);
-      }
-  }
+    status: boolean
+  ) => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, "orders", _id);
+      await updateDoc(docRef, {
+        delivery: {
+          message,
+          status,
+        },
+        readyForPickup: true,
+      });
+      setLoading(false);
+    } catch (err) {
+      return err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const cancelOrderStatus = async (_id: string) => {
     try {
@@ -459,6 +473,24 @@ const KanbanBoard = () => {
     setSelectedOrderId(id);
   };
 
+  const filteredOrders = Object.keys(allOrders)
+    .filter((containerId) => containerId !== "container-1")
+    .reduce((acc: any[], containerId) => {
+      const filteredContainerOrders = allOrders[containerId]?.filter(
+        (order: any) =>
+          order?.customer?.phoneNumber
+            ?.toString()
+            .includes(searchValue.toString()) ||
+          order?.orderNumber?.forCustomer
+            ?.toString()
+            .includes(searchValue.toString()) ||
+          order?.orderNumber?.forKitchen
+            ?.toString()
+            ?.includes(searchValue.toString())
+      );
+      return [...acc, ...filteredContainerOrders];
+    }, []);
+
   return (
     <Box
       sx={{ minHeight: "auto", backgroundColor: "white", overflowY: "auto" }}
@@ -481,6 +513,22 @@ const KanbanBoard = () => {
         </Grid>
       </Box>
       <Box
+        sx={{
+          marginTop: 4,
+          marginLeft: 3,
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <TextField
+          placeholder="Seach order using order number or phone number"
+          sx={{ width: "30%" }}
+          value={searchValue}
+          onChange={(e) => setSeachValue(e.target.value)}
+        />
+        
+      </Box>
+      <Box
         className=" w-auto p-5 max-h-[1300px] bg-white no-scrollbar"
         sx={{ overflowY: "hidden", overflowX: "auto", ml: 3 }}
       >
@@ -490,9 +538,719 @@ const KanbanBoard = () => {
               display="flex"
               justifyContent="space-evenly"
               gap={2}
-              minWidth="2800px"
+              minWidth={searchValue ? "3200px":"2800px"}
               marginTop={5.5}
             >
+              {searchValue && filteredOrders?.length > 0 && (
+                <Box
+                  sx={{
+                    width: 580,
+                    maxHeight: "93vh",
+                    overflowY: "auto",
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      backgroundColor: "#ECAB21",
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: "#ECAB21",
+                        color: "#fff",
+                        textAlign: "center",
+                        padding: 2,
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                      }}
+                    >
+                      Search results
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        position: "sticky",
+                        top: 12,
+                        zIndex: 15,
+                        right: 4,
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                        color: "#ECAB21",
+                        textAlign: "center",
+                        padding: "8px 16px",
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                        width: "40px", 
+                        height: "40px",
+                        display: "flex",
+                        alignItems: "center", 
+                        justifyContent: "center", 
+                      }}
+                    >
+                      {filteredOrders.length}
+                    </Typography>
+                  </Box>
+                  <SortableContext items={[]}>
+                    <>
+                      {filteredOrders?.map((order: any, idy: number) => {
+                        const isExpanded = expandedCards[order.id] || false;
+                        return (
+                          <Box key={order.orderId} sx={{ padding: 2 }}>
+                            <Card
+                              sx={{
+                                marginBottom: 2,
+                                borderRadius: 2,
+                                boxShadow: 3,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <CardContent sx={{ padding: 2 }}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    mb: 2,
+                                  }}
+                                >
+                                  <Box>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{ fontWeight: "bold" }}
+                                    >
+                                      Order #{order?.orderNumber?.forKitchen}
+                                    </Typography>
+
+                                    <Typography
+                                      variant="body2"
+                                      color="textSecondary"
+                                    >
+                                      {order.date}
+                                    </Typography>
+                                  </Box>
+                                  <Chip
+                                    label={order?.delivery?.message}
+                                    color={
+                                      !order?.delivery?.status &&
+                                      (order?.canceled || order?.refunded)
+                                        ? "error"
+                                        : order?.delivery?.status
+                                        ? "success"
+                                        : "warning"
+                                    }
+                                    sx={{
+                                      borderRadius: "50px",
+                                      textTransform: "none",
+                                    }}
+                                  />
+                                </Box>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: "bold",
+                                      color: "black",
+                                    }}
+                                  >
+                                    {order?.customer?.phoneNumber}{" "}
+                                  </Typography>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "bold" }}
+                                  >
+                                    {ShortTime(order.createdAt)}{" "}
+                                  </Typography>
+                                </Box>
+
+                                {order?.order?.map((item: any, idx: number) => {
+                                  let { additional } = item?.order;
+                                  let addOnName = "";
+                                  for (let i = 0; i < additional.length; i++) {
+                                    addOnName += additional[i].items[0].name;
+
+                                    if (i < additional.length - 1) {
+                                      addOnName += " | ";
+                                    }
+                                  }
+                                  return (
+                                    <Box
+                                      key={idx}
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        mt: 2,
+                                      }}
+                                    >
+                                      <Avatar
+                                        src={item?.order?.kulcha?.image}
+                                        sx={{
+                                          width: 50,
+                                          height: 50,
+                                          mr: 2,
+                                        }}
+                                      />
+                                      <Box sx={{ flexGrow: 1 }}>
+                                        <Typography variant="body1">
+                                          {item?.order?.kulcha?.name}
+                                        </Typography>
+                                        {additional?.length !== 0 && (
+                                          <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                          >
+                                            Add-ons : {addOnName}
+                                          </Typography>
+                                        )}
+                                      </Box>
+                                      <Box sx={{ textAlign: "right" }}>
+                                        <Typography
+                                          variant="body2"
+                                          color="textSecondary"
+                                          sx={{
+                                            display: "flex",
+                                            width: "50px",
+                                            justifyContent: "flex-end",
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Qty: {item?.order?.kulcha?.quantity}
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                  );
+                                })}
+                              </CardContent>
+                              <Divider sx={{ mb: 1 }} />
+
+                              {!order?.pickUpAction ? (
+                                <Box
+                                  sx={{
+                                    px: 2,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Driver Name:
+                                  </Typography>
+                                  <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                  >
+                                    {order?.driverName}
+                                  </Typography>
+                                </Box>
+                              ) : (
+                                <Box
+                                  sx={{
+                                    px: 2,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Order Type:
+                                  </Typography>
+                                  <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                  >
+                                    Pickup Order
+                                  </Typography>
+                                </Box>
+                              )}
+                              <Box
+                                sx={{
+                                  px: 2,
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Typography variant="body2">
+                                  <Typography
+                                    variant="body2"
+                                    component="span"
+                                    sx={{
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Address:
+                                  </Typography>{" "}
+                                  {order?.address?.raw || order?.address}
+                                </Typography>
+                              </Box>
+
+                              {!isExpanded && (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    mt: 1,
+                                    mb: 2,
+                                    position: "relative",
+                                  }}
+                                >
+                                  {/* "Show More" button centered */}
+                                  <Button
+                                    variant="text"
+                                    onClick={() => handleToggleExpand(order.id)}
+                                    size="small"
+                                    sx={{
+                                      fontWeight: "bold",
+                                      fontSize: "10px",
+                                    }}
+                                  >
+                                    Show More
+                                  </Button>
+
+                                  {/* <Box
+                                      sx={{
+                                        position: "absolute",
+                                        right: 4, 
+                                      }}
+                                    >
+                                      <IconButton
+                                        sx={{
+                                          borderRadius: "50%", 
+                                          padding: 1,
+                                          mt: 2,
+                                          backgroundColor: "#ECAB21",
+                                          color: "white",
+                                          marginTop: "0.5rem",
+                                          fontWeight: "bold",
+                                          "&:hover": {
+                                            backgroundColor: "#FFC107",
+                                            color: "white",
+                                          },
+                                        }}
+                                        onClick={handleNotesClick}
+                                      >
+                                        <DescriptionIcon />
+                                      </IconButton>
+                                    </Box> */}
+                                </Box>
+                              )}
+                              {showStickyNote && (
+                                <Paper
+                                  elevation={3}
+                                  sx={{
+                                    position: "absolute",
+                                    top: stickyNotePosition.top,
+                                    left: stickyNotePosition.left,
+                                    width: "300px",
+                                    padding: "10px",
+                                    backgroundColor: "#fffbcc",
+                                    zIndex: 1000,
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  <IconButton
+                                    onClick={handleCloseNote}
+                                    sx={{
+                                      position: "absolute",
+                                      top: 5,
+                                      right: 5,
+                                      backgroundColor: "#fffbcc",
+                                      "&:hover": {
+                                        backgroundColor: "#fffbcc",
+                                      },
+                                    }}
+                                  >
+                                    <CloseIcon />
+                                  </IconButton>
+
+                                  <Typography variant="h6" sx={{ mb: 1 }}>
+                                    Untitled Note
+                                  </Typography>
+
+                                  <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    variant="standard"
+                                    placeholder="Write your notes here..."
+                                    value={noteText}
+                                    onChange={(e) =>
+                                      setNoteText(e.target.value)
+                                    }
+                                    InputProps={{
+                                      disableUnderline: true,
+                                    }}
+                                    sx={{
+                                      mb: 1,
+                                      backgroundColor: "#fffbcc",
+                                      padding: "5px",
+                                    }}
+                                  />
+
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      mt: 2,
+                                    }}
+                                  >
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={handleSaveNote}
+                                      sx={{
+                                        borderRadius: "10px",
+                                        padding: 1,
+                                        mt: 2,
+                                        backgroundColor: "#ECAB21",
+                                        color: "white",
+                                        marginTop: "0.5rem",
+                                        fontWeight: "bold",
+                                        "&:hover": {
+                                          backgroundColor: "#FFC107",
+                                          color: "white",
+                                        },
+                                      }}
+                                    >
+                                      Save
+                                    </Button>
+                                  </Box>
+                                </Paper>
+                              )}
+                              {isExpanded && (
+                                <>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="span"
+                                        sx={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Payment Mode:
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        {order.paymentMode}
+                                      </Typography>
+                                    </Box>
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="span"
+                                        sx={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Source:
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        {order.source}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    {/* <Divider sx={{ my: 1 }} />
+                                      <Box
+                                        sx={{
+                                          px: 2,
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <Typography
+                                          variant="body2"
+                                          component="span"
+                                          sx={{
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Time:
+                                        </Typography>
+                                        <Typography
+                                          variant="body2"
+                                          color="textSecondary"
+                                        >
+                                          {formatTimestampToCustomDate(
+                                            order.createdAt
+                                          )}
+                                        </Typography>
+                                      </Box> */}
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="span"
+                                        sx={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Delivery Charges:
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        $
+                                        {Number(
+                                          order?.deliverCharge || 0
+                                        ).toFixed(2)}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="span"
+                                        sx={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Total Tax:
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        ${Number(order?.total_tax).toFixed(2)}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="span"
+                                        sx={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Total:
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        $
+                                        {Number(
+                                          Number(order?.grand_total) +
+                                            Number(order.deliverCharge || 0) +
+                                            Number(order.tip)
+                                        ).toFixed(2)}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 1 }} />
+                                    <Box sx={{ px: 2 }}>
+                                      {/* <Typography
+                                          variant="body2"
+                                          sx={{
+                                            fontWeight: "bold",
+                                            marginBottom: 1,
+                                          }}
+                                        >
+                                          Billing Address :
+                                        </Typography> */}
+                                      <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="span"
+                                          sx={{
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Name:
+                                        </Typography>{" "}
+                                        {order?.customer?.name}
+                                      </Typography>
+                                      <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="span"
+                                          sx={{
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Customer&rsquo;s order id:
+                                        </Typography>{" "}
+                                        {order?.orderNumber?.forCustomer}
+                                      </Typography>
+                                      <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="span"
+                                          sx={{
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Distance:
+                                        </Typography>{" "}
+                                        {order?.address?.distance?.text || ""}
+                                      </Typography>
+                                      <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="span"
+                                          sx={{
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          Instructions:
+                                        </Typography>{" "}
+                                        {order?.instructions}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <Box>
+                                    <Divider sx={{ my: 2 }} />
+                                    <Box
+                                      sx={{
+                                        px: 2,
+                                        pb: 2,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "flex-start",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        X{order?.order?.length} Items
+                                      </Typography>
+                                    </Box>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        mt: 2,
+                                        mb: 1,
+                                        position: "relative",
+                                      }}
+                                    >
+                                      <Button
+                                        variant="text"
+                                        onClick={() =>
+                                          handleToggleExpand(order.id)
+                                        }
+                                        size="small"
+                                        sx={{
+                                          fontWeight: "bold",
+                                          fontSize: "10px",
+                                        }}
+                                      >
+                                        Show Less
+                                      </Button>
+                                      {/* 
+                                        <Box
+                                      sx={{
+                                        position: "absolute",
+                                        right: 6,
+                                        bottom: 0.1,
+                                      }}
+                                    >
+                                      <IconButton
+                                        sx={{
+                                          borderRadius: "50%", 
+                                          padding: 1,
+                                          backgroundColor: "#ECAB21",
+                                          color: "white",
+                                          marginTop: "0.5rem",
+                                          fontWeight: "bold",
+                                          "&:hover": {
+                                            backgroundColor: "#FFC107",
+                                            color: "white",
+                                          },
+                                        }}
+                                        onClick={handleNotesClick}
+                                      >
+                                        <DescriptionIcon />
+                                      </IconButton>
+                                    </Box> */}
+                                    </Box>
+                                  </Box>
+                                </>
+                              )}
+                            </Card>
+                          </Box>
+                        );
+                      })}
+                    </>
+                  </SortableContext>
+                </Box>
+              )}
               {containers.map((container) => (
                 <Box
                   key={container.id}
@@ -581,7 +1339,11 @@ const KanbanBoard = () => {
                             if (container.id === "container-1") {
                               let { additional } = order.order;
                               return (
-                                <CartItemCard key={order.orderId} order = {order} additional={additional} />
+                                <CartItemCard
+                                  key={order.orderId}
+                                  order={order}
+                                  additional={additional}
+                                />
                               );
                             }
                             return (
@@ -612,6 +1374,7 @@ const KanbanBoard = () => {
                                           Order #
                                           {order?.orderNumber?.forKitchen}
                                         </Typography>
+
                                         <Typography
                                           variant="body2"
                                           color="textSecondary"
@@ -658,6 +1421,27 @@ const KanbanBoard = () => {
                                         {ShortTime(order.createdAt)}{" "}
                                       </Typography>
                                     </Box>
+                                    {
+                                      order?.iamHere && !order?.delivery?.status &&
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <Typography
+                                          variant="h6"
+                                          sx={{
+                                            fontWeight: "bold",
+                                            mt:1,
+                                            color:'green'
+                                          }}
+                                        >
+                                          Person arrived for order pickup.
+                                        </Typography>
+                                      </Box>
+                                    }
 
                                     {order?.order?.map(
                                       (item: any, idx: number) => {
@@ -727,8 +1511,7 @@ const KanbanBoard = () => {
                                   </CardContent>
                                   <Divider sx={{ mb: 1 }} />
 
-                                  {
-                                    !order?.pickUpAction ?
+                                  {!order?.pickUpAction ? (
                                     <Box
                                       sx={{
                                         px: 2,
@@ -751,7 +1534,9 @@ const KanbanBoard = () => {
                                       >
                                         {order?.driverName}
                                       </Typography>
-                                    </Box> :    <Box
+                                    </Box>
+                                  ) : (
+                                    <Box
                                       sx={{
                                         px: 2,
                                         display: "flex",
@@ -774,7 +1559,7 @@ const KanbanBoard = () => {
                                         Pickup Order
                                       </Typography>
                                     </Box>
-                                  }
+                                  )}
                                   <Box
                                     sx={{
                                       px: 2,
@@ -808,6 +1593,7 @@ const KanbanBoard = () => {
                                         position: "relative",
                                       }}
                                     >
+                                      {/* "Show More" button centered */}
                                       <Button
                                         variant="text"
                                         onClick={() =>
@@ -821,7 +1607,7 @@ const KanbanBoard = () => {
                                       >
                                         Show More
                                       </Button>
-                                        
+
                                       {/* <Box
                                         sx={{
                                           position: "absolute",
@@ -849,86 +1635,89 @@ const KanbanBoard = () => {
                                       </Box> */}
                                     </Box>
                                   )}
-                                  {showStickyNote && (
+                                  {/* {showStickyNote && (
                                     <Paper
-                                    elevation={3}
-                                    sx={{
-                                      position: "absolute",
-                                      top: stickyNotePosition.top,
-                                      left: stickyNotePosition.left,
-                                      width: "300px",
-                                      padding: "10px",
-                                      backgroundColor: "#fffbcc", 
-                                      zIndex: 1000,
-                                      borderRadius: "10px",
-                                    }}
-                                  >
-                                   
-                                    <IconButton
-                                      onClick={handleCloseNote}
+                                      elevation={3}
                                       sx={{
                                         position: "absolute",
-                                        top: 5,
-                                        right: 5,
+                                        top: stickyNotePosition.top,
+                                        left: stickyNotePosition.left,
+                                        width: "300px",
+                                        padding: "10px",
                                         backgroundColor: "#fffbcc",
-                                        "&:hover": {
-                                          backgroundColor: "#fffbcc",
-                                        },
+                                        zIndex: 1000,
+                                        borderRadius: "10px",
                                       }}
                                     >
-                                      <CloseIcon />
-                                    </IconButton>
-                                  
-                                    
-                                    <Typography variant="h6" sx={{ mb: 1 }}>
-                                      Untitled Note
-                                    </Typography>
-                                  
-                                   
-                                    <TextField
-                                      fullWidth
-                                      multiline
-                                      rows={4}
-                                      variant="standard"
-                                      placeholder="Write your notes here..."
-                                      value={noteText}
-                                      onChange={(e) => setNoteText(e.target.value)}
-                                      InputProps={{
-                                        disableUnderline: true, 
-                                      }}
-                                      sx={{
-                                        mb: 1,
-                                        backgroundColor: "#fffbcc", 
-                                        padding: "5px",
-                                      }}
-                                    />
-                                  
-                                    
-                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                                      <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleSaveNote}
+                                      <IconButton
+                                        onClick={handleCloseNote}
                                         sx={{
-                                          borderRadius: "10px", 
-                                          padding: 1,
-                                          mt: 2,
-                                          backgroundColor: "#ECAB21",
-                                          color: "white",
-                                          marginTop: "0.5rem",
-                                          fontWeight: "bold",
+                                          position: "absolute",
+                                          top: 5,
+                                          right: 5,
+                                          backgroundColor: "#fffbcc",
                                           "&:hover": {
-                                            backgroundColor: "#FFC107",
-                                            color: "white",
+                                            backgroundColor: "#fffbcc",
                                           },
                                         }}
                                       >
-                                        Save
-                                      </Button>
-                                    </Box>
-                                  </Paper>
-                                  
-                                  )}
+                                        <CloseIcon />
+                                      </IconButton>
+
+                                      <Typography variant="h6" sx={{ mb: 1 }}>
+                                        Untitled Note
+                                      </Typography>
+
+                                      <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        variant="standard"
+                                        placeholder="Write your notes here..."
+                                        value={noteText}
+                                        onChange={(e) =>
+                                          setNoteText(e.target.value)
+                                        }
+                                        InputProps={{
+                                          disableUnderline: true,
+                                        }}
+                                        sx={{
+                                          mb: 1,
+                                          backgroundColor: "#fffbcc",
+                                          padding: "5px",
+                                        }}
+                                      />
+
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          mt: 2,
+                                        }}
+                                      >
+                                        <Button
+                                          variant="contained"
+                                          color="primary"
+                                          onClick={handleSaveNote}
+                                          sx={{
+                                            borderRadius: "10px",
+                                            padding: 1,
+                                            mt: 2,
+                                            backgroundColor: "#ECAB21",
+                                            color: "white",
+                                            marginTop: "0.5rem",
+                                            fontWeight: "bold",
+                                            "&:hover": {
+                                              backgroundColor: "#FFC107",
+                                              color: "white",
+                                            },
+                                          }}
+                                        >
+                                          Save
+                                        </Button>
+                                      </Box>
+                                    </Paper>
+                                  )} */}
                                   {isExpanded && (
                                     <>
                                       <Box>
@@ -1086,35 +1875,6 @@ const KanbanBoard = () => {
                                               fontWeight: "bold",
                                             }}
                                           >
-                                            Tip Amount:
-                                          </Typography>
-                                          <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                          >
-                                            $
-                                            {Number(order?.tip).toFixed(
-                                              2
-                                            )}
-                                          </Typography>
-                                        </Box>
-                                      </Box>
-                                      <Box>
-                                        <Box
-                                          sx={{
-                                            px: 2,
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <Typography
-                                            variant="body2"
-                                            component="span"
-                                            sx={{
-                                              fontWeight: "bold",
-                                            }}
-                                          >
                                             Total:
                                           </Typography>
                                           <Typography
@@ -1124,7 +1884,10 @@ const KanbanBoard = () => {
                                             $
                                             {Number(
                                               Number(order?.grand_total) +
-                                                Number(order.deliverCharge || 0) +Number(order.tip)
+                                                Number(
+                                                  order.deliverCharge || 0
+                                                ) +
+                                                Number(order.tip)
                                             ).toFixed(2)}
                                           </Typography>
                                         </Box>
@@ -1161,22 +1924,9 @@ const KanbanBoard = () => {
                                                 fontWeight: "bold",
                                               }}
                                             >
-                                              Phone:
+                                              Customer&rsquo;s order id:
                                             </Typography>{" "}
-                                            {order?.customer?.phoneNumber}
-                                          </Typography>
-                                          <Typography variant="body2">
-                                            <Typography
-                                              variant="body2"
-                                              component="span"
-                                              sx={{
-                                                fontWeight: "bold",
-                                              }}
-                                            >
-                                              Address:
-                                            </Typography>{" "}
-                                            {order?.address?.raw ||
-                                              order?.address}
+                                            {order?.orderNumber?.forCustomer}
                                           </Typography>
                                           <Typography variant="body2">
                                             <Typography
@@ -1231,182 +1981,205 @@ const KanbanBoard = () => {
                                               container.id ===
                                                 "container-3") && (
                                               <>
-                                               {!order?.pickUpAction ? <>
-                                                <Button
-                                                  onClick={() =>
-                                                    handleOpenDialog(order.id)
-                                                  }
-                                                  variant="contained"
-                                                  sx={{
-                                                    backgroundColor: "#ECAB21",
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                    fontSize: "10px",
-                                                    marginTop: 2,
-                                                    "&:hover": {
-                                                      backgroundColor: "white",
-                                                      color: "#ECAB21",
-                                                    },
-                                                  }}
-                                                >
-                                                  Assign Driver
-                                                </Button>
-                                               
-                                               </> : <>
-                                                <Button
-                                                  onClick={() =>
-                                                    readyForPickUp(order.id,
-                                                      "Out For Delivery",
-                                                      false)
-                                                  }
-                                                  variant="contained"
-                                                  sx={{
-                                                    backgroundColor: "#ECAB21",
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                    fontSize: "10px",
-                                                    marginTop: 2,
-                                                    "&:hover": {
-                                                      backgroundColor: "white",
-                                                      color: "#ECAB21",
-                                                    },
-                                                  }}
-                                                >
-                                                  Ready For Pickup
-                                                </Button>
-                                               </>}
-                                              </>
-                                            )}
-                                            {container.id === "container-2" && !order?.pickUpAction && (
-                                              <>
-                                                <Button
-                                                  onClick={() =>
-                                                    updateOrderStatus(
-                                                      order.id,
-                                                      "Out For Delivery",
-                                                      false
-                                                    )
-                                                  }
-                                                  disabled={
-                                                    order?.driverId === "" ||
-                                                    order?.driverId ===
-                                                      undefined
-                                                  }
-                                                  variant="contained"
-                                                  sx={{
-                                                    backgroundColor: "#ECAB21",
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                    fontSize: "10px",
-                                                    marginTop: 2,
-                                                    "&:hover": {
-                                                      backgroundColor: "white",
-                                                      color: "#ECAB21",
-                                                    },
-                                                  }}
-                                                >
-                                                  Out For Delivery
-                                                </Button>
-                                                <Dialog
-                                                  open={openDialog === order.id}
-                                                  sx={{ zIndex: "999" }}
-                                                  onClose={handleCloseDialog}
-                                                  PaperProps={{
-                                                    sx: {
-                                                      borderRadius: 4, // Rounds the corners of the dialog
-                                                      padding: 2, // Adds padding inside the dialog
-                                                      minWidth: 400, // Minimum width for the dialog
-                                                    },
-                                                  }}
-                                                >
-                                                  <DialogTitle>
-                                                    Assign Driver
-                                                  </DialogTitle>
-                                                  <DialogContent>
-                                                    <FormControl
-                                                      fullWidth
-                                                      variant="outlined"
-                                                      sx={{ mt: 2 }}
-                                                    >
-                                                      <InputLabel>
-                                                        Select Driver
-                                                      </InputLabel>
-                                                      <Select
-                                                        value={order.driverId}
-                                                        onChange={(e) =>
-                                                          handleDriverSelect(
-                                                            order.id,
-                                                            e.target.value
-                                                          )
-                                                        }
-                                                        label="Select Driver"
-                                                        fullWidth
-                                                        sx={{
-                                                          borderRadius: 2,
-                                                        }}
-                                                      >
-                                                        {drivers.map(
-                                                          (driver: any) => (
-                                                            <MenuItem
-                                                              key={driver.id}
-                                                              value={driver.id}
-                                                            >
-                                                              {driver.name}
-                                                            </MenuItem>
-                                                          )
-                                                        )}
-                                                      </Select>
-                                                    </FormControl>
-                                                  </DialogContent>
-                                                  <DialogActions>
+                                                {!order?.pickUpAction ? (
+                                                  <>
                                                     <Button
-                                                      onClick={
-                                                        handleCloseDialog
+                                                      onClick={() =>
+                                                        handleOpenDialog(
+                                                          order.id
+                                                        )
                                                       }
+                                                      variant="contained"
+                                                      sx={{
+                                                        backgroundColor:
+                                                          "#ECAB21",
+                                                        color: "white",
+                                                        fontWeight: "bold",
+                                                        fontSize: "10px",
+                                                        marginTop: 2,
+                                                        "&:hover": {
+                                                          backgroundColor:
+                                                            "white",
+                                                          color: "#ECAB21",
+                                                        },
+                                                      }}
                                                     >
-                                                      Cancel
+                                                      Assign Driver
                                                     </Button>
-                                                  </DialogActions>
-                                                </Dialog>
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <Button
+                                                      onClick={() =>
+                                                        readyForPickUp(
+                                                          order.id,
+                                                          "Out For Delivery",
+                                                          false
+                                                        )
+                                                      }
+                                                      variant="contained"
+                                                      sx={{
+                                                        backgroundColor:
+                                                          "#ECAB21",
+                                                        color: "white",
+                                                        fontWeight: "bold",
+                                                        fontSize: "10px",
+                                                        marginTop: 2,
+                                                        "&:hover": {
+                                                          backgroundColor:
+                                                            "white",
+                                                          color: "#ECAB21",
+                                                        },
+                                                      }}
+                                                    >
+                                                      Ready For Pickup
+                                                    </Button>
+                                                  </>
+                                                )}
                                               </>
                                             )}
-                                            {container.id === "container-3" || container.id === "container-7" && (
-                                              <Typography
-                                                variant="body2"
-                                                color="textSecondary"
-                                                sx={{
-                                                  display: "flex",
-                                                  gap: 1,
-                                                }}
-                                              >
-                                                <Button
-                                                  onClick={() =>
-                                                    updateOrderStatus(
-                                                      order.id,
-                                                      "Delivered",
-                                                      true
-                                                    )
-                                                  }
-                                                  variant="contained"
+                                            {container.id === "container-2" &&
+                                              !order?.pickUpAction && (
+                                                <>
+                                                  <Button
+                                                    onClick={() =>
+                                                      updateOrderStatus(
+                                                        order.id,
+                                                        "Out For Delivery",
+                                                        false
+                                                      )
+                                                    }
+                                                    disabled={
+                                                      order?.driverId === "" ||
+                                                      order?.driverId ===
+                                                        undefined
+                                                    }
+                                                    variant="contained"
+                                                    sx={{
+                                                      backgroundColor:
+                                                        "#ECAB21",
+                                                      color: "white",
+                                                      fontWeight: "bold",
+                                                      fontSize: "10px",
+                                                      marginTop: 2,
+                                                      "&:hover": {
+                                                        backgroundColor:
+                                                          "white",
+                                                        color: "#ECAB21",
+                                                      },
+                                                    }}
+                                                  >
+                                                    Out For Delivery
+                                                  </Button>
+                                                  <Dialog
+                                                    open={
+                                                      openDialog === order.id
+                                                    }
+                                                    sx={{ zIndex: "999" }}
+                                                    onClose={handleCloseDialog}
+                                                    PaperProps={{
+                                                      sx: {
+                                                        borderRadius: 4, // Rounds the corners of the dialog
+                                                        padding: 2, // Adds padding inside the dialog
+                                                        minWidth: 400, // Minimum width for the dialog
+                                                      },
+                                                    }}
+                                                  >
+                                                    <DialogTitle>
+                                                      Assign Driver
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                      <FormControl
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        sx={{ mt: 2 }}
+                                                      >
+                                                        <InputLabel>
+                                                          Select Driver
+                                                        </InputLabel>
+                                                        <Select
+                                                          value={order.driverId}
+                                                          onChange={(e) =>
+                                                            handleDriverSelect(
+                                                              order.id,
+                                                              e.target.value
+                                                            )
+                                                          }
+                                                          label="Select Driver"
+                                                          fullWidth
+                                                          sx={{
+                                                            borderRadius: 2,
+                                                          }}
+                                                        >
+                                                          {drivers.map(
+                                                            (driver: any) => (
+                                                              <MenuItem
+                                                                key={driver.id}
+                                                                value={
+                                                                  driver.id
+                                                                }
+                                                              >
+                                                                {driver.name}
+                                                              </MenuItem>
+                                                            )
+                                                          )}
+                                                        </Select>
+                                                      </FormControl>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                      <Button
+                                                        onClick={
+                                                          handleCloseDialog
+                                                        }
+                                                      >
+                                                        Cancel
+                                                      </Button>
+                                                    </DialogActions>
+                                                  </Dialog>
+                                                </>
+                                              )}
+                                            {container.id === "container-3" ||
+                                              (container.id ===
+                                                "container-7" && (
+                                                <Typography
+                                                  variant="body2"
+                                                  color="textSecondary"
                                                   sx={{
-                                                    backgroundColor: "#ECAB21",
-                                                    color: "white",
-                                                    marginTop: 2,
-                                                    fontWeight: "bold",
-                                                    fontSize: "10px",
-                                                    "&:hover": {
-                                                      backgroundColor: "white",
-                                                      color: "#ECAB21",
-                                                    },
+                                                    display: "flex",
+                                                    gap: 1,
                                                   }}
                                                 >
-                                                  Delivered
-                                                </Button>
-                                              </Typography>
-                                            )}
+                                                  <Button
+                                                    onClick={() =>
+                                                      updateOrderStatus(
+                                                        order.id,
+                                                        "Delivered",
+                                                        true
+                                                      )
+                                                    }
+                                                    variant="contained"
+                                                    sx={{
+                                                      backgroundColor:
+                                                        "#ECAB21",
+                                                      color: "white",
+                                                      marginTop: 2,
+                                                      fontWeight: "bold",
+                                                      fontSize: "10px",
+                                                      "&:hover": {
+                                                        backgroundColor:
+                                                          "white",
+                                                        color: "#ECAB21",
+                                                      },
+                                                    }}
+                                                  >
+                                                    Delivered
+                                                  </Button>
+                                                </Typography>
+                                              ))}
                                             {(container.id === "container-3" ||
+                                              container.id === "container-2" ||
                                               container.id ===
-                                                "container-2" || container.id === "container-7") && (
+                                                "container-7") && (
                                               <Button
                                                 onClick={() =>
                                                   cancelOrderStatus(order.id)
@@ -1540,7 +2313,7 @@ const KanbanBoard = () => {
                                           >
                                             Show Less
                                           </Button>
-{/* 
+                                          {/* 
                                           <Box
                                         sx={{
                                           position: "absolute",

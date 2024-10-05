@@ -117,6 +117,7 @@ export const POST = async (req, res) => {
             pickUpAction : metadata.selectedOption === 'pickup',
             pickUpTime : metadata.pickupTime,
             readyForPickup : false,
+            iamHere : false,
             driverId: '',
             paymentMode : 'Online',
             source:'Website',

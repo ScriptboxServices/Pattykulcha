@@ -58,7 +58,6 @@ function DriverLocation() {
   useEffect(() => {
     const colRef = collection(db, "driverlocation");
     const unsubscribePosition = onSnapshot(colRef, (snapshot) => {
-      console.log("Hit");
       let loc: any = [];
       snapshot.forEach((doc) => {
         const { isOnline } = doc.data();

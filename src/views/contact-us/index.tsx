@@ -62,7 +62,7 @@ const ContactUs: React.FC = () => {
       title: "Call Now",
       description: "Give us a call for instant support.",
       icon: <Phone fontSize="large" />,
-      action: () => window.location.href = "tel:+1437996-5431", // Initiate call when clicked
+      action: () => window.location.href = "tel:+18333381313", // Initiate call when clicked
     },
   ];
 
