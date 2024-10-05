@@ -481,9 +481,6 @@ const KanbanBoard = () => {
           order?.customer?.phoneNumber
             ?.toString()
             .includes(searchValue.toString()) ||
-          order?.orderNumber?.forCustomer
-            ?.toString()
-            .includes(searchValue.toString()) ||
           order?.orderNumber?.forKitchen
             ?.toString()
             ?.includes(searchValue.toString())

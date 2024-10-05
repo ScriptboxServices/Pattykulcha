@@ -528,13 +528,21 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                 </Box>
                 <Button
                   onClick={() => {
-                    if (!metaData?.address?.raw) {
-                      setError({
-                        status : true,
-                        message : 'Before proceeding, please update address.'
-                      });
-                      return;
+
+                    if(selectedOption !== 'pickup'){
+                      if (!metaData?.address?.raw) {
+                        setError({
+                          status : true,
+                          message : 'Before proceeding, please update address.'
+                        });
+                        return;
+                      }
+                      if (!isAddressReachable) {
+                        setDialogboxOpen(true);
+                        return;
+                      }
                     }
+                    
                     if (!metaData?.name) {
                       setError({
                         status : true,
@@ -543,10 +551,6 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                       return;
                     }
                     if (!kitchenMetaData?.isShopOpen) {
-                      setDialogboxOpen(true);
-                      return;
-                    }
-                    if (!isAddressReachable) {
                       setDialogboxOpen(true);
                       return;
                     }

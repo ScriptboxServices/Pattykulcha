@@ -549,6 +549,68 @@ const OrderPage: React.FC<Props> = ({
                       )}
                     </DialogContent>
                   </Dialog>
+                  <Box
+                    sx={{ mb: 3, cursor: "pointer" }}
+                    onClick={handleEditName}>
+                    <Typography
+                      variant='h6'
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        color: "#1F2937",
+                        paddingBottom: "4px",
+                        fontSize: { xs: "16px", lg: "18px" },
+                        wordBreak: "break-all",
+                      }}>
+                      {/* Conditionally render the TextField or the name */}
+                      {isEditingName ? (
+                        <TextField
+                          inputRef={nameInputRef}
+                          fullWidth
+                          variant='outlined'
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <Button
+                                  variant='contained'
+                                  onClick={handleNameSave}
+                                  // disabled={!name}
+                                  sx={{
+                                    backgroundColor: "#ECAB21",
+                                    color: "white",
+                                    "&:hover": {
+                                      backgroundColor: "#FFC107",
+                                      color: "white",
+                                    },
+                                  }}>
+                                  Save
+                                </Button>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      ) : (
+                        <>
+                          Name: {metaData?.name}
+                          <IconButton
+                            sx={{
+                              background: "#F59E0B",
+                              borderRadius: "50%",
+                              "&:hover": {
+                                backgroundColor: "#FFC107",
+                                color: "white",
+                              },
+                            }}
+                            onClick={handleEditName}>
+                            <EditIcon sx={{ color: "#ffffff" }} />
+                          </IconButton>
+                        </>
+                      )}
+                    </Typography>
+                  </Box>
                   <Box sx={{ mb: 2, cursor: "pointer" }}>
                     <Typography
                       // variant="h6"

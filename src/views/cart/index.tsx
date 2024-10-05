@@ -458,7 +458,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 fontWeight: "bold",
               }}
             >
-              What&apos;s Included:- Chana. | Imli-Pyaz-Chutney. | Amul Butter.
+              What&apos;s Included:- Chana, Imli-Pyaz-Chutney, Butter.
             </Typography>
           </Box>
         </Grid>
