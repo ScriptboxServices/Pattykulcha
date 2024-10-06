@@ -1584,7 +1584,8 @@ const KanbanBoard = () => {
                                           fontWeight: "bold",
                                         }}
                                       >
-                                        Address:
+                                        {order?.pickUpAction ? "Pickup Address:" : "Address:"}
+                                        
                                       </Typography>{" "}
                                       {order?.address?.raw || order?.address}
                                     </Typography>

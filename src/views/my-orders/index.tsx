@@ -323,10 +323,21 @@ const OrdersPage: React.FC = () => {
                     <Typography variant="body2" color="textSecondary">
                       Phone: {orderDoc?.customer?.phoneNumber}
                     </Typography>*/}
-                    <Typography variant='body2' color='textSecondary'>
-                      <b style={{ color: "black" }}>Address:</b>{" "}
-                      {orderDoc?.address?.raw || orderDoc?.address}
-                    </Typography>
+                    {
+                      orderDoc?.pickUpAction ? ( <>
+                            <Typography variant='body2' color='textSecondary'>
+                            <b style={{ color: "black" }}>Pickup Address:</b>{" "}
+                            {orderDoc?.address?.raw || orderDoc?.address}
+                          </Typography>
+                      </>) : (
+                        <>        
+                          <Typography variant='body2' color='textSecondary'>
+                            <b style={{ color: "black" }}>Address:</b>{" "}
+                            {orderDoc?.address?.raw || orderDoc?.address}
+                          </Typography>
+                        </>
+                      )
+                    }
                     <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Payment Mode:</b>{" "}
                       {orderDoc?.paymentMode}

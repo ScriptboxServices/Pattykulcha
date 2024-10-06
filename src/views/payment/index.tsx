@@ -25,7 +25,7 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
     payment_id : ""
   });
 
-  const {user,isLoggedIn,metaData} = useAuthContext()
+  const {user,isLoggedIn,metaData,kitchenMetaData} = useAuthContext()
 
   const {instructions} = useMenuContext()
   const paymentInitialize = useRef(true)
@@ -79,7 +79,7 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
           "Content-Type": "application/json",
         },
         data: {
-          address : metaData?.address,
+          address : selectedOption === 'pickup'? kitchenMetaData?.address : metaData?.address,
           instructions,
           name : metaData?.name,
           tip,
