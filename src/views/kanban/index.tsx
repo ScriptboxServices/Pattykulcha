@@ -860,7 +860,7 @@ const KanbanBoard = () => {
                                     </Box> */}
                                 </Box>
                               )}
-                              {showStickyNote && (
+                              {/* {showStickyNote && (
                                 <Paper
                                   elevation={3}
                                   sx={{
@@ -942,7 +942,7 @@ const KanbanBoard = () => {
                                     </Button>
                                   </Box>
                                 </Paper>
-                              )}
+                              )} */}
                               {isExpanded && (
                                 <>
                                   <Box>
@@ -2147,9 +2147,9 @@ const KanbanBoard = () => {
                                                   </Dialog>
                                                 </>
                                               )}
-                                            {container.id === "container-3" ||
-                                              (container.id ===
-                                                "container-7" && (
+                                            {(container.id === "container-3" ||
+                                              container.id ===
+                                                "container-7") && (
                                                 <Typography
                                                   variant="body2"
                                                   color="textSecondary"
@@ -2184,7 +2184,7 @@ const KanbanBoard = () => {
                                                     Delivered
                                                   </Button>
                                                 </Typography>
-                                              ))}
+                                              )}
                                             {(container.id === "container-3" ||
                                               container.id === "container-2" ||
                                               container.id ===
