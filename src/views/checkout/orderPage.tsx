@@ -501,7 +501,7 @@ const OrderPage: React.FC<Props> = ({
                     </DialogTitle>
                     <DialogContent>
                       <Typography variant='body1' sx={{ mb: 2 }}>
-                        <strong>From:</strong>20 Lockport Ave, Etobicoke, ON M8Z
+                        <strong>From:</strong>635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
                         2R7
                       </Typography>
 
@@ -620,7 +620,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      <b>Address:</b> 20 Lockport Ave, Etobicoke, ON M8Z 2R7
+                      <b>Address:</b> 635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
                     </Typography>
                   </Box>
 

@@ -132,19 +132,73 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
   const [isTeaDialogOpen, setIsTeaDialogOpen] = useState(false);
   const [isCoffeeDialogOpen, setIsCoffeeDialogOpen] = useState(false);
   const [alignment, setAlignment] = useState<string | null>("delivery");
-  const [selectedTab, setSelectedTab] = useState<number>(0); // State for Tabs
-
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [isSticky, setIsSticky] = useState<boolean>(false);
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
   const kulchaRef = useRef<HTMLDivElement>(null);
   const extrasRef = useRef<HTMLDivElement>(null);
   const beveragesRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
-    // Scroll to the corresponding section
-    if (newValue === 0) scrollToRef(kulchaRef);
-    if (newValue === 1) scrollToRef(extrasRef);
-    if (newValue === 2) scrollToRef(beveragesRef);
+    if (newValue === 0)
+      kulchaRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (newValue === 1)
+      extrasRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (newValue === 2)
+      beveragesRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+
+  useEffect(() => {
+    const options = {
+      root: null, 
+      rootMargin: "-100px 0px 0px 0px",
+      threshold: 0, 
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target === kulchaRef.current) {
+            setSelectedTab(0);
+          } else if (entry.target === extrasRef.current) {
+            setSelectedTab(1);
+          } else if (entry.target === beveragesRef.current) {
+            setSelectedTab(2);
+          }
+        }
+      });
+    }, options);
+
+    if (kulchaRef.current) observer.observe(kulchaRef.current);
+    if (extrasRef.current) observer.observe(extrasRef.current);
+    if (beveragesRef.current) observer.observe(beveragesRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tabsRef.current && tabsContainerRef.current) {
+        const tabsPosition =
+          tabsContainerRef.current.getBoundingClientRect().top;
+        if (tabsPosition <= 0 && !isSticky) {
+          setIsSticky(true); 
+        } else if (tabsPosition > 0 && isSticky) {
+          setIsSticky(false); 
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isSticky]);
+
   const handleAlignmentChange = (
     event: React.MouseEvent<HTMLElement>,
     newAlignment: string | null
@@ -430,12 +484,14 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
       <CircularLodar isLoading={loading} />
       <Box
         sx={{
-          display: "flex",
+          display: { xs: "none", sm: "flex" },
           justifyContent: "center",
-          flexDirection: { xs: "column", sm: "row" },
+          flexDirection: { xs: "row", sm: "row" },
         }}
       >
-        <Grid item xs={12} md={6}>
+        <Grid item xs={8} sm={6} md={6}>
+          {" "}
+          {/* Updated xs to 8 (70% of 12-column grid) */}
           <Box sx={{ paddingLeft: "7%" }}>
             <Typography
               variant="h4"
@@ -454,7 +510,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
               sx={{
                 marginBottom: "1rem",
                 color: "#000000",
-                fontSize: { xs: "1rem", sm: "1.2rem" },
+                fontSize: { xs: "0.9rem", sm: "1.2rem" },
                 fontWeight: "bold",
               }}
             >
@@ -462,13 +518,15 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
+
+        <Grid item xs={4} sm={6} md={6}>
+          {" "}
           <Box
             sx={{
               textAlign: { xs: "center", md: "right" },
               marginLeft: { md: 13 },
-              paddingLeft: "20%",
-              paddingRight: "10%",
+              paddingLeft: { xs: "0", md: "20%" },
+              paddingRight: { xs: "0", md: "10%" },
             }}
           >
             <Image
@@ -478,20 +536,20 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
               height={500}
               style={{
                 maxWidth: "90%",
-                height: "20%",
+                height: "auto", // Adjusted height for responsiveness
                 paddingTop: 10,
-                borderRadius: "5%", // This makes the image round
+                borderRadius: "5%", // Keeps the image rounded
                 objectFit: "cover",
+                // Adjusted width for responsiveness
               }}
             />
           </Box>
-
           <Box
             sx={{
               textAlign: { xs: "center", md: "right" },
               marginLeft: { md: 8 },
-              paddingLeft: "20%",
-              paddingRight: "10%",
+              paddingLeft: { xs: "0", md: "20%" },
+              paddingRight: { xs: "0", md: "10%" },
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -503,7 +561,9 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 color: "#336195",
               }}
             >
-              <RemoveCircleOutlineIcon sx={{ fontSize: "2.5rem" }} />
+              <RemoveCircleOutlineIcon
+                sx={{ fontSize: { xs: "1.5rem", sm: "2.5rem" } }}
+              />
             </IconButton>
             <Typography variant="body1" color="textPrimary">
               {kulcha?.quantity}
@@ -514,11 +574,121 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 color: "#336195",
               }}
             >
-              <AddCircleOutlineIcon sx={{ fontSize: "2.5rem" }} />
+              <AddCircleOutlineIcon
+                sx={{ fontSize: { xs: "1.5rem", sm: "2.5rem" } }}
+              />
             </IconButton>
           </Box>
         </Grid>
       </Box>
+
+      <Grid
+        item
+        xs={12}
+        sx={{ display: { xs: "flex", sm: "none" }, justifyContent: "center" }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: { xs: "1rem", md: "1rem" },
+            backgroundColor: "white",
+            border: { xs: "none", md: "2px solid #dcdcdc" },
+            borderRadius: "8px",
+            position: "relative",
+            width: { xs: "100%", md: "60%" },
+            cursor: "pointer",
+            mt: 0,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "left",
+              width: "60%",
+            }}
+          >
+            <Typography
+              variant="h6"
+              color="textPrimary"
+              sx={{ fontWeight: "bold" }}
+            >
+              {kulcha?.name}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              sx={{ marginTop: "0.5rem", fontWeight: "bold" }}
+            >
+             ${kulcha?.price}.00 x {kulcha?.quantity}
+            </Typography>
+          </Box>
+
+          {/* Image and Quantity Controls Section */}
+          <Box
+            sx={{
+              position: "relative",
+              width: "120px", // Adjust width based on the image size
+              height: "120px",
+              borderRadius: "10px", // Rounded corners
+              overflow: "hidden", // Ensures content is clipped inside the box
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#f5f5f5",
+              mr: 2, // Light gray background to mimic the image's border
+            }}
+          >
+            {/* Image */}
+            <Image
+              src={kulcha?.image}
+              alt={kulcha?.name}
+              layout="fill" // Fills the parent container
+              objectFit="cover" // Ensures the image is properly fitted
+            />
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "0.5rem",
+                position: "absolute",
+                bottom: 5,
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                padding: "2px 10px",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <IconButton
+                onClick={() => handleDecreaseKulchaQTY()}
+                sx={{
+                  color: "#336195",
+                }}
+              >
+                <RemoveIcon sx={{ fontSize: { xs: "1.5rem", sm: "2.5rem" } }} />
+              </IconButton>
+              <Typography variant="body1" color="textPrimary">
+                {kulcha?.quantity}
+              </Typography>
+              <IconButton
+                onClick={() => handleIncreaseKulchaQTY()}
+                sx={{
+                  color: "#336195",
+                }}
+              >
+                <AddIcon sx={{ fontSize: { xs: "1.5rem", sm: "2.5rem" } }} />
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+      </Grid>
+
       {/* <Box
         maxWidth="md"
         display="flex"
@@ -629,34 +799,55 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
           </Typography>
         </Box>
       </Box> */}
-
-      <Box maxWidth="md" sx={{ padding: "1rem", mx: "auto" }}>
-        <Box display="flex" alignItems="center">
-          <Tabs
-            value={selectedTab}
-            onChange={handleTabChange}
-            textColor="inherit"
-            variant="scrollable"
-            scrollButtons="auto"
+      <Box ref={tabsContainerRef}>
+        <Box
+          ref={tabsRef}
+          sx={{
+            position: isSticky ? "fixed" : "relative",
+            top: isSticky ? 0 : "auto",
+            zIndex: 1000,
+            backgroundColor: { xs: "white", sm: "#fffaeb" }, // Ensure background is white
+            width: "100%",
+            display: "flex", // Corrected "display" typo
+            justifyContent: "center", // Centers the Box horizontally
+            alignItems: "center",
+          }}
+        >
+          <Box
+            maxWidth="md"
             sx={{
-              flexGrow: 1,
-              "& .MuiTabs-indicator": {
-                backgroundColor: "#000", // Custom indicator color
-              },
-              "& .MuiTab-root": {
-                fontSize: "0.875rem", // Adjust tab font size
-                minWidth: 80, // Set a minimum width for the tabs
-                textTransform: "none", // Disable uppercase transformation
-              },
+              padding: "1rem",
+              mx: "auto",
+              display: "flex",
+              justifyContent: "center",
             }}
           >
-            <Tab label="Other Kulcha's" />
-            <Tab label="Extra's" />
-            <Tab label="Beverages" />
-          </Tabs>
+            <Tabs
+              value={selectedTab}
+              onChange={handleTabChange}
+              textColor="inherit"
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{
+                flexGrow: 1,
+                justifyContent: "center", // Center the tabs
+                "& .MuiTabs-indicator": {
+                  backgroundColor: "#000",
+                },
+                "& .MuiTab-root": {
+                  fontSize: "1rem",
+                  minWidth: 80,
+                  textTransform: "none",
+                },
+              }}
+            >
+              <Tab label="Other Kulcha's" />
+              <Tab label="Extra's" />
+              <Tab label="Beverages" />
+            </Tabs>
+          </Box>
         </Box>
       </Box>
-
       <Grid
         container
         spacing={4}
@@ -667,9 +858,8 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
           alignItems: "center",
         }}
       >
-        <Grid item xs={12}>
+        <Grid item xs={12} ref={kulchaRef}>
           <Box
-            ref={kulchaRef}
             sx={{
               textAlign: { xs: "left", md: "center" },
             }}
@@ -784,9 +974,9 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        padding: { xs: "0rem", md: "1rem" },
+                        padding: { xs: "0rem", sm: "1rem" },
                         backgroundColor: "white",
-                        border: { xs: "none", md: "2px solid #dcdcdc" },
+                        border: { xs: "none", sm: "2px solid #dcdcdc" },
                         borderRadius: "8px",
                         position: "relative",
                         width: { xs: "100%", md: "60%" },
@@ -813,7 +1003,8 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                           color="textSecondary"
                           sx={{ marginTop: "0.5rem", fontWeight: "bold" }}
                         >
-                           ${item?.price.toFixed(2)} {item?.added && <>x {item?.quantity}</> }
+                          ${item?.price.toFixed(2)}{" "}
+                          {item?.added && <>x {item?.quantity}</>}
                         </Typography>
                       </Box>
 
@@ -1094,9 +1285,8 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             </Grid>
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} ref={extrasRef}>
           <Box
-            ref={extrasRef}
             sx={{
               paddingTop: "0rem",
               marginLeft: 0,
@@ -1209,9 +1399,8 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             </Grid>
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} ref={beveragesRef}>
           <Box
-            ref={beveragesRef}
             sx={{
               paddingTop: "0rem",
               marginBottom: "0rem",
