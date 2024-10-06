@@ -835,15 +835,18 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                   backgroundColor: "#000",
                 },
                 "& .MuiTab-root": {
-                  fontSize: "1rem",
+                  fontSize: {
+                    xs: "0.8rem",
+                    sm: "1rem",  
+                  },
                   minWidth: 80,
                   textTransform: "none",
                 },
               }}
             >
-              <Tab label="Other Kulcha's" />
-              <Tab label="Extra's" />
-              <Tab label="Beverages" />
+         <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Other Kulcha's" />
+      <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Extra's" />
+      <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Beverages" />
             </Tabs>
           </Box>
         </Box>
