@@ -199,6 +199,7 @@ const OrderPage: React.FC<Props> = ({
           alignItems: "center",
           justifyContent: "center",
           pt: 4,
+          paddingBottom:'1rem'
         }}>
         <Container maxWidth='md'>
           <Paper
@@ -311,7 +312,7 @@ const OrderPage: React.FC<Props> = ({
                         color: "#1F2937",
                         paddingBottom: "4px",
                       }}>
-                      Delivery Time: 30 To 45 Minutes
+                      Delivery Time: 1 Hour
                     </Typography>
                   </Box>
                   <Box
@@ -452,7 +453,7 @@ const OrderPage: React.FC<Props> = ({
                         color: "#1F2937",
                         paddingBottom: "4px",
                       }}>
-                      Pickup Time: {pickupTime}
+                    Pickup Time: {pickupTime}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -632,7 +633,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      <b>Pickup Instructions:</b> Your order will be ready for pickup one hour after being placed. Thank you for your patience! Once you arrive at the location, please press &rdquo;I am here&rdquo; from the My Orders section.
+                      <b>Pickup Instructions:</b> Your order will be ready for pickup <strong>one hour</strong> after being placed. Thank you for your patience! Once you arrive at the location, please press <strong>&rdquo;I am here&rdquo;</strong> from the My Orders section.
                     </Typography>
                   </Box>
                 </Box>

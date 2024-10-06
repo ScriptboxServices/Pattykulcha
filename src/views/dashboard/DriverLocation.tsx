@@ -141,7 +141,7 @@ function DriverLocation() {
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={initialCenter}
-            zoom={14}
+            zoom={10}
             // onLoad={onLoad}
             onUnmount={onUnmount}
             options={{
