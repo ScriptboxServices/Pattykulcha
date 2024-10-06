@@ -1,10 +1,7 @@
-// Third-party Imports
 import { configureStore } from '@reduxjs/toolkit'
 
 
 import menuReducer from './slices/Menu';
-
-// Slice Imports
 
 
 export const store = configureStore({
