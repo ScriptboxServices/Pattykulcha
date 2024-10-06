@@ -241,6 +241,7 @@ const ProfilePage: React.FC = () => {
         seperate: addr.seperate,
         raw: addr.raw,
         distance: addr.distance,
+        latlng : addr.latlng
       },
       savedAddress: [...editAddress],
     });
@@ -774,6 +775,10 @@ const ProfilePage: React.FC = () => {
                             line1: place.formatted_address?.split(",")[0],
                           },
                           distance,
+                          latlng : {
+                            lat : post.lat(),
+                            lng : post.lng()
+                          }
                         });
                   
                       } else {

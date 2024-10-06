@@ -599,6 +599,10 @@ const MakeOrder: React.FC = () => {
                                   line1: place.formatted_address?.split(",")[0],
                                 },
                                 distance,
+                                latlng : {
+                                  lat : post.lat(),
+                                  lng : post.lng()
+                                }
                               });
                             } else {
                               console.error("No results found");

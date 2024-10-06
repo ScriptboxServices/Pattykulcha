@@ -8,7 +8,14 @@ import {
   InfoWindow,
   MarkerF,
 } from "@react-google-maps/api";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import { db } from "@/firebase";
 import {
   Card,
@@ -18,6 +25,7 @@ import {
   Box,
   Chip,
 } from "@mui/material";
+import { useAuthContext } from "@/context";
 const containerStyle = {
   width: "100%",
   height: "calc(100vh - 123px)",
@@ -40,6 +48,7 @@ function DriverLocation() {
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
   });
+  const { user, metaData } = useAuthContext();
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
@@ -54,6 +63,14 @@ function DriverLocation() {
   }, []);
 
   const [locations, setLocations] = useState<any>([]);
+  const [newOrders, setNewOrders] = useState<any>([]);
+
+  const startOfToday = Timestamp.fromDate(
+    new Date(new Date().setHours(0, 0, 0, 0))
+  );
+  const endOfToday = Timestamp.fromDate(
+    new Date(new Date().setHours(23, 59, 59, 999))
+  );
 
   useEffect(() => {
     const colRef = collection(db, "driverlocation");
@@ -61,7 +78,6 @@ function DriverLocation() {
       let loc: any = [];
       snapshot.forEach((doc) => {
         const { isOnline } = doc.data();
-        console.log(doc.data());
         if (isOnline) {
           loc.push({
             id: doc.id,
@@ -72,7 +88,38 @@ function DriverLocation() {
       setLocations([...loc]);
     });
 
-    return () => unsubscribePosition();
+    const newOrderQuery = query(
+      collection(db, "orders"),
+      where("kitchenId", "==", metaData?.foodTruckId),
+      where("createdAt", ">=", startOfToday),
+      where("createdAt", "<=", endOfToday),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeNewOrder = onSnapshot(newOrderQuery, (snapshot) => {
+      let newOrders: any[] = [];
+      snapshot.forEach((doc) => {
+        const { delivery, canceled, pickUpAction } = doc.data();
+        console.log("object");
+        if (
+          delivery.status === false &&
+          (delivery.message === "Preparing" ||
+            delivery.message === "Out For Delivery") &&
+          !pickUpAction &&
+          !canceled
+        ) {
+          newOrders.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        }
+      });
+      setNewOrders([...newOrders]);
+    });
+
+    return () => {
+      unsubscribeNewOrder();
+      unsubscribePosition();
+    };
   }, []);
 
   return (
@@ -86,9 +133,9 @@ function DriverLocation() {
           gap: 1,
           width: "850px",
           overflowX: "auto",
-          mt:2,
+          mt: 2,
           "&::-webkit-scrollbar": {
-            height: "8px"
+            height: "8px",
           },
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "orange",
@@ -98,45 +145,49 @@ function DriverLocation() {
             backgroundColor: "#f1f1f1",
           },
         }}>
-            {
-               locations?.length !== 0 ? <>          
-                {locations.map((driver: any) => {
-                    return (
-                    <>
-                        <Card
-                        key={driver.id}
-                        style={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "200px",
-                            height: "80px",
-                            padding: "10px",
-                            border: "1px solid grey",
-                            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                            backgroundColor: "#f9f9f9",
-                            flexShrink: 0,
-                        }}>
-                        <Typography sx={{ fontSize: "18px" }}>{driver.name}</Typography>
-                        <Box>
-                            <Chip
-                            variant='outlined'
-                            label={driver.isOnline ? "Online" : "Offline"}
-                            color={driver.isOnline ? "success" : "default"}
-                            style={{ fontSize: "14px", fontWeight: "bold" }}
-                            />
-                        </Box>
-                        </Card>
-                    </>
-                    );
-                })}
-               </> : <>
-               <Typography sx={{ fontSize: "18px" }}>No driver is online</Typography>
-                
-               </> 
-            }
-
+        {locations?.length !== 0 ? (
+          <>
+            {locations.map((driver: any) => {
+              return (
+                <>
+                  <Card
+                    key={driver.id}
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      width: "200px",
+                      height: "80px",
+                      padding: "10px",
+                      border: "1px solid grey",
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                      backgroundColor: "#f9f9f9",
+                      flexShrink: 0,
+                    }}>
+                    <Typography sx={{ fontSize: "18px" }}>
+                      {driver.name}
+                    </Typography>
+                    <Box>
+                      <Chip
+                        variant='outlined'
+                        label={driver.isOnline ? "Online" : "Offline"}
+                        color={driver.isOnline ? "success" : "default"}
+                        style={{ fontSize: "14px", fontWeight: "bold" }}
+                      />
+                    </Box>
+                  </Card>
+                </>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            <Typography sx={{ fontSize: "18px" }}>
+              No driver is online
+            </Typography>
+          </>
+        )}
       </Box>
-      <Box sx={{mt:2}}>
+      <Box sx={{ mt: 2 }}>
         {isLoaded && (
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -144,18 +195,49 @@ function DriverLocation() {
             zoom={10}
             // onLoad={onLoad}
             onUnmount={onUnmount}
-            options={{
-              
-            }}
-            >
+            options={{}}>
             {locations.map((driver: any) => (
               <React.Fragment key={driver.id}>
                 <MarkerF
                   position={{ lat: driver.latlng.lat, lng: driver.latlng.lng }}
-                  label={driver.name}
+                  label={{
+                    text : driver.name,
+                    color: "#000",
+                    fontSize: "18px", 
+                    fontWeight: "bold",
+                  }}
+                  icon={{
+                    url : "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                    scaledSize: new window.google.maps.Size(50, 50),
+                  }}
                 />
               </React.Fragment>
             ))}
+
+            {newOrders.map((order: any) => {
+              const { latlng } = order.address;
+              if (latlng)
+                return (
+                  <>
+                    <React.Fragment key={order.id}>
+                      <MarkerF
+                        position={{ lat: latlng.lat, lng: latlng.lng }}
+                        icon={{
+                          url : "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                          scaledSize: new window.google.maps.Size(50, 50),
+                        }}
+                        label={{
+                          text : `Order - #${order?.orderNumber?.forKitchen}`,
+                          color: "#000",
+                          fontSize: "18px", 
+                          fontWeight: "bold",
+                        }
+                        }
+                      />
+                    </React.Fragment>
+                  </>
+                );
+            })}
           </GoogleMap>
         )}
       </Box>
