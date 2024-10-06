@@ -632,8 +632,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      <b>Pickup Instructions:</b> Once you reach the location,
-                      press <b>I am here</b> from my orders.
+                      <b>Pickup Instructions:</b> Your order will be ready for pickup one hour after being placed. Thank you for your patience! Once you arrive at the location, please press &rdquo;I am here&rdquo; from the My Orders section.
                     </Typography>
                   </Box>
                 </Box>
