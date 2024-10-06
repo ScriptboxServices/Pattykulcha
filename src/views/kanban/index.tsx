@@ -776,7 +776,12 @@ const KanbanBoard = () => {
                                   </Typography>
                                   <Typography
                                     variant="body2"
-                                    color="textSecondary"
+                                    sx={{
+                                      fontWeight: "bold",
+                                      mt:1,
+                                      color:'red',
+                                      fontSize:'1rem'
+                                    }}
                                   >
                                     Pickup Order
                                   </Typography>
@@ -1551,7 +1556,13 @@ const KanbanBoard = () => {
                                       </Typography>
                                       <Typography
                                         variant="body2"
-                                        color="textSecondary"
+                                        sx={{
+                                          fontWeight: "bold",
+                                          mt:1,
+                                          color:'red',
+                                      fontSize:'1rem'
+
+                                        }}
                                       >
                                         Pickup Order
                                       </Typography>
