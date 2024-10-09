@@ -323,7 +323,7 @@ const VerificationPage: React.FC = () => {
                 >
                   Confirm
                 </Button>
-                <Button
+                {/* <Button
                   variant="outlined"
                   color="primary"
                   onClick={handleResend}
@@ -341,7 +341,7 @@ const VerificationPage: React.FC = () => {
                         timer % 60
                       ).padStart(2, "0")}`
                     : "Resend OTP"}
-                </Button>
+                </Button> */}
                 {error && (
                   <Alert sx={{ mt: 2 }} severity="error">
                     {error}
