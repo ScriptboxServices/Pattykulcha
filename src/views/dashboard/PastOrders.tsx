@@ -82,6 +82,7 @@ const PastOrders: React.FC = () => {
     null
   );
   const [loading, setLoading] = useState(false);
+  const [showArea, setShowArea] = useState(false);
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -281,9 +282,30 @@ const PastOrders: React.FC = () => {
                   pattern: "[0-9]*",
                 }}
                 InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <i className='ri-phone-fill' />
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <Button
+                        onClick={async () => {
+                          setLoading(true);
+                          await Promise.all([
+                            checkUsers(getValues("phoneNumber")),
+                            getAllOrders(getValues("phoneNumber")),
+                          ]);
+                          setShowArea(true);
+                          setLoading(false);
+                        }}
+                        sx={{
+                          backgroundColor: "#ECAB21",
+                          color: "white",
+                          paddingX: 2,
+                          fontWeight: "bold",
+                          "&:hover": {
+                            backgroundColor: "#FFC107",
+                            color: "white",
+                          },
+                        }}>
+                        Search
+                      </Button>
                     </InputAdornment>
                   ),
                 }}
@@ -302,334 +324,326 @@ const PastOrders: React.FC = () => {
             )}
           />
         </Grid>
-        <Button
-          onClick={async () => {
-            setLoading(true);
-            await Promise.all([
-              checkUsers(getValues("phoneNumber")),
-              getAllOrders(getValues("phoneNumber")),
-            ]);
-            setLoading(false);
-          }}
-          sx={{
-            backgroundColor: "#ECAB21",
-            color: "white",
-            paddingX: 4,
-            paddingY: 1,
-            mt: 2,
-            ml: 2,
-
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "#FFC107",
-              color: "white",
-            },
-          }}>
-          Search
-        </Button>
       </Grid>
-      <Box
-        sx={{
-          display: "flex",
-          height: "300px",
-          overflowX: "auto",
-          minHeight: "300px",
-          padding: 2,
-          width: "100%",
-        }}>
-        <DndContext sensors={sensors} collisionDetection={closestCorners}>
-          <SortableContext items={["container-1"]}>
-            <Box
-              display='flex'
-              justifyContent='center'
-              alignItems='flex-start'
-              flexWrap='wrap'
-              width='100%'
-              marginTop={1}>
-              <Box
-                key='container-1'
-                sx={{
-                  flex: "1 1 auto",
-                  minWidth: "280px",
-                  height: "90%",
-                  overflowY: "hidden",
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  backgroundColor: "#fff",
-                  display: "flex",
-                  flexDirection: "column",
-                }}>
-                <Box sx={{ display: "flex", backgroundColor: "#ECAB21" }}>
-                  <Typography
-                    variant='h6'
-                    sx={{
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 10,
-                      backgroundColor: "#ECAB21",
-                      color: "#fff",
-                      textAlign: "center",
-                      marginInline: "auto",
-                      padding: 2,
-                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                      fontWeight: "bold",
-                    }}>
-                    User Details
-                  </Typography>
-                </Box>
-                <SortableContext items={[]}>
-                  <Grid container spacing={2} padding={2}>
-                    <Grid item xs={12} sm={6} md={4}>
-                      <Box
-                        sx={{
-                          borderRadius: 2,
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          height: "90%",
-                          backgroundColor: "#fff",
-                        }}>
-                        {userData ? (
-                          <CardContent>
-                            <Typography
-                              variant='subtitle1'
-                              sx={{ fontWeight: "bold" }}>
-                              Name: {userData?.name}
-                            </Typography>
-                            <Typography
-                              variant='subtitle1'
-                              sx={{
-                                color: "black",
-                              }}>
-                              <b>Phone Number:</b> {userData?.phoneNumber}
-                            </Typography>
-                            <Typography
-                              variant='subtitle1'
-                              sx={{
-                                color: "black",
-                              }}>
-                              <b>Address:</b> {userData?.address?.raw}
-                            </Typography>
-                          </CardContent>
-                        ) : (
-                          <CardContent>
-                            <Typography
-                              variant='subtitle1'
-                              sx={{ fontWeight: "bold" }}>
-                              User Details not fount or user not exist.
-                            </Typography>
-                          </CardContent>
-                        )}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </SortableContext>{" "}
-                :
-              </Box>
-            </Box>
-          </SortableContext>
-        </DndContext>
-      </Box>
-      {allOrders.length > 0 && (
+      {showArea && (
         <>
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              mb: 2,
-              gap: 2,
+              height: "300px",
+              overflowX: "auto",
+              minHeight: "300px",
+              padding: 2,
+              width: "100%",
             }}>
-            <Typography variant='h5' sx={{ fontWeight: "bold", pl: 2 }}>
-              Past orders
-            </Typography>
-          </Box>
-
-          <Table
-            sx={{ minWidth: "500px" }}
-            aria-label='custom pagination table'>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Order Name
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Add-on
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Date & Time
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Address
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Payment
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Delivered by
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    paddingY: 2,
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid #dcdcdc",
-                  }}>
-                  Total Price
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : filteredRows
-              ).map((row: any, index: number) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    {row?.order?.map((item: any) => (
-                      <div key={item._id}>
-                        {item.order.kulcha.name} <br />
-                      </div>
-                    ))}
-                  </TableCell>
-
-                  <TableCell sx={{ paddingY: 2 }}>
-                    {row?.order?.map((item: any) => (
-                      <div key={item._id}>
-                        {item.order.additional.map((addon: any) =>
-                          addon.items.map((addonItem: any, i: number) => (
-                            <span key={i}>{addonItem.name}, </span>
-                          ))
-                        )}
-                      </div>
-                    ))}
-                  </TableCell>
-                  <TableCell sx={{ paddingY: 2 }}>
-                    {formatTimestampToCustomDate(row.createdAt)}
-                  </TableCell>
-                  <TableCell sx={{ paddingY: 2 }}>{row.address.raw}</TableCell>
-                  <TableCell sx={{ paddingY: 2 }}>{row.paymentMode}</TableCell>
-                  <TableCell sx={{ paddingY: 2 }}>{row.driverName}</TableCell>
-                  <TableCell sx={{ paddingY: 2 }}>${row.grand_total}</TableCell>
-                </TableRow>
-              ))}
-
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={7} />
-                </TableRow>
-              )}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={7}
-                  count={filteredRows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={() => (
-                    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-                      <IconButton
-                        onClick={handleFirstPageButtonClick}
-                        disabled={page == 0}
-                        aria-label='first page'>
-                        {theme.direction == "rtl" ? (
-                          <LastPageIcon />
-                        ) : (
-                          <FirstPageIcon />
-                        )}
-                      </IconButton>
-                      <IconButton
-                        onClick={handleBackButtonClick}
-                        disabled={page == 0}
-                        aria-label='previous page'>
-                        {theme.direction == "rtl" ? (
-                          <KeyboardArrowRight />
-                        ) : (
-                          <KeyboardArrowLeft />
-                        )}
-                      </IconButton>
-                      <IconButton
-                        onClick={handleNextButtonClick}
-                        disabled={
-                          page >=
-                          Math.ceil(filteredRows.length / rowsPerPage) - 1
-                        }
-                        aria-label='next page'>
-                        {theme.direction == "rtl" ? (
-                          <KeyboardArrowLeft />
-                        ) : (
-                          <KeyboardArrowRight />
-                        )}
-                      </IconButton>
-                      <IconButton
-                        onClick={handleLastPageButtonClick}
-                        disabled={
-                          page >=
-                          Math.ceil(filteredRows.length / rowsPerPage) - 1
-                        }
-                        aria-label='last page'>
-                        {theme.direction == "rtl" ? (
-                          <FirstPageIcon />
-                        ) : (
-                          <LastPageIcon />
-                        )}
-                      </IconButton>
+            <DndContext sensors={sensors} collisionDetection={closestCorners}>
+              <SortableContext items={["container-1"]}>
+                <Box
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='flex-start'
+                  flexWrap='wrap'
+                  width='100%'
+                  marginTop={1}>
+                  <Box
+                    key='container-1'
+                    sx={{
+                      flex: "1 1 auto",
+                      minWidth: "280px",
+                      height: "90%",
+                      overflowY: "hidden",
+                      borderRadius: 2,
+                      boxShadow: 3,
+                      backgroundColor: "#fff",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}>
+                    <Box sx={{ display: "flex", backgroundColor: "#ECAB21" }}>
+                      <Typography
+                        variant='h6'
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 10,
+                          backgroundColor: "#ECAB21",
+                          color: "#fff",
+                          textAlign: "center",
+                          marginInline: "auto",
+                          padding: 2,
+                          borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                          fontWeight: "bold",
+                        }}>
+                        User Details
+                      </Typography>
                     </Box>
+                    <SortableContext items={[]}>
+                      <Grid container spacing={2} padding={2}>
+                        <Grid item xs={12} sm={6} md={4}>
+                          <Box
+                            sx={{
+                              borderRadius: 2,
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-between",
+                              height: "90%",
+                              backgroundColor: "#fff",
+                            }}>
+                            {userData ? (
+                              <CardContent>
+                                <Typography
+                                  variant='subtitle1'
+                                  sx={{ fontWeight: "bold" }}>
+                                  Name: {userData?.name}
+                                </Typography>
+                                <Typography
+                                  variant='subtitle1'
+                                  sx={{
+                                    color: "black",
+                                  }}>
+                                  <b>Phone Number:</b> {userData?.phoneNumber}
+                                </Typography>
+                                <Typography
+                                  variant='subtitle1'
+                                  sx={{
+                                    color: "black",
+                                  }}>
+                                  <b>Address:</b> {userData?.address?.raw}
+                                </Typography>
+                              </CardContent>
+                            ) : (
+                              <CardContent>
+                                <Typography
+                                  variant='subtitle1'
+                                  sx={{ fontWeight: "bold" }}>
+                                  User Details not fount or user not exist.
+                                </Typography>
+                              </CardContent>
+                            )}
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </SortableContext>{" "}
+                    :
+                  </Box>
+                </Box>
+              </SortableContext>
+            </DndContext>
+          </Box>
+          {allOrders.length > 0 && (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  mb: 2,
+                  gap: 2,
+                }}>
+                <Typography variant='h5' sx={{ fontWeight: "bold", pl: 2 }}>
+                  Past orders
+                </Typography>
+              </Box>
+
+              <Table
+                sx={{ minWidth: "500px" }}
+                aria-label='custom pagination table'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Order Name
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Add-on
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Date & Time
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Address
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Payment
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Delivered by
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        paddingY: 2,
+                        backgroundColor: "#f5f5f5",
+                        borderBottom: "2px solid #dcdcdc",
+                      }}>
+                      Total Price
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(rowsPerPage > 0
+                    ? filteredRows.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                    : filteredRows
+                  ).map((row: any, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        {row?.order?.map((item: any) => (
+                          <div key={item._id}>
+                            {item.order.kulcha.name} <br />
+                          </div>
+                        ))}
+                      </TableCell>
+
+                      <TableCell sx={{ paddingY: 2 }}>
+                        {row?.order?.map((item: any) => (
+                          <div key={item._id}>
+                            {item.order.additional.map((addon: any) =>
+                              addon.items.map((addonItem: any, i: number) => (
+                                <span key={i}>{addonItem.name}, </span>
+                              ))
+                            )}
+                          </div>
+                        ))}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 2 }}>
+                        {formatTimestampToCustomDate(row.createdAt)}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 2 }}>
+                        {row.address.raw}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 2 }}>
+                        {row.paymentMode}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 2 }}>
+                        {row.driverName}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 2 }}>
+                        ${row.grand_total}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={7} />
+                    </TableRow>
                   )}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[
+                        5,
+                        10,
+                        25,
+                        { label: "All", value: -1 },
+                      ]}
+                      colSpan={7}
+                      count={filteredRows.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      ActionsComponent={() => (
+                        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+                          <IconButton
+                            onClick={handleFirstPageButtonClick}
+                            disabled={page == 0}
+                            aria-label='first page'>
+                            {theme.direction == "rtl" ? (
+                              <LastPageIcon />
+                            ) : (
+                              <FirstPageIcon />
+                            )}
+                          </IconButton>
+                          <IconButton
+                            onClick={handleBackButtonClick}
+                            disabled={page == 0}
+                            aria-label='previous page'>
+                            {theme.direction == "rtl" ? (
+                              <KeyboardArrowRight />
+                            ) : (
+                              <KeyboardArrowLeft />
+                            )}
+                          </IconButton>
+                          <IconButton
+                            onClick={handleNextButtonClick}
+                            disabled={
+                              page >=
+                              Math.ceil(filteredRows.length / rowsPerPage) - 1
+                            }
+                            aria-label='next page'>
+                            {theme.direction == "rtl" ? (
+                              <KeyboardArrowLeft />
+                            ) : (
+                              <KeyboardArrowRight />
+                            )}
+                          </IconButton>
+                          <IconButton
+                            onClick={handleLastPageButtonClick}
+                            disabled={
+                              page >=
+                              Math.ceil(filteredRows.length / rowsPerPage) - 1
+                            }
+                            aria-label='last page'>
+                            {theme.direction == "rtl" ? (
+                              <FirstPageIcon />
+                            ) : (
+                              <LastPageIcon />
+                            )}
+                          </IconButton>
+                        </Box>
+                      )}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </>
+          )}
         </>
       )}
     </Box>

@@ -43,8 +43,6 @@ interface Props {
   window?: () => Window;
 }
 
-const Home = () => <Typography variant="h6">Home</Typography>;
-
 const IncreaseDistanceSlider = styled(Slider)({
   color: "#52af77",
   padding: 0,
@@ -100,9 +98,9 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   const toggleMenu = () => {
-    setMenuExpanded(!menuExpanded); // Toggle the menu state
+    setMenuExpanded(!menuExpanded);
   };
-
+  console.log("object");
   useEffect(() => {
     // if (kitchenMetaData?.userId !== user?.uid) {
     //   return router.push('/home')
@@ -133,6 +131,7 @@ export default function ResponsiveDrawer(props: Props) {
         return;
       }
       snapshot.docChanges().forEach((change) => {
+        // console.log(change.doc.data(),"Abhishek");
         if(change.type === 'added'){
           const audio = new Audio("/mp3/complaint.mp3");
           audio.play();
