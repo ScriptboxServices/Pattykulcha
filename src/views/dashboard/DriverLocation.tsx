@@ -223,7 +223,7 @@ function DriverLocation() {
                       <MarkerF
                         position={{ lat: latlng.lat, lng: latlng.lng }}
                         icon={{
-                          url : "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                          url : "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
                           scaledSize: new window.google.maps.Size(50, 50),
                         }}
                         label={{

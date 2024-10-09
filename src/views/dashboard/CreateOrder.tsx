@@ -311,7 +311,7 @@ const MakeOrder: React.FC = () => {
     setValue("name", userData?.name);
   }, [userData]);
 
-  const checkuser = (value: any) => {
+  const checkUser = (value: any) => {
     if (value?.length === 10) {
       setLoading(true);
       const colRef = collection(db, "users");
@@ -465,7 +465,7 @@ const MakeOrder: React.FC = () => {
                         label='Phone Number'
                         placeholder='(123)-456-7890'
                         value={value}
-                        onChange={(e) => onChange(checkuser(e.target.value))}
+                        onChange={(e) => onChange(checkUser(e.target.value))}
                         error={!!errors.phoneNumber}
                         helperText={errors.phoneNumber?.message ?? ""}
                         inputProps={{

@@ -35,6 +35,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ContactUsection from "./ContactUsSection";
 import DriversMap from "./DriverLocation";
+import PastOrders from "./PastOrders";
 
 const drawerWidth = 240;
 
@@ -208,6 +209,11 @@ export default function ResponsiveDrawer(props: Props) {
       text: "Make Order",
       icon: "/images/dashboard/Make_Order.svg",
       component: <MakeOrder />,
+    },
+    {
+      text: "User search page",
+      icon: "/images/dashboard/Make_Order.svg",
+      component: <PastOrders/>,
     },
   ];
 
