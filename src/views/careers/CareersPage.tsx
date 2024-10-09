@@ -174,7 +174,7 @@ const CareersPage: React.FC = () => {
       setValue("name", metaData.name || "");
       setValue("contactNumber", metaData.phoneNumber || "");
     }
-  }, [metaData,selectedOption]);
+  }, [metaData,selectedOption,setValue]);
 
   const [success, setSuccess] = useState({
     status: false,
