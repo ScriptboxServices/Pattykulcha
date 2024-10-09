@@ -84,7 +84,7 @@ const IncreaseDistanceSlider = styled(Slider)({
 });
 
 export default function ResponsiveDrawer(props: Props) {
-  const { window } = props;
+  const { window:WindowProp } = props;
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { user, kitchenMetaData } = useAuthContext();
@@ -131,10 +131,15 @@ export default function ResponsiveDrawer(props: Props) {
         return;
       }
       snapshot.docChanges().forEach((change) => {
-        // console.log(change.doc.data(),"Abhishek");
+        console.log(change.doc.data(),"Abhishek");
         if(change.type === 'added'){
-          const audio = new Audio("/mp3/complaint.mp3");
-          audio.play();
+          if (typeof window !== "undefined" && window.speechSynthesis) {
+            const message = `You have received a new complaint from ${change.doc.data().customer?.name}`;
+            const utterance = new SpeechSynthesisUtterance(message);
+            const voices = speechSynthesis.getVoices();
+            utterance.voice = voices[6];
+            speechSynthesis.speak(utterance);
+          }
         }
       })
     })
@@ -346,7 +351,7 @@ export default function ResponsiveDrawer(props: Props) {
   );
 
   const container =
-    window !== undefined ? () => window().document.body : undefined;
+    WindowProp !== undefined ? () => WindowProp?.().document.body : undefined;
 
   const renderContent = () => {
     const activeItem = drawerItems.find((item) => item.text === activeTab);

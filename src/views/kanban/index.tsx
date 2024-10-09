@@ -475,6 +475,7 @@ const KanbanBoard = () => {
 
   const filteredOrders = Object.keys(allOrders)
     .filter((containerId) => containerId !== "container-1")
+    .filter((containerId) => containerId !== "container-6")
     .reduce((acc: any[], containerId) => {
       const filteredContainerOrders = allOrders[containerId]?.filter(
         (order: any) =>

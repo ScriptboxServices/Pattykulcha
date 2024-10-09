@@ -233,8 +233,8 @@ const Navbar: React.FC = () => {
             <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
-        {/* {isLoggedIn && (
-          <Link href="/add-driver" passHref>
+        {isLoggedIn && (
+          <Link href="/careers" passHref>
             <ListItem
               button
               onClick={handleLinkClick}
@@ -248,7 +248,7 @@ const Navbar: React.FC = () => {
               <ListItemText primary="Career" />
             </ListItem>
           </Link>
-        )} */}
+        )}
       </List>
       <Divider />
       <List>
