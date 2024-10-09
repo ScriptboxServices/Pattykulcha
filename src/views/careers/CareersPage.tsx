@@ -252,9 +252,9 @@ const CareersPage: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontWeight: 500,
+          fontWeight: 700,
         }}>
-        Build your career with Pattykulcha
+        Build your career with Patty kulcha
       </Typography>
       <StyledContainer maxWidth='sm'>
         <Container
