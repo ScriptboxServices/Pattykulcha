@@ -174,7 +174,7 @@ const CareersPage: React.FC = () => {
       setValue("name", metaData.name || "");
       setValue("contactNumber", metaData.phoneNumber || "");
     }
-  }, [metaData,selectedOption,setValue]);
+  }, [metaData,selectedOption]);
 
   const [success, setSuccess] = useState({
     status: false,
@@ -417,6 +417,7 @@ const CareersPage: React.FC = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    key={field.value}
                     fullWidth
                     label='Name'
                     {...field}
@@ -433,6 +434,7 @@ const CareersPage: React.FC = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
+                  key={field.value}
                     fullWidth
                     disabled
                     label='Contact Number'
