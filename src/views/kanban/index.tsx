@@ -490,6 +490,10 @@ const KanbanBoard = () => {
       return [...acc, ...filteredContainerOrders];
     }, []);
 
+    interface Navigator {
+      serial: any;
+    }
+
   const printReceipt = async () => {
     const data = await render(
       <Printer type='epson'>
@@ -497,7 +501,9 @@ const KanbanBoard = () => {
       </Printer>
     );
 
-    const port = await window.navigator.serial.requestPort();
+    const Navigator :any = window.navigator
+
+    const port = await Navigator.serial.requestPort();
     await port.open({ baudRate: 9600 });
 
     const writer = port.writable?.getWriter();
