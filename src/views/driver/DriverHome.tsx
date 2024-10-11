@@ -36,6 +36,10 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import {
+  GoogleMap,
+  DirectionsRenderer,
+} from "@react-google-maps/api";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 
@@ -43,50 +47,68 @@ const DriverOrders: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("Out For Delivery");
   const { user, metaData, driverMetaData } = useAuthContext();
-  const startOfToday = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
+  const startOfToday = Timestamp.fromDate(
+    new Date(new Date().setHours(0, 0, 0, 0))
+  );
   const endOfToday = Timestamp.fromDate(
     new Date(new Date().setHours(23, 59, 59, 999))
   );
   const [newOrders, setNewOrders] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);
+  const [openMapModal, setOpenMapModal] = useState(false);
+  const [source, setSource] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const [destination, setDestination] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const [directionsResponse, setDirectionsResponse] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    let watchPos : any
-    if(navigator.geolocation && driverMetaData){
-      watchPos = navigator.geolocation.watchPosition(async (position) => {
-        console.log(position);
-        const docRef = doc(db, "driverlocation", driverMetaData.id);
-        await setDoc(docRef, {
-          driverId: driverMetaData.id,
-          isOnline: true,
-          name: driverMetaData.name,
-          latlng: {
+    let watchPos: any;
+    if (navigator.geolocation && driverMetaData) {
+      watchPos = navigator.geolocation.watchPosition(
+        async (position) => {
+          const docRef = doc(db, "driverlocation", driverMetaData.id);
+          await setDoc(docRef, {
+            driverId: driverMetaData.id,
+            isOnline: true,
+            name: driverMetaData.name,
+            latlng: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+          setSource({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          },
-        });
-      },  
-      async (err) => {
-        await updateDoc(doc(db,'driverlocation',driverMetaData.id),{
-          isOnline : false
-        })
-        console.log(err);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: Infinity,
-        maximumAge: 0,
-      })
+          });
+        },
+        async (err) => {
+          await updateDoc(doc(db, "driverlocation", driverMetaData.id), {
+            isOnline: false,
+          });
+          console.log(err);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: Infinity,
+          maximumAge: 0,
+        }
+      );
     }
     return () => {
-      if(watchPos){
-        updateDoc(doc(db,'driverlocation',driverMetaData.id),{
-          isOnline : false
-        })
-        navigator.geolocation.clearWatch(watchPos)}
+      if (watchPos) {
+        updateDoc(doc(db, "driverlocation", driverMetaData.id), {
+          isOnline: false,
+        });
+        navigator.geolocation.clearWatch(watchPos);
       }
-  },[driverMetaData])
+    };
+  }, [driverMetaData]);
 
   useEffect(() => {
     // if (driverMetaData?.userId !== user?.uid) {
@@ -117,7 +139,8 @@ const DriverOrders: React.FC = () => {
         });
         if (
           delivery.status === false &&
-          delivery.message === "Out For Delivery" && !pickUpAction
+          delivery.message === "Out For Delivery" &&
+          !pickUpAction
         ) {
           newOrders.push({
             id: doc.id,
@@ -193,6 +216,37 @@ const DriverOrders: React.FC = () => {
     setNewOrders([...filteredOrders]);
   };
 
+  useEffect(() => {
+    if (source.lat && source.lng && destination.lat && destination.lng) {
+      if (window.navigator.geolocation) {
+        const directionService = new window.google.maps.DirectionsService();
+        directionService
+          .route({
+            origin: {
+              lat: source.lat,
+              lng: source.lng,
+            },
+            destination: {
+              lat: destination.lat,
+              lng: destination.lng,
+            },
+            travelMode: window.google.maps.TravelMode.DRIVING,
+          })
+          .then((res: any) => {
+            setDirectionsResponse(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .finally(() => {
+            console.log("LLLLLLLLLLLLLL");
+          });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    }
+  }, [source, destination, openMapModal]);
+
   return (
     <>
       <CircularLodar isLoading={loading} />
@@ -204,19 +258,17 @@ const DriverOrders: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           overflowY: "auto",
-        }}
-      >
+        }}>
         <Box sx={{ maxWidth: "600px", width: "100%" }}>
           <Typography
-            variant="h3"
-            component="h2"
+            variant='h3'
+            component='h2'
             sx={{
               color: "#333333",
               fontWeight: "bold",
               textAlign: "center",
               mb: 1.75,
-            }}
-          >
+            }}>
             Today Orders
           </Typography>
           <Box>
@@ -226,11 +278,10 @@ const DriverOrders: React.FC = () => {
                 sx={{ backgroundColor: "#fff" }}
                 value={filterStatus}
                 onChange={handleFilterChange as any}
-                label="Filter by Status"
-              >
-                <MenuItem value="Out For Delivery">Out For Delivery</MenuItem>
-                <MenuItem value="Delivered">Delivered</MenuItem>
-                <MenuItem value="Canceled">Canceled</MenuItem>
+                label='Filter by Status'>
+                <MenuItem value='Out For Delivery'>Out For Delivery</MenuItem>
+                <MenuItem value='Delivered'>Delivered</MenuItem>
+                <MenuItem value='Canceled'>Canceled</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -238,6 +289,7 @@ const DriverOrders: React.FC = () => {
           {newOrders.length > 0 ? (
             newOrders?.map((_order: any) => {
               const { order } = _order;
+              const { latlng } = _order.address;
               return (
                 <Paper
                   key={_order.id}
@@ -249,8 +301,7 @@ const DriverOrders: React.FC = () => {
                     boxShadow: 3,
                     minHeight: "150px",
                     width: "100%",
-                  }}
-                >
+                  }}>
                   <Chip
                     label={_order?.delivery?.message}
                     sx={{
@@ -270,10 +321,9 @@ const DriverOrders: React.FC = () => {
                       display: "flex",
                       alignItems: "center",
                       marginBottom: 2,
-                    }}
-                  >
+                    }}>
                     <LockIcon sx={{ marginRight: 1 }} />
-                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                    <Typography variant='body2' sx={{ fontWeight: "bold" }}>
                       {_order?.orderNumber?.forKitchen}
                     </Typography>
                   </Box>
@@ -284,11 +334,10 @@ const DriverOrders: React.FC = () => {
                         key={_order.id}
                         container
                         spacing={2}
-                        sx={{ marginBottom: 2 }}
-                      >
+                        sx={{ marginBottom: 2 }}>
                         <Grid item xs={12} sm={6} sx={{ display: "flex" }}>
                           <Avatar
-                            variant="square"
+                            variant='square'
                             src={order_?.order?.kulcha?.image}
                             sx={{
                               width: 80,
@@ -298,10 +347,10 @@ const DriverOrders: React.FC = () => {
                             }}
                           />
                           <Box>
-                            <Typography variant="body2" fontWeight="bold">
+                            <Typography variant='body2' fontWeight='bold'>
                               {order_?.order?.kulcha?.name}
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant='body2'>
                               ${order_?.order?.kulcha?.price.toFixed(2)} x
                               {order_?.order?.kulcha?.quantity}
                             </Typography>
@@ -310,18 +359,16 @@ const DriverOrders: React.FC = () => {
                         {order_?.order?.additional?.length > 0 && (
                           <Grid item xs={12} sx={{ marginTop: 1 }}>
                             <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "bold", marginBottom: 0 }}
-                            >
+                              variant='body2'
+                              sx={{ fontWeight: "bold", marginBottom: 0 }}>
                               Additional Items:
                             </Typography>
                             {order_?.order?.additional.map(
                               (item: any, itemIndex: number) => (
                                 <Typography
                                   key={itemIndex}
-                                  variant="body2"
-                                  sx={{ display: "inline", marginRight: 2 }}
-                                >
+                                  variant='body2'
+                                  sx={{ display: "inline", marginRight: 2 }}>
                                   {item.items[0].name} ({item.items[0].quantity}
                                   )
                                 </Typography>
@@ -334,11 +381,10 @@ const DriverOrders: React.FC = () => {
                   })}
 
                   <Typography
-                    variant="body2"
-                    fontWeight="bold"
-                    textAlign="right"
-                    sx={{ mt: -2 }}
-                  >
+                    variant='body2'
+                    fontWeight='bold'
+                    textAlign='right'
+                    sx={{ mt: -2 }}>
                     Total: $
                     {Number(
                       Number(_order?.grand_total) +
@@ -348,43 +394,41 @@ const DriverOrders: React.FC = () => {
 
                   <Divider sx={{ my: 2 }} />
                   <Box>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Customer Name:</b>{" "}
                       {_order?.customer?.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Phone Number:</b>{" "}
                       {_order?.customer?.phoneNumber}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Address:</b>{" "}
                       {_order?.address?.raw}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Distance:</b>{" "}
                       {_order?.address?.distance?.text}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Instructions:</b>{" "}
                       {_order?.Instructions}
                     </Typography>
                   </Box>
                   <Divider sx={{ marginY: 1 }} />
                   <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ display: "flex", gap: 1 }}
-                  >
+                    variant='body2'
+                    color='textSecondary'
+                    sx={{ display: "flex", gap: 1 }}>
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      sx={{ display: "flex", gap: 1 }}
-                    >
+                      variant='body2'
+                      color='textSecondary'
+                      sx={{ display: "flex", gap: 1 }}>
                       <Button
                         onClick={() =>
                           updateOrderStatus(_order.id, "Delivered", true)
                         }
-                        variant="contained"
+                        variant='contained'
                         sx={{
                           backgroundColor: "#ECAB21",
                           color: "white",
@@ -395,13 +439,12 @@ const DriverOrders: React.FC = () => {
                             backgroundColor: "white",
                             color: "#ECAB21",
                           },
-                        }}
-                      >
+                        }}>
                         Delivered
                       </Button>
                     </Typography>
                     <Button
-                      variant="contained"
+                      variant='contained'
                       onClick={() => cancelOrderStatus(_order.id)}
                       sx={{
                         backgroundColor: "red",
@@ -413,12 +456,18 @@ const DriverOrders: React.FC = () => {
                           backgroundColor: "white",
                           color: "red",
                         },
-                      }}
-                    >
+                      }}>
                       Cancel
                     </Button>
                     <Button
-                      variant="contained"
+                      onClick={() => {
+                        setDestination({
+                          lat: latlng.lat,
+                          lng: latlng.lng,
+                        });
+                        setOpenMapModal(true);
+                      }}
+                      variant='contained'
                       sx={{
                         backgroundColor: "#ECAB21",
                         color: "white",
@@ -429,13 +478,12 @@ const DriverOrders: React.FC = () => {
                           backgroundColor: "white",
                           color: "#ECAB21",
                         },
-                      }}
-                    >
-                      Go
+                      }}>
+                      Go (Open Map)
                     </Button>
                     <Button
-                      variant="contained"
-                      component="a"
+                      variant='contained'
+                      component='a'
                       href={`tel:${_order?.customer?.phoneNumber}`}
                       sx={{
                         backgroundColor: "#ECAB21",
@@ -447,8 +495,7 @@ const DriverOrders: React.FC = () => {
                           backgroundColor: "white",
                           color: "#ECAB21",
                         },
-                      }}
-                    >
+                      }}>
                       Call
                     </Button>
                   </Typography>
@@ -463,8 +510,7 @@ const DriverOrders: React.FC = () => {
                 alignItems: "center",
                 height: "50vh",
                 display: "flex",
-              }}
-            >
+              }}>
               <Paper
                 sx={{
                   width: "100%",
@@ -474,9 +520,8 @@ const DriverOrders: React.FC = () => {
                   margin: "0 auto",
                   maxWidth: "400px",
                   borderRadius: "12px",
-                }}
-              >
-                <Typography variant="h6" sx={{ mb: 2 }}>
+                }}>
+                <Typography variant='h6' sx={{ mb: 2 }}>
                   No orders yet
                 </Typography>
               </Paper>
@@ -484,6 +529,38 @@ const DriverOrders: React.FC = () => {
           )}
         </Box>
       </Box>
+      <Dialog
+        open={openMapModal}
+        sx={{ zIndex: "999" }}
+        onClose={() => setOpenMapModal(!openMapModal)}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            minWidth: 300,
+          },
+        }}>
+        <DialogTitle>Google Map</DialogTitle>
+        <DialogContent>
+          <GoogleMap
+            options={{mapId : "368d7f53a21ed6a2"}}
+            mapContainerStyle={{
+              width: "100%",
+              height: "500px",
+            }}
+            center={{
+              lat: source.lat,
+              lng: source.lng,
+            }}
+            zoom={15}>
+            {directionsResponse !== null && (
+              <DirectionsRenderer directions={directionsResponse} />
+            )}
+          </GoogleMap>
+        </DialogContent>
+        <DialogActions>
+          <Button>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

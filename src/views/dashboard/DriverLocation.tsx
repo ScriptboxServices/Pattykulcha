@@ -195,8 +195,9 @@ function DriverLocation() {
             zoom={10}
             // onLoad={onLoad}
             onUnmount={onUnmount}
-            options={{}}>
-            {locations.map((driver: any) => (
+            options={{mapId : '368d7f53a21ed6a2'}}>
+            {locations.map((driver: any) => {
+              return(
               <React.Fragment key={driver.id}>
                 <MarkerF
                   position={{ lat: driver.latlng.lat, lng: driver.latlng.lng }}
@@ -212,7 +213,7 @@ function DriverLocation() {
                   }}
                 />
               </React.Fragment>
-            ))}
+            )})}
 
             {newOrders.map((order: any) => {
               const { latlng } = order.address;
