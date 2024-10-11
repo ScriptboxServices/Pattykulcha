@@ -79,7 +79,7 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
         const result = await getCartData(_id);
         if (result) {
           setGrandTotal(calculateGrandTotal(result || []));
-          setCarts([...result] || []);
+          setCarts([...result]);
           setCount(result.length);
         }
         return;

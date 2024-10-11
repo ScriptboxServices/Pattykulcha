@@ -39,11 +39,16 @@ import {
 import {
   GoogleMap,
   DirectionsRenderer,
+  useJsApiLoader
 } from "@react-google-maps/api";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
 
 const DriverOrders: React.FC = () => {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
+  });
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("Out For Delivery");
   const { user, metaData, driverMetaData } = useAuthContext();
@@ -536,30 +541,28 @@ const DriverOrders: React.FC = () => {
         PaperProps={{
           sx: {
             borderRadius: 4,
-            minWidth: 300,
+            minWidth: 370,
           },
         }}>
-        <DialogTitle>Google Map</DialogTitle>
         <DialogContent>
-          <GoogleMap
-            options={{mapId : "368d7f53a21ed6a2"}}
-            mapContainerStyle={{
-              width: "100%",
-              height: "500px",
-            }}
-            center={{
-              lat: source.lat,
-              lng: source.lng,
-            }}
-            zoom={15}>
-            {directionsResponse !== null && (
-              <DirectionsRenderer directions={directionsResponse} />
-            )}
-          </GoogleMap>
+          {isLoaded && 
+            <GoogleMap
+              options={{mapId : "368d7f53a21ed6a2"}}
+              mapContainerStyle={{
+                width: "100%",
+                height: "500px",
+              }}
+              center={{
+                lat: source.lat,
+                lng: source.lng,
+              }}
+              zoom={15}>
+              {directionsResponse !== null && (
+                <DirectionsRenderer directions={directionsResponse} />
+              )}
+            </GoogleMap>
+          }
         </DialogContent>
-        <DialogActions>
-          <Button>Cancel</Button>
-        </DialogActions>
       </Dialog>
     </>
   );
