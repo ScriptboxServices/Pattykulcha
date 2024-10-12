@@ -1936,6 +1936,66 @@ const KanbanBoard = () => {
                                                       }}>
                                                       Assign Driver
                                                     </Button>
+                                                    <Dialog
+                                                    open={
+                                                      openDialog === order.id
+                                                    }
+                                                    sx={{ zIndex: "999" }}
+                                                    onClose={handleCloseDialog}
+                                                    PaperProps={{
+                                                      sx: {
+                                                        borderRadius: 4,
+                                                        padding: 2,
+                                                        minWidth: 400,
+                                                      },
+                                                    }}>
+                                                    <DialogTitle>
+                                                      Assign Driver
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                      <FormControl
+                                                        fullWidth
+                                                        variant='outlined'
+                                                        sx={{ mt: 2 }}>
+                                                        <InputLabel>
+                                                          Select Driver
+                                                        </InputLabel>
+                                                        <Select
+                                                          value={order.driverId}
+                                                          onChange={(e) =>
+                                                            handleDriverSelect(
+                                                              order.id,
+                                                              e.target.value
+                                                            )
+                                                          }
+                                                          label='Select Driver'
+                                                          fullWidth
+                                                          sx={{
+                                                            borderRadius: 2,
+                                                          }}>
+                                                          {drivers.map(
+                                                            (driver: any) => (
+                                                              <MenuItem
+                                                                key={driver.id}
+                                                                value={
+                                                                  driver.id
+                                                                }>
+                                                                {driver.name}
+                                                              </MenuItem>
+                                                            )
+                                                          )}
+                                                        </Select>
+                                                      </FormControl>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                      <Button
+                                                        onClick={
+                                                          handleCloseDialog
+                                                        }>
+                                                        Cancel
+                                                      </Button>
+                                                    </DialogActions>
+                                                  </Dialog>
                                                   </>
                                                 ) : (
                                                   <>
@@ -1999,66 +2059,6 @@ const KanbanBoard = () => {
                                                     }}>
                                                     Out For Delivery
                                                   </Button>
-                                                  <Dialog
-                                                    open={
-                                                      openDialog === order.id
-                                                    }
-                                                    sx={{ zIndex: "999" }}
-                                                    onClose={handleCloseDialog}
-                                                    PaperProps={{
-                                                      sx: {
-                                                        borderRadius: 4,
-                                                        padding: 2,
-                                                        minWidth: 400,
-                                                      },
-                                                    }}>
-                                                    <DialogTitle>
-                                                      Assign Driver
-                                                    </DialogTitle>
-                                                    <DialogContent>
-                                                      <FormControl
-                                                        fullWidth
-                                                        variant='outlined'
-                                                        sx={{ mt: 2 }}>
-                                                        <InputLabel>
-                                                          Select Driver
-                                                        </InputLabel>
-                                                        <Select
-                                                          value={order.driverId}
-                                                          onChange={(e) =>
-                                                            handleDriverSelect(
-                                                              order.id,
-                                                              e.target.value
-                                                            )
-                                                          }
-                                                          label='Select Driver'
-                                                          fullWidth
-                                                          sx={{
-                                                            borderRadius: 2,
-                                                          }}>
-                                                          {drivers.map(
-                                                            (driver: any) => (
-                                                              <MenuItem
-                                                                key={driver.id}
-                                                                value={
-                                                                  driver.id
-                                                                }>
-                                                                {driver.name}
-                                                              </MenuItem>
-                                                            )
-                                                          )}
-                                                        </Select>
-                                                      </FormControl>
-                                                    </DialogContent>
-                                                    <DialogActions>
-                                                      <Button
-                                                        onClick={
-                                                          handleCloseDialog
-                                                        }>
-                                                        Cancel
-                                                      </Button>
-                                                    </DialogActions>
-                                                  </Dialog>
                                                 </>
                                               )}
                                             {(container.id === "container-3" ||

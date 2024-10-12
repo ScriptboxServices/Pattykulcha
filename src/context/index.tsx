@@ -348,7 +348,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       const result = await getCartData(_id);
       if (result) {
         setGrandTotal(calculateGrandTotal(result || []));
-        setCarts([...result] || []);
+        setCarts([...result])
         setCount(result.length);
       }
     }

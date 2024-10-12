@@ -165,12 +165,12 @@ const OrdersPage: React.FC = () => {
 
   const handleIamHere = async (_id: string) => {
     const docRef = doc(db, "orders", _id);
-    setLoading(true)
+    setLoading(true);
     try {
       await updateDoc(docRef, {
         iamHere: true,
       });
-      await init()
+      await init();
     } catch (err) {
       console.log(err);
     } finally {
@@ -323,21 +323,21 @@ const OrdersPage: React.FC = () => {
                     <Typography variant="body2" color="textSecondary">
                       Phone: {orderDoc?.customer?.phoneNumber}
                     </Typography>*/}
-                    {
-                      orderDoc?.pickUpAction ? ( <>
-                            <Typography variant='body2' color='textSecondary'>
-                            <b style={{ color: "black" }}>Pickup Address:</b>{" "}
-                            {orderDoc?.address?.raw || orderDoc?.address}
-                          </Typography>
-                      </>) : (
-                        <>        
-                          <Typography variant='body2' color='textSecondary'>
-                            <b style={{ color: "black" }}>Address:</b>{" "}
-                            {orderDoc?.address?.raw || orderDoc?.address}
-                          </Typography>
-                        </>
-                      )
-                    }
+                    {orderDoc?.pickUpAction ? (
+                      <>
+                        <Typography variant='body2' color='textSecondary'>
+                          <b style={{ color: "black" }}>Pickup Address:</b>{" "}
+                          {orderDoc?.address?.raw || orderDoc?.address}
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography variant='body2' color='textSecondary'>
+                          <b style={{ color: "black" }}>Address:</b>{" "}
+                          {orderDoc?.address?.raw || orderDoc?.address}
+                        </Typography>
+                      </>
+                    )}
                     <Typography variant='body2' color='textSecondary'>
                       <b style={{ color: "black" }}>Payment Mode:</b>{" "}
                       {orderDoc?.paymentMode}
@@ -395,6 +395,25 @@ const OrdersPage: React.FC = () => {
                               onClick={() => handleViewInvoice(orderDoc)}>
                               Invoice
                             </Button>
+                          )}
+
+                        {orderDoc?.paymentMode === "Online" &&
+                          orderDoc?.delivery?.status !== true && !orderDoc?.canceled &&  (
+                            <Link href={`/tract-your-order/${orderDoc.id}`}>
+                              <Button
+                                variant='contained'
+                                sx={{
+                                  backgroundColor: "#ECAB21",
+                                  color: "white",
+                                  fontWeight: "bold",
+                                  "&:hover": {
+                                    backgroundColor: "#FFC107",
+                                    color: "white",
+                                  },
+                                }}>
+                                Track Order
+                              </Button>
+                            </Link>
                           )}
 
                         {orderDoc?.pickUpAction &&

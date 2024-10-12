@@ -39,7 +39,7 @@ import {
 import {
   GoogleMap,
   DirectionsRenderer,
-  useJsApiLoader
+  useJsApiLoader,
 } from "@react-google-maps/api";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
@@ -545,9 +545,9 @@ const DriverOrders: React.FC = () => {
           },
         }}>
         <DialogContent>
-          {isLoaded && 
+          {isLoaded && (
             <GoogleMap
-              options={{mapId : "368d7f53a21ed6a2"}}
+              options={{ mapId: "368d7f53a21ed6a2" }}
               mapContainerStyle={{
                 width: "100%",
                 height: "500px",
@@ -558,10 +558,19 @@ const DriverOrders: React.FC = () => {
               }}
               zoom={15}>
               {directionsResponse !== null && (
-                <DirectionsRenderer directions={directionsResponse} />
+                <DirectionsRenderer
+                  options={{
+                    polylineOptions: {
+                      strokeColor: "#ff0000",
+                    },
+                    suppressMarkers: false,
+                    draggable: true,
+                  }}
+                  directions={directionsResponse}
+                />
               )}
             </GoogleMap>
-          }
+          )}
         </DialogContent>
       </Dialog>
     </>
