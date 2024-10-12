@@ -10,10 +10,14 @@ import {
 } from "@react-google-maps/api";
 import {
   collection,
+  doc,
+  getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
   Timestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
@@ -24,8 +28,13 @@ import {
   Avatar,
   Box,
   Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { useAuthContext } from "@/context";
+import CircularLodar from "@/components/CircularLodar";
 const containerStyle = {
   width: "100%",
   height: "calc(100vh - 123px)",
@@ -49,8 +58,10 @@ function DriverLocation() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
   });
   const { user, metaData } = useAuthContext();
-
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [drivers, setDrivers] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // const onLoad = React.useCallback((map: google.maps.Map) => {
   //   const bounds = new google.maps.LatLngBounds(initialCenter);
@@ -71,6 +82,39 @@ function DriverLocation() {
   const endOfToday = Timestamp.fromDate(
     new Date(new Date().setHours(23, 59, 59, 999))
   );
+
+  const getDrivers = async () => {
+    const driverColRef = collection(db, "drivers");
+    const drivers = await getDocs(driverColRef);
+
+    let arr: any = [];
+    if (drivers.size > 0) {
+      drivers.forEach((doc) => {
+        arr.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+      setDrivers([...arr]);
+    }
+  };
+
+  const handleDriverSelect = async (orderId: string, driverId: string) => {
+    const docRef = doc(db, "orders", orderId);
+    const driverRef = doc(db, "drivers", driverId);
+    setLoading(true);
+    let name = "";
+    const _driver = await getDoc(driverRef);
+    console.log(_driver.exists());
+    if (_driver.exists()) {
+      name = _driver.data().name;
+    }
+    await updateDoc(docRef, {
+      driverId: driverId,
+      driverName: name,
+    });
+    setLoading(false);
+  };
 
   useEffect(() => {
     const colRef = collection(db, "driverlocation");
@@ -115,7 +159,7 @@ function DriverLocation() {
       });
       setNewOrders([...newOrders]);
     });
-
+    getDrivers();
     return () => {
       unsubscribeNewOrder();
       unsubscribePosition();
@@ -124,6 +168,7 @@ function DriverLocation() {
 
   return (
     <Box>
+      <CircularLodar isLoading={loading} />
       <Box
         sx={{
           height: "90px",
@@ -195,25 +240,30 @@ function DriverLocation() {
             zoom={10}
             // onLoad={onLoad}
             onUnmount={onUnmount}
-            options={{mapId : '368d7f53a21ed6a2'}}>
+            options={{ mapId: "368d7f53a21ed6a2" }}>
             {locations.map((driver: any) => {
-              return(
-              <React.Fragment key={driver.id}>
-                <MarkerF
-                  position={{ lat: driver.latlng.lat, lng: driver.latlng.lng }}
-                  label={{
-                    text : driver.name,
-                    color: "#000",
-                    fontSize: "18px", 
-                    fontWeight: "bold",
-                  }}
-                  icon={{
-                    url : "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                    scaledSize: new window.google.maps.Size(50, 50),
-                  }}
-                />
-              </React.Fragment>
-            )})}
+              return (
+                <React.Fragment key={driver.id}>
+                  <MarkerF
+                    position={{
+                      lat: driver.latlng.lat,
+                      lng: driver.latlng.lng,
+                    }}
+                    label={{
+                      text: driver.name,
+                      color: "#000",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                    icon={{
+                      url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                      scaledSize: new window.google.maps.Size(50, 50),
+                      labelOrigin: new window.google.maps.Point(25, -10),
+                    }}
+                  />
+                </React.Fragment>
+              );
+            })}
 
             {newOrders.map((order: any) => {
               const { latlng } = order.address;
@@ -224,18 +274,82 @@ function DriverLocation() {
                       <MarkerF
                         position={{ lat: latlng.lat, lng: latlng.lng }}
                         icon={{
-                          url : "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                          url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
                           scaledSize: new window.google.maps.Size(50, 50),
+                          labelOrigin: new window.google.maps.Point(25, -10),
                         }}
+                        onClick={() => setSelectedItem(order)}
                         label={{
-                          text : `Order - #${order?.orderNumber?.forKitchen}`,
+                          text: `Order - #${order?.orderNumber?.forKitchen}`,
                           color: "#000",
-                          fontSize: "18px", 
+                          fontSize: "18px",
                           fontWeight: "bold",
-                        }
-                        }
+                        }}
                       />
                     </React.Fragment>
+                    {selectedItem?.id === order.id && (
+                      <InfoWindow
+                        position={{ lat: latlng.lat, lng: latlng.lng }}
+                        onCloseClick={() => setSelectedItem(null)}
+                        options={{
+                          pixelOffset: new window.google.maps.Size(0, -35),
+                        }}>
+                        <Box sx={{ width: "250px" }}>
+                          <Box
+                            sx={{
+                              marginRight: 2,
+                              padding: '2px 8px',
+                              backgroundColor: "#f1f1f1",
+                              borderRadius: 2,
+                              position:'absolute',
+                              top: 7,
+                              width : '220px'
+                            }}>
+                            <Typography
+                              variant='h6'
+                              sx={{ fontWeight: "bold" }}>
+                              Order #{selectedItem?.orderNumber?.forKitchen}
+                            </Typography>
+                          </Box>
+                          <Typography variant='body1'>
+                            Name :{" "}
+                            <strong>{selectedItem?.customer.name}</strong>
+                          </Typography>
+                          <Typography variant='body1'>
+                            Phone :{" "}
+                            <strong>
+                              {selectedItem?.customer.phoneNumber}
+                            </strong>
+                          </Typography>
+                          <Typography variant='body1'>
+                            Address :{" "}
+                            <strong>{selectedItem?.address.raw}</strong>
+                          </Typography>
+                          <FormControl
+                            fullWidth
+                            variant='outlined'
+                            sx={{ mt: 2 }}>
+                            <InputLabel>Select Driver</InputLabel>
+                            <Select
+                              value={order.driverId}
+                              onChange={(e) =>
+                                handleDriverSelect(order.id, e.target.value)
+                              }
+                              label='Select Driver'
+                              fullWidth
+                              sx={{
+                                borderRadius: 2,
+                              }}>
+                              {drivers.map((driver: any) => (
+                                <MenuItem key={driver.id} value={driver.id}>
+                                  {driver.name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                      </InfoWindow>
+                    )}
                   </>
                 );
             })}
