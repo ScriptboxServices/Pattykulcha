@@ -556,7 +556,7 @@ const KanbanBoard = () => {
               justifyContent='space-evenly'
               gap={2}
               minWidth={searchValue ? "3200px" : "2800px"}
-              marginTop={5.5}>
+              marginTop={3.5}>
               {searchValue && filteredOrders?.length > 0 && (
                 <Box
                   sx={{
