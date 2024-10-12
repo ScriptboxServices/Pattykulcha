@@ -490,28 +490,28 @@ const KanbanBoard = () => {
       return [...acc, ...filteredContainerOrders];
     }, []);
 
-    interface Navigator {
-      serial: any;
-    }
+  //   interface Navigator {
+  //     serial: any;
+  //   }
 
-  const printReceipt = async () => {
-    const data = await render(
-      <Printer type='epson'>
-        <Text>Hello World</Text>
-      </Printer>
-    );
+  // const printReceipt = async () => {
+  //   const data = await render(
+  //     <Printer type='epson'>
+  //       <Text>Hello World</Text>
+  //     </Printer>
+  //   );
 
-    const Navigator :any = window.navigator
+  //   const Navigator :any = window.navigator
 
-    const port = await Navigator.serial.requestPort();
-    await port.open({ baudRate: 9600 });
+  //   const port = await Navigator.serial.requestPort();
+  //   await port.open({ baudRate: 19600 });
 
-    const writer = port.writable?.getWriter();
-    if (writer != null) {
-      await writer.write(data);
-      writer.releaseLock();
-    }
-  };
+  //   const writer = port.writable?.getWriter();
+  //   if (writer != null) {
+  //     await writer.write(data);
+  //     writer.releaseLock();
+  //   }
+  // };
 
   return (
     <Box
@@ -2148,10 +2148,10 @@ const KanbanBoard = () => {
                                               <Button
                                                 fullWidth
                                                 onClick={() =>
-                                                  // receiptPrinterHandler(
-                                                  //   String(idy)
-                                                  // )
-                                                  printReceipt()
+                                                  receiptPrinterHandler(
+                                                    String(idy)
+                                                  )
+                                                  // printReceipt()
                                                 }
                                                 variant='contained'
                                                 sx={{

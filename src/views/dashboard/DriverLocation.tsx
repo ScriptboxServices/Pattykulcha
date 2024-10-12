@@ -45,13 +45,6 @@ const initialCenter = {
   lng: -79.650253,
 };
 
-interface Driver {
-  id: number;
-  name: string;
-  currentLocation: { lat: number; lng: number };
-  nextDestination: { lat: number; lng: number };
-}
-
 function DriverLocation() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -200,7 +193,7 @@ function DriverLocation() {
                     style={{
                       alignItems: "center",
                       justifyContent: "space-between",
-                      width: "200px",
+                      width: "165px",
                       height: "80px",
                       padding: "10px",
                       border: "1px solid grey",

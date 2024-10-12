@@ -103,6 +103,13 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
     }
   };
 
+  const getKulchaQuantity = () => {
+    const quant = carts?.reduce((acc,order) => {
+      return acc = acc + order.order.kulcha.quantity
+    },0)
+    return quant
+  }
+
   return (
     <>
       <Box
@@ -540,6 +547,24 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                       if (!isAddressReachable) {
                         setDialogboxOpen(true);
                         return;
+                      }
+                      if(metaData?.address.distance.value > 5000 && metaData?.address.distance.value < 10000){
+                        if(getKulchaQuantity() < 2){
+                          setError({
+                            status : true,
+                            message : 'For deliveries between 5km and 10km, the minimum order is 2 Kulchas.'
+                          });
+                          return;
+                        }
+                      }
+                      if(metaData?.address.distance.value > 10000){
+                        if(getKulchaQuantity() < 3){
+                          setError({
+                            status : true,
+                            message : 'For deliveries over 10km, the minimum order is 3 Kulchas.'
+                          });
+                          return;
+                        }
                       }
                     }
                     
