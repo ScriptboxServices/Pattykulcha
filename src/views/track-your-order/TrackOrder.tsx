@@ -28,9 +28,9 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import { ShortTime } from "@/utils/commonFunctions";
 
-const steps = ["Order Confirmed", "Preparing", "Out for Delivery", "Delivered"];
-
+const steps = ["Confirmed", "Preparing", "Out for Delivery", "Delivered"];
 
 const TrackOrder = ({ orderId }: { orderId: string }) => {
   const { isLoaded } = useJsApiLoader({
@@ -128,7 +128,6 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
       console.log("Geolocation is not supported by this browser.");
     }
   }, [driver, order]);
-  console.log(order);
   return (
     <Box
       sx={{
@@ -141,11 +140,10 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
       <CircularLodar isLoading={loading} />
       <Box sx={{ maxWidth: "sm", width: "100%" }}>
         {/* Map Section */}
-        <Paper elevation={3} sx={{ height: "600px", width: "100%", mb: 3 }}>
+        <Paper elevation={3} sx={{ height: "550px", width: "100%", mb: 3 }}>
           {isLoaded && order?.driverId ? (
             <GoogleMap
-              options={{ mapId: "368d7f53a21ed6a2", mapTypeControl: false }}
-              mapContainerStyle={{
+            mapContainerStyle={{
                 width: "100%",
                 height: "550px",
               }}
@@ -153,7 +151,14 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 lat: order.address.latlng.lat,
                 lng: order.address.latlng.lng,
               }}
-              zoom={15}>
+              zoom={15}
+              options={{
+                mapId : "368d7f53a21ed6a2",
+                zoomControl: false,
+                streetViewControl: false,
+                fullscreenControl: false,
+                mapTypeControl: false,
+              }}>
               {directionsResponse !== null && (
                 <DirectionsRenderer
                   options={{
@@ -182,7 +187,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
           <Typography variant='body1'>
             Delivering to {order?.customer?.name}
             <br />
-            {order?.address?.raw}
+            <b style={{}}>{order?.address?.seperate?.line1}</b>
           </Typography>
           <Divider sx={{ my: 2 }} />
 
@@ -192,8 +197,21 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
               <Step key={label}>
                 <StepLabel
                   sx={{
-                    "& .MuiStepIcon-root.Mui-active": { color: "#ECAB21" }, // Active step color
-                    "& .MuiStepIcon-root.Mui-completed": { color: "#ECAB21" }, // Completed step color
+                    "& .MuiStepIcon-root.Mui-active": {
+                      color: "#ECAB21", // Active step color
+                      borderRadius: "50%",
+                      animation: "glow 1.5s ease-in-out infinite",
+                      boxShadow:
+                        "0 0 10px #ECAB21, 0 0 20px #ECAB21, 0 0 30px #ECAB21",
+                    },
+                    "& .MuiStepIcon-root.Mui-completed": {
+                      color: "green", // Completed step color
+                    },
+                    "@keyframes glow": {
+                      "0%": { boxShadow: "0 0 5px #ECAB21" },
+                      "50%": { boxShadow: "0 0 30px #ECAB21" },
+                      "100%": { boxShadow: "0 0 5px #ECAB21" },
+                    },
                   }}>
                   {label}
                 </StepLabel>
@@ -201,19 +219,16 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
             ))}
           </Stepper>
         </Paper>
-
-        {/* Order Details */}
         <Paper elevation={3} sx={{ padding: "20px", width: "100%" }}>
           <Typography variant='h6' sx={{ fontWeight: "bold", mb: 2 }}>
-            Order #31
+            Order {order?.orderNumber?.forCustomer}
           </Typography>
           <Typography variant='body2' sx={{ mt: 1 }}>
-            1:02 PM | Payment Mode: {order?.paymentMode} |{" "}
-            {order?.order?.length} Item
+            {order?.createdAt && ShortTime(order?.createdAt)} | Payment Mode: {order?.paymentMode} | {order?.order?.length}{" "}
+            Item
           </Typography>
           <Divider sx={{ my: 2 }} />
 
-          {/* Kulcha Image Section */}
           {order?.order.map((item: any) => (
             <Grid
               container
@@ -249,7 +264,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
             </Grid>
           ))}
 
-          <Divider sx={{ my: 2 }} />
+          {/* <Divider sx={{ my: 2 }} />
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
             <Typography variant='body2' sx={{ fontWeight: "bold" }}>
               Subtotal:
@@ -279,7 +294,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
               Grand Total:
             </Typography>
             <Typography variant='body2'>${order?.grand_total}</Typography>
-          </Box>
+          </Box> */}
         </Paper>
       </Box>
     </Box>

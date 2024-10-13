@@ -547,7 +547,10 @@ const DriverOrders: React.FC = () => {
         <DialogContent>
           {isLoaded && (
             <GoogleMap
-              options={{ mapId: "368d7f53a21ed6a2", mapTypeControl: false, }}
+              options={{ mapId: "368d7f53a21ed6a2",     zoomControl: false,
+                streetViewControl: false,
+                fullscreenControl: false,
+                mapTypeControl: false,}}
               mapContainerStyle={{
                 width: "100%",
                 height: "550px",

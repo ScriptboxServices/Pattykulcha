@@ -150,12 +150,11 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
       beveragesRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-
   useEffect(() => {
     const options = {
-      root: null, 
+      root: null,
       rootMargin: "-100px 0px 0px 0px",
-      threshold: 0, 
+      threshold: 0,
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -181,16 +180,15 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
     };
   }, []);
 
-
   useEffect(() => {
     const handleScroll = () => {
       if (tabsRef.current && tabsContainerRef.current) {
         const tabsPosition =
           tabsContainerRef.current.getBoundingClientRect().top;
         if (tabsPosition <= 0 && !isSticky) {
-          setIsSticky(true); 
+          setIsSticky(true);
         } else if (tabsPosition > 0 && isSticky) {
-          setIsSticky(false); 
+          setIsSticky(false);
         }
       }
     };
@@ -302,6 +300,32 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
     setIncludedItems2([...arr]);
     localStorage.setItem("includedItems2", JSON.stringify([...arr]));
   };
+
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const component = document.getElementById("scrollable-container");
+      const componentHeight = component?.offsetHeight || 0;
+      const componentTop =
+        component?.getBoundingClientRect().top! + scrollTop || 0;
+
+      const componentBottom = componentTop + componentHeight;
+      const viewportBottom = scrollTop + windowHeight;
+
+      if (viewportBottom >= componentBottom) {
+        setIsAtBottom(true);
+      } else {
+        setIsAtBottom(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleRemoveItem = (itemId: string) => {
     setIncludedItems2(includedItems2.filter((item) => item.id !== itemId));
@@ -622,7 +646,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
               color="textSecondary"
               sx={{ marginTop: "0.5rem", fontWeight: "bold" }}
             >
-             ${kulcha?.price}.00 x {kulcha?.quantity}
+              ${kulcha?.price}.00 x {kulcha?.quantity}
             </Typography>
           </Box>
 
@@ -837,16 +861,25 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                 "& .MuiTab-root": {
                   fontSize: {
                     xs: "0.8rem",
-                    sm: "1rem",  
+                    sm: "1rem",
                   },
                   minWidth: 80,
                   textTransform: "none",
                 },
               }}
             >
-         <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Other Kulcha's" />
-      <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Extra's" />
-      <Tab sx={{ padding: { xs: '12px', sm: '16px' } }} label="Beverages" />
+              <Tab
+                sx={{ padding: { xs: "12px", sm: "16px" } }}
+                label="Other Kulcha's"
+              />
+              <Tab
+                sx={{ padding: { xs: "12px", sm: "16px" } }}
+                label="Extra's"
+              />
+              <Tab
+                sx={{ padding: { xs: "12px", sm: "16px" } }}
+                label="Beverages"
+              />
             </Tabs>
           </Box>
         </Box>
@@ -1547,34 +1580,60 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
         <Grid item xs={12}>
           <Box
             sx={{
-              // marginTop: "2.7rem",
               paddingTop: "0rem",
               marginBottom: "0.5rem",
               textAlign: "center",
+              position: "relative",
             }}
           >
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <Button
-                variant="contained"
+            <Box
+              id="scrollable-container"
+              sx={{
+                position: "relative",
+                height: "100%",
+                marginTop:10,
+                display:"flex",
+                justifyContent:"center",
+                marginBottom:2,
+              }}
+            >
+              <Box
                 sx={{
-                  backgroundColor: "#ECAB21",
-                  color: "white",
-                  borderRadius: 10,
-                  marginTop: 2,
-                  paddingX: 4,
-                  paddingY: 1,
-                  mb: 2,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
-                    color: "white",
-                  },
+                  position: isAtBottom ? "absolute" : "fixed",
+                  bottom: isAtBottom ? 16 : 0, 
+                  right: { xs: "auto", md: 5 },
+                  left: { xs: "0", md: "auto" },
+                  width: "100%" ,
+                  borderTop : isAtBottom ? "" : "1px solid #80808069",
+                  backgroundColor: { xs: "white", sm: "#fffaeb" },
+                  display: "flex",
+                  justifyContent: "center",
+                  zIndex: 1000,
                 }}
-                onClick={handleAddToCart}
               >
-                Add to cart
-              </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    borderRadius: 10,
+                    paddingX: {xs:3,sm:4},
+                    paddingY: 1,
+                    mb: 2,
+                    mt:2,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                  onClick={handleAddToCart}
+                >
+                  Add to cart
+                </Button>
+              </Box>
             </Box>
+
             {/* <Box
               sx={{
                 width: "65%",

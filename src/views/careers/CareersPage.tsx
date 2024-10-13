@@ -45,7 +45,7 @@ interface FormValues {
   name: string;
   contactNumber: string;
   permitType: string;
-  licenseType?: string; // License type is optional now
+  licenseType?: string; 
   availability: {
     monday: boolean;
     tuesday: boolean;
@@ -58,13 +58,10 @@ interface FormValues {
   acceptedTerms: boolean;
 }
 
-// Styling components
 const StyledContainer = styled(Container)({
-  width: "90%",
+  width: "100%",
   padding: "2rem",
-  backgroundColor: "white",
-  borderRadius: "8px",
-  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  backgroundColor: "#FAF3E0",
   textAlign: "center",
 });
 
@@ -256,9 +253,8 @@ const CareersPage: React.FC = () => {
         }}>
         Build your career with Patty kulcha
       </Typography>
-      <StyledContainer maxWidth='sm'>
+      <StyledContainer>
         <Container
-          maxWidth='md'
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -269,7 +265,7 @@ const CareersPage: React.FC = () => {
             <>
               <Card
                 sx={{
-                  backgroundColor: "#FAF3E0",
+                  backgroundColor: "#fff",
                   border: "none",
                   boxShadow: "none",
                 }}>
@@ -278,16 +274,16 @@ const CareersPage: React.FC = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: "white",
+                    backgroundColor: "#FAF3E0",
                     paddingY: 4,
                   }}>
                   <Grid
                     container
-                    spacing={4}
+                    spacing={2}
                     justifyContent='center'
                     flexDirection='row'>
                     {options.map((option) => (
-                      <Grid item xs={10} sm={5} md={5} key={option.id}>
+                      <Grid item xs={10} sm={5} md={6} key={option.id}>
                         <Card
                           sx={{
                             padding: 2,
@@ -325,7 +321,9 @@ const CareersPage: React.FC = () => {
                               },
                               acceptedTerms: false,
                             });
-                          }}>
+                          }}
+                          
+                          >
                           <IconButton
                             sx={{
                               backgroundColor:
@@ -362,7 +360,7 @@ const CareersPage: React.FC = () => {
         </Container>
 
         {showForm && (
-          <>
+          <Box sx={{background:'#fff',p : 4,maxWidth:'750px', margin : 'auto'}}>
             <Box sx={{ display: "flex" }}>
               <Link
                 onClick={() => setShowForm(false)}
@@ -404,7 +402,7 @@ const CareersPage: React.FC = () => {
                     fullWidth
                     label='Job Type'
                     {...field}
-                    value={selectedOption} // Predefined value based on option
+                    value={selectedOption} 
                     margin='normal'
                     variant='outlined'
                     disabled
@@ -437,10 +435,11 @@ const CareersPage: React.FC = () => {
                   key={field.value}
                     fullWidth
                     disabled
-                    label='Contact Number'
+                    placeholder='Contact Number'
                     {...field}
                     margin='normal'
                     variant='outlined'
+                  
                   />
                 )}
               />
@@ -582,7 +581,7 @@ const CareersPage: React.FC = () => {
                 </Alert>
               )}
             </form>
-          </>
+          </Box>
         )}
       </StyledContainer>
     </Box>

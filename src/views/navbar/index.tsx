@@ -30,7 +30,22 @@ import { KITCHEN_ID, useAuthContext, useMenuContext } from "@/context";
 import { auth, db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { addDoc, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import WorkIcon from '@mui/icons-material/Work';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import KitchenIcon from '@mui/icons-material/Kitchen';
+import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "white",
@@ -63,10 +78,10 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      if(metaData.role === 'driver') {
-        await updateDoc(doc(db,'driverlocation',driverMetaData?.id),{
-          isOnline : false
-        })
+      if (metaData.role === "driver") {
+        await updateDoc(doc(db, "driverlocation", driverMetaData?.id), {
+          isOnline: false,
+        });
       }
       await auth.signOut();
       localStorage.removeItem("instructions");
@@ -75,7 +90,6 @@ const Navbar: React.FC = () => {
       localStorage.removeItem("otherKulchas");
       router.push("/login");
     } catch (err) {
-      console.log(err);
       router.push("/login");
     }
   };
@@ -112,7 +126,6 @@ const Navbar: React.FC = () => {
               },
             });
             router.push("/driver-home");
-
           },
           (err) => {
             console.log(err);
@@ -160,19 +173,32 @@ const Navbar: React.FC = () => {
   };
 
   const drawer = (
-    <Box sx={{ width: 250 }}>
-      <Link href="/home" passHref>
-        <Image
-          src="/images/logo.png"
-          alt="logo"
-          height={150}
-          layout="fixed"
-          width={170}
-          priority
-        />
-      </Link>
-      <Divider />
-      <List>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: 250,
+        textAlign: "center",
+        paddingTop: "0rem",
+      }}
+    >
+      <List  sx={{ flexGrow: 1 }}>
+      <ListItem>
+          <Link href="/home" passHref>
+            <Image
+              src="/images/logo.png"
+              alt="logo"
+              height={150}
+              layout="fixed"
+              width={170}
+              priority
+              style={{
+                marginInline: "auto",
+              }}
+            />
+          </Link>
+        </ListItem>
         {isLoggedIn && (
           <>
             <Link href="/profile" passHref>
@@ -186,6 +212,7 @@ const Navbar: React.FC = () => {
                   },
                 }}
               >
+                <PersonIcon sx={{ marginRight: 1 }} />
                 <ListItemText primary="My Profile" />
               </ListItem>
             </Link>
@@ -200,6 +227,7 @@ const Navbar: React.FC = () => {
                   },
                 }}
               >
+                 <ShoppingCartIcon sx={{ marginRight: 1 }} />
                 <ListItemText primary="My Orders" />
               </ListItem>
             </Link>
@@ -216,6 +244,7 @@ const Navbar: React.FC = () => {
               },
             }}
           >
+             <HomeIcon sx={{ marginRight: 1 }} />
             <ListItemText primary="Menu" />
           </ListItem>
         </Link>
@@ -230,6 +259,7 @@ const Navbar: React.FC = () => {
               },
             }}
           >
+            <ContactMailIcon sx={{ marginRight: 1 }} />
             <ListItemText primary="Contact Us" />
           </ListItem>
         </Link>
@@ -245,12 +275,12 @@ const Navbar: React.FC = () => {
                 },
               }}
             >
+              <WorkIcon sx={{ marginRight: 1 }} />
               <ListItemText primary="Career" />
             </ListItem>
           </Link>
         )}
       </List>
-      <Divider />
       <List>
         {!isLoggedIn ? (
           <>
@@ -274,86 +304,92 @@ const Navbar: React.FC = () => {
                   },
                 }}
               >
+                <LoginIcon sx={{ marginRight: 1 }} />
                 Log In
               </Button>
             </ListItem>
           </>
         ) : (
           <>
-            {metaData?.role === "kitchen" &&
-              metaData?.foodTruckId === kitchenMetaData?.id &&
-              metaData?.isKitchen && (
-                <ListItem button>
-                  <Button
-                    onClick={(e) => {
-                      handleLinkClick();
-                      router.push("/dashboard");
-                    }}
-                    sx={{
-                      textTransform: "none",
-                      backgroundColor: "#ECAB21",
-                      color: "white",
-                      paddingX: 4,
-                      width: "100%",
-                      paddingY: 1,
-                      fontWeight: "bold",
-                      "&:hover": {
-                        backgroundColor: "#FFC107",
+            <Box sx={{ padding: "1rem" }}>
+              {metaData?.role === "kitchen" &&
+                metaData?.foodTruckId === kitchenMetaData?.id &&
+                metaData?.isKitchen && (
+                  <ListItem button>
+                    <Button
+                      onClick={(e) => {
+                        handleLinkClick();
+                        router.push("/dashboard");
+                      }}
+                      sx={{
+                        textTransform: "none",
+                        backgroundColor: "#ECAB21",
                         color: "white",
-                      },
-                    }}
-                  >
-                    Switch to kitchen
-                  </Button>
-                </ListItem>
-              )}
-            {metaData?.role === "driver" &&
-              metaData?.driverId === driverMetaData?.id &&
-              metaData?.isDriver && (
-                <ListItem button>
-                  <Button
-                    onClick={switchToDriverPortal}
-                    sx={{
-                      textTransform: "none",
-                      backgroundColor: "#ECAB21",
-                      color: "white",
-                      paddingX: 4,
-                      width: "100%",
-                      paddingY: 1,
-                      fontWeight: "bold",
-                      "&:hover": {
-                        backgroundColor: "#FFC107",
+                        paddingX: 2,
+                        width: "100%",
+                        paddingY: 1,
+                        fontWeight: "bold",
+                        "&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      <KitchenIcon sx={{ marginRight: 1 }} />
+                      Switch to kitchen
+                    </Button>
+                  </ListItem>
+                )}
+              {metaData?.role === "driver" &&
+                metaData?.driverId === driverMetaData?.id &&
+                metaData?.isDriver && (
+                  <ListItem button>
+                    <Button
+                      onClick={switchToDriverPortal}
+                      sx={{
+                        textTransform: "none",
+                        backgroundColor: "#ECAB21",
                         color: "white",
-                      },
-                    }}
-                  >
-                    Switch to Driver
-                  </Button>
-                </ListItem>
-              )}
-            <ListItem button>
-              <Button
-                sx={{
-                  textTransform: "none",
-                  backgroundColor: "#ECAB21",
-                  color: "white",
-                  paddingX: 4,
-                  width: "100%",
-                  paddingY: 1,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#FFC107",
+                        paddingX: 2,
+                        width: "100%",
+                        paddingY: 1,
+                        fontWeight: "bold",
+                        "&:hover": {
+                          backgroundColor: "#FFC107",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      <DeliveryDiningIcon sx={{ marginRight: 1 }} />
+                      Switch to Driver
+                    </Button>
+                  </ListItem>
+                )}
+              <ListItem button>
+                <Button
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "#ECAB21",
                     color: "white",
-                  },
-                }}
-                onClick={() => {
-                  handleLinkClick();
-                  handleLogout();
-                }}
-              >
-                Logout
-              </Button>
-            </ListItem>
+                    paddingX: 2,
+                    width: "100%",
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                  onClick={() => {
+                    handleLinkClick();
+                    handleLogout();
+                  }}
+                >
+                  <LogoutIcon sx={{ marginRight: 1 }} />
+                  Logout
+                </Button>
+              </ListItem>
+            </Box>
           </>
         )}
       </List>
@@ -412,19 +448,36 @@ const Navbar: React.FC = () => {
                   />
                 </>
               ) : (
-                <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column", // Stack Chip and Typography vertically
+                    alignItems: "center", // Center align horizontally
+                    justifyContent: "center", // Center align vertically
+                  }}
+                >
                   <Chip
                     label="Offline"
                     color="warning"
                     variant="outlined"
                     sx={{
-                      mr: 1,
                       backgroundColor: "red",
                       color: "white",
                       fontWeight: "600",
+                      // mb: 0.5, // Add margin below the Chip to separate it from the text
                     }}
                   />
-                </>
+                  {/* <Typography
+                    sx={{
+                      color: "#4CAF50",
+                      border: "none",
+                      fontWeight: "600",
+                      fontSize: "10px",
+                    }}
+                  >
+                    Open at 8 AM
+                  </Typography> */}
+                </Box>
               ))}
             {isLoggedIn && (
               <Link href="/checkout" passHref>
@@ -578,8 +631,15 @@ const Navbar: React.FC = () => {
         }}
       >
         <DialogContent>
-          <Box sx={{display:'flex',flexDirection:'column',gap:2 ,alignItems:'center'}}>
-            <WarningIcon sx={{ fontSize: "46px",}} />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              alignItems: "center",
+            }}
+          >
+            <WarningIcon sx={{ fontSize: "46px" }} />
             <Typography
               variant="body1"
               color="textPrimary"
@@ -589,7 +649,10 @@ const Navbar: React.FC = () => {
               PLEASE ALLOW YOUR LOCATION.
               <ol>
                 <li>Go to your browser settings.</li>
-                <li>Find the &rdquo;Privacy&rdquo; or &rdquo;Location&rdquo; settings.</li>
+                <li>
+                  Find the &rdquo;Privacy&rdquo; or &rdquo;Location&rdquo;
+                  settings.
+                </li>
                 <li>Allow location access for this site.</li>
               </ol>
             </Typography>

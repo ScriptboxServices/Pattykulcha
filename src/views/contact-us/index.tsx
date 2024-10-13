@@ -14,7 +14,7 @@ import {
   IconButton,
   Button,
   Alert,
-  Link
+  Link,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useForm, Controller } from "react-hook-form";
@@ -42,11 +42,13 @@ const schema = yup.object().shape({
 });
 
 const ContactUs: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuthContext();
   const [error, setError] = useState(true);
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const options = [
@@ -62,7 +64,7 @@ const ContactUs: React.FC = () => {
       title: "Call Now",
       description: "Give us a call for instant support.",
       icon: <Phone fontSize="large" />,
-      action: () => window.location.href = "tel:+18333381313", // Initiate call when clicked
+      action: () => (window.location.href = "tel:+18333381313"), // Initiate call when clicked
     },
   ];
 
@@ -123,86 +125,96 @@ const ContactUs: React.FC = () => {
           display: "flex",
           minHeight: "100dvh",
           backgroundColor: "#FAF3E0",
-          pt:10
-          
+          pt: 10,
         }}
       >
         <Container maxWidth="md">
           {/* Interactive Card Component */}
           {!showForm && (
             <>
-            <Typography variant="h3" sx={{textAlign:'center',mb:3,fontWeight:'600'}}>CONTACT US</Typography>
-            <Card sx={{ backgroundColor: "#FAF3E0" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "white",
-                  paddingY: 4,
-                }}
+              <Typography
+                variant="h3"
+                sx={{ textAlign: "center", mb: 3, fontWeight: "600" }}
               >
-                <Grid
-                  container
-                  spacing={2}
-                  justifyContent="center"
-                  flexDirection="row"
+                CONTACT US
+              </Typography>
+              <Card sx={{ backgroundColor: "#FAF3E0" ,boxShadow:'none',
+                    border:'none'}}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#FAF3E0",
+                    paddingY: 4,
+                  }}
                 >
-                  {options.map((option) => (
-                    <Grid item xs={10} sm={5} md={5} key={option.id}>
-                      <Card
-                        sx={{
-                          padding: 2,
-                          textAlign: "center",
-                          height:'200px',
-                          border:
-                            selectedOption === option.id
-                              ? "2px solid #3f51b5"
-                              : "1px solid #ccc",
-                          borderRadius: "10px",
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
-                          },
-                        }}
-                        onClick={() => {
-                          setSelectedOption(option.id);
-                          option.action();
-                        }}
-                      >
-                        <IconButton
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent="center"
+                    flexDirection="row"
+                  >
+                    {options.map((option) => (
+                      <Grid item xs={10} sm={5} md={5} key={option.id}>
+                        <Card
                           sx={{
-                            backgroundColor:
+                            padding: 2,
+                            textAlign: "center",
+                            height: "200px",
+                            border:
                               selectedOption === option.id
-                                ? "#3f51b5"
-                                : "#ECAB21",
-                            color:
-                              selectedOption === option.id ? "white" : "white",
-                            marginBottom: 1,
+                                ? "2px solid #3f51b5"
+                                : "1px solid #ccc",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
                             "&:hover": {
-                              backgroundColor:"#ECAB21",
-                              color: "white",
+                              boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
                             },
                           }}
+                          onClick={() => {
+                            setSelectedOption(option.id);
+                            option.action();
+                          }}
                         >
-                          {option.icon}
-                        </IconButton>
-                        <Typography variant="h6" sx={{ marginBottom: 1,fontWeight:'600' }}>
-                          {option.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{ marginBottom: 2,color:'black' }}
-                        >
-                          {option.description}
-                        </Typography>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Card>
+                          <IconButton
+                            sx={{
+                              backgroundColor:
+                                selectedOption === option.id
+                                  ? "#3f51b5"
+                                  : "#ECAB21",
+                              color:
+                                selectedOption === option.id
+                                  ? "white"
+                                  : "white",
+                              marginBottom: 1,
+                              "&:hover": {
+                                backgroundColor: "#ECAB21",
+                                color: "white",
+                              },
+                            }}
+                          >
+                            {option.icon}
+                          </IconButton>
+                          <Typography
+                            variant="h6"
+                            sx={{ marginBottom: 1, fontWeight: "600" }}
+                          >
+                            {option.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ marginBottom: 2, color: "black" }}
+                          >
+                            {option.description}
+                          </Typography>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              </Card>
             </>
           )}
 
@@ -213,21 +225,28 @@ const ContactUs: React.FC = () => {
               sx={{
                 borderRadius: "16px",
                 p: 4,
-                mb:6,
+                mb: 6,
                 backgroundColor: "rgba(255, 255, 255, 0.85)",
               }}
             >
-                <Link
-                  onClick= {() => setShowForm(false)}
-                      underline='none'
-                      sx={{ display: "flex", alignItems: "center", mb: 1,cursor:"pointer" }}>
-                      <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
-                      <Typography
-                        variant='body1'
-                        sx={{ ml: 1, fontWeight: 600, color: "#162548" }}>
-                        Back
-                      </Typography>
-                    </Link>
+              <Link
+                onClick={() => setShowForm(false)}
+                underline="none"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 1,
+                  cursor: "pointer",
+                }}
+              >
+                <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
+                <Typography
+                  variant="body1"
+                  sx={{ ml: 1, fontWeight: 600, color: "#162548" }}
+                >
+                  Back
+                </Typography>
+              </Link>
               <Typography
                 variant="h4"
                 sx={{ fontWeight: 600 }}
@@ -393,8 +412,8 @@ const ContactUs: React.FC = () => {
                         severity="success"
                         sx={{ marginTop: 2 }}
                       >
-                        Thank you for contacting us! We&rsquo;ve received your message
-                        and will get back to you as soon as possible.
+                        Thank you for contacting us! We&rsquo;ve received your
+                        message and will get back to you as soon as possible.
                       </Alert>
                     )}
                   </Grid>

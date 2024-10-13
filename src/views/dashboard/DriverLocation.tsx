@@ -110,54 +110,63 @@ function DriverLocation() {
   };
 
   useEffect(() => {
-    const colRef = collection(db, "driverlocation");
-    const unsubscribePosition = onSnapshot(colRef, (snapshot) => {
-      let loc: any = [];
-      snapshot.forEach((doc) => {
-        const { isOnline } = doc.data();
-        if (isOnline) {
-          loc.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        }
-      });
-      setLocations([...loc]);
-    });
+    let unsubscribeNewOrder: any;
+    let unsubscribePosition: any;
 
-    const newOrderQuery = query(
-      collection(db, "orders"),
-      where("kitchenId", "==", metaData?.foodTruckId),
-      where("createdAt", ">=", startOfToday),
-      where("createdAt", "<=", endOfToday),
-      orderBy("createdAt", "desc")
-    );
-    const unsubscribeNewOrder = onSnapshot(newOrderQuery, (snapshot) => {
-      let newOrders: any[] = [];
-      snapshot.forEach((doc) => {
-        const { delivery, canceled, pickUpAction } = doc.data();
-        console.log("object");
-        if (
-          delivery.status === false &&
-          (delivery.message === "Preparing" ||
-            delivery.message === "Out For Delivery") &&
-          !pickUpAction &&
-          !canceled
-        ) {
-          newOrders.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        }
+    if (metaData) {
+      const colRef = collection(db, "driverlocation");
+      unsubscribePosition = onSnapshot(colRef, (snapshot) => {
+        let loc: any = [];
+        snapshot.forEach((doc) => {
+          const { isOnline } = doc.data();
+          if (isOnline) {
+            loc.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          }
+        });
+        setLocations([...loc]);
       });
-      setNewOrders([...newOrders]);
-    });
-    getDrivers();
+
+      const newOrderQuery = query(
+        collection(db, "orders"),
+        where("kitchenId", "==", metaData?.foodTruckId),
+        where("createdAt", ">=", startOfToday),
+        where("createdAt", "<=", endOfToday),
+        orderBy("createdAt", "desc")
+      );
+      unsubscribeNewOrder = onSnapshot(newOrderQuery, (snapshot) => {
+        let newOrders: any[] = [];
+        snapshot.forEach((doc) => {
+          const { delivery, canceled, pickUpAction } = doc.data();
+          if (
+            delivery.status === false &&
+            (delivery.message === "Preparing" ||
+              delivery.message === "Out For Delivery") &&
+            !pickUpAction &&
+            !canceled
+          ) {
+            newOrders.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          }
+        });
+        setNewOrders([...newOrders]);
+      });
+      getDrivers();
+    }
     return () => {
-      unsubscribeNewOrder();
-      unsubscribePosition();
+      if (unsubscribeNewOrder) {
+        unsubscribeNewOrder();
+      }
+
+      if (unsubscribePosition) {
+        unsubscribePosition();
+      }
     };
-  }, []);
+  }, [metaData]);
 
   return (
     <Box>
@@ -233,7 +242,13 @@ function DriverLocation() {
             zoom={10}
             // onLoad={onLoad}
             onUnmount={onUnmount}
-            options={{ mapId: "368d7f53a21ed6a2" }}>
+            options={{
+              mapId: "368d7f53a21ed6a2",
+              mapTypeControl: false,
+              zoomControl: false,
+              streetViewControl: false,
+              fullscreenControl: false,
+            }}>
             {locations.map((driver: any) => {
               return (
                 <React.Fragment key={driver.id}>
@@ -291,12 +306,12 @@ function DriverLocation() {
                           <Box
                             sx={{
                               marginRight: 2,
-                              padding: '2px 8px',
+                              padding: "2px 8px",
                               backgroundColor: "#f1f1f1",
                               borderRadius: 2,
-                              position:'absolute',
+                              position: "absolute",
                               top: 7,
-                              width : '220px'
+                              width: "220px",
                             }}>
                             <Typography
                               variant='h6'
