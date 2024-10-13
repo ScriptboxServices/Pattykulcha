@@ -547,10 +547,10 @@ const DriverOrders: React.FC = () => {
         <DialogContent>
           {isLoaded && (
             <GoogleMap
-              options={{ mapId: "368d7f53a21ed6a2" }}
+              options={{ mapId: "368d7f53a21ed6a2", mapTypeControl: false, }}
               mapContainerStyle={{
                 width: "100%",
-                height: "500px",
+                height: "600px",
               }}
               center={{
                 lat: source.lat,
@@ -563,8 +563,6 @@ const DriverOrders: React.FC = () => {
                     polylineOptions: {
                       strokeColor: "#ff0000",
                     },
-                    suppressMarkers: false,
-                    draggable: true,
                   }}
                   directions={directionsResponse}
                 />

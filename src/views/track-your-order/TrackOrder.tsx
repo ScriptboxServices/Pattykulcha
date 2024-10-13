@@ -29,30 +29,8 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const containerStyle = {
-  width: "100%",
-  height: "300px",
-};
-
-const initialCenter = {
-  lat: -3.745,
-  lng: -38.523,
-};
-
 const steps = ["Order Confirmed", "Preparing", "Out for Delivery", "Delivered"];
 
-// Define an array with details for items (like Kulcha)
-const items = [
-  {
-    id: 1,
-    name: "Mix Kulcha",
-    price: "$45.00",
-    description: "Soft kulcha bread served with a spread of butter",
-    location: { lat: -3.747, lng: -38.521 },
-    image: "/images/landingpage/menu1.png", // Replace this with the actual image path
-  },
-  // Add more items if needed
-];
 
 const TrackOrder = ({ orderId }: { orderId: string }) => {
   const { isLoaded } = useJsApiLoader({
@@ -76,16 +54,25 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
           if (snapshot.exists()) {
             setOrder({ ...snapshot.data() });
 
-            if(snapshot.data().delivery.status === false && snapshot.data().delivery.message === 'Preparing') {
-                setActiveStep(2)
+            if (
+              snapshot.data().delivery.status === false &&
+              snapshot.data().delivery.message === "Preparing"
+            ) {
+              setActiveStep(2);
             }
 
-            if(snapshot.data().delivery.status === false && snapshot.data().delivery.message === 'Out For Delivery') {
-                setActiveStep(3)
+            if (
+              snapshot.data().delivery.status === false &&
+              snapshot.data().delivery.message === "Out For Delivery"
+            ) {
+              setActiveStep(3);
             }
 
-            if(snapshot.data().delivery.status === true && snapshot.data().delivery.message === 'Delivered') {
-                setActiveStep(4)
+            if (
+              snapshot.data().delivery.status === true &&
+              snapshot.data().delivery.message === "Delivered"
+            ) {
+              setActiveStep(4);
             }
 
             if (snapshot.data()?.driverId) {
@@ -154,23 +141,25 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
       <CircularLodar isLoading={loading} />
       <Box sx={{ maxWidth: "sm", width: "100%" }}>
         {/* Map Section */}
-        <Paper elevation={3} sx={{ height: "300px", width: "100%", mb: 3 }}>
+        <Paper elevation={3} sx={{ height: "600px", width: "100%", mb: 3 }}>
           {isLoaded && order?.driverId ? (
             <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={initialCenter}
-              zoom={10}
-              options={{
-                mapTypeControl: false, // Disable map type control
-              }}>
+              options={{ mapId: "368d7f53a21ed6a2", mapTypeControl: false }}
+              mapContainerStyle={{
+                width: "100%",
+                height: "600px",
+              }}
+              center={{
+                lat: order.address.latlng.lat,
+                lng: order.address.latlng.lng,
+              }}
+              zoom={15}>
               {directionsResponse !== null && (
                 <DirectionsRenderer
                   options={{
                     polylineOptions: {
                       strokeColor: "#ff0000",
                     },
-                    suppressMarkers: false,
-                    draggable: true,
                   }}
                   directions={directionsResponse}
                 />

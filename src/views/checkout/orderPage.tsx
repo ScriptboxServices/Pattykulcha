@@ -329,7 +329,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      Address: {metaData?.address?.raw}
+                      <span><b>Address:</b> {metaData?.address?.raw}</span>
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -359,7 +359,7 @@ const OrderPage: React.FC<Props> = ({
                         fontSize: { xs: "16px", lg: "18px" },
                         wordBreak: "break-all",
                       }}>
-                      Delivery Instructions: {instructions}
+                      <span><b>Delivery Instructions:</b> {instructions}</span>
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -419,7 +419,7 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          Name: {metaData?.name}
+                          <span><b>Name:</b> {metaData?.name}</span>
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -595,7 +595,7 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          Name: {metaData?.name}
+                          <span><b>Name:</b> {metaData?.name}</span>
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -621,7 +621,7 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                       }}>
-                      <b>Address:</b> 635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
+                      <b>Pickup Address:</b> 635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
                     </Typography>
                   </Box>
 
