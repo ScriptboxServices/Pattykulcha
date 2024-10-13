@@ -147,7 +147,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
               options={{ mapId: "368d7f53a21ed6a2", mapTypeControl: false }}
               mapContainerStyle={{
                 width: "100%",
-                height: "600px",
+                height: "550px",
               }}
               center={{
                 lat: order.address.latlng.lat,
