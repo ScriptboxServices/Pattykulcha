@@ -690,158 +690,182 @@ const OrderPage: React.FC<Props> = ({
           sx: { borderRadius: "10px" },
         }}
       >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Enter your Address
-          <IconButton onClick={() => setOpenDialog(!openDialog)}>
-            <CloseIcon sx={{ color: "#ECAB21" }} />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Box
+          <DialogTitle
             sx={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              border: "1px solid grey",
-              borderRadius: "8px",
-              padding: "6px 10px",
-              marginTop: "8px",
-              width: "100%",
             }}
-          >
-            <Autocomplete
-              apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
-              style={{
-                outline: "none",
-                color: "#8F8996",
-                padding: "10px",
-                fontWeight: "bold",
-                border: "none",
-                fontSize: "1rem",
-                flex: "1",
-              }}
-              // defaultValue={address?.raw}
-              onPlaceSelected={(place) => {
-                if (!place) return;
-
-                let zipCode: string;
-                let city: string;
-                let state: string;
-                for (
-                  let i = 0;
-                  i < (place.address_components?.length ?? 0);
-                  i++
-                ) {
-                  for (
-                    let j = 0;
-                    j < (place.address_components![i].types.length ?? 0);
-                    j++
-                  ) {
-                    if (
-                      place.address_components![i].types[j] == "postal_code"
-                    ) {
-                      zipCode = place.address_components![i].long_name;
-                    }
-                    if (place?.address_components![i].types[j] == "locality") {
-                      city = place.address_components[i].long_name;
-                    }
-                    if (
-                      place?.address_components![i].types[j] ==
-                      "administrative_area_level_1"
-                    ) {
-                      state = place?.address_components[i].long_name;
-                    }
-                  }
-                }
-
-                const geocoder = new window.google.maps.Geocoder();
-                const post = place.geometry?.location;
-
-                if (!post) return;
-
-                const latlng = new window.google.maps.LatLng(
-                  post.lat(),
-                  post.lng()
-                );
-                geocoder.geocode(
-                  { location: latlng },
-                  async (results: any, status: any) => {
-                    if (status === "OK") {
-                      if (results.length !== 0) {
-                        let plusCode = "";
-                        let postalCode = "";
-                        for (let i = 0; i < results.length; i++) {
-                          for (let j = 0; j < results[i].types.length; j++) {
-                            if (results[i].types[j] == "plus_code") {
-                              plusCode = results[i]?.plus_code.global_code;
-                            }
-                            if (results[i].types[j] == "postal_code") {
-                              postalCode =
-                                results[i]?.address_components[j].long_name;
-                            }
-                          }
-                        }
-
-                        const { distance }: any = await calculateDistance(
-                          kitchenMetaData?.address?.raw,
-                          place.formatted_address || "",
-                          Number(kitchenMetaData?.orderRange)
-                        );
-                        setAddress({
-                          raw: place.formatted_address,
-                          seperate: {
-                            state: state,
-                            city: city,
-                            postal_code: zipCode || plusCode || postalCode,
-                            line1: place.formatted_address?.split(",")[0],
-                          },
-                          distance,
-                          latlng: {
-                            lat: post.lat(),
-                            lng: post.lng(),
-                          },
-                        });
-                      } else {
-                        console.error("No results found");
-                      }
-                    } else {
-                      console.error("Geocoder failed due to: " + status);
-                    }
-                  }
-                );
-              }}
-              options={{
-                componentRestrictions: { country: ["ca"] },
-                types: ["geocode", "establishment"],
-              }}
-            />
-          </Box>
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#ECAB21",
-                color: "white",
-                paddingX: 4,
-                paddingY: 1,
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#FFC107",
-                  color: "white",
-                },
-              }}
-              disabled={address?.raw === "" || address?.raw === undefined}
-              onClick={() => handleSaveClick("address")}
             >
-              Submit
-            </Button>
-          </Box>
-        </DialogContent>
+            {
+                metaData?.savedAddress?.length < 5 ? <>
+                
+                Enter your Address
+                </> : <>Please Note</>
+            }
+            <IconButton onClick={() => setOpenDialog(!openDialog)}>
+              <CloseIcon sx={{ color: "#ECAB21" }} />
+            </IconButton>
+        </DialogTitle>
+        {
+          metaData?.savedAddress?.length >= 5 ? <>
+            <DialogContent>
+            <Box sx={{ mb: 3, cursor: "pointer" }}>
+                    <Typography
+                      color="text.secondary"
+                      sx={{
+                        color: "#1F2937",
+                        paddingBottom: "4px",
+                        fontSize: { xs: "18px", lg: "20px" },
+                      }}
+                    >
+                     You can save a maximum of <b>5 addresses</b>. To add a new address, you may need to delete an existing one. Thank you for your understanding!
+                    </Typography>
+                  </Box>
+            </DialogContent>
+          </> : <>       
+            <DialogContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  border: "1px solid grey",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  marginTop: "8px",
+                  width: "100%",
+                }}
+              >
+                <Autocomplete
+                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
+                  style={{
+                    outline: "none",
+                    color: "#8F8996",
+                    padding: "10px",
+                    fontWeight: "bold",
+                    border: "none",
+                    fontSize: "1rem",
+                    flex: "1",
+                  }}
+                  // defaultValue={address?.raw}
+                  onPlaceSelected={(place) => {
+                    if (!place) return;
+
+                    let zipCode: string;
+                    let city: string;
+                    let state: string;
+                    for (
+                      let i = 0;
+                      i < (place.address_components?.length ?? 0);
+                      i++
+                    ) {
+                      for (
+                        let j = 0;
+                        j < (place.address_components![i].types.length ?? 0);
+                        j++
+                      ) {
+                        if (
+                          place.address_components![i].types[j] == "postal_code"
+                        ) {
+                          zipCode = place.address_components![i].long_name;
+                        }
+                        if (place?.address_components![i].types[j] == "locality") {
+                          city = place.address_components[i].long_name;
+                        }
+                        if (
+                          place?.address_components![i].types[j] ==
+                          "administrative_area_level_1"
+                        ) {
+                          state = place?.address_components[i].long_name;
+                        }
+                      }
+                    }
+
+                    const geocoder = new window.google.maps.Geocoder();
+                    const post = place.geometry?.location;
+
+                    if (!post) return;
+
+                    const latlng = new window.google.maps.LatLng(
+                      post.lat(),
+                      post.lng()
+                    );
+                    geocoder.geocode(
+                      { location: latlng },
+                      async (results: any, status: any) => {
+                        if (status === "OK") {
+                          if (results.length !== 0) {
+                            let plusCode = "";
+                            let postalCode = "";
+                            for (let i = 0; i < results.length; i++) {
+                              for (let j = 0; j < results[i].types.length; j++) {
+                                if (results[i].types[j] == "plus_code") {
+                                  plusCode = results[i]?.plus_code.global_code;
+                                }
+                                if (results[i].types[j] == "postal_code") {
+                                  postalCode =
+                                    results[i]?.address_components[j].long_name;
+                                }
+                              }
+                            }
+
+                            const { distance }: any = await calculateDistance(
+                              kitchenMetaData?.address?.raw,
+                              place.formatted_address || "",
+                              Number(kitchenMetaData?.orderRange)
+                            );
+                            setAddress({
+                              raw: place.formatted_address,
+                              seperate: {
+                                state: state,
+                                city: city,
+                                postal_code: zipCode || plusCode || postalCode,
+                                line1: place.formatted_address?.split(",")[0],
+                              },
+                              distance,
+                              latlng: {
+                                lat: post.lat(),
+                                lng: post.lng(),
+                              },
+                            });
+                          } else {
+                            console.error("No results found");
+                          }
+                        } else {
+                          console.error("Geocoder failed due to: " + status);
+                        }
+                      }
+                    );
+                  }}
+                  options={{
+                    componentRestrictions: { country: ["ca"] },
+                    types: ["geocode", "establishment"],
+                  }}
+                />
+              </Box>
+              <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ECAB21",
+                    color: "white",
+                    paddingX: 4,
+                    paddingY: 1,
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#FFC107",
+                      color: "white",
+                    },
+                  }}
+                  disabled={address?.raw === "" || address?.raw === undefined}
+                  onClick={() => handleSaveClick("address")}
+                >
+                  Submit
+                </Button>
+              </Box>
+            </DialogContent>
+          </>
+        }
       </Dialog>
 
       <Dialog

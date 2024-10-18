@@ -655,16 +655,16 @@ const ProfilePage: React.FC = () => {
                               color: "white",
                             },
                           }}
-                          // onClick={handleDialogOpen}
-                          onClick={() => {
-                            router.push("/add-address");
-                          }}
+                          onClick={handleDialogOpen}
+                          // onClick={() => {
+                          //   router.push("/add-address");
+                          // }}
                         >
                           Add new Address
                         </Button>
                       </ListItem>
                     )}
-                    <ListItem
+                    {/* <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -688,7 +688,7 @@ const ProfilePage: React.FC = () => {
                       >
                         Delete Account
                       </Button>
-                    </ListItem>
+                    </ListItem> */}
                   </List>
                 </CardContent>
               </Card>

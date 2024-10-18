@@ -88,7 +88,7 @@ const filterOptions = (options: CountryCode[], state: any) =>
   );
 
 const MakeOrder: React.FC = () => {
-  const [userData, setUserData] = useState<any>({});
+  const [userData, setUserData] = useState<any>(null);
   const [includedItems1, setIncludedItems1] = useState<any[]>([]);
   const [includedItems2, setIncludedItems2] = useState<any[]>([]);
   const [allKulcha, setAllKulcha] = useState<any[]>([...menuItems]);
@@ -305,10 +305,19 @@ const MakeOrder: React.FC = () => {
   };
 
   useEffect(() => {
-    setAddress({
-      ...userData?.address,
+    let addr : any
+    let name : string
+    if(userData){
+      addr = userData?.address
+      name = userData?.name
+    }else{
+      addr = {}
+      name = ''
+    }
+    setAddress({ 
+      ...addr,
     });
-    setValue("name", userData?.name);
+    setValue("name",name);
   }, [userData]);
 
   const checkUser = (value: any) => {
@@ -331,6 +340,8 @@ const MakeOrder: React.FC = () => {
             };
           });
           setUserData(userDoc);
+        }else{
+          setUserData(null)
         }
         setLoading(false);
       });

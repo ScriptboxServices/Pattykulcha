@@ -102,9 +102,9 @@ export default function ResponsiveDrawer(props: Props) {
   };
   console.log("object");
   useEffect(() => {
-    // if (kitchenMetaData?.userId !== user?.uid) {
-    //   return router.push('/home')
-    // }
+    if (kitchenMetaData?.userId !== user?.uid) {
+      return router.push('/home')
+    }
   }, [user, kitchenMetaData]);
 
   const isFirstLoad = useRef(true);
