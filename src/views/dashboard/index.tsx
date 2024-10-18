@@ -211,12 +211,12 @@ export default function ResponsiveDrawer(props: Props) {
     },
     {
       text: "Make Order",
-      icon: "/images/dashboard/Make_Order.svg",
+      icon: "/images/dashboard/Makeorder.svg",
       component: <MakeOrder />,
     },
     {
       text: "User search page",
-      icon: "/images/dashboard/Make_Order.svg",
+      icon: "/images/dashboard/UserSearch.svg",
       component: <PastOrders/>,
     },
   ];

@@ -67,6 +67,7 @@ import axios from "axios";
 import { useMenuContext } from "@/context";
 import { CountryType } from "@/context/types";
 
+// Define the Yup schema
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   phoneNumber: yup
@@ -119,8 +120,10 @@ const MakeOrder: React.FC = () => {
     );
 
     if (existingItem) {
+      // If item already exists, remove it
       handleRemoveItem(existingItem.id);
     } else {
+      // Otherwise, add it
       const itemId = uuidv4();
       const drink = drinkOptions.find((drink) => drink.name == itemName);
 
@@ -309,32 +312,19 @@ const MakeOrder: React.FC = () => {
   }, [userData]);
 
   const checkUser = (value: any) => {
-    // Remove all non-numeric characters
-    const cleanedValue = value.replace(/\D/g, "");
-
-    // Format the phone number with dashes after the 3rd and 6th digits
-    let formattedValue = cleanedValue;
-    if (cleanedValue.length > 3 && cleanedValue.length <= 6) {
-      formattedValue = `${cleanedValue.slice(0, 3)}-${cleanedValue.slice(3)}`;
-    } else if (cleanedValue.length > 6) {
-      formattedValue = `${cleanedValue.slice(0, 3)}-${cleanedValue.slice(
-        3,
-        6
-      )}-${cleanedValue.slice(6, 10)}`;
-    }
-
-    // Call the function after formatting
-    if (cleanedValue?.length === 10) {
+    if (value?.length === 10) {
       setLoading(true);
       const colRef = collection(db, "users");
       const q = query(
         colRef,
-        where("phoneNumber", "==", `+${selectedCountry?.phone}${cleanedValue}`)
+        where("phoneNumber", "==", `+${selectedCountry?.phone}${value}`)
       );
       getDocs(q).then((user) => {
+        console.log(user.size);
         let userDoc: any;
         if (user.size > 0) {
           user.forEach((doc) => {
+            console.log(doc);
             userDoc = {
               id: doc.id,
               ...doc.data(),
@@ -345,8 +335,7 @@ const MakeOrder: React.FC = () => {
         setLoading(false);
       });
     }
-
-    return formattedValue;
+    return value;
   };
 
   const { extraItems } = useMenuContext();
@@ -452,7 +441,7 @@ const MakeOrder: React.FC = () => {
                                   <Image
                                     loading="eager"
                                     width={20}
-                                    height={15} // Maintain aspect ratio similar to the original img
+                                    height={15} // Maintain aspect ratio similar to the original `img`
                                     src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
                                     priority
                                     alt="#"
@@ -733,7 +722,9 @@ const MakeOrder: React.FC = () => {
                                     },
                                   }}
                                 >
-                                  <AddIcon sx={{ fontSize: "1.5rem" }} />
+                                  <AddIcon
+                                    sx={{ fontSize: "1.5rem" }}
+                                  />
                                 </IconButton>
                               )}
 
