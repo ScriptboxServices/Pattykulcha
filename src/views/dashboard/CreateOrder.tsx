@@ -37,10 +37,10 @@ import { getImageSrc } from "../cart";
 import { v4 as uuidv4 } from "uuid";
 import { Icon, IconifyIcon } from "@iconify/react";
 import GoogleAddressAutocomplete from "react-google-autocomplete"; // Import Autocomplete from react-google-autocomplete
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { countries } from "@/utils/constants";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { menuItems } from "@/constants/MenuOptions";
 export interface CountryCode {
   name: string;
@@ -67,7 +67,6 @@ import axios from "axios";
 import { useMenuContext } from "@/context";
 import { CountryType } from "@/context/types";
 
-// Define the Yup schema
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   phoneNumber: yup
@@ -120,10 +119,8 @@ const MakeOrder: React.FC = () => {
     );
 
     if (existingItem) {
-      // If item already exists, remove it
       handleRemoveItem(existingItem.id);
     } else {
-      // Otherwise, add it
       const itemId = uuidv4();
       const drink = drinkOptions.find((drink) => drink.name == itemName);
 
@@ -138,8 +135,8 @@ const MakeOrder: React.FC = () => {
           : itemName == "Normal Butter"
           ? 1.5
           : itemName == "Pickle"
-          ? 1 
-          : 0); 
+          ? 1
+          : 0);
 
       const newItem = {
         id: itemId,
@@ -312,19 +309,32 @@ const MakeOrder: React.FC = () => {
   }, [userData]);
 
   const checkUser = (value: any) => {
-    if (value?.length === 10) {
+    // Remove all non-numeric characters
+    const cleanedValue = value.replace(/\D/g, "");
+
+    // Format the phone number with dashes after the 3rd and 6th digits
+    let formattedValue = cleanedValue;
+    if (cleanedValue.length > 3 && cleanedValue.length <= 6) {
+      formattedValue = `${cleanedValue.slice(0, 3)}-${cleanedValue.slice(3)}`;
+    } else if (cleanedValue.length > 6) {
+      formattedValue = `${cleanedValue.slice(0, 3)}-${cleanedValue.slice(
+        3,
+        6
+      )}-${cleanedValue.slice(6, 10)}`;
+    }
+
+    // Call the function after formatting
+    if (cleanedValue?.length === 10) {
       setLoading(true);
       const colRef = collection(db, "users");
       const q = query(
         colRef,
-        where("phoneNumber", "==", `+${selectedCountry?.phone}${value}`)
+        where("phoneNumber", "==", `+${selectedCountry?.phone}${cleanedValue}`)
       );
       getDocs(q).then((user) => {
-        console.log(user.size);
         let userDoc: any;
         if (user.size > 0) {
           user.forEach((doc) => {
-            console.log(doc);
             userDoc = {
               id: doc.id,
               ...doc.data(),
@@ -335,7 +345,8 @@ const MakeOrder: React.FC = () => {
         setLoading(false);
       });
     }
-    return value;
+
+    return formattedValue;
   };
 
   const { extraItems } = useMenuContext();
@@ -346,53 +357,57 @@ const MakeOrder: React.FC = () => {
       <Box
         sx={{
           backgroundColor: "white",
-          minHeight: "100dvh", 
+          minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
-          justifyContent: {xs:"flex-start",sm:"center"},
+          justifyContent: { xs: "flex-start", sm: "center" },
           alignItems: "center",
           overflowY: "auto",
-          paddingX: { xs: 2, md: 4 }, 
-          paddingY: { xs: 4, md: 8 }, 
-        }}>
+          paddingX: { xs: 2, md: 4 },
+          paddingY: { xs: 4, md: 8 },
+        }}
+      >
         <CircularLodar isLoading={loading} />
-        <Typography variant='h4' sx={{ marginBottom: 2, marginTop: 2 }}>
+        <Typography variant="h4" sx={{ marginBottom: 2, marginTop: 2 }}>
           Make an Order
         </Typography>
         <Container
-          component='main'
-          maxWidth='md'
+          component="main"
+          maxWidth="md"
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
-            padding: { xs: 2, md: 4 }, 
+            padding: { xs: 2, md: 4 },
             borderRadius: 2,
             boxShadow: 3,
             overflow: "hidden",
-          }}>
+          }}
+        >
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               width: "100%",
-            }}>
+            }}
+          >
             <Box
-              component='form'
+              component="form"
               noValidate
               sx={{
                 mt: 1,
                 maxWidth: "100%",
                 // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               }}
-              onSubmit={handleSubmit(onSubmit)}>
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <Grid container spacing={2}>
                 <Grid item xs={12} md={12}>
                   <Controller
-                    name='countryCode'
+                    name="countryCode"
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <Autocomplete
-                        id='country-select-demo'
+                        id="country-select-demo"
                         fullWidth
                         options={countries}
                         autoHighlight
@@ -402,13 +417,14 @@ const MakeOrder: React.FC = () => {
                           return (
                             <Box
                               key={key}
-                              component='li'
+                              component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...optionProps}>
+                              {...optionProps}
+                            >
                               <Image
-                                loading='lazy'
+                                loading="lazy"
                                 width={20}
-                                height={15} 
+                                height={15}
                                 src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                                 alt={`${option.label} flag`}
                               />
@@ -424,22 +440,22 @@ const MakeOrder: React.FC = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label='Choose a country code'
+                            label="Choose a country code"
                             inputProps={{
                               ...params.inputProps,
-                              autoComplete: "new-password", 
+                              autoComplete: "new-password",
                             }}
                             InputProps={{
                               ...params.InputProps,
                               startAdornment: selectedCountry && (
-                                <InputAdornment position='start'>
+                                <InputAdornment position="start">
                                   <Image
-                                    loading='eager'
+                                    loading="eager"
                                     width={20}
-                                    height={15} // Maintain aspect ratio similar to the original `img`
+                                    height={15} // Maintain aspect ratio similar to the original img
                                     src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
                                     priority
-                                    alt='#'
+                                    alt="#"
                                   />
                                   <Typography sx={{ ml: 1 }}>
                                     +{selectedCountry.phone}
@@ -455,15 +471,15 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Controller
-                    name='phoneNumber'
+                    name="phoneNumber"
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        type='tel'
-                        label='Phone Number'
-                        placeholder='(123)-456-7890'
+                        type="tel"
+                        label="Phone Number"
+                        placeholder="(123)-456-7890"
                         value={value}
                         onChange={(e) => onChange(checkUser(e.target.value))}
                         error={!!errors.phoneNumber}
@@ -474,8 +490,8 @@ const MakeOrder: React.FC = () => {
                         }}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position='start'>
-                              <i className='ri-phone-fill' />
+                            <InputAdornment position="start">
+                              <i className="ri-phone-fill" />
                             </InputAdornment>
                           ),
                         }}
@@ -497,14 +513,14 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Controller
-                    name='name'
+                    name="name"
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         required
                         fullWidth
-                        label='Customer Name'
-                        placeholder='Customer Name'
+                        label="Customer Name"
+                        placeholder="Customer Name"
                         value={value}
                         onChange={onChange}
                         error={!!errors.name}
@@ -599,10 +615,10 @@ const MakeOrder: React.FC = () => {
                                   line1: place.formatted_address?.split(",")[0],
                                 },
                                 distance,
-                                latlng : {
-                                  lat : post.lat(),
-                                  lng : post.lng()
-                                }
+                                latlng: {
+                                  lat: post.lat(),
+                                  lng: post.lng(),
+                                },
                               });
                             } else {
                               console.error("No results found");
@@ -623,12 +639,12 @@ const MakeOrder: React.FC = () => {
                   item
                   xs={12}
                   sx={{
-                    display:'flex',
-                    justifyContent:{xs:"flex-start",sm:"center"},
-                    flexDirection:'column',
-                    alignItems:'center',
+                    display: "flex",
+                    justifyContent: { xs: "flex-start", sm: "center" },
+                    flexDirection: "column",
+                    alignItems: "center",
                   }}
->
+                >
                   {allKulcha?.map((kulcha: any, index: number) => {
                     return (
                       <Box sx={{ mb: 2 }} key={index}>
@@ -637,9 +653,14 @@ const MakeOrder: React.FC = () => {
                           sx={{
                             display: "flex",
                             alignItems: "center",
-                            width: {xs:"85dvw",sm:"65dvw",lg:"60dvw",xl:'50dvw'},
+                            width: {
+                              xs: "85dvw",
+                              sm: "65dvw",
+                              lg: "60dvw",
+                              xl: "50dvw",
+                            },
                             "@media (min-width: 1920px)": {
-                              width: "25dvw",  
+                              width: "25dvw",
                             },
                             border: includedItems1.some(
                               (item: any) => item.name === kulcha.name
@@ -650,71 +671,133 @@ const MakeOrder: React.FC = () => {
                             boxShadow: "1px 1px 2px #4e5664",
                             p: 2,
                             cursor: "pointer",
-                          }}>
-                          <Avatar
-                            src={kulcha?.image}
-                            sx={{
-                              width: 50,
-                              height: 50,
-                              mr: 2,
-                            }}
-                          />
+                          }}
+                        >
+                          {/* Text Content */}
                           <Box sx={{ flexGrow: 1 }}>
-                            <Typography variant='body1'>
-                              {kulcha?.name} &nbsp;
-                              <Typography
-                                component='span'
-                                variant='body2'
-                                color='textSecondary'>
-                                Qty: {kulcha?.quantity}
-                              </Typography>
+                            <Typography variant="body1">
+                              {kulcha?.name}
                             </Typography>
                             <Typography
-                              variant='body1'
-                              sx={{ fontSize: "14px" }}>
+                              variant="body1"
+                              sx={{ fontSize: "14px", color: "#777" }}
+                            >
                               ${Number(kulcha.price)}
                             </Typography>
                           </Box>
-                          <Box sx={{ textAlign: "right" }}>
-                            <Typography
-                              variant='body1'
-                              sx={{ fontSize: "14px" }}>
-                              ${Number(kulcha.price) * Number(kulcha?.quantity)}
-                            </Typography>
+
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Box
+                              sx={{
+                                position: "relative",
+                                width: "100px",
+                                height: "100px",
+                                borderRadius: "10px",
+                                overflow: "hidden",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "#f5f5f5",
+                              }}
+                            >
+                              <Image
+                                src={kulcha?.image}
+                                alt={kulcha?.image}
+                                layout="fill"
+                                objectFit="cover"
+                              />
+
+                              {!includedItems1.some(
+                                (item: any) => item.name === kulcha.name
+                              ) && (
+                                <IconButton
+                                  onClick={() => handleAddKulcha(kulcha)}
+                                  sx={{
+                                    color: "#336195",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginTop: "0.5rem",
+                                    position: "absolute",
+                                    bottom: 5,
+                                    left: "50%",
+                                    // transform: "translateX(-50%)",
+                                    backgroundColor: "white",
+                                    padding: "2px 10px",
+                                    borderRadius: "50%",
+                                    width: "40px",
+                                    height: "40px",
+                                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                    "&:hover": {
+                                      backgroundColor: "#f5f5f5",
+                                    },
+                                  }}
+                                >
+                                  <AddIcon sx={{ fontSize: "1.5rem" }} />
+                                </IconButton>
+                              )}
+
+                              {includedItems1.some(
+                                (item: any) => item.name === kulcha.name
+                              ) && (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginTop: "0.5rem",
+                                    position: "absolute",
+                                    bottom: 5,
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                    backgroundColor: "white",
+                                    borderRadius: "20px",
+                                    padding: "2px 10px",
+                                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  }}
+                                >
+                                  {kulcha?.quantity == 1 ? (
+                                    <IconButton
+                                      onClick={() => handleAddKulcha(kulcha)}
+                                      sx={{ color: "red" }}
+                                    >
+                                      <DeleteIcon sx={{ fontSize: "1.5rem" }} />
+                                    </IconButton>
+                                  ) : (
+                                    <>
+                                      <IconButton
+                                        onClick={(e) =>
+                                          handleDecreaseQTY(e, kulcha?.name)
+                                        }
+                                        sx={{
+                                          color: "#336195",
+                                        }}
+                                      >
+                                        <RemoveIcon />
+                                      </IconButton>
+                                    </>
+                                  )}
+                                  <Typography
+                                    variant="body1"
+                                    color="textPrimary"
+                                  >
+                                    {kulcha.quantity || 1}
+                                  </Typography>
+                                  <IconButton
+                                    onClick={(e) =>
+                                      handleIncreaseQTY(e, kulcha?.name)
+                                    }
+                                    sx={{
+                                      color: "#336195",
+                                    }}
+                                  >
+                                    <AddIcon />
+                                  </IconButton>
+                                </Box>
+                              )}
+                            </Box>
                           </Box>
                         </Box>
-                        {includedItems1.some(
-                          (item: any) => item.name === kulcha.name
-                        ) && (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "end",
-                            }}>
-                            <IconButton
-                              onClick={(e) =>
-                                handleDecreaseQTY(e, kulcha?.name)
-                              }
-                              sx={{
-                                color: "#336195",
-                              }}>
-                              <RemoveCircleOutlineIcon />
-                            </IconButton>
-                            <Typography variant='body1' color='textPrimary'>
-                              {kulcha.quantity || 1}
-                            </Typography>
-                            <IconButton
-                              onClick={(e) =>
-                                handleIncreaseQTY(e, kulcha?.name)
-                              }
-                              sx={{
-                                color: "#336195",
-                              }}>
-                              <AddCircleOutlineIcon />
-                            </IconButton>
-                          </Box>
-                        )}
                       </Box>
                     );
                   })}
@@ -723,106 +806,257 @@ const MakeOrder: React.FC = () => {
                   item
                   xs={12}
                   sx={{ mb: 4 }}
-                  display='flex'
-                  justifyContent='center'
-                  flexDirection='row'
-                  alignItems='center'
-                  gap={5}>
+                  display="flex"
+                  justifyContent="center"
+                  flexDirection="column"
+                  alignItems="center"
+                  gap={3}
+                >
                   {extraItems.map((item, index) => {
                     return (
-                      <Grid item xs={6} sm={4} md={1.6} key={index}>
+                      <Grid item xs={12} md={12} key={index}>
                         <Box
                           sx={{
                             display: "flex",
-                            flexDirection: "column",
                             alignItems: "center",
-                            justifyContent: "center",
-                            padding: "1rem",
-                            backgroundColor: "white",
-                            borderRadius: "8px",
-                            textAlign: "center",
-                            position: "relative",
-                            cursor: "pointer",
-                            height: {
-                              xs: "160px",
-                              sm: "120px",
-                              md: "150px",
-                              lg: "150px",
+                            width: {
+                              xs: "85dvw",
+                              sm: "65dvw",
+                              lg: "60dvw",
+                              xl: "50dvw",
                             },
-                            boxShadow: "1px 1px 3px #4e5664", 
+                            "@media (min-width: 1920px)": {
+                              width: "25dvw",
+                            },
+                            borderRadius: "10px",
+                            boxShadow: "1px 1px 2px #4e5664",
+                            p: 2,
+                            cursor: "pointer",
                             border: includedItems2.some((_item: any) => {
                               return item === _item.items[0].name;
                             })
                               ? "2px solid green"
                               : "1px solid #ddd",
-                            // border: "1px solid black",
                           }}
-                          onClick={() => handleAddItem(item)}>
-                          <Image
-                            src={getImageSrc(item)}
-                            alt={item}
-                            width={150}
-                            height={150}
-                            style={{
-                              width: "50%", 
-                              height: "50%", 
-                              objectFit: "contain",
-                              marginTop: 1,
+                          // onClick={() => handleAddItem(item)}
+                        >
+                          <Box sx={{ flexGrow: 1 }}>
+                            {" "}
+                            <Typography
+                              variant="body1"
+                              color="textPrimary"
+                              sx={{
+                                fontSize: "16px",
+                              }}
+                            >
+                              {item}
+                            </Typography>
+                          </Box>
+
+                          <Box
+                            sx={{
+                              position: "relative",
+                              width: "100px", // Adjust width based on the image size
+                              height: "100px",
+                              borderRadius: "10px", // Rounded corners
+                              overflow: "hidden", // Ensures content is clipped inside the box
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backgroundColor: "#f5f5f5",
                             }}
-                          />
-                          <Typography
-                            variant='body1'
-                            color='textPrimary'
-                            sx={{ mt: 2 }}>
-                            {item}
-                          </Typography>
+                          >
+                            <Image
+                              src={getImageSrc(item)}
+                              alt={item}
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginTop: "0.5rem",
+                                position: "absolute",
+                                bottom: 5,
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                backgroundColor: "white",
+                                borderRadius: "20px",
+                                padding: "2px 10px",
+                                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                              }}
+                            >
+                              <IconButton
+                                onClick={() => handleAddItem(item)}
+                                sx={{
+                                  color: "#336195",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  marginTop: "0.5rem",
+                                  position: "absolute",
+                                  bottom: 5,
+                                  left: "50%",
+                                  // transform: "translateX(-50%)",
+                                  backgroundColor: "white",
+                                  padding: "2px 10px",
+                                  borderRadius: "50%",
+                                  width: "40px",
+                                  height: "40px",
+                                  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  "&:hover": {
+                                    backgroundColor: "#f5f5f5",
+                                  },
+                                }}
+                              >
+                                <AddIcon sx={{ fontSize: "1.5rem" }} />
+                              </IconButton>
+                            </Box>
+                          </Box>
                         </Box>
                       </Grid>
                     );
                   })}
                 </Grid>
-                <Grid container spacing={1} justifyContent='center'>
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "1rem",
-                        backgroundColor: "white",
-                        border: "2px solid #dcdcdc",
-                        borderRadius: "8px",
-                        textAlign: "left",
-                        position: "relative",
-                        cursor: "pointer",
-                        marginLeft: "15px",
-                        // margin: "0.3rem 0",
-                        width: { xs: "97%", md: "843px" },
-                      }}
-                      onClick={handleDrinkDialog}>
-                      <Box display='flex' alignItems='center'>
-                        <Image
-                          src='/images/landingpage/Drinks.svg'
-                          alt='Add a Drink'
-                          layout='fixed'
-                          width={50}
-                          height={50}
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "50%",
+                <Grid container spacing={1} justifyContent="center">
+                  <Grid
+                    item
+                    xs={12}
+                    gap={2}
+                    sx={{
+                      display: "flex",
+                      justifyContent: { xs: "flex-start", sm: "center" },
+                      flexDirection: "column",
+                      alignItems: "center",
+                      ml: 2,
+                    }}
+                  >
+                    {drinkOptions.map((drink) => (
+                      <Grid item xs={12} key={drink.name}>
+                        <Card
+                          sx={{
+                            border: includedItems2.some((item) =>
+                              item.items.some((i: any) => i.name === drink.name)
+                            )
+                              ? "2px solid green"
+                              : "1px solid #ddd",
+                            display: "flex",
+                            alignItems: "center",
+                            width: {
+                              xs: "85dvw",
+                              sm: "65dvw",
+                              lg: "60dvw",
+                              xl: "50dvw",
+                            },
+                            "@media (min-width: 1920px)": {
+                              width: "25dvw",
+                            },
+                            borderRadius: "10px",
+                            boxShadow: "1px 1px 2px #4e5664",
+                            p: 2,
+                            cursor: "pointer",
                           }}
-                        />
-                        <Typography
-                          variant='body1'
-                          color='textPrimary'
-                          sx={{ marginLeft: "1rem" }}>
-                          Add a Drink
-                        </Typography>
-                      </Box>
-                      <ArrowForwardIosIcon />
-                    </Box>
+                        >
+                          {/* Text content on the left */}
+                          <CardContent sx={{ flexGrow: 1, textAlign: "left" }}>
+                            <Typography
+                              variant="body1"
+                              color="textPrimary"
+                              sx={{ fontSize: "18px" }}
+                            >
+                              {drink.name}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              ${drink.price.toFixed(2)}
+                            </Typography>
+                          </CardContent>
+
+                          {/* Image content on the right */}
+                          <Box
+                            sx={{
+                              position: "relative",
+                              width: "100px", // Image box width
+                              height: "100px", // Image box height
+                              borderRadius: "10px", // Rounded corners for the image container
+                              overflow: "hidden", // Ensures the image is clipped inside the box
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backgroundColor: "#ffff", // Light background for contrast
+                            }}
+                          >
+                            <Image
+                              alt={drink.name}
+                              src={drink.image}
+                              layout="fill"
+                              objectFit="cover" // Ensures the image covers the container without losing aspect ratio
+                            />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginTop: "0.5rem",
+                                position: "absolute",
+                                bottom: 5,
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                backgroundColor: "white",
+                                borderRadius: "20px",
+                                padding: "2px 10px",
+                                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                              }}
+                            >
+                              <IconButton
+                                onClick={() => handleDrinkSelect(drink.name)}
+                                sx={{
+                                  color: "#336195",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  marginTop: "0.5rem",
+                                  position: "absolute",
+                                  bottom: 5,
+                                  left: "50%",
+                                  // transform: "translateX(-50%)",
+                                  backgroundColor: "white",
+                                  padding: "2px 10px",
+                                  borderRadius: "50%",
+                                  width: "40px",
+                                  height: "40px",
+                                  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  "&:hover": {
+                                    backgroundColor: "#f5f5f5",
+                                  },
+                                }}
+                              >
+                                <AddIcon sx={{ fontSize: "1.5rem" }} />
+                              </IconButton>
+                            </Box>
+                          </Box>
+
+                          {includedItems2.some((item) =>
+                            item.items.some((i: any) => i.name === drink.name)
+                          ) && (
+                            <CheckCircleIcon
+                              sx={{
+                                position: "absolute",
+                                top: "10px",
+                                right: "10px",
+                                color: "green",
+                                backgroundColor: "white",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          )}
+                        </Card>
+                      </Grid>
+                    ))}
                   </Grid>
-                  <Grid container justifyContent='space-evenly' mt={1.75}>
+
+                  <Grid container justifyContent="space-evenly" mt={1.75}>
                     {includedItems2.length == 0 ? (
                       <></>
                     ) : (
@@ -845,7 +1079,8 @@ const MakeOrder: React.FC = () => {
                               width: { xs: "130px", sm: "130px" },
                               margin: "0.5rem",
                               boxShadow: "2px 2px 3px #4e5664",
-                            }}>
+                            }}
+                          >
                             <CheckCircleIcon
                               sx={{
                                 position: "absolute",
@@ -868,12 +1103,13 @@ const MakeOrder: React.FC = () => {
                               }}
                             />
                             <Typography
-                              variant='body1'
-                              color='textPrimary'
-                              sx={{ fontSize: "12px" }}>
+                              variant="body1"
+                              color="textPrimary"
+                              sx={{ fontSize: "12px" }}
+                            >
                               {item.items[0].name}
                             </Typography>
-                            <Typography variant='body2' color='textSecondary'>
+                            <Typography variant="body2" color="textSecondary">
                               ${item.items[0].price.toFixed(2)}
                             </Typography>
                             <Box
@@ -881,27 +1117,30 @@ const MakeOrder: React.FC = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                              }}>
+                              }}
+                            >
                               <IconButton
                                 onClick={() => handleDecreaseQTYDrink(item.id)}
                                 sx={{
                                   color: "#336195",
-                                }}>
-                                <RemoveCircleOutlineIcon />
+                                }}
+                              >
+                                <RemoveIcon />
                               </IconButton>
-                              <Typography variant='body1' color='textPrimary'>
+                              <Typography variant="body1" color="textPrimary">
                                 {item.items[0].quantity || 1}
                               </Typography>
                               <IconButton
                                 onClick={() => handleIncreaseQTYDrink(item.id)}
                                 sx={{
                                   color: "#336195",
-                                }}>
-                                <AddCircleOutlineIcon />
+                                }}
+                              >
+                                <AddIcon />
                               </IconButton>
                             </Box>
                             <Button
-                              variant='outlined'
+                              variant="outlined"
                               onClick={() => handleRemoveItem(item.id)}
                               sx={{
                                 backgroundColor: "transparent",
@@ -910,7 +1149,8 @@ const MakeOrder: React.FC = () => {
                                 marginTop: "auto",
                                 borderRadius: "20px",
                                 textTransform: "none",
-                              }}>
+                              }}
+                            >
                               Remove
                             </Button>
                           </Box>
@@ -921,18 +1161,19 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Controller
-                    name='paymentmethod'
+                    name="paymentmethod"
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <FormControl fullWidth>
                         <InputLabel>Payment method</InputLabel>
                         <Select
-                          label='Payment method'
+                          label="Payment method"
                           value={value}
                           onChange={onChange}
-                          error={!!errors.paymentmethod}>
-                          <MenuItem value='Cash'>Cash</MenuItem>
-                          <MenuItem value='Online'>Online</MenuItem>
+                          error={!!errors.paymentmethod}
+                        >
+                          <MenuItem value="Cash">Cash</MenuItem>
+                          <MenuItem value="Online">Online</MenuItem>
                         </Select>
                       </FormControl>
                     )}
@@ -940,11 +1181,11 @@ const MakeOrder: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Controller
-                    name='instructions'
+                    name="instructions"
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        placeholder='Special instructions'
+                        placeholder="Special instructions"
                         fullWidth
                         value={value}
                         onChange={onChange}
@@ -958,34 +1199,34 @@ const MakeOrder: React.FC = () => {
                 </Grid>
               </Grid>
               <Button
-                type='submit'
-                variant='contained'
+                type="submit"
+                variant="contained"
                 sx={{
                   display: "flex",
                   justifyContent: "center",
-                  alignItems: "center", 
+                  alignItems: "center",
                   backgroundColor: "#ECAB21",
                   color: "white",
                   paddingX: 4,
                   paddingY: 1,
                   mt: 2,
-                  mx: "auto", 
+                  mx: "auto",
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
                     color: "white",
                   },
-                }}>
+                }}
+              >
                 Submit Order
               </Button>
-              {/* <OrderReceiptPrinter/> */}
               {error && (
-                <Alert severity='error' sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
                 </Alert>
               )}
               {Number(status) === 1 && (
-                <Alert severity='success' sx={{ mt: 2 }}>
+                <Alert severity="success" sx={{ mt: 2 }}>
                   Order Placed successfully.
                 </Alert>
               )}
@@ -993,97 +1234,6 @@ const MakeOrder: React.FC = () => {
           </Box>
         </Container>
       </Box>
-      <Dialog
-        open={isDrinkDialogOpen}
-        onClose={handleDrinkDialog}
-        maxWidth='sm'
-        fullWidth>
-        <DialogTitle sx={{ fontWeight: "bold" }}>
-          Add a Drink{" "}
-          <IconButton
-            aria-label='close'
-            onClick={handleDrinkDialog}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            {drinkOptions.map((drink) => (
-              <Grid item xs={12} sm={6} md={4} key={drink.name}>
-                <Card
-                  onClick={() => handleDrinkSelect(drink.name)}
-                  sx={{
-                    border: includedItems2.some((item) =>
-                      item.items.some((i: any) => i.name === drink.name)
-                    )
-                      ? "2px solid green"
-                      : "1px solid #ddd",
-                    position: "relative",
-                    cursor: "pointer",
-                    height: "270px", 
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center", 
-                  }}>
-                  <Image
-                    alt={drink.name}
-                    src={drink.image}
-                    width={150}
-                    height={150}
-                    style={{
-                      width: "65%", 
-                      height: "55%", 
-                      objectFit: "contain",
-                      display: "block", 
-                      margin: "0 auto",
-                    }}
-                  />
-                  <CardContent sx={{ textAlign: "center" }}>
-                    <Typography
-                      variant='body1'
-                      color='textPrimary'
-                      sx={{ fontSize: "18px" }}>
-                      {drink.name}
-                    </Typography>
-                    <Typography variant='body2' color='textSecondary'>
-                      ${drink.price.toFixed(2)}
-                    </Typography>
-                    {includedItems2.some((item) =>
-                      item.items.some((i: any) => i.name === drink.name)
-                    ) && (
-                      <CheckCircleIcon
-                        sx={{
-                          position: "absolute",
-                          top: "10px",
-                          right: "10px",
-                          color: "green",
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleDrinkDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDrinkDialogClose} color="primary">
-            Save
-          </Button>
-        </DialogActions> */}
-      </Dialog>
     </>
   );
 };

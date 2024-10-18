@@ -25,13 +25,12 @@ import { auth } from "@/firebase";
 import { useAuthContext, useMenuContext } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
 import { CountryType } from "@/context/types";
-import { title } from "process";
 
 // Define the Yup schema
 const schema = yup.object().shape({
   phoneNumber: yup
     .string()
-    .matches(/^\d+$/, "Phone number is not valid")
+    // .matches(/^\d+$/, "Phone number is not valid")
     .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   countryCode: yup.mixed<CountryType>().required(),
@@ -39,17 +38,14 @@ const schema = yup.object().shape({
 
 type IFormInput = yup.InferType<typeof schema>;
 
-
-
 const Login: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
-    null
-  );
-
+  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -72,11 +68,9 @@ const Login: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      { size: "invisible" }
-    );
+    const recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+    });
 
     setRecaptchaVerifier(recaptchaVerifier);
     return () => {
@@ -90,10 +84,29 @@ const Login: React.FC = () => {
   }, [confirmationResult]);
 
   useEffect(() => {
-    const defaultCountry =
-      countries.find((country) => country.label === "Canada") || null;
+    const defaultCountry = countries.find((country) => country.label === "Canada") || null;
     setSelectedCountry(defaultCountry);
   }, []);
+
+  // Function to format phone number (add dash after 3rd digit)
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const phoneNumber = value?.replace(/\D/g, "");
+
+    // Format the number as xxx-xxx
+    const formattedPhoneNumber = phoneNumber?.replace(/(\d{3})(\d{0,3})(\d{0,4})?/, (match, p1, p2, p3) => {
+      if (p3) return `${p1}-${p2}-${p3}`;
+      else if (p2) return `${p1}-${p2}`;
+      else return `${p1}`;
+    });
+
+    return formattedPhoneNumber;
+  };
+
+  // Function to strip formatting (remove dash)
+  const stripPhoneNumberFormatting = (formattedNumber: string) => {
+    return formattedNumber.replace(/\D/g, ""); // Remove all non-digit characters
+  };
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setError("");
@@ -101,17 +114,19 @@ const Login: React.FC = () => {
 
     try {
       setLoading(true);
+
+      // Strip the formatting before sending to Firebase
+      const plainPhoneNumber = stripPhoneNumberFormatting(data.phoneNumber);
+
       const confirmation = await signInWithPhoneNumber(
         auth,
-        `+${data?.countryCode?.phone}${data.phoneNumber}`,
+        `+${data?.countryCode?.phone}${plainPhoneNumber}`,
         recaptchaVerifier
       );
 
       setLoading(false);
-
       setConfirmationResult(confirmation);
     } catch (err: any) {
-      console.log(err.code);
       setLoading(false);
       if (err.code == "auth/invalid-phone-number") {
         setError("Invalid phone number.");
@@ -133,7 +148,7 @@ const Login: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: { xs: "flex-start", sm: "center" },
-          overflow: "hidden", // Prevent overflow issues
+          overflow: "hidden",
         }}
       >
         <Container
@@ -212,7 +227,7 @@ const Login: React.FC = () => {
                               <Image
                                 loading="lazy"
                                 width={20}
-                                height={15} // Maintain aspect ratio similar to the original `img`
+                                height={15}
                                 src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                                 alt={`${option.label} flag`}
                               />
@@ -231,7 +246,7 @@ const Login: React.FC = () => {
                             label="Choose a country code"
                             inputProps={{
                               ...params.inputProps,
-                              autoComplete: "new-password", // Correct way to pass autoComplete
+                              autoComplete: "new-password",
                             }}
                             InputProps={{
                               ...params.InputProps,
@@ -240,7 +255,7 @@ const Login: React.FC = () => {
                                   <Image
                                     loading="eager"
                                     width={20}
-                                    height={15} // Maintain aspect ratio similar to the original `img`
+                                    height={15}
                                     src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
                                     priority
                                     alt="#"
@@ -268,12 +283,16 @@ const Login: React.FC = () => {
                         type="tel"
                         label="Phone Number"
                         placeholder="(123)-456-7890"
-                        value={value}
-                        onChange={onChange}
+                        value={formatPhoneNumber(value)} // Format the number with dashes
+                        onChange={(e) => {
+                          const formattedValue = formatPhoneNumber(e.target.value);
+                          onChange(formattedValue); // Update form value with the formatted number
+                          setValue("phoneNumber", formattedValue); // Manually set the value
+                        }}
                         error={!!errors.phoneNumber}
                         helperText={errors.phoneNumber?.message ?? ""}
                         inputProps={{
-                          maxLength: 10,
+                          maxLength: 12, // Adjusted for the format xxx-xxx-xxxx
                           pattern: "[0-9]*",
                         }}
                         InputProps={{
@@ -290,6 +309,7 @@ const Login: React.FC = () => {
                           },
                         }}
                         onKeyDown={(e) => {
+                          // Prevent non-numeric input except for control keys
                           if (
                             !/[0-9]/.test(e.key) &&
                             e.key !== "Backspace" &&
@@ -303,11 +323,25 @@ const Login: React.FC = () => {
                       />
                     )}
                   />
-                  <Typography variant="subtitle1" sx={{mt:0.5,fontSize:"11px"}}>
+                  <Typography variant="subtitle1" sx={{ mt: 0.5, fontSize: "11px" }}>
                     We’ll call or text you to confirm your number. Standard
-                    message and data rates apply.<Button sx={{fontSize:"11px",color:'black',ml:-1,mt:-0.3,textTransform: "none",textDecoration:'underline',fontWeight:500}} onClick={()=>{
-                      router.push("/privacypolicy")
-                    }}>{" "}Privacy Policy</Button>
+                    message and data rates apply.
+                    <Button
+                      sx={{
+                        fontSize: "11px",
+                        color: 'black',
+                        ml: -1,
+                        mt: -0.3,
+                        textTransform: "none",
+                        textDecoration: 'underline',
+                        fontWeight: 500
+                      }}
+                      onClick={() => {
+                        router.push("/privacypolicy")
+                      }}
+                    >
+                      {" "}Privacy Policy
+                    </Button>
                   </Typography>
                 </Grid>
               </Grid>

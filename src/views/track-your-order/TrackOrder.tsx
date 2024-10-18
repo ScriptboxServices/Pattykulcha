@@ -10,6 +10,9 @@ import {
   Step,
   StepLabel,
   Grid,
+  styled,
+  StepConnector,
+  keyframes,
 } from "@mui/material";
 import {
   GoogleMap,
@@ -28,9 +31,69 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import { ShortTime } from "@/utils/commonFunctions";
+import CheckIcon from "@mui/icons-material/Check";
 
-const steps = ["Confirmed", "Preparing", "Out for Delivery", "Delivered"];
+const containerStyle = {
+  width: "100%",
+  height: "300px",
+};
+
+const initialCenter = {
+  lat: -3.745,
+  lng: -38.523,
+};
+
+const steps = ["Order Confirmed", "Preparing", "Out for Delivery", "Delivered"];
+
+const items = [
+  {
+    id: 1,
+    name: "Mix Kulcha",
+    price: "$45.00",
+    description: "Soft kulcha bread served with a spread of butter",
+    location: { lat: -3.747, lng: -38.521 },
+    image: "/images/landingpage/menu1.png", // Replace this with the actual image path
+  },
+];
+
+const CustomConnector = styled(StepConnector)({
+  "& .MuiStepConnector-line": {
+    borderTopWidth: 4,
+    borderRadius: 1,
+    borderColor: "green",
+    height: 40,
+  },
+});
+
+const activeStepAnimation = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+`;
+
+const CustomStepIcon = styled("div")<{ completed?: boolean; active?: boolean }>(
+  ({ completed, active }) => ({
+    color: completed || active ? "green" : "#d3d3d3",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 24,
+    borderRadius: "50%",
+    backgroundColor: completed || active ? "green" : "#d3d3d3",
+    "& svg": {
+      fill: "#fff",
+    },
+    boxShadow: active ? "0 0 0 10px rgba(0, 123, 255, 0.2)" : "none",
+    animation: active ? `${activeStepAnimation} 1.5s infinite` : "none",
+  })
+);
 
 const TrackOrder = ({ orderId }: { orderId: string }) => {
   const { isLoaded } = useJsApiLoader({
@@ -45,6 +108,13 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
   const [driver, setDriver] = useState<any>();
   const [activeStep, setActiveStep] = useState<number>(1);
   const [directionsResponse, setDirectionsResponse] = useState(null);
+  const [mapCenter, setMapCenter] = useState(initialCenter); // Added to handle dynamic center
+
+  useEffect(() => {
+    if (driver) {
+      setMapCenter({ lat: driver?.latlng.lat, lng: driver?.latlng.lng });
+    }
+  }, [driver]);
 
   useEffect(() => {
     const init = async () => {
@@ -83,7 +153,12 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
 
               const unsubscribeDriver = onSnapshot(driverQuery, (snapshot) => {
                 snapshot.forEach((doc) => {
-                  setDriver({ ...doc.data() });
+                  const driverData = { ...doc.data() };
+                  setDriver(driverData);
+                  setMapCenter({
+                    lat: driverData.latlng.lat,
+                    lng: driverData.latlng.lng,
+                  }); // Set driver location as center
                 });
               });
 
@@ -120,14 +195,10 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
         })
         .catch((err) => {
           console.log(err);
-        })
-        .finally(() => {
-          console.log("LLLLLLLLLLLLLL");
         });
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   }, [driver, order]);
+
   return (
     <Box
       sx={{
@@ -136,35 +207,33 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
         display: "flex",
         justifyContent: "center",
         minHeight: "100dvh",
-      }}>
+      }}
+    >
       <CircularLodar isLoading={loading} />
       <Box sx={{ maxWidth: "sm", width: "100%" }}>
         {/* Map Section */}
-        <Paper elevation={3} sx={{ height: "550px", width: "100%", mb: 3 }}>
+        <Paper elevation={3} sx={{ height: "300px", width: "100%", mb: 3 }}>
           {isLoaded && order?.driverId ? (
             <GoogleMap
-            mapContainerStyle={{
-                width: "100%",
-                height: "550px",
-              }}
-              center={{
-                lat: order.address.latlng.lat,
-                lng: order.address.latlng.lng,
-              }}
-              zoom={15}
+              mapContainerStyle={containerStyle}
+              center={mapCenter} // Use dynamic center
+              zoom={10}
+              onLoad={(map) => setMap(map)}
               options={{
-                mapId : "368d7f53a21ed6a2",
+                mapId: "368d7f53a21ed6a2",
+                mapTypeControl: false,
                 zoomControl: false,
                 streetViewControl: false,
                 fullscreenControl: false,
-                mapTypeControl: false,
-              }}>
-              {directionsResponse !== null && (
+              }}
+            >
+              {directionsResponse && (
                 <DirectionsRenderer
                   options={{
                     polylineOptions: {
                       strokeColor: "#ff0000",
                     },
+                    suppressMarkers: false,
                   }}
                   directions={directionsResponse}
                 />
@@ -172,70 +241,86 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
             </GoogleMap>
           ) : (
             <>
-              <Typography variant='body1'>Driver not assigned yet.</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                {activeStep == 4 ? (
+                  <Typography variant="h4">Order has been delivered</Typography>
+                ) : (
+                  <img
+                    src="/mp3/your-food-is-being-prepared_2x.gif"
+                    alt="Driver not assigned yet"
+                    style={{ width: "600px", height: "300px" }}
+                  />
+                )}
+              </Box>
             </>
           )}
         </Paper>
 
-        {/* Order Status */}
         <Paper
           elevation={3}
-          sx={{ padding: "20px", marginBottom: "20px", width: "100%" }}>
-          <Typography variant='h6' sx={{ fontWeight: "bold", mb: 2 }}>
+          sx={{ padding: "20px", marginBottom: "20px", width: "100%" }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
             Order Status
           </Typography>
-          <Typography variant='body1'>
-            Delivering to {order?.customer?.name}
-            <br />
-            <b style={{}}>{order?.address?.seperate?.line1}</b>
-          </Typography>
+          <Box sx={{ display: "flex",flexDirection:'column' }}>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              Order {order?.orderNumber?.forCustomer}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              1:02 PM | Payment Mode: {order?.paymentMode} |{" "}
+              {order?.order?.length} Item
+            </Typography>
+            
+          </Box>
           <Divider sx={{ my: 2 }} />
-
-          {/* Horizontal Stepper */}
-          <Stepper activeStep={activeStep} alternativeLabel>
+          <Stepper
+            activeStep={activeStep}
+            alternativeLabel
+            connector={<CustomConnector />}
+            sx={{
+              padding: "24px 0",
+              "& .MuiStepLabel-label": {
+                fontSize: "12px",
+                fontWeight: "bold",
+                color: "#000",
+                "&.Mui-active": { color: "#000" },
+                "&.Mui-completed": { color: "#000" },
+              },
+            }}
+          >
             {steps.map((label, index) => (
               <Step key={label}>
                 <StepLabel
-                  sx={{
-                    "& .MuiStepIcon-root.Mui-active": {
-                      color: "#ECAB21", // Active step color
-                      borderRadius: "50%",
-                      animation: "glow 1.5s ease-in-out infinite",
-                      boxShadow:
-                        "0 0 10px #ECAB21, 0 0 20px #ECAB21, 0 0 30px #ECAB21",
-                    },
-                    "& .MuiStepIcon-root.Mui-completed": {
-                      color: "green", // Completed step color
-                    },
-                    "@keyframes glow": {
-                      "0%": { boxShadow: "0 0 5px #ECAB21" },
-                      "50%": { boxShadow: "0 0 30px #ECAB21" },
-                      "100%": { boxShadow: "0 0 5px #ECAB21" },
-                    },
-                  }}>
+                  StepIconComponent={({ completed, active }) => (
+                    <CustomStepIcon completed={completed} active={active}>
+                      {completed ? <CheckIcon /> : null}
+                    </CustomStepIcon>
+                  )}
+                >
                   {label}
                 </StepLabel>
               </Step>
             ))}
           </Stepper>
-        </Paper>
-        <Paper elevation={3} sx={{ padding: "20px", width: "100%" }}>
-          <Typography variant='h6' sx={{ fontWeight: "bold", mb: 2 }}>
-            Order {order?.orderNumber?.forCustomer}
-          </Typography>
-          <Typography variant='body2' sx={{ mt: 1 }}>
-            {order?.createdAt && ShortTime(order?.createdAt)} | Payment Mode: {order?.paymentMode} | {order?.order?.length}{" "}
-            Item
-          </Typography>
-          <Divider sx={{ my: 2 }} />
 
+          <Divider sx={{ my: 2 }} />
+          {/* Kulcha Image Section */}
           {order?.order.map((item: any) => (
             <Grid
               container
-              alignItems='center'
-              justifyContent='space-between'
+              alignItems="center"
+              justifyContent="space-between"
               key={item.id}
-              sx={{ marginBottom: "10px" }}>
+              sx={{ marginBottom: "10px" }}
+            >
               <Grid item sx={{ display: "flex", alignItems: "center" }}>
                 <img
                   src={item.order.kulcha.image}
@@ -249,7 +334,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                   }}
                 />
                 <Box>
-                  <Typography variant='body1'>
+                  <Typography variant="body1">
                     <strong>
                       {item.order.kulcha.name} x {item.order.kulcha.quantity}
                     </strong>
@@ -257,45 +342,24 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 </Box>
               </Grid>
               <Grid item>
-                <Typography variant='body1' sx={{ textAlign: "right" }}>
+                <Typography variant="body1" sx={{ textAlign: "right" }}>
                   {item.price}
                 </Typography>
               </Grid>
             </Grid>
           ))}
 
-          {/* <Divider sx={{ my: 2 }} />
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-            <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-              Subtotal:
-            </Typography>
-            <Typography variant='body2'>${order?.basic_amount}</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-            <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-              Delivery Charges:
-            </Typography>
-            <Typography variant='body2'>${order?.deliverCharge}</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-            <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-              Taxes:
-            </Typography>
-            <Typography variant='body2'>${order?.total_tax}</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-            <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-              Tip Amount:
-            </Typography>
-            <Typography variant='body2'>${order?.tip}</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-            <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-              Grand Total:
-            </Typography>
-            <Typography variant='body2'>${order?.grand_total}</Typography>
-          </Box> */}
+          <Typography variant="body1">
+            Delivering to: {order?.customer?.name}
+            <br />
+            {order?.address?.raw}
+          </Typography>
+          {/* <Divider sx={{ my: 2 }} /> */}
+
+          {/* Horizontal Stepper */}
         </Paper>
+
+        {/* Order Details */}
       </Box>
     </Box>
   );

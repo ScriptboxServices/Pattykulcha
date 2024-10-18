@@ -199,9 +199,10 @@ const OrderPage: React.FC<Props> = ({
           alignItems: "center",
           justifyContent: "center",
           pt: 4,
-          paddingBottom:'1rem'
-        }}>
-        <Container maxWidth='md'>
+          paddingBottom: "1rem",
+        }}
+      >
+        <Container maxWidth="md">
           <Paper
             sx={{
               p: 2,
@@ -213,25 +214,30 @@ const OrderPage: React.FC<Props> = ({
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
               alignItems: "center",
-            }}>
+            }}
+          >
             <Box
-              sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}>
+              sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}
+            >
               <Link
-                href='/home'
-                underline='none'
-                sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                href="/home"
+                underline="none"
+                sx={{ display: "flex", alignItems: "center", mb: 3 }}
+              >
                 <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
                 <Typography
-                  variant='body1'
-                  sx={{ ml: 1, fontWeight: 600, color: "#162548" }}>
+                  variant="body1"
+                  sx={{ ml: 1, fontWeight: 600, color: "#162548" }}
+                >
                   Back To Menu
                 </Typography>
               </Link>
 
               <Typography
-                variant='h3'
-                component='h1'
-                sx={{ fontWeight: 700, color: "#162548", mb: 1 }}>
+                variant="h3"
+                component="h1"
+                sx={{ fontWeight: 700, color: "#162548", mb: 1 }}
+              >
                 YOUR
                 <br />
                 ORDER
@@ -269,12 +275,13 @@ const OrderPage: React.FC<Props> = ({
                       },
                     },
                   },
-                }}>
-                <ToggleButton value='delivery'>
+                }}
+              >
+                <ToggleButton value="delivery">
                   <LocalShippingIcon sx={{ mr: 1 }} />
                   Delivery
                 </ToggleButton>
-                <ToggleButton value='pickup'>
+                <ToggleButton value="pickup">
                   <ShoppingBagIcon sx={{ mr: 1 }} />
                   Pickup
                 </ToggleButton>
@@ -302,8 +309,8 @@ const OrderPage: React.FC<Props> = ({
                 <Box>
                   <Box sx={{ mb: 2 }}>
                     <Typography
-                      variant='h6'
-                      color='text.secondary'
+                      variant="h6"
+                      color="text.secondary"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -311,16 +318,17 @@ const OrderPage: React.FC<Props> = ({
                         fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
-                      }}>
+                      }}
+                    >
                       Delivery Time: 1 Hour
                     </Typography>
                   </Box>
                   <Box
                     sx={{ mb: 2, cursor: "pointer" }}
-                    onClick={() => handleEditClick("address")}>
+                    onClick={() => handleEditClick("address")}
+                  >
                     <Typography
-                      // variant="h6"
-                      color='text.secondary'
+                      color="text.secondary"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -328,8 +336,9 @@ const OrderPage: React.FC<Props> = ({
                         color: "#1F2937",
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
-                      }}>
-                      <span><b>Address:</b> {metaData?.address?.raw}</span>
+                      }}
+                    >
+                      Address: {metaData?.address?.raw}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -339,7 +348,8 @@ const OrderPage: React.FC<Props> = ({
                             color: "white",
                           },
                         }}
-                        onClick={() => handleEditClick("address")}>
+                        onClick={() => handleEditClick("address")}
+                      >
                         <EditIcon sx={{ color: "#ffffff" }} />
                       </IconButton>
                     </Typography>
@@ -347,9 +357,10 @@ const OrderPage: React.FC<Props> = ({
 
                   <Box
                     sx={{ mb: 3, cursor: "pointer" }}
-                    onClick={() => handleEditClick("instructions")}>
+                    onClick={() => handleEditClick("instructions")}
+                  >
                     <Typography
-                      color='text.secondary'
+                      color="text.secondary"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -358,8 +369,9 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                         wordBreak: "break-all",
-                      }}>
-                      <span><b>Delivery Instructions:</b> {instructions}</span>
+                      }}
+                    >
+                      Delivery Instructions: {instructions}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -369,16 +381,18 @@ const OrderPage: React.FC<Props> = ({
                             color: "white",
                           },
                         }}
-                        onClick={() => handleEditClick("instructions")}>
+                        onClick={() => handleEditClick("instructions")}
+                      >
                         <EditIcon sx={{ color: "#ffffff" }} />
                       </IconButton>
                     </Typography>
                   </Box>
                   <Box
                     sx={{ mb: 3, cursor: "pointer" }}
-                    onClick={handleEditName}>
+                    onClick={handleEditName}
+                  >
                     <Typography
-                      variant='h6'
+                      variant="h6"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -387,20 +401,21 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                         wordBreak: "break-all",
-                      }}>
+                      }}
+                    >
                       {/* Conditionally render the TextField or the name */}
                       {isEditingName ? (
                         <TextField
                           inputRef={nameInputRef}
                           fullWidth
-                          variant='outlined'
+                          variant="outlined"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           InputProps={{
                             endAdornment: (
-                              <InputAdornment position='end'>
+                              <InputAdornment position="end">
                                 <Button
-                                  variant='contained'
+                                  variant="contained"
                                   onClick={handleNameSave}
                                   // disabled={!name}
                                   sx={{
@@ -410,7 +425,8 @@ const OrderPage: React.FC<Props> = ({
                                       backgroundColor: "#FFC107",
                                       color: "white",
                                     },
-                                  }}>
+                                  }}
+                                >
                                   Save
                                 </Button>
                               </InputAdornment>
@@ -419,7 +435,7 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          <span><b>Name:</b> {metaData?.name}</span>
+                          Name: {metaData?.name}
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -429,7 +445,8 @@ const OrderPage: React.FC<Props> = ({
                                 color: "white",
                               },
                             }}
-                            onClick={handleEditName}>
+                            onClick={handleEditName}
+                          >
                             <EditIcon sx={{ color: "#ffffff" }} />
                           </IconButton>
                         </>
@@ -442,9 +459,25 @@ const OrderPage: React.FC<Props> = ({
               {selectedOption == "pickup" && (
                 <Box>
                   <Box sx={{ mb: 2 }}>
+                    <Box sx={{ mb: 2, cursor: "pointer" }}>
+                      <Typography
+                        // variant="h6"
+                        color="text.secondary"
+                        sx={{
+                          color: "#1F2937",
+                          paddingBottom: "4px",
+                          fontWeight:"bold",
+                          fontSize: { xs: "16px", lg: "18px" },
+                        }}
+                      >
+                       Pickup Address: 635 Kaiser Dr, Mississauga, ON L5W 1T6,
+                        Canada
+                      </Typography>
+                    </Box>
+
                     <Typography
-                      variant='h6'
-                      color='text.secondary'
+                      variant="h6"
+                      color="text.secondary"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -452,8 +485,9 @@ const OrderPage: React.FC<Props> = ({
                         fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
-                      }}>
-                    Pickup Time: {pickupTime}
+                      }}
+                    >
+                      Pickup Time: {pickupTime}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -463,7 +497,8 @@ const OrderPage: React.FC<Props> = ({
                             color: "white",
                           },
                         }}
-                        onClick={handlePickupTimeClick}>
+                        onClick={handlePickupTimeClick}
+                      >
                         <EditIcon sx={{ color: "#ffffff" }} />
                       </IconButton>
                     </Typography>
@@ -477,41 +512,44 @@ const OrderPage: React.FC<Props> = ({
                       if (err) return;
                       setOpenPickupTimeDialog(false);
                     }}
-                    maxWidth='xs'
+                    maxWidth="xs"
                     fullWidth
                     sx={{ zIndex: "999" }}
                     PaperProps={{
                       sx: { borderRadius: "10px" },
-                    }}>
+                    }}
+                  >
                     <DialogTitle
                       sx={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Edit Pickup Time
                       <IconButton
                         onClick={() => {
                           const err: string = handlePickupTimeSave();
                           if (err) return;
                           setOpenPickupTimeDialog(false);
-                        }}>
+                        }}
+                      >
                         <CloseIcon sx={{ color: "#ECAB21" }} />
                       </IconButton>
                     </DialogTitle>
                     <DialogContent>
-                      <Typography variant='body1' sx={{ mb: 2 }}>
-                        <strong>From:</strong>635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
-                        2R7
+                      <Typography variant="body1" sx={{ mb: 2 }}>
+                        <strong>From:</strong>635 Kaiser Dr, Mississauga, ON L5W
+                        1T6, Canada 2R7
                       </Typography>
 
                       <TextField
                         fullWidth
-                        label='Select Time'
+                        label="Select Time"
                         value={pickupTime}
                         onChange={changeTime}
-                        type='time'
+                        type="time"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -522,9 +560,10 @@ const OrderPage: React.FC<Props> = ({
                           mt: 2,
                           display: "flex",
                           justifyContent: "center",
-                        }}>
+                        }}
+                      >
                         <Button
-                          variant='contained'
+                          variant="contained"
                           sx={{
                             backgroundColor: "#ECAB21",
                             color: "white",
@@ -536,15 +575,17 @@ const OrderPage: React.FC<Props> = ({
                               color: "white",
                             },
                           }}
-                          onClick={handlePickupTimeSave}>
+                          onClick={handlePickupTimeSave}
+                        >
                           Continue Order
                         </Button>
                       </Box>
                       {timeError && (
                         <Alert
                           sx={{ mt: 2 }}
-                          variant='outlined'
-                          severity='error'>
+                          variant="outlined"
+                          severity="error"
+                        >
                           {timeError}
                         </Alert>
                       )}
@@ -552,9 +593,10 @@ const OrderPage: React.FC<Props> = ({
                   </Dialog>
                   <Box
                     sx={{ mb: 3, cursor: "pointer" }}
-                    onClick={handleEditName}>
+                    onClick={handleEditName}
+                  >
                     <Typography
-                      variant='h6'
+                      variant="h6"
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -563,20 +605,21 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
                         wordBreak: "break-all",
-                      }}>
+                      }}
+                    >
                       {/* Conditionally render the TextField or the name */}
                       {isEditingName ? (
                         <TextField
                           inputRef={nameInputRef}
                           fullWidth
-                          variant='outlined'
+                          variant="outlined"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           InputProps={{
                             endAdornment: (
-                              <InputAdornment position='end'>
+                              <InputAdornment position="end">
                                 <Button
-                                  variant='contained'
+                                  variant="contained"
                                   onClick={handleNameSave}
                                   // disabled={!name}
                                   sx={{
@@ -586,7 +629,8 @@ const OrderPage: React.FC<Props> = ({
                                       backgroundColor: "#FFC107",
                                       color: "white",
                                     },
-                                  }}>
+                                  }}
+                                >
                                   Save
                                 </Button>
                               </InputAdornment>
@@ -595,7 +639,7 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          <span><b>Name:</b> {metaData?.name}</span>
+                          Name: {metaData?.name}
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -605,35 +649,29 @@ const OrderPage: React.FC<Props> = ({
                                 color: "white",
                               },
                             }}
-                            onClick={handleEditName}>
+                            onClick={handleEditName}
+                          >
                             <EditIcon sx={{ color: "#ffffff" }} />
                           </IconButton>
                         </>
                       )}
                     </Typography>
                   </Box>
-                  <Box sx={{ mb: 2, cursor: "pointer" }}>
-                    <Typography
-                      // variant="h6"
-                      color='text.secondary'
-                      sx={{
-                        color: "#1F2937",
-                        paddingBottom: "4px",
-                        fontSize: { xs: "16px", lg: "18px" },
-                      }}>
-                      <b>Pickup Address:</b> 635 Kaiser Dr, Mississauga, ON L5W 1T6, Canada
-                    </Typography>
-                  </Box>
 
                   <Box sx={{ mb: 3, cursor: "pointer" }}>
                     <Typography
-                      color='text.secondary'
+                      color="text.secondary"
                       sx={{
                         color: "#1F2937",
                         paddingBottom: "4px",
                         fontSize: { xs: "16px", lg: "18px" },
-                      }}>
-                      <b>Pickup Instructions:</b> Your order will be ready for pickup <strong>one hour</strong> after being placed. Thank you for your patience! Once you arrive at the location, please press <strong>&rdquo;I am here&rdquo;</strong> from the My Orders section.
+                      }}
+                    >
+                      <b>Pickup Instructions:</b> Your order will be ready for
+                      pickup <strong>one hour</strong> after being placed. Thank
+                      you for your patience! Once you arrive at the location,
+                      please press <strong>&rdquo;I am here&rdquo;</strong> from
+                      the My Orders section.
                     </Typography>
                   </Box>
                 </Box>
@@ -645,18 +683,20 @@ const OrderPage: React.FC<Props> = ({
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(!openDialog)}
-        maxWidth='xs'
+        maxWidth="xs"
         fullWidth
         sx={{ zIndex: "999" }}
         PaperProps={{
           sx: { borderRadius: "10px" },
-        }}>
+        }}
+      >
         <DialogTitle
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           Enter your Address
           <IconButton onClick={() => setOpenDialog(!openDialog)}>
             <CloseIcon sx={{ color: "#ECAB21" }} />
@@ -672,7 +712,8 @@ const OrderPage: React.FC<Props> = ({
               padding: "6px 10px",
               marginTop: "8px",
               width: "100%",
-            }}>
+            }}
+          >
             <Autocomplete
               apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
               style={{
@@ -760,10 +801,10 @@ const OrderPage: React.FC<Props> = ({
                             line1: place.formatted_address?.split(",")[0],
                           },
                           distance,
-                          latlng : {
-                            lat : post.lat(),
-                            lng : post.lng()
-                          }
+                          latlng: {
+                            lat: post.lat(),
+                            lng: post.lng(),
+                          },
                         });
                       } else {
                         console.error("No results found");
@@ -782,7 +823,7 @@ const OrderPage: React.FC<Props> = ({
           </Box>
           <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
             <Button
-              variant='contained'
+              variant="contained"
               sx={{
                 backgroundColor: "#ECAB21",
                 color: "white",
@@ -795,7 +836,8 @@ const OrderPage: React.FC<Props> = ({
                 },
               }}
               disabled={address?.raw === "" || address?.raw === undefined}
-              onClick={() => handleSaveClick("address")}>
+              onClick={() => handleSaveClick("address")}
+            >
               Submit
             </Button>
           </Box>
@@ -805,21 +847,24 @@ const OrderPage: React.FC<Props> = ({
       <Dialog
         open={openInstructionsDialog}
         onClose={() => setOpenInstructionsDialog(!openInstructionsDialog)}
-        maxWidth='xs'
+        maxWidth="xs"
         fullWidth
         sx={{ zIndex: "999" }}
         PaperProps={{
           sx: { borderRadius: "10px" },
-        }}>
+        }}
+      >
         <DialogTitle
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           Enter Delivery Instructions
           <IconButton
-            onClick={() => setOpenInstructionsDialog(!openInstructionsDialog)}>
+            onClick={() => setOpenInstructionsDialog(!openInstructionsDialog)}
+          >
             <CloseIcon sx={{ color: "#ECAB21" }} />
           </IconButton>
         </DialogTitle>
@@ -827,15 +872,15 @@ const OrderPage: React.FC<Props> = ({
           <TextField
             fullWidth
             multiline
-            variant='outlined'
+            variant="outlined"
             value={instructions}
             onChange={handleInstructionsChange}
-            placeholder='Enter your delivery instructions here'
+            placeholder="Enter your delivery instructions here"
             sx={{ mt: 2 }}
           />
           <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
             <Button
-              variant='contained'
+              variant="contained"
               sx={{
                 backgroundColor: "#ECAB21",
                 color: "white",
@@ -847,7 +892,8 @@ const OrderPage: React.FC<Props> = ({
                   color: "white",
                 },
               }}
-              onClick={() => handleSaveClick("instructions")}>
+              onClick={() => handleSaveClick("instructions")}
+            >
               Submit
             </Button>
           </Box>

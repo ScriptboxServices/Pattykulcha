@@ -183,7 +183,7 @@ const Navbar: React.FC = () => {
         paddingTop: "0rem",
       }}
     >
-      <List  sx={{ flexGrow: 1 }}>
+      <List>
       <ListItem>
           <Link href="/home" passHref>
             <Image

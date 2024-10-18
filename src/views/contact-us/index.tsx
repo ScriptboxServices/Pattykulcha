@@ -35,7 +35,7 @@ const schema = yup.object().shape({
   name: yup.string().required("First Name is required"),
   phone: yup
     .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    // .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
     .required("Phone is required"),
   message: yup.string().required("Message is required"),
   countryCode: yup.mixed<CountryType>().required(),
@@ -86,9 +86,32 @@ const ContactUs: React.FC = () => {
     },
   });
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const phoneNumber = value?.replace(/\D/g, "");
+
+    // Format the number as xxx-xxx
+    const formattedPhoneNumber = phoneNumber?.replace(
+      /(\d{3})(\d{0,3})(\d{0,4})?/,
+      (match, p1, p2, p3) => {
+        if (p3) return `${p1}-${p2}-${p3}`;
+        else if (p2) return `${p1}-${p2}`;
+        else return `${p1}`;
+      }
+    );
+
+    return formattedPhoneNumber;
+  };
+
+  // Function to strip formatting (remove dash)
+  const stripPhoneNumberFormatting = (formattedNumber: string) => {
+    return formattedNumber.replace(/\D/g, ""); // Remove all non-digit characters
+  };
+
   const onSubmit = async (data: any) => {
     console.log(data);
-    const { name, message, phone, countryCode } = data;
+    const { name, message, countryCode } = data;
+    const plainPhoneNumber = stripPhoneNumberFormatting(data.phone);
     try {
       setIsLoading(true);
       const colRef = collection(db, "contactus");
@@ -96,7 +119,7 @@ const ContactUs: React.FC = () => {
         createdAt: Timestamp.now(),
         customer: {
           name: name,
-          phoneNumber: `+${countryCode.phone}${phone}`, // Use backticks for dynamic string insertion here
+          phoneNumber: `+${countryCode.phone}${plainPhoneNumber}`,
         },
         foodTruckId: KITCHEN_ID,
         message: message,
@@ -138,8 +161,13 @@ const ContactUs: React.FC = () => {
               >
                 CONTACT US
               </Typography>
-              <Card sx={{ backgroundColor: "#FAF3E0" ,boxShadow:'none',
-                    border:'none'}}>
+              <Card
+                sx={{
+                  backgroundColor: "#FAF3E0",
+                  boxShadow: "none",
+                  border: "none",
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -229,32 +257,49 @@ const ContactUs: React.FC = () => {
                 backgroundColor: "rgba(255, 255, 255, 0.85)",
               }}
             >
-              <Link
-                onClick={() => setShowForm(false)}
-                underline="none"
+              <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  mb: 1,
-                  cursor: "pointer",
+                  position: "relative",
+                  mb: 2,
                 }}
               >
-                <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
-                <Typography
-                  variant="body1"
-                  sx={{ ml: 1, fontWeight: 600, color: "#162548" }}
+                <Link
+                  onClick={() => setShowForm(false)}
+                  underline="none"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    position: "absolute",
+                    left: 0,
+                  }}
                 >
-                  Back
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: "50%",
+                      border: "1px solid #E0E0E0",
+                      width: 28,
+                      height: 28,
+                    }}
+                  >
+                    <ArrowBackIcon sx={{ fontSize: 17, color: "#ffbb00" }} />
+                  </Box>
+                </Link>
+
+                <Typography
+                  variant="h4"
+                  sx={{ fontWeight: 600, mx: "auto" }}
+                  align="center"
+                  gutterBottom
+                >
+                  Contact Us
                 </Typography>
-              </Link>
-              <Typography
-                variant="h4"
-                sx={{ fontWeight: 600 }}
-                align="center"
-                gutterBottom
-              >
-                Contact Us
-              </Typography>
+              </Box>
 
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
@@ -310,7 +355,7 @@ const ContactUs: React.FC = () => {
                                       loading="eager"
                                       width={20}
                                       height={15}
-                                      src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`} // Dynamic URL
+                                      src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
                                       priority
                                       alt="#"
                                     />
@@ -330,13 +375,20 @@ const ContactUs: React.FC = () => {
                     <Controller
                       name="phone"
                       control={control}
-                      render={({ field }) => (
+                      render={({ field: { onChange, value } }) => (
                         <TextField
-                          {...field}
+                          value={formatPhoneNumber(value)} // Format the number with dashes
                           fullWidth
                           type="tel"
                           label="Phone"
                           variant="outlined"
+                          onChange={(e) => {
+                            const formattedValue = formatPhoneNumber(
+                              e.target.value
+                            );
+                            onChange(formattedValue);
+                            setValue("phone", formattedValue);
+                          }}
                           error={!!errors.phone}
                           helperText={errors.phone?.message}
                         />

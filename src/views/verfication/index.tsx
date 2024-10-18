@@ -96,16 +96,47 @@ const VerificationPage: React.FC = () => {
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const { kulcha } = useMenuContext();
 
-  const handleCodeChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newCode = [...verificationCode];
-      newCode[index] = event.target.value;
+  const handleCodeChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+  
+    if (!/^\d*$/.test(value)) {
+      return; 
+    }
+
+    if (value.length > 1) {
+      const newCode = value.split('').slice(0, verificationCode.length);
       setVerificationCode(newCode);
 
-      if (event.target.value && index < verificationCode.length - 1) {
+      const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
+      if (nextEmptyIndex !== -1) {
+        inputRefs.current[nextEmptyIndex]?.focus();
+      }
+    } else {
+      const newCode = [...verificationCode];
+      newCode[index] = value;
+      setVerificationCode(newCode);
+
+      if (value && index < verificationCode.length - 1) {
         inputRefs.current[index + 1]?.focus();
       }
-    };
+    }
+  };
+  
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = event.clipboardData.getData("text").slice(0, verificationCode.length); // Limit to the length of the OTP
+
+    if (!/^\d*$/.test(pastedData)) {
+      return;
+    }
+  
+    const newCode = pastedData.split('');
+    setVerificationCode(newCode);
+
+    const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
+    if (nextEmptyIndex !== -1) {
+      inputRefs.current[nextEmptyIndex]?.focus();
+    }
+  };
 
   const handleKeyDown =
     (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -211,7 +242,6 @@ const VerificationPage: React.FC = () => {
         );
       }
     } catch (err: any) {
-      console.log(err.code);
       setLoading(false);
       if (err.code === "auth/invalid-verification-code") {
         setError("Invalid verification code.");
@@ -279,7 +309,12 @@ const VerificationPage: React.FC = () => {
                     value={code}
                     onChange={handleCodeChange(index)}
                     onKeyDown={handleKeyDown(index)}
-                    inputProps={{ maxLength: 1 }}
+                    onPaste={handlePaste}
+                    inputProps={{ 
+                      maxLength: 1, 
+                      inputMode: "numeric",  
+                      pattern: "[0-9]*"     
+                    }}
                     inputRef={(el) => (inputRefs.current[index] = el)}
                     sx={{
                       margin: 0.5,

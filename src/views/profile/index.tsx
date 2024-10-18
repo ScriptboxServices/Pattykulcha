@@ -28,9 +28,9 @@ import {
   Email,
   Add,
   Close,
-  Search,
+  Delete,
 } from "@mui/icons-material";
-import { useAuthContext,calculateDistance } from "@/context";
+import { useAuthContext, calculateDistance } from "@/context";
 import CircularLodar from "@/components/CircularLodar";
 import {
   collection,
@@ -45,6 +45,7 @@ import { db } from "@/firebase";
 import { updateProfile } from "firebase/auth";
 import Autocomplete from "react-google-autocomplete";
 import { v4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 type User = {
   name: string;
@@ -63,6 +64,8 @@ type User = {
 };
 
 const ProfilePage: React.FC = () => {
+  const router = useRouter();
+
   const { user, setMetaData, kitchenMetaData, metaData } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
@@ -72,7 +75,7 @@ const ProfilePage: React.FC = () => {
   const [address1, setAddress1] = useState<any>({});
   const [email, setEmail] = useState<string | undefined>("");
   const [selectedAddr, setSelectedAddr] = useState<string>("");
-  const [selectedAddress, setSelectedAddress] = useState<string>("primary"); // Track selected address
+  const [selectedAddress, setSelectedAddress] = useState<string>("primary");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -135,7 +138,6 @@ const ProfilePage: React.FC = () => {
         };
       }
     } catch (err) {
-      console.log(err);
       return err;
     }
   };
@@ -147,7 +149,6 @@ const ProfilePage: React.FC = () => {
         await getUser();
         setLoading(false);
       } catch (err) {
-        console.log(err);
         setLoading(false);
       }
     };
@@ -192,11 +193,10 @@ const ProfilePage: React.FC = () => {
         setMetaData({ ..._metaData });
         setLoading(false);
         setOpenDialog(false);
-        setAddress1({})
+        setAddress1({});
         return;
       }
     } catch (err) {
-      console.log(err);
       setLoading(false);
     }
   };
@@ -241,7 +241,7 @@ const ProfilePage: React.FC = () => {
         seperate: addr.seperate,
         raw: addr.raw,
         distance: addr.distance,
-        latlng : addr.latlng
+        latlng: addr.latlng,
       },
       savedAddress: [...editAddress],
     });
@@ -262,7 +262,7 @@ const ProfilePage: React.FC = () => {
           pb: { xs: 6, xl: 8 },
           alignItem: "center",
           background: "#FAF3E0",
-          minHeight: { xs: "80dvh", xl: "100d%" },
+          minHeight: { xs: "100dvh", xl: "100dvh" },
         }}
       >
         <Grid
@@ -498,9 +498,14 @@ const ProfilePage: React.FC = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "flex-start",
-                                border: `${addr.isPrimary ? 2 : 1}px solid ${addr.isPrimary ? 'green' : 'grey'}`,
+                                border: `${addr.isPrimary ? 2 : 1}px solid ${
+                                  addr.isPrimary ? "green" : "grey"
+                                }`,
                                 borderRadius: "8px",
-                                padding: {xs:"6px 15px 6px 13px",sm:"6px 35px 6px 13px"},
+                                padding: {
+                                  xs: "6px 15px 6px 13px",
+                                  sm: "6px 35px 6px 13px",
+                                },
                                 width: "100%",
                                 position: "relative",
                               }}
@@ -532,21 +537,21 @@ const ProfilePage: React.FC = () => {
                                   }}
                                 />
                                 {addr.isPrimary ? (
-                                  // <CheckCircleIcon
-                                  //   sx={{
-                                  //     position: "absolute",
-                                  //     top:  "10px" ,
-                                  //     right: "7px",
-                                  //     // transform: {
-                                  //     //   xs: "translateY(0%)",
-                                  //     // },
-                                  //     color: "green",
-                                  //     backgroundColor: "white",
-                                  //     borderRadius: "50%",
-                                  //   }}
-                                  // />
-                                  <></>
+                                  <CheckCircleIcon
+                                    sx={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "7px",
+                                      // transform: {
+                                      //   xs: "translateY(0%)",
+                                      // },
+                                      color: "green",
+                                      backgroundColor: "white",
+                                      borderRadius: "50%",
+                                    }}
+                                  />
                                 ) : (
+                                  // <></>
                                   <Radio
                                     {...{
                                       onChange: () => handleChange(addr._id),
@@ -572,23 +577,29 @@ const ProfilePage: React.FC = () => {
                                 <Box
                                   sx={{
                                     display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "flex-end", // Center the buttons horizontally
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center",
                                     width: "100%",
-                                    marginTop: "8px", // Add some space between the address and the buttons
+                                    marginTop: "8px",
                                   }}
                                 >
                                   <IconButton
                                     onClick={() => removeAddress(addr._id)}
-                                    sx={{ padding: 0, mb: 1 }}
+                                    sx={{ padding: 0, marginRight: 2 }}
                                   >
                                     <Typography
                                       sx={{
                                         cursor: "pointer",
-                                        color: "black",
-                                        textDecoration: "underline",
-                                        fontSize: "14px",
+                                        color: "red",
+                                        fontSize: "12px",
                                         textAlign: "center",
+                                        backgroundColor: "#FEE2E2",
+                                        display: { xs: "block", sm: "block" },
+                                        height: "2em",
+                                        paddingX: "0.5rem",
+                                        paddingY: "0.2rem",
+                                        borderRadius: "13px",
                                       }}
                                     >
                                       Remove
@@ -601,15 +612,18 @@ const ProfilePage: React.FC = () => {
                                     <Typography
                                       sx={{
                                         cursor: "pointer",
-                                        color: "green",
-                                        textDecoration: "underline",
-                                        fontSize: "14px",
-
+                                        color: "white",
+                                        fontSize: "12px",
                                         textAlign: "center",
+                                        backgroundColor: "green",
                                         display: { xs: "block", sm: "none" },
+                                        height: "2em",
+                                        paddingX: "0.5rem",
+                                        paddingY: "0.2rem",
+                                        borderRadius: "13px",
                                       }}
                                     >
-                                      Make primary address
+                                      Make primary  
                                     </Typography>
                                   </IconButton>
                                 </Box>
@@ -641,12 +655,40 @@ const ProfilePage: React.FC = () => {
                               color: "white",
                             },
                           }}
-                          onClick={handleDialogOpen}
+                          // onClick={handleDialogOpen}
+                          onClick={() => {
+                            router.push("/add-address");
+                          }}
                         >
                           Add new Address
                         </Button>
                       </ListItem>
                     )}
+                    <ListItem
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Button
+                        startIcon={<Delete />}
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "red",
+                          color: "white",
+                          marginTop: "0.2rem",
+                          fontWeight: "bold",
+                          width: "80%",
+                          "&:hover": {
+                            backgroundColor: "darkred",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Delete Account
+                      </Button>
+                    </ListItem>
                   </List>
                 </CardContent>
               </Card>
@@ -760,7 +802,7 @@ const ProfilePage: React.FC = () => {
                             }
                           }
                         }
-                        const { distance } : any = await calculateDistance(
+                        const { distance }: any = await calculateDistance(
                           kitchenMetaData?.address?.raw,
                           place.formatted_address || "",
                           Number(kitchenMetaData?.orderRange)
@@ -775,12 +817,11 @@ const ProfilePage: React.FC = () => {
                             line1: place.formatted_address?.split(",")[0],
                           },
                           distance,
-                          latlng : {
-                            lat : post.lat(),
-                            lng : post.lng()
-                          }
+                          latlng: {
+                            lat: post.lat(),
+                            lng: post.lng(),
+                          },
                         });
-                  
                       } else {
                         console.error("No results found");
                       }
@@ -800,7 +841,7 @@ const ProfilePage: React.FC = () => {
             <Button
               onClick={() => updateUser("address")}
               variant="contained"
-              disabled={address1?.raw === '' || address1?.raw === undefined}
+              disabled={address1?.raw === "" || address1?.raw === undefined}
               sx={{
                 backgroundColor: "#ECAB21",
                 color: "white",

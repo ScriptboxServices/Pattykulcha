@@ -15,6 +15,8 @@ import {
   DialogContent,
   Grid,
   DialogTitle,
+  Divider,
+  Drawer,
 } from "@mui/material";
 import Image from "next/image";
 import {
@@ -33,16 +35,23 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { encrypt } from "@/utils/commonFunctions";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
-  selectedOption : string,
+  selectedOption: string;
   setPickupTime: React.Dispatch<React.SetStateAction<string>>;
-  pickupTime : string,
+  pickupTime: string;
 }
 
-const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOption ,pickupTime,setPickupTime }) => {
+const OrderHome: React.FC<Props> = ({
+  setLoading,
+  setSelectedOption,
+  selectedOption,
+  pickupTime,
+  setPickupTime,
+}) => {
   const {
     setCount,
     grandTotal,
@@ -59,10 +68,17 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
   const { user, metaData, kitchenMetaData } = useAuthContext();
 
   const [error, setError] = useState({
-    status : false,
-    message : ''
+    status: false,
+    message: "",
+  });
+
+  const [dialogerror, setdialogError] = useState({
+    status: false,
+    message: "",
   });
   const [dialogboxOpen, setDialogboxOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog for larger screens
 
   const calculateTotal = (item: any, addon: any[]) => {
     const additionalTotal = addon?.reduce((acc, value) => {
@@ -85,7 +101,6 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
         return;
       }
     } catch (err) {
-      console.log(err);
       return err;
     }
   };
@@ -98,17 +113,16 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
       await getData(user?.uid);
       setLoading(false);
     } catch (err) {
-      console.log(err);
       setLoading(false);
     }
   };
 
   const getKulchaQuantity = () => {
-    const quant = carts?.reduce((acc,order) => {
-      return acc = acc + order.order.kulcha.quantity
-    },0)
-    return quant
-  }
+    const quant = carts?.reduce((acc, order) => {
+      return (acc = acc + order.order.kulcha.quantity);
+    }, 0);
+    return quant;
+  };
 
   return (
     <>
@@ -474,6 +488,7 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
               minHeight="40vh"
               bgcolor="#FAF3E0"
               width="100%"
+              marginTop={3}
             >
               <Paper
                 elevation={3}
@@ -484,6 +499,29 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                   margin: "0",
                 }}
               >
+                {/* <Link href="add-promo-code">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    gap={2}
+                  >
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: 600,
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <LocalOfferIcon sx={{ marginRight: 1 }} />{" "}
+                      
+                      Add a promo code
+                    </Typography>
+                  </Box>
+                </Link> */}
+                {/* <Divider sx={{ my: 2 }} /> */}
                 <Box display="flex" justifyContent="space-between" gap={2}>
                   <Typography
                     variant="h6"
@@ -495,6 +533,7 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                     ${grandTotal}
                   </Typography>
                 </Box>
+
                 <Box display="flex" justifyContent="space-between" gap={2}>
                   <Typography
                     variant="h6"
@@ -504,15 +543,17 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                   </Typography>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     $
-                    {
-                    selectedOption === 'pickup' ? '0.00' : <>      
-                          {Number(
-                            calculateDeliveryCharges(
-                              metaData?.address?.distance?.value
-                            )
-                          ).toFixed(2)}
-                        </>
-}
+                    {selectedOption === "pickup" ? (
+                      "0.00"
+                    ) : (
+                      <>
+                        {Number(
+                          calculateDeliveryCharges(
+                            metaData?.address?.distance?.value
+                          )
+                        ).toFixed(2)}
+                      </>
+                    )}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between" gap={2}>
@@ -522,73 +563,131 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     $
                     {Number(
-                      Number(grandTotal) + (
-                        selectedOption === 'pickup' ? 0 :
-                        Number(
-                          calculateDeliveryCharges(
-                            metaData?.address?.distance?.value
-                          )
-                        )
-                      )
+                      Number(grandTotal) +
+                        (selectedOption === "pickup"
+                          ? 0
+                          : Number(
+                              calculateDeliveryCharges(
+                                metaData?.address?.distance?.value
+                              )
+                            ))
                     ).toFixed(2)}
                   </Typography>
                 </Box>
                 <Button
                   onClick={() => {
-
-                    if(selectedOption !== 'pickup'){
+                    if (selectedOption !== "pickup") {
+                      // Check if address is provided
                       if (!metaData?.address?.raw) {
                         setError({
-                          status : true,
-                          message : 'Before proceeding, please update address.'
+                          status: true,
+                          message: "Before proceeding, please update address.",
                         });
                         return;
                       }
-                      if (!isAddressReachable) {
-                        setDialogboxOpen(true);
+                      if(!kitchenMetaData?.isShopOpen) {
+                        if(isSmallScreen) {
+                          setDrawerOpen(true);
+                          setdialogError({
+                            status: true,
+                            message:
+                              "We are currently offline we will be back at 8 AM"
+                          });
+
+                        } else {
+                          setDialogOpen(true);
+                          setdialogError({
+                            status: true,
+                            message:
+                              "We are currently offline we will be back at 8 AM",
+                          });
+                        }
                         return;
                       }
-                      if(metaData?.address.distance.value > 5000 && metaData?.address.distance.value < 10000){
-                        if(getKulchaQuantity() < 2){
+
+                      if (!isAddressReachable) {
+                        if (isSmallScreen) {
+                          setDrawerOpen(true);
+                          setdialogError({
+                            status: true,
+                            message:
+                              "We cant Deliver at your address",
+                          });
+
+                        } else {
+                          setDialogOpen(true);
+                          setdialogError({
+                            status: true,
+                            message:
+                              "We cant Deliver at your address",
+                          });
+                        }
+                        return;
+                      }
+
+                      const distance = metaData?.address?.distance?.value;
+                      if (distance > 5000 && distance < 10000) {
+                        if (getKulchaQuantity() < 2) {
                           setError({
-                            status : true,
-                            message : 'For deliveries between 5km and 10km, the minimum order is 2 Kulchas.'
+                            status: true,
+                            message:
+                              "For deliveries between 5km and 10km, the minimum order is 2 Kulchas.",
                           });
                           return;
                         }
                       }
-                      if(metaData?.address.distance.value > 10000){
-                        if(getKulchaQuantity() < 3){
-                          setError({
-                            status : true,
-                            message : 'For deliveries over 10km, the minimum order is 3 Kulchas.'
-                          });
+
+                      if (distance > 10000) {
+                        if (getKulchaQuantity() < 3) {
+                          if(isSmallScreen){
+                            setDrawerOpen(true);
+                            setdialogError({
+                              status: true,
+                              message:
+                                "For deliveries over 10km, the minimum order is 3 Kulchas.",
+                            });
+                          }
+                          else{
+                            setError({
+                              status: true,
+                              message:
+                                "For deliveries over 10km, the minimum order is 3 Kulchas.",
+                            });
+                          }
+                          
                           return;
                         }
                       }
                     }
-                    
+
                     if (!metaData?.name) {
                       setError({
-                        status : true,
-                        message : 'A name is necessary to proceed.'
+                        status: true,
+                        message: "A name is necessary to proceed.",
                       });
                       return;
                     }
+
                     if (!kitchenMetaData?.isShopOpen) {
-                      setDialogboxOpen(true);
+                      if (isSmallScreen) {
+                        setDrawerOpen(true);
+                      } else {
+                        setDialogOpen(true);
+                      }
                       return;
                     }
+
                     setError({
-                      status : false,
-                      message : ""
+                      status: false,
+                      message: "",
                     });
-                    const url = encodeURIComponent(
-                      encrypt({
-                        selectedOption,
-                        pickupTime
-                      })
-                    )
+
+                    const encryptedData = encrypt({
+                      selectedOption,
+                      pickupTime,
+                    });
+
+                    const url = encodeURIComponent(encryptedData);
                     router.push(`/tip/${url}`);
                   }}
                   fullWidth
@@ -618,103 +717,247 @@ const OrderHome: React.FC<Props> = ({ setLoading,setSelectedOption,selectedOptio
           )}
         </Container>
       </Box>
-      <Dialog
-        open={dialogboxOpen}
-        onClose={() => setDialogboxOpen(!dialogboxOpen)}
-        maxWidth="sm"
-        fullWidth
+      {isSmallScreen && (
+        <Drawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        sx={{
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#FFFFFF",
+            borderRadius: "16px 16px 0 0",
+            height: {
+              xs: '45dvh',  
+              sm: '35dvh',  
+              md: '40dvh',
+            },
+            padding: "24px",
+            "@media (min-width: 400px)": {
+              height: "40dvh",
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold" }}>
-          <IconButton
-            aria-label="close"
-            onClick={() => setDialogboxOpen(!dialogboxOpen)}
+        <Box
+          sx={{
+            textAlign: "center",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Box
             sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            {kitchenMetaData?.isShopOpen ? (
-              <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#ECAB21",
-                  }}
-                >
-                  <WarningIcon sx={{ fontSize: "46px", marginTop: 3 }} />
-                  <Typography
-                    variant="body1"
-                    color="textPrimary"
-                    align="center"
-                    sx={{ fontSize: "16px", mt: 2 }}
-                  >
-                    <p>
-                      We&apos;re unable to deliver to your area at the moment.
-                      Thank you for your understanding!
-                      {/* Your location is currently outside our delivery zone, but you're welcome to place an order and <strong style={{fontSize:'1.4rem'}}>pick it up</strong> from our store. The delivery charge is set to <strong style={{fontSize:'1.4rem'}}>$0</strong>, and the distance between your location and our kitchen is <strong style={{fontSize:'1.4rem'}}>{metaData?.address?.distance?.text}.</strong> We look forward to serving you! */}
-                    </p>
-                    {/* <Button
-                      onClick={() => {
-                        setError(false);
-                        router.push("/tip");
-                      }}
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#ECAB21",
-                        color: "white",
-                        paddingX: 4,
-                        paddingY: 1,
-                        mt: 2,
-                        fontWeight: "bold",
-                        "&:hover": {
-                          backgroundColor: "#FFC107",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      Continue
-                    </Button> */}
-                  </Typography>
-                </Box>
-              </>
-            ) : (
-              <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#ECAB21",
-                  }}
-                >
-                  <WarningIcon sx={{ fontSize: "46px", marginTop: 3 }} />
-                  <Typography
-                    variant="body1"
-                    color="textPrimary"
-                    align="center"
-                    sx={{ fontSize: "18px", mt: 2 }}
-                  >
-                    We&apos;re temporarily offline and unable to deliver to your
-                    area at the moment. We appreciate your understanding and
-                    look forward to serving you again soon!
-                  </Typography>
-                </Box>
-              </>
-            )}
-          </Grid>
-        </DialogContent>
-      </Dialog>
+            {/* Close Button */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <IconButton
+                aria-label="close"
+                onClick={() => setDrawerOpen(false)}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                }}
+              >
+                <CloseIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }} />
+              </IconButton>
+            </Box>
+      
+            {/* Title */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  mb: 1,
+                  color: "#162548",
+                  textWrap: "wrap",
+                  fontSize: '2rem',
+                  "@media (max-width: 390px)": {
+                    fontSize: "1.6rem",
+                  },
+                }}
+              >
+                Sorry, Something's Wrong
+              </Typography>
+            </Box>
+      
+            {dialogerror?.status && (
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#6B7280",
+              px: 2,
+              mb: 2,
+              mt: 2,
+              fontSize: {
+                xs: "1.2em",  // Adjust font size for smaller screens
+                sm: "1.2em",
+              },
+            }}
+          >
+            {dialogerror.message}
+          </Typography>
+        )}
+      
+            <Button
+              onClick={() => setDrawerOpen(false)}
+              sx={{
+                backgroundColor: "#ECAB21",
+                color: "#000000",
+                "&:hover": {
+                  backgroundColor: "#d5971f",
+                },
+                paddingX: 4,
+                paddingY: 1,
+                marginInline: "auto",
+                borderRadius: "24px",
+                fontWeight: "bold",
+                width: { xs: "90%", sm: "75%" },
+                textTransform: "none",
+                height: "48px",
+              }}
+            >
+              Okay
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
+      
+      )}
+
+      {!isSmallScreen && (
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ fontWeight: "bold" }}>
+            <IconButton
+              aria-label="close"
+              onClick={() => setDialogOpen(false)}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+          <Box
+          sx={{
+            textAlign: "center",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  mb: 1,
+                  color: "#162548",
+                  textWrap: "wrap",
+                  fontSize: '2rem',
+                  "@media (max-width: 390px)": {
+                    fontSize: "1.6rem",
+                  },
+                }}
+              >
+                Sorry, Something's Wrong
+              </Typography>
+            </Box>
+      
+            {dialogerror?.status &&
+            <Typography
+            variant="h5"
+            sx={{
+              color: "#6B7280",
+              px: 2,
+              mb: 2,
+              mt: 2,
+              fontSize: {
+                xs: "1.2em",  // Adjust font size for smaller screens
+                sm: "1.2em",
+              },
+            }}
+          >
+            {dialogerror?.message}
+          </Typography>
+            }
+            
+      
+            <Button
+              onClick={() => setDialogOpen(false)}
+              sx={{
+                backgroundColor: "#ECAB21",
+                color: "#ffff",
+                "&:hover": {
+                  backgroundColor: "#d5971f",
+                },
+                paddingX: 4,
+                paddingY: 1,
+                marginInline: "auto",
+                borderRadius: "24px",
+                fontWeight: "bold",
+                width: { xs: "90%", sm: "75%" },
+                textTransform: "none",
+                height: "48px",
+              }}
+            >
+              Okay
+            </Button>
+          </Box>
+        </Box>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

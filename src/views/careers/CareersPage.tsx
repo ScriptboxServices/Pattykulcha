@@ -39,13 +39,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CircularLodar from "@/components/CircularLodar";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 
 interface FormValues {
   jobType: string;
   name: string;
   contactNumber: string;
   permitType: string;
-  licenseType?: string; 
+  licenseType?: string;
   availability: {
     monday: boolean;
     tuesday: boolean;
@@ -109,14 +110,14 @@ const CareersPage: React.FC = () => {
 
   const { user, metaData } = useAuthContext();
   const [showForm, setShowForm] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<string>("");
 
   const options = [
     {
       id: "Driver form",
       title: "Apply for driver",
       description: "Reach out to us and we will respond promptly.",
-      icon: <DirectionsBikeIcon fontSize='large' />,
+      icon: <DirectionsBikeIcon fontSize="large" />,
       jobType: "Driver",
       action: () => {
         setSelectedOption("Driver");
@@ -128,9 +129,20 @@ const CareersPage: React.FC = () => {
       title: "Apply for helper",
       jobType: "Helper",
       description: "Contact us directly for immediate assistance.",
-      icon: <RestaurantIcon fontSize='large' />,
+      icon: <RestaurantIcon fontSize="large" />,
       action: () => {
         setSelectedOption("Helper");
+        setShowForm(true);
+      },
+    },
+    {
+      id: "Customer support form", // New option for customer support
+      title: "Apply for customer support",
+      jobType: "Customer Support",
+      description: "We are here to help. Apply for our customer support role.",
+      icon: <SupportAgentIcon fontSize="large" />, // Assuming you have a customer support icon like this
+      action: () => {
+        setSelectedOption("Customer Support");
         setShowForm(true);
       },
     },
@@ -171,7 +183,7 @@ const CareersPage: React.FC = () => {
       setValue("name", metaData.name || "");
       setValue("contactNumber", metaData.phoneNumber || "");
     }
-  }, [metaData,selectedOption]);
+  }, [metaData, selectedOption]);
 
   const [success, setSuccess] = useState({
     status: false,
@@ -243,14 +255,16 @@ const CareersPage: React.FC = () => {
       <CircularLodar isLoading={loading} />
       <Typography
         variant={"h4"}
-        style={{
-          marginBottom: "1.5rem",
-          textAlign: "center",
+        sx={{
+          marginBottom: "1rem",
+          textAlign: {xs:"left",sm:"center"},
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           fontWeight: 700,
-        }}>
+          ml:2,
+        }}
+      >
         Build your career with Patty kulcha
       </Typography>
       <StyledContainer>
@@ -260,7 +274,8 @@ const CareersPage: React.FC = () => {
             justifyContent: "center",
             alignItems: "center",
             minHeight: "auto",
-          }}>
+          }}
+        >
           {!showForm && (
             <>
               <Card
@@ -268,22 +283,25 @@ const CareersPage: React.FC = () => {
                   backgroundColor: "#fff",
                   border: "none",
                   boxShadow: "none",
-                }}>
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: "#FAF3E0",
-                    paddingY: 4,
-                  }}>
+                    // paddingY: 2,
+                  }}
+                >
                   <Grid
                     container
                     spacing={2}
-                    justifyContent='center'
-                    flexDirection='row'>
+                    justifyContent="center"
+                    flexDirection="row"
+                  >
                     {options.map((option) => (
-                      <Grid item xs={10} sm={5} md={6} key={option.id}>
+                      <Grid item xs={12} sm={5} md={4} key={option.id}>
                         <Card
                           sx={{
                             padding: 2,
@@ -304,9 +322,9 @@ const CareersPage: React.FC = () => {
                             setSelectedOption(option.id);
                             option.action();
                             setSuccess({
-                              status : false,
-                              message : ""
-                            })
+                              status: false,
+                              message: "",
+                            });
                             reset({
                               permitType: "",
                               licenseType: "",
@@ -322,8 +340,7 @@ const CareersPage: React.FC = () => {
                               acceptedTerms: false,
                             });
                           }}
-                          
-                          >
+                        >
                           <IconButton
                             sx={{
                               backgroundColor:
@@ -336,17 +353,20 @@ const CareersPage: React.FC = () => {
                                 backgroundColor: "#ECAB21",
                                 color: "white",
                               },
-                            }}>
+                            }}
+                          >
                             {option.icon}
                           </IconButton>
                           <Typography
-                            variant='h6'
-                            sx={{ marginBottom: 1, fontWeight: "600" }}>
+                            variant="h6"
+                            sx={{ marginBottom: 1, fontWeight: "600" }}
+                          >
                             {option.title}
                           </Typography>
                           <Typography
-                            variant='body2'
-                            sx={{ marginBottom: 2, color: "black" }}>
+                            variant="body2"
+                            sx={{ marginBottom: 2, color: "black" }}
+                          >
                             {option.description}
                           </Typography>
                         </Card>
@@ -360,23 +380,33 @@ const CareersPage: React.FC = () => {
         </Container>
 
         {showForm && (
-          <Box sx={{background:'#fff',p : 4,maxWidth:'750px', margin : 'auto'}}>
+          <Box
+            sx={{ background: "#fff", p: 4, maxWidth: "750px", margin: "auto" }}
+          >
             <Box sx={{ display: "flex" }}>
               <Link
                 onClick={() => setShowForm(false)}
-                underline='none'
+                underline="none"
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  mb: 1,
+                  mb: 2,
                   cursor: "pointer",
-                }}>
-                <ArrowBackIcon sx={{ fontSize: 20, color: "#162548" }} />
-                <Typography
-                  variant='body1'
-                  sx={{ ml: 1, fontWeight: 600, color: "#162548" }}>
-                  Back
-                </Typography>
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: "50%", // Makes the box circular
+                    border: "1px solid #E0E0E0", // Light gray border
+                    width: 28, // Circle size
+                    height: 28, // Circle size
+                  }}
+                >
+                  <ArrowBackIcon sx={{ fontSize: 17, color: "#ffbb00" }} />
+                </Box>
               </Link>
               <Typography
                 variant={isLargeScreen ? "h4" : "h5"}
@@ -387,40 +417,41 @@ const CareersPage: React.FC = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   fontWeight: 600,
-                  flex: '1 1'
-                }}>
+                  flex: "1 1",
+                }}
+              >
                 Apply for {selectedOption}
               </Typography>
             </Box>
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
-                name='jobType'
+                name="jobType"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     fullWidth
-                    label='Job Type'
+                    label="Job Type"
                     {...field}
-                    value={selectedOption} 
-                    margin='normal'
-                    variant='outlined'
+                    value={selectedOption}
+                    margin="normal"
+                    variant="outlined"
                     disabled
                   />
                 )}
               />
 
               <Controller
-                name='name'
+                name="name"
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    key={field.value}
+                    // key={field.value}
                     fullWidth
-                    label='Name'
+                    label="Name"
                     {...field}
-                    margin='normal'
-                    variant='outlined'
+                    margin="normal"
+                    variant="outlined"
                     error={!!errors.name}
                     helperText={errors.name?.message}
                   />
@@ -428,62 +459,63 @@ const CareersPage: React.FC = () => {
               />
 
               <Controller
-                name='contactNumber'
+                name="contactNumber"
                 control={control}
                 render={({ field }) => (
                   <TextField
-                  key={field.value}
+                    // key={field.value}
                     fullWidth
                     disabled
-                    placeholder='Contact Number'
+                    placeholder="Contact Number"
                     {...field}
-                    margin='normal'
-                    variant='outlined'
-                  
+                    margin="normal"
+                    variant="outlined"
                   />
                 )}
               />
 
               <Controller
-                name='permitType'
+                name="permitType"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     fullWidth
                     select
-                    label='Select Permit Type'
+                    label="Select Permit Type"
                     {...field}
-                    margin='normal'
-                    variant='outlined'
+                    margin="normal"
+                    variant="outlined"
                     error={!!errors.permitType}
-                    helperText={errors.permitType?.message}>
-                    <MenuItem value='study'>Study Permit</MenuItem>
-                    <MenuItem value='work'>Work Permit</MenuItem>
-                    <MenuItem value='Permanent Residence'>
+                    helperText={errors.permitType?.message}
+                  >
+                    <MenuItem value="study">Study Permit</MenuItem>
+                    <MenuItem value="work">Work Permit</MenuItem>
+                    <MenuItem value="Permanent Residence">
                       Permanent Residence
                     </MenuItem>
-                    <MenuItem value='Citizen'>Citizen</MenuItem>
+                    <MenuItem value="Citizen">Citizen</MenuItem>
                   </TextField>
                 )}
               />
 
               {selectedOption === "Driver" && (
                 <Controller
-                  name='licenseType'
+                  name="licenseType"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       fullWidth
                       select
-                      label='Select License Type'
+                      label="Select License Type"
                       {...field}
-                      margin='normal'
-                      variant='outlined'
+                      margin="normal"
+                      variant="outlined"
                       error={!!errors.licenseType}
-                      helperText={errors.licenseType?.message}>
-                      <MenuItem value='G2'>G2</MenuItem>
-                      <MenuItem value='G'>G</MenuItem>
-                      <MenuItem value='AZ'>AZ</MenuItem>
+                      helperText={errors.licenseType?.message}
+                    >
+                      <MenuItem value="G2">G2</MenuItem>
+                      <MenuItem value="G">G</MenuItem>
+                      <MenuItem value="AZ">AZ</MenuItem>
                     </TextField>
                   )}
                 />
@@ -491,12 +523,13 @@ const CareersPage: React.FC = () => {
 
               <Box my={2} style={{ marginBottom: "1.5rem" }}>
                 <Typography
-                  variant='h6'
-                  style={{ textAlign: "center", marginBottom: "1rem" }}>
+                  variant="h6"
+                  style={{ textAlign: "center", marginBottom: "1rem" }}
+                >
                   Your Availability
                 </Typography>
                 <Controller
-                  name='availability'
+                  name="availability"
                   control={control}
                   render={({ field }) => (
                     <>
@@ -521,7 +554,7 @@ const CareersPage: React.FC = () => {
                                 );
                                 trigger(`availability.${day}` as any);
                               }}
-                              color='primary'
+                              color="primary"
                             />
                           </Grid>
                         </AvailabilityGrid>
@@ -530,31 +563,37 @@ const CareersPage: React.FC = () => {
                   )}
                 />
                 {errors.availability && (
-                  <Typography color='error'>
+                  <Typography color="error">
                     {errors.availability.message}
                   </Typography>
                 )}
               </Box>
               <Controller
-                name='acceptedTerms'
+                name="acceptedTerms"
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
-                    control={<Checkbox {...field} color='primary' checked={field.value}/>}
-                    label='I accept the terms and condition & privacy policy'
+                    control={
+                      <Checkbox
+                        {...field}
+                        color="primary"
+                        checked={field.value}
+                      />
+                    }
+                    label="I accept the terms and condition & privacy policy"
                   />
                 )}
               />
               {errors.acceptedTerms && (
-                <Typography color='error'>
+                <Typography color="error">
                   {errors.acceptedTerms.message}
                 </Typography>
               )}
 
               <Button
-                type='submit'
-                variant='contained'
-                color='primary'
+                type="submit"
+                variant="contained"
+                color="primary"
                 fullWidth
                 sx={{
                   backgroundColor: "#ECAB21",
@@ -567,16 +606,17 @@ const CareersPage: React.FC = () => {
                     backgroundColor: "#FFC107",
                     color: "white",
                   },
-                }}>
+                }}
+              >
                 Submit
               </Button>
               {Boolean(Object.keys(errors).length) && (
-                <Alert severity='error' sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   Please correct the highlighted errors.
                 </Alert>
               )}
               {success?.status && (
-                <Alert severity='success' sx={{ mt: 2 }}>
+                <Alert severity="success" sx={{ mt: 2 }}>
                   {success?.message}
                 </Alert>
               )}
