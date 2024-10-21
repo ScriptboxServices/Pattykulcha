@@ -52,7 +52,14 @@ const OrderPage: React.FC<Props> = ({
   setPickupTime,
   pickupTime,
 }) => {
-  const { user, metaData, setMetaData, kitchenMetaData, allKitchens,setKitchenMetaData } = useAuthContext();
+  const {
+    user,
+    metaData,
+    setMetaData,
+    kitchenMetaData,
+    allKitchens,
+    setKitchenMetaData,
+  } = useAuthContext();
   const { instructions, setInstructions, setIsAddressReachable } =
     useMenuContext();
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -126,21 +133,21 @@ const OrderPage: React.FC<Props> = ({
 
   useEffect(() => {
     const init = async () => {
-      if (
-        metaData?.address?.raw !== "" &&
-        allKitchens?.length !== 0
-      ) {
+      if (metaData?.address?.raw !== "" && allKitchens?.length !== 0) {
         // const { flag }: any = await calculateDistance(
         //   kitchenMetaData?.address?.raw,
         //   metaData?.address?.raw,
         //   Number(kitchenMetaData?.orderRange)
         // );
-        const kitchen : any = await getNearestKitchen(metaData?.address,allKitchens)
+        const kitchen: any = await getNearestKitchen(
+          metaData?.address,
+          allKitchens
+        );
         setIsAddressReachable(kitchen?.data?.flag);
-        setKitchenMetaData(kitchen)
-        await updateDoc(doc(db,'users',metaData?.id),{
-          "address.distance" : kitchen.data.distance
-        })
+        setKitchenMetaData(kitchen);
+        await updateDoc(doc(db, "users", metaData?.id), {
+          "address.distance": kitchen.data.distance,
+        });
       }
     };
     init();
@@ -321,7 +328,7 @@ const OrderPage: React.FC<Props> = ({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        fontWeight: "bold",
+                        // fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
                       }}
@@ -377,7 +384,7 @@ const OrderPage: React.FC<Props> = ({
                         wordBreak: "break-all",
                       }}
                     >
-                      Delivery Instructions: {instructions}
+                      Delivery Instructions:{instructions}
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -441,7 +448,16 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          Name: {metaData?.name}
+                          <Typography
+                            color="text.secondary"
+                            sx={{
+                              color: "#1F2937",
+                              paddingBottom: "4px",
+                              fontSize: { xs: "16px", lg: "18px" },
+                            }}
+                          >
+                            Name: {metaData?.name}
+                          </Typography>
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -472,11 +488,11 @@ const OrderPage: React.FC<Props> = ({
                         sx={{
                           color: "#1F2937",
                           paddingBottom: "4px",
-                          fontWeight:"bold",
+                          // fontWeight: "bold",
                           fontSize: { xs: "16px", lg: "18px" },
                         }}
                       >
-                       Pickup Address: {kitchenMetaData?.kitchen?.address?.raw}
+                        Pickup Address: {kitchenMetaData?.kitchen?.address?.raw}
                       </Typography>
                     </Box>
 
@@ -487,7 +503,7 @@ const OrderPage: React.FC<Props> = ({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        fontWeight: "bold",
+                        // fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
                       }}
@@ -529,7 +545,7 @@ const OrderPage: React.FC<Props> = ({
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        fontWeight: "bold",
+                        // fontWeight: "bold",
                       }}
                     >
                       Edit Pickup Time
@@ -644,7 +660,16 @@ const OrderPage: React.FC<Props> = ({
                         />
                       ) : (
                         <>
-                          Name: {metaData?.name}
+                          <Typography
+                            color="text.secondary"
+                            sx={{
+                              color: "#1F2937",
+                              paddingBottom: "4px",
+                              fontSize: { xs: "16px", lg: "18px" },
+                            }}
+                          >
+                            Name: {metaData?.name}
+                          </Typography>
                           <IconButton
                             sx={{
                               background: "#F59E0B",
@@ -672,11 +697,11 @@ const OrderPage: React.FC<Props> = ({
                         fontSize: { xs: "16px", lg: "18px" },
                       }}
                     >
-                      <b>Pickup Instructions:</b> Your order will be ready for
-                      pickup <strong>one hour</strong> after being placed. Thank
-                      you for your patience! Once you arrive at the location,
-                      please press <strong>&rdquo;I am here&rdquo;</strong> from
-                      the My Orders section.
+                      Pickup Instructions: Your order will be ready for pickup{" "}
+                      <strong>one hour</strong> after being placed. Thank you
+                      for your patience! Once you arrive at the location, please
+                      press <strong>&rdquo;I am here&rdquo;</strong> from the My
+                      Orders section.
                     </Typography>
                   </Box>
                 </Box>
@@ -695,40 +720,43 @@ const OrderPage: React.FC<Props> = ({
           sx: { borderRadius: "10px" },
         }}
       >
-          <DialogTitle
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-            >
-            {
-                metaData?.savedAddress?.length < 5 ? <>
-                
-                Enter your Address
-                </> : <>Please Note</>
-            }
-            <IconButton onClick={() => setOpenDialog(!openDialog)}>
-              <CloseIcon sx={{ color: "#ECAB21" }} />
-            </IconButton>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {metaData?.savedAddress?.length < 5 ? (
+            <>Enter your Address</>
+          ) : (
+            <>Please Note</>
+          )}
+          <IconButton onClick={() => setOpenDialog(!openDialog)}>
+            <CloseIcon sx={{ color: "#ECAB21" }} />
+          </IconButton>
         </DialogTitle>
-        {
-          metaData?.savedAddress?.length >= 5 ? <>
+        {metaData?.savedAddress?.length >= 5 ? (
+          <>
             <DialogContent>
-            <Box sx={{ mb: 3, cursor: "pointer" }}>
-                    <Typography
-                      color="text.secondary"
-                      sx={{
-                        color: "#1F2937",
-                        paddingBottom: "4px",
-                        fontSize: { xs: "18px", lg: "20px" },
-                      }}
-                    >
-                     You can save a maximum of <b>5 addresses</b>. To add a new address, you may need to delete an existing one. Thank you for your understanding!
-                    </Typography>
-                  </Box>
+              <Box sx={{ mb: 3, cursor: "pointer" }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{
+                    color: "#1F2937",
+                    paddingBottom: "4px",
+                    fontSize: { xs: "18px", lg: "20px" },
+                  }}
+                >
+                  You can save a maximum of <b>5 addresses</b>. To add a new
+                  address, you may need to delete an existing one. Thank you for
+                  your understanding!
+                </Typography>
+              </Box>
             </DialogContent>
-          </> : <>       
+          </>
+        ) : (
+          <>
             <DialogContent>
               <Box
                 sx={{
@@ -774,7 +802,9 @@ const OrderPage: React.FC<Props> = ({
                         ) {
                           zipCode = place.address_components![i].long_name;
                         }
-                        if (place?.address_components![i].types[j] == "locality") {
+                        if (
+                          place?.address_components![i].types[j] == "locality"
+                        ) {
                           city = place.address_components[i].long_name;
                         }
                         if (
@@ -803,7 +833,11 @@ const OrderPage: React.FC<Props> = ({
                             let plusCode = "";
                             let postalCode = "";
                             for (let i = 0; i < results.length; i++) {
-                              for (let j = 0; j < results[i].types.length; j++) {
+                              for (
+                                let j = 0;
+                                j < results[i].types.length;
+                                j++
+                              ) {
                                 if (results[i].types[j] == "plus_code") {
                                   plusCode = results[i]?.plus_code.global_code;
                                 }
@@ -822,7 +856,7 @@ const OrderPage: React.FC<Props> = ({
                                 postal_code: zipCode || plusCode || postalCode,
                                 line1: place.formatted_address?.split(",")[0],
                               },
-                              distance : {},
+                              distance: {},
                               latlng: {
                                 lat: post.lat(),
                                 lng: post.lng(),
@@ -865,11 +899,11 @@ const OrderPage: React.FC<Props> = ({
               </Box>
             </DialogContent>
           </>
-        }
+        )}
       </Dialog>
 
       <Dialog
-        open={openInstructionsDialog} 
+        open={openInstructionsDialog}
         onClose={() => setOpenInstructionsDialog(!openInstructionsDialog)}
         maxWidth="xs"
         fullWidth

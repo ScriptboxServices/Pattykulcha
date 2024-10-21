@@ -40,6 +40,7 @@ import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CircularLodar from "@/components/CircularLodar";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import { useRouter } from "next/navigation";
 
 interface FormValues {
   jobType: string;
@@ -185,6 +186,8 @@ const CareersPage: React.FC = () => {
     }
   }, [metaData, selectedOption]);
 
+  const router = useRouter();
+
   const [success, setSuccess] = useState({
     status: false,
     message: "",
@@ -257,12 +260,12 @@ const CareersPage: React.FC = () => {
         variant={"h4"}
         sx={{
           marginBottom: "1rem",
-          textAlign: {xs:"left",sm:"center"},
+          textAlign: { xs: "left", sm: "center" },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           fontWeight: 700,
-          ml:2,
+          ml: 2,
         }}
       >
         Build your career with Patty kulcha
@@ -580,7 +583,16 @@ const CareersPage: React.FC = () => {
                         checked={field.value}
                       />
                     }
-                    label="I accept the terms and condition & privacy policy"
+                    label={
+                      <Typography>
+                        I accept the terms and conditions &
+                        {" "}<a href="/privacypolicy" style={{
+                          textDecoration:"underline"
+                        }}>
+                          privacy policy
+                        </a>
+                      </Typography>
+                    }
                   />
                 )}
               />

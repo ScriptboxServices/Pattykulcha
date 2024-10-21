@@ -1688,6 +1688,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                       fontWeight: "bold",
                       display: "flex",
                       alignItems: "center",
+                      textTransform:"capitalize"
                     }}
                   >
                     <Typography

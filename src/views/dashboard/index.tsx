@@ -180,12 +180,12 @@ export default function ResponsiveDrawer(props: Props) {
   const drawerItems = [
     {
       text: "Order Detail",
-      icon: "/images/dashboard/orderdetail.png",
+      icon: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2Fdashboard%2Forderdetail.png?alt=media&token=bfd8d709-3da4-45c7-8585-490c572eee10",
       component: <KanbanBoard />,
     },
     {
-      text: "Contact Us",
-      icon: "/images/dashboard/Contactus.svg",
+      text: "Contact",
+      icon: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2Fdashboard%2FContactus.svg?alt=media&token=895c2694-f55c-45cc-b01f-b9d2df1e92af",
       component: <ContactUsection />,
     },
     // {
@@ -205,17 +205,17 @@ export default function ResponsiveDrawer(props: Props) {
     // },
     {
       text: "Driver's location",
-      icon: "/images/dashboard/DriverLocation.svg",
+      icon: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2Fdashboard%2FDriverLocation.svg?alt=media&token=6d04940a-c8c4-476e-a26d-128810130a4a",
       component: <DriversMap/>,
     },
     {
       text: "Make Order",
-      icon: "/images/dashboard/Makeorder.svg",
+      icon: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2Fdashboard%2FMakeOrder.svg?alt=media&token=bc6ebbfd-c22b-4bfe-b03e-565d34922d09",
       component: <MakeOrder />,
     },
     {
       text: "User search",
-      icon: "/images/dashboard/UserSearch.svg",
+      icon: "https://firebasestorage.googleapis.com/v0/b/pattykulcha.appspot.com/o/images%2Fdashboard%2FUserSearch.svg?alt=media&token=3cc845fc-bc8f-4991-868d-2ea08664529f",
       component: <PastOrders/>,
     },
   ];
@@ -276,7 +276,7 @@ export default function ResponsiveDrawer(props: Props) {
                   marginRight: menuExpanded ? "12px" : "0",
                 }}
               >
-                <Image
+                <img
                   src={item.icon}
                   alt={`${item.text} icon`}
                   width={24}

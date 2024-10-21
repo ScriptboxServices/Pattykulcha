@@ -1221,6 +1221,7 @@ const MakeOrder: React.FC = () => {
                   paddingX: 4,
                   paddingY: 1,
                   mt: 2,
+                  borderRadius:"25px",
                   mx: "auto",
                   fontWeight: "bold",
                   "&:hover": {

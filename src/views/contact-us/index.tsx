@@ -457,6 +457,7 @@ const ContactUs: React.FC = () => {
                           paddingX: 4,
                           paddingY: 1,
                           mt: 2,
+                          borderRadius:"25px",
                           fontWeight: "bold",
                           "&:hover": {
                             backgroundColor: "#FFC107",
