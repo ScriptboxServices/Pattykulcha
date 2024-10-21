@@ -194,7 +194,7 @@ const MakeOrder: React.FC = () => {
           includedItems1,
           includedItems2,
           address,
-          kitchenId : kitchenProfile.id,
+          kitchenId: kitchenProfile.id,
           ...data,
           createdAt: Timestamp.now(),
         },
@@ -306,19 +306,19 @@ const MakeOrder: React.FC = () => {
   };
 
   useEffect(() => {
-    let addr : any
-    let name : string
-    if(userData){
-      addr = userData?.address
-      name = userData?.name
-    }else{
-      addr = {}
-      name = ''
+    let addr: any;
+    let name: string;
+    if (userData) {
+      addr = userData?.address;
+      name = userData?.name;
+    } else {
+      addr = {};
+      name = "";
     }
-    setAddress({ 
+    setAddress({
       ...addr,
     });
-    setValue("name",name);
+    setValue("name", name);
   }, [userData]);
 
   const checkUser = (value: any) => {
@@ -341,8 +341,8 @@ const MakeOrder: React.FC = () => {
             };
           });
           setUserData(userDoc);
-        }else{
-          setUserData(null)
+        } else {
+          setUserData(null);
         }
         setLoading(false);
       });
@@ -679,12 +679,22 @@ const MakeOrder: React.FC = () => {
                             <Typography variant="body1">
                               {kulcha?.name}
                             </Typography>
+                            <Box sx={{display:"flex",gap:0.5}}>
                             <Typography
                               variant="body1"
                               sx={{ fontSize: "14px", color: "#777" }}
                             >
                               ${Number(kulcha.price)}
                             </Typography>
+                            <Typography
+                              variant="body1"
+                              sx={{ fontSize: "14px", color: "#777" }}
+                            >
+                            (x{  includedItems1.some(
+                              (item: any) => item.name === kulcha.name
+                            )?(Number(kulcha.quantity)):0})
+                            </Typography>
+                            </Box>
                           </Box>
 
                           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -734,9 +744,7 @@ const MakeOrder: React.FC = () => {
                                     },
                                   }}
                                 >
-                                  <AddIcon
-                                    sx={{ fontSize: "1.5rem" }}
-                                  />
+                                  <AddIcon sx={{ fontSize: "1.5rem" }} />
                                 </IconButton>
                               )}
 

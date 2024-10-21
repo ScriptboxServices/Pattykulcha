@@ -32,10 +32,10 @@ import { Message, Phone } from "@mui/icons-material";
 
 // Define validation schema
 const schema = yup.object().shape({
-  name: yup.string().required("First Name is required"),
+  name: yup.string().max(20),
   phone: yup
     .string()
-    // .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    .min(12, "Phone number must be of 10 digits")
     .required("Phone is required"),
   message: yup.string().required("Message is required"),
   countryCode: yup.mixed<CountryType>().required(),
@@ -46,7 +46,7 @@ const ContactUs: React.FC = () => {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuthContext();
+  const { user, metaData } = useAuthContext();
   const [error, setError] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -57,14 +57,14 @@ const ContactUs: React.FC = () => {
       title: "Write a Message",
       description: "Send us a message and we will respond promptly.",
       icon: <Message fontSize="large" />,
-      action: () => setShowForm(true), // Show the form when clicked
+      action: () => setShowForm(true),
     },
     {
       id: "call",
       title: "Call Now",
       description: "Give us a call for instant support.",
       icon: <Phone fontSize="large" />,
-      action: () => (window.location.href = "tel:+18333381313"), // Initiate call when clicked
+      action: () => (window.location.href = "tel:+18333381313"),
     },
   ];
 
@@ -87,10 +87,8 @@ const ContactUs: React.FC = () => {
   });
 
   const formatPhoneNumber = (value: string) => {
-    // Remove all non-digit characters
     const phoneNumber = value?.replace(/\D/g, "");
 
-    // Format the number as xxx-xxx
     const formattedPhoneNumber = phoneNumber?.replace(
       /(\d{3})(\d{0,3})(\d{0,4})?/,
       (match, p1, p2, p3) => {
@@ -103,14 +101,14 @@ const ContactUs: React.FC = () => {
     return formattedPhoneNumber;
   };
 
-  // Function to strip formatting (remove dash)
   const stripPhoneNumberFormatting = (formattedNumber: string) => {
-    return formattedNumber.replace(/\D/g, ""); // Remove all non-digit characters
+    return formattedNumber.replace(/\D/g, "");
   };
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    const { name, message, countryCode } = data;
+    const name=metaData?.name || data?.name;
+    const {  message, countryCode } = data;
     const plainPhoneNumber = stripPhoneNumberFormatting(data.phone);
     try {
       setIsLoading(true);
@@ -152,7 +150,6 @@ const ContactUs: React.FC = () => {
         }}
       >
         <Container maxWidth="md">
-          {/* Interactive Card Component */}
           {!showForm && (
             <>
               <Typography
@@ -377,11 +374,14 @@ const ContactUs: React.FC = () => {
                       control={control}
                       render={({ field: { onChange, value } }) => (
                         <TextField
-                          value={formatPhoneNumber(value)} // Format the number with dashes
+                          value={formatPhoneNumber(value)}
                           fullWidth
                           type="tel"
                           label="Phone"
                           variant="outlined"
+                          inputProps={{
+                            maxLength: 12,
+                          }}
                           onChange={(e) => {
                             const formattedValue = formatPhoneNumber(
                               e.target.value
@@ -395,23 +395,29 @@ const ContactUs: React.FC = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <Controller
-                      name="name"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Name"
-                          variant="outlined"
-                          error={!!errors.name}
-                          helperText={errors.name?.message}
-                        />
-                      )}
-                    />
-                  </Grid>
+                  {!metaData?.name && (
+                    <Grid item xs={12}>
+                      <Controller
+                        name="name"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            inputProps={{
+                              maxLength: 20,
+                            }}
+                            type="text"
+                            required
+                            fullWidth
+                            label="Name"
+                            variant="outlined"
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  )}
                   <Grid item xs={12}>
                     <Controller
                       name="message"
@@ -422,6 +428,9 @@ const ContactUs: React.FC = () => {
                           fullWidth
                           multiline
                           rows={4}
+                          inputProps={{
+                            maxLength: 200,
+                          }}
                           label="Message"
                           placeholder="Write your message..."
                           variant="outlined"

@@ -873,7 +873,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
           </Typography>
         </Box>
       </Box> */}
-      <Box ref={tabsContainerRef}>
+      {/* <Box ref={tabsContainerRef}>
         <Box
           ref={tabsRef}
           sx={{
@@ -933,7 +933,7 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
             </Tabs>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
       <Grid
         container
         spacing={4}

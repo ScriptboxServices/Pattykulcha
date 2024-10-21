@@ -95,7 +95,6 @@ const KanbanBoard = () => {
     setLoading(true);
     let name = "";
     const _driver = await getDoc(driverRef);
-    console.log(_driver.exists());
     if (_driver.exists()) {
       name = _driver.data().name;
     }
@@ -116,7 +115,7 @@ const KanbanBoard = () => {
   const [expandedCards, setExpandedCards] = useState<{
     [key: string]: boolean;
   }>({});
-  const { user, metaData } = useAuthContext();
+  const { user, metaData, kitchenProfile } = useAuthContext();
   const [allOrders, setAllOrders] = useState<any>({});
   const [totalKulcha, setTotalKulcha] = useState<number>(0);
   const [alooKulcha, setAlooKulcha] = useState<number>(0);
@@ -519,7 +518,13 @@ const KanbanBoard = () => {
     >
       <CircularLodar isLoading={loading} />
       <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-        <Grid sx={{pl : 3}} container spacing={0} justifyContent="flex-start" gap={2}>
+        <Grid
+          sx={{ pl: 3 }}
+          container
+          spacing={0}
+          justifyContent="flex-start"
+          gap={2}
+        >
           <KulchaCard name="Mix" count={mixKulcha} />
           <KulchaCard name="Aloo" count={alooKulcha} />
           <KulchaCard name="Gobi" count={gobiKulcha} />
@@ -533,15 +538,35 @@ const KanbanBoard = () => {
           marginTop: 4,
           marginLeft: 3,
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
         }}
       >
         <TextField
           placeholder="Seach order using order number or phone number"
-          sx={{ width: "30%" }}
+          sx={{ width: "30%", margin: "auto 0" }}
           value={searchValue}
           onChange={(e) => setSeachValue(e.target.value)}
         />
+        <Box sx={{ mr: 3 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: "15px", fontWeight: "bold" }}
+          >
+            Kitchen Id : {kitchenProfile?.truckIdentifier}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: "15px", fontWeight: "bold" }}
+          >
+            Kitchen Name : {kitchenProfile?.name}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: "15px", fontWeight: "bold" }}
+          >
+            Kitchen Address : {kitchenProfile?.address?.raw}
+          </Typography>
+        </Box>
       </Box>
       <Box
         className=" w-auto p-5 max-h-[1300px] bg-white no-scrollbar"
@@ -1389,6 +1414,9 @@ const KanbanBoard = () => {
                     borderRadius: 2,
                     boxShadow: 3,
                     backgroundColor: "#fff",
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 10,
                   }}
                 >
                   <Box
@@ -1396,9 +1424,6 @@ const KanbanBoard = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       backgroundColor: "#ECAB21",
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 10,
                     }}
                   >
                     <Typography
@@ -1494,11 +1519,13 @@ const KanbanBoard = () => {
                                         mb: 2,
                                       }}
                                     >
-                                      <Box sx={{
+                                       <Box
+                                        sx={{
                                           display: "flex",
                                           flexDirection: "row",
                                           gap: 1.2,
-                                        }}>
+                                        }}
+                                      >
                                         <Typography
                                           variant="h6"
                                           sx={{ fontWeight: "bold" }}
@@ -1527,7 +1554,7 @@ const KanbanBoard = () => {
                                             marginX: 2,
                                           }}
                                         />
-                                      )}
+                                      )}
                                       <Chip
                                         label={order?.delivery?.message}
                                         color={
@@ -2285,8 +2312,8 @@ const KanbanBoard = () => {
                                                       sx={{
                                                         backgroundColor:
                                                           "#ECAB21",
+                                                          borderRadius: "15px",
                                                         color: "white",
-                                                        borderRadius: "15px",
                                                         fontWeight: "bold",
                                                         fontSize: "10px",
                                                         marginTop: 2,
@@ -2323,10 +2350,10 @@ const KanbanBoard = () => {
                                                     sx={{
                                                       backgroundColor:
                                                         "#ECAB21",
+                                                        borderRadius: "15px",
                                                       color: "white",
                                                       fontWeight: "bold",
                                                       fontSize: "10px",
-                                                      borderRadius: "15px",
                                                       marginTop: 2,
                                                       "&:hover": {
                                                         backgroundColor:
@@ -2345,6 +2372,7 @@ const KanbanBoard = () => {
                                               <Typography
                                                 variant="body2"
                                                 color="textSecondary"
+
                                                 sx={{
                                                   display: "flex",
                                                   gap: 1,
@@ -2362,10 +2390,10 @@ const KanbanBoard = () => {
                                                   sx={{
                                                     backgroundColor: "#ECAB21",
                                                     color: "white",
+                                                    borderRadius: "15px",
                                                     marginTop: 2,
                                                     fontWeight: "bold",
                                                     fontSize: "10px",
-                                                    borderRadius: "15px",
                                                     "&:hover": {
                                                       backgroundColor: "white",
                                                       color: "#ECAB21",
@@ -2389,9 +2417,9 @@ const KanbanBoard = () => {
                                                   backgroundColor: "red",
                                                   color: "white",
                                                   fontWeight: "bold",
+                                                  borderRadius: "15px",
                                                   marginTop: 2,
                                                   fontSize: "10px",
-                                                  borderRadius: "15px",
                                                   "&:hover": {
                                                     backgroundColor: "white",
                                                     color: "red",
@@ -2413,8 +2441,8 @@ const KanbanBoard = () => {
                                                   color: "white",
                                                   fontWeight: "bold",
                                                   marginTop: 2,
+                                                  borderRadius: "15px",
                                                   fontSize: "10px",
-                                                  borderRadius:"15px",
                                                   "&:hover": {
                                                     backgroundColor: "white",
                                                     color: "#ECAB21",
