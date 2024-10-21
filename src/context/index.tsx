@@ -189,7 +189,6 @@ interface AuthProps {
 }
 
 export const getNearestKitchen = async (addr : any,allKitchens : any) => {
-  console.log(addr);
   return new Promise(async(resolve,reject) => {
     try{
       let sortedKitchen = [] 

@@ -118,7 +118,7 @@ export default function ResponsiveDrawer(props: Props) {
         return;
       }
       snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
+        if (change.type === "added" && change.doc.data().kitchenId === kitchenProfile.id) {
           const audio = new Audio("/mp3/message.mp3");
           audio.play();
         }
@@ -131,7 +131,6 @@ export default function ResponsiveDrawer(props: Props) {
         return;
       }
       snapshot.docChanges().forEach((change) => {
-        console.log(change.doc.data(),"Abhishek");
         if(change.type === 'added'){
           if (typeof window !== "undefined" && window.speechSynthesis) {
             const message = `You have received a new complaint from ${change.doc.data().customer?.name}`;
