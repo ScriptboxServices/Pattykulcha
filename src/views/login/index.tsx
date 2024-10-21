@@ -308,18 +308,18 @@ const Login: React.FC = () => {
                             marginTop: "7px",
                           },
                         }}
-                        onKeyDown={(e) => {
-                          // Prevent non-numeric input except for control keys
-                          if (
-                            !/[0-9]/.test(e.key) &&
-                            e.key !== "Backspace" &&
-                            e.key !== "Delete" &&
-                            e.key !== "ArrowLeft" &&
-                            e.key !== "ArrowRight"
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
+                        // onKeyDown={(e) => {
+                        //   // Prevent non-numeric input except for control keys
+                        //   if (
+                        //     !/[0-9]/.test(e.key) &&
+                        //     e.key !== "Backspace" &&
+                        //     e.key !== "Delete" &&
+                        //     e.key !== "ArrowLeft" &&
+                        //     e.key !== "ArrowRight"
+                        //   ) {
+                        //     e.preventDefault();
+                        //   }
+                        // }}
                       />
                     )}
                   />

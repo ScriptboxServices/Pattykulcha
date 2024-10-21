@@ -18,12 +18,11 @@ import { RootState } from "@/redux-store";
 import ReviewSlider from "@/views/review-slider";
 import { encrypt } from "@/utils/commonFunctions";
 
-import { Metadata } from 'next'
+import { Metadata } from "next";
 
-export const metadata:Metadata={
-  title:'Home page',
-}
-
+export const metadata: Metadata = {
+  title: "Home page",
+};
 
 type MenuCategoryKey = "Kulcha" | "Lassi" | "Tea" | "Coffee" | "Soft Drinks";
 
@@ -284,14 +283,14 @@ const MenuSection = () => {
             </Grid>
           ))}
         </Grid>
-        <Typography
+        {/* <Typography
           variant="h3"
           component="h2"
           sx={{ color: "#333333", fontWeight: "bold" }}
         >
           Customer&apos;s review
         </Typography>
-        <ReviewSlider />
+        <ReviewSlider /> */}
       </Container>
     </Box>
   );

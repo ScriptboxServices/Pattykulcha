@@ -185,7 +185,7 @@ export default function ResponsiveDrawer(props: Props) {
       component: <KanbanBoard />,
     },
     {
-      text: "Contact Us section",
+      text: "Contact Us",
       icon: "/images/dashboard/Contactus.svg",
       component: <ContactUsection />,
     },
@@ -215,7 +215,7 @@ export default function ResponsiveDrawer(props: Props) {
       component: <MakeOrder />,
     },
     {
-      text: "User search page",
+      text: "User search",
       icon: "/images/dashboard/UserSearch.svg",
       component: <PastOrders/>,
     },
@@ -311,6 +311,7 @@ export default function ResponsiveDrawer(props: Props) {
             color: "white",
             fontSize: "12px",
             fontWeight: "bold",
+            borderRadius:"15px",
             "&:hover": {
               backgroundColor: "#FFC107",
               color: "white",
@@ -336,6 +337,7 @@ export default function ResponsiveDrawer(props: Props) {
             mt: 2,
             fontSize: "12px",
             fontWeight: "bold",
+            borderRadius:"15px",
             "&:hover": {
               backgroundColor: "#FFC107",
               color: "white",

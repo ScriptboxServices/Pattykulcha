@@ -218,14 +218,14 @@ const ContactUsSection = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         backgroundColor: "#ECAB21",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 10,
                       }}
                     >
                       <Typography
                         variant="h6"
                         sx={{
-                          position: "sticky",
-                          top: 0,
-                          zIndex: 10,
                           backgroundColor: "#ECAB21",
                           color: "#fff",
                           textAlign: "center",
@@ -373,6 +373,8 @@ const ContactUsSection = () => {
                                                 color: "white",
                                                 fontWeight: "bold",
                                                 fontSize: "10px",
+                                                borderRadius:"15px",
+                                                paddingTop:"0.5rem",
                                                 marginTop: 2,
                                                 "&:hover": {
                                                   backgroundColor: "white",
@@ -408,6 +410,8 @@ const ContactUsSection = () => {
                                                 marginTop: 2,
                                                 fontWeight: "bold",
                                                 fontSize: "10px",
+                                                borderRadius:"15px",
+                                                paddingTop:"0.5rem",
                                                 "&:hover": {
                                                   backgroundColor: "white",
                                                   color: "#ECAB21",

@@ -180,6 +180,56 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
     };
   }, []);
 
+  const calculateTotalAmount = () => {
+    const kulchaTotal =
+      Number(kulcha?.price || 0) * Number(kulcha.quantity || 1);
+
+    const includedItemsTotal = includedItems2.reduce((acc, includedItem) => {
+      const itemPrice = includedItem.items.reduce((sum: any, item: any) => {
+        return sum + item.price * item.quantity;
+      }, 0);
+      return acc + itemPrice;
+    }, 0);
+
+    const otherKulchasTotal = otherKulchas.reduce(
+      (acc: any, otherItem: any) => {
+        if (otherItem.added) {
+          return acc + otherItem.price * otherItem.quantity;
+        }
+        return acc;
+      },
+      0
+    );
+
+    const total = kulchaTotal + includedItemsTotal + otherKulchasTotal;
+
+    return Number(total.toFixed(2));
+  };
+
+  const calculateTotalQuantity = () => {
+    const kulchaQuantity = kulcha.quantity || 0;
+
+    const includedItemsQuantity = includedItems2.reduce((acc, includedItem) => {
+      return (
+        acc +
+        includedItem.items.reduce(
+          (sum: any, item: { quantity: any }) => sum + item.quantity,
+          0
+        )
+      );
+    }, 0);
+
+    const otherKulchasQuantity = otherKulchas.reduce(
+      (acc: any, otherItem: { added: any; quantity: any }) => {
+        return acc + (otherItem.added ? otherItem.quantity : 0);
+      },
+      0
+    );
+
+    return kulchaQuantity + includedItemsQuantity + otherKulchasQuantity;
+  };
+
+
   useEffect(() => {
     const handleScroll = () => {
       if (tabsRef.current && tabsContainerRef.current) {
@@ -1617,11 +1667,15 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                     backgroundColor: "#ECAB21",
                     color: "white",
                     borderRadius: 10,
-                    paddingX: {xs:3,sm:4},
+                    paddingX: { xs: 3, sm: 4 },
                     paddingY: 1,
                     mb: 2,
-                    mt:2,
+                    mt: 2,
+                    width: { xs: "90%", md: "30%" },
                     fontWeight: "bold",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                     "&:hover": {
                       backgroundColor: "#FFC107",
                       color: "white",
@@ -1629,7 +1683,36 @@ const MenuPage = ({ _kulcha }: { _kulcha: any }) => {
                   }}
                   onClick={handleAddToCart}
                 >
-                  Add to cart
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        backgroundColor: "#002855",
+                        color: "white",
+                        borderRadius: "50%",
+                        width: "25px",
+                        height: "25px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        mr: 2,
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        {calculateTotalQuantity()}
+                      </Typography>
+                    </Typography>
+                    Add to cart
+                  </Typography>
+
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    Sub Total: ${calculateTotalAmount()}
+                  </Typography>
                 </Button>
               </Box>
             </Box>

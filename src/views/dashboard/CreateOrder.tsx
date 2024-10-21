@@ -497,17 +497,17 @@ const MakeOrder: React.FC = () => {
                           ),
                         }}
                         InputLabelProps={{ style: { color: "black" } }}
-                        onKeyDown={(e) => {
-                          if (
-                            !/[0-9]/.test(e.key) &&
-                            e.key !== "Backspace" &&
-                            e.key !== "Delete" &&
-                            e.key !== "ArrowLeft" &&
-                            e.key !== "ArrowRight"
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
+                        // onKeyDown={(e) => {
+                        //   if (
+                        //     !/[0-9]/.test(e.key) &&
+                        //     e.key !== "Backspace" &&
+                        //     e.key !== "Delete" &&
+                        //     e.key !== "ArrowLeft" &&
+                        //     e.key !== "ArrowRight"
+                        //   ) {
+                        //     e.preventDefault();
+                        //   }
+                        // }}
                       />
                     )}
                   />
