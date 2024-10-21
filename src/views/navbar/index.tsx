@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useMenuContext();
-  const { isLoggedIn, kitchenMetaData, metaData, driverMetaData } =
+  const { isLoggedIn, kitchenProfile, metaData, driverMetaData } =
     useAuthContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleDrawerToggle = () => {
@@ -313,7 +313,7 @@ const Navbar: React.FC = () => {
           <>
             <Box sx={{ padding: "1rem" }}>
               {metaData?.role === "kitchen" &&
-                metaData?.foodTruckId === kitchenMetaData?.id &&
+                metaData?.foodTruckId === kitchenProfile?.id &&
                 metaData?.isKitchen && (
                   <ListItem button>
                     <Button
@@ -432,7 +432,7 @@ const Navbar: React.FC = () => {
             )}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {kitchenMetaData &&
+            {/* {kitchenMetaData &&
               isLoggedIn &&
               (kitchenMetaData.isShopOpen ? (
                 <>
@@ -451,9 +451,9 @@ const Navbar: React.FC = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "column", // Stack Chip and Typography vertically
-                    alignItems: "center", // Center align horizontally
-                    justifyContent: "center", // Center align vertically
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   <Chip
@@ -464,10 +464,9 @@ const Navbar: React.FC = () => {
                       backgroundColor: "red",
                       color: "white",
                       fontWeight: "600",
-                      // mb: 0.5, // Add margin below the Chip to separate it from the text
                     }}
                   />
-                  {/* <Typography
+                  <Typography
                     sx={{
                       color: "#4CAF50",
                       border: "none",
@@ -476,27 +475,29 @@ const Navbar: React.FC = () => {
                     }}
                   >
                     Open at 8 AM
-                  </Typography> */}
+                  </Typography>
                 </Box>
-              ))}
-            {isLoggedIn && (
-              <Link href="/checkout" passHref>
-                <IconButton
-                  edge="end"
-                  color="inherit"
-                  aria-label="cart"
-                  sx={{ mr: 2 }}
-                >
-                  <Badge
-                    badgeContent={count > 0 ? count : undefined}
-                    color="error"
-                    invisible={count === 0}
-                  >
-                    <ShoppingCartIcon />
-                  </Badge>
-                </IconButton>
-              </Link>
-            )}
+              ))} */}
+              <>
+                {isLoggedIn && (
+                  <Link href="/checkout" passHref>
+                    <IconButton
+                      edge="end"
+                      color="inherit"
+                      aria-label="cart"
+                      sx={{ mr: 2 }}
+                    >
+                      <Badge
+                        badgeContent={count > 0 ? count : undefined}
+                        color="error"
+                        invisible={count === 0}
+                      >
+                        <ShoppingCartIcon />
+                      </Badge>
+                    </IconButton>
+                  </Link>
+                )}
+              </>
             <IconButton
               edge="start"
               color="inherit"
@@ -560,7 +561,7 @@ const Navbar: React.FC = () => {
                       </Link>
                     </MenuItem>
                     {metaData?.role === "kitchen" &&
-                      metaData?.foodTruckId === kitchenMetaData?.id &&
+                      metaData?.foodTruckId === kitchenProfile?.id &&
                       metaData?.isKitchen && (
                         <MenuItem onClick={() => router.push("/dashboard")}>
                           Switch to Kitchen

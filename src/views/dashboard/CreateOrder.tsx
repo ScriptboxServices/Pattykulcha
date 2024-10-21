@@ -95,7 +95,7 @@ const MakeOrder: React.FC = () => {
   const [address, setAddress] = useState<any>({});
   const [isDrinkDialogOpen, setIsDrinkDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { kitchenMetaData, user } = useAuthContext();
+  const { kitchenProfile, user } = useAuthContext();
   const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
     null
   );
@@ -194,6 +194,7 @@ const MakeOrder: React.FC = () => {
           includedItems1,
           includedItems2,
           address,
+          kitchenId : kitchenProfile.id,
           ...data,
           createdAt: Timestamp.now(),
         },
@@ -600,9 +601,9 @@ const MakeOrder: React.FC = () => {
                                 }
                               }
                               const { distance }: any = await calculateDistance(
-                                kitchenMetaData?.address?.raw,
+                                kitchenProfile?.address?.raw,
                                 place.formatted_address || "",
-                                Number(kitchenMetaData?.orderRange)
+                                Number(kitchenProfile?.orderRange)
                               );
 
                               setAddress({

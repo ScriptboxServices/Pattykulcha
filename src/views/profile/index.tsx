@@ -802,12 +802,6 @@ const ProfilePage: React.FC = () => {
                             }
                           }
                         }
-                        const { distance }: any = await calculateDistance(
-                          kitchenMetaData?.address?.raw,
-                          place.formatted_address || "",
-                          Number(kitchenMetaData?.orderRange)
-                        );
-
                         setAddress1({
                           raw: place.formatted_address,
                           seperate: {
@@ -816,7 +810,7 @@ const ProfilePage: React.FC = () => {
                             postal_code: zipCode || plusCode || postalCode,
                             line1: place.formatted_address?.split(",")[0],
                           },
-                          distance,
+                          distance : {},
                           latlng: {
                             lat: post.lat(),
                             lng: post.lng(),

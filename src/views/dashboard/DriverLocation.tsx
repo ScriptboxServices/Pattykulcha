@@ -68,6 +68,7 @@ function DriverLocation() {
 
   const [locations, setLocations] = useState<any>([]);
   const [newOrders, setNewOrders] = useState<any>([]);
+  const [kitchens, setKitchens] = useState<any>([]);
 
   const startOfToday = Timestamp.fromDate(
     new Date(new Date().setHours(0, 0, 0, 0))
@@ -112,6 +113,7 @@ function DriverLocation() {
   useEffect(() => {
     let unsubscribeNewOrder: any;
     let unsubscribePosition: any;
+    let unsubscribeKitchen: any;
 
     if (metaData) {
       const colRef = collection(db, "driverlocation");
@@ -127,6 +129,18 @@ function DriverLocation() {
           }
         });
         setLocations([...loc]);
+      });
+
+      const kitchenColRef = collection(db, "foodtrucks");
+      unsubscribeKitchen = onSnapshot(kitchenColRef, (snapshot) => {
+        let kitchen: any = [];
+        snapshot.forEach((doc) => {
+          kitchen.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+        setKitchens([...kitchen]);
       });
 
       const newOrderQuery = query(
@@ -164,6 +178,10 @@ function DriverLocation() {
 
       if (unsubscribePosition) {
         unsubscribePosition();
+      }
+
+      if (unsubscribeKitchen) {
+        unsubscribeKitchen();
       }
     };
   }, [metaData]);
@@ -235,6 +253,32 @@ function DriverLocation() {
         )}
       </Box>
       <Box sx={{ mt: 2 }}>
+          <Box display='flex' sx={{padding: "0 20px",pb:2}} gap={2}>
+          <Chip
+            sx={{
+              backgroundColor: "#678ffc",
+              color: "#ffffff",
+              fontWeight: "bold",
+            }}
+            label='Kitchens'
+          />
+          <Chip
+            sx={{
+              backgroundColor: "#fd7567",
+              color: "#ffffff",
+              fontWeight: "bold",
+            }}
+            label='Orders'
+          />
+          <Chip
+            sx={{
+              backgroundColor: "#00e64d",
+              color: "#ffffff",
+              fontWeight: "bold",
+            }}
+            label='Drivers'
+          />
+        </Box>
         {isLoaded && (
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -265,6 +309,30 @@ function DriverLocation() {
                     }}
                     icon={{
                       url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                      scaledSize: new window.google.maps.Size(50, 50),
+                      labelOrigin: new window.google.maps.Point(25, -10),
+                    }}
+                  />
+                </React.Fragment>
+              );
+            })}
+
+            {kitchens.map((kitchen: any) => {
+              return (
+                <React.Fragment key={kitchen.id}>
+                  <MarkerF
+                    position={{
+                      lat: kitchen.address.latlng.lat,
+                      lng: kitchen.address.latlng.lng,
+                    }}
+                    label={{
+                      text: kitchen.name,
+                      color: "#000",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                    icon={{
+                      url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                       scaledSize: new window.google.maps.Size(50, 50),
                       labelOrigin: new window.google.maps.Point(25, -10),
                     }}

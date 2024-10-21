@@ -7,10 +7,10 @@ export const metadata={
 
 const PaymentRoute = ({params} : {params : any}) => {
   const { id } = params
-  const { tip ,selectedOption ,pickupTime} = decrypt(decodeURIComponent(id))
+  const { tip ,selectedOption ,pickupTime,kitchen } = decrypt(decodeURIComponent(id))
   return (
     <>
-        <PaymentPage tip={tip} pickupTime={pickupTime} selectedOption={selectedOption}/>
+        <PaymentPage tip={tip} pickupTime={pickupTime} selectedOption={selectedOption} kitchen={kitchen}/>
     </>
   )
 }

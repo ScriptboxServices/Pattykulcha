@@ -124,6 +124,8 @@ const OrderHome: React.FC<Props> = ({
     return quant;
   };
 
+  console.log(kitchenMetaData);
+
   return (
     <>
       <Box
@@ -585,48 +587,36 @@ const OrderHome: React.FC<Props> = ({
                         });
                         return;
                       }
-                      if(!kitchenMetaData?.isShopOpen) {
+
+                      if(!kitchenMetaData?.kitchen?.isShopOpen) {
                         if(isSmallScreen) {
                           setDrawerOpen(true);
-                          setdialogError({
-                            status: true,
-                            message:
-                              "We are currently offline we will be back at 8 AM"
-                          });
-
                         } else {
                           setDialogOpen(true);
-                          setdialogError({
-                            status: true,
-                            message:
-                              "We are currently offline we will be back at 8 AM",
-                          });
                         }
+                        setdialogError({
+                          status: true,
+                          message:
+                            "We are currently offline.",
+                        });
                         return;
                       }
 
                       if (!isAddressReachable) {
                         if (isSmallScreen) {
                           setDrawerOpen(true);
-                          setdialogError({
-                            status: true,
-                            message:
-                              "We cant Deliver at your address",
-                          });
-
                         } else {
                           setDialogOpen(true);
-                          setdialogError({
-                            status: true,
-                            message:
-                              "We cant Deliver at your address",
-                          });
                         }
+                        setdialogError({
+                          status: true,
+                          message:
+                            "We cant Deliver at your address",
+                        });
                         return;
                       }
-
-                      const distance = metaData?.address?.distance?.value;
-                      if (distance > 5000 && distance < 10000) {
+                      console.log(kitchenMetaData?.data.distance);
+                      if (kitchenMetaData?.data.distance.value > 5000 && kitchenMetaData?.data.distance.value < 10000) {
                         if (getKulchaQuantity() < 2) {
                           setError({
                             status: true,
@@ -637,7 +627,7 @@ const OrderHome: React.FC<Props> = ({
                         }
                       }
 
-                      if (distance > 10000) {
+                      if (kitchenMetaData?.data.distance.value > 10000) {
                         if (getKulchaQuantity() < 3) {
                           if(isSmallScreen){
                             setDrawerOpen(true);
@@ -668,7 +658,7 @@ const OrderHome: React.FC<Props> = ({
                       return;
                     }
 
-                    if (!kitchenMetaData?.isShopOpen) {
+                    if (!kitchenMetaData?.kitchen?.isShopOpen) {
                       if (isSmallScreen) {
                         setDrawerOpen(true);
                       } else {
@@ -685,6 +675,7 @@ const OrderHome: React.FC<Props> = ({
                     const encryptedData = encrypt({
                       selectedOption,
                       pickupTime,
+                      kitchen : kitchenMetaData?.kitchen
                     });
 
                     const url = encodeURIComponent(encryptedData);
@@ -800,7 +791,7 @@ const OrderHome: React.FC<Props> = ({
                   },
                 }}
               >
-                Sorry, Something's Wrong
+                Sorry, Something&apos;s Wrong
               </Typography>
             </Box>
       
@@ -910,7 +901,7 @@ const OrderHome: React.FC<Props> = ({
                   },
                 }}
               >
-                Sorry, Something's Wrong
+                Sorry, Something&apos;s Wrong
               </Typography>
             </Box>
       

@@ -101,8 +101,11 @@ interface AuthContextType {
   isLoggedIn: boolean;
   metaData: any;
   setMetaData: any;
+  setKitchenMetaData: any;
   kitchenMetaData: any;
-  driverMetaData : any
+  driverMetaData : any;
+  allKitchens : any,
+  kitchenProfile : any
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -120,7 +123,7 @@ export const useMenuContext = () => {
 };
 
 export const calculateDeliveryCharges = (distance : number) => {
-  const delivery_charges = distance > 3000 ? ((distance / 1000 ) * 0.70) > 6 ? 6 : ((distance / 1000 ) * 0.70) : 1.99
+  const delivery_charges = distance > 3000 ? ((distance / 1000 ) * 0.90) > 8 ? 8 : ((distance / 1000 ) * 0.90) : 3.99
   return Number(delivery_charges)
 }
 
@@ -139,7 +142,6 @@ export const getCartData = async (_id: string) => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc: any) => {
       let obj: any = {};
-      console.log(doc.id, " => ", doc.data());
       obj = {
         id: doc.id,
         ...doc.data(),
@@ -186,6 +188,26 @@ interface AuthProps {
   children: ReactNode;
 }
 
+export const getNearestKitchen = async (addr : any,allKitchens : any) => {
+  console.log(addr);
+  return new Promise(async(resolve,reject) => {
+    try{
+      let sortedKitchen = [] 
+      for(let addr_ of allKitchens){
+        const kitchen = await calculateDistance(addr?.raw, addr_?.address?.raw, Number(addr_?.orderRange))
+        sortedKitchen.push({
+          kitchen : addr_,
+          data : kitchen
+        })
+      }
+      sortedKitchen?.sort((a : any,b : any) => a.data.distance.value - b.data.distance.value)
+      resolve(sortedKitchen[0])
+    }catch(err) {
+      reject(err)
+    }
+  })
+}
+
 export const calculateDistance = (source : string , destinations : string,_distance : number) => {
   return new Promise((resolve,reject) => {
     try{
@@ -223,6 +245,8 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [metaData, setMetaData] = useState<object | null | any>(null);
   const [kitchenMetaData, setKitchenMetaData] = useState<object | null>(null);
+  const [kitchenProfile, setKitchenProfile] = useState<object | null>(null);
+  const [allKitchens, setAllKitchens] = useState<any[] | null>(null);
   const [driverMetaData, setDriverMetaData] = useState<object | null>(null);
 
   // console.log = () => {}
@@ -231,20 +255,32 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     if(user){
       let unsubscribeKitchen : any = undefined;
       let unsubscribeDriver : any = undefined;
-      // if(metaData?.isKitchen){
-        // const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
-        const kitchenRef = doc(db, "foodtrucks",KITCHEN_ID);
+      let unsubscribeAllKitchen : any = undefined;
+
+      unsubscribeAllKitchen = onSnapshot(collection(db,'foodtrucks'),(snapshot_) => {
+        let arr : any[] = []
+        snapshot_.forEach((doc) => {
+          arr.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        })
+        setAllKitchens([...arr])
+      })
+
+      if(metaData?.isKitchen){
+        const kitchenRef = doc(db, "foodtrucks",metaData?.foodTruckId);
         unsubscribeKitchen = onSnapshot(kitchenRef, (snapshot) => {
           if (snapshot.exists()) {
-            setKitchenMetaData({
+            setKitchenProfile({
               id: snapshot.id,
               ...snapshot.data(),
             });
           } else {
-            setKitchenMetaData(null);
+            setKitchenProfile(null);
           }
         }); 
-      // }
+      }
 
       if(metaData?.isDriver){
         const driverRef = doc(db, "drivers", metaData?.driverId);
@@ -267,6 +303,10 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
         if(unsubscribeDriver){
           unsubscribeDriver()
+        }
+
+        if(unsubscribeAllKitchen){
+          unsubscribeAllKitchen()
         }
       };
     }
@@ -295,7 +335,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, metaData, setMetaData, kitchenMetaData,driverMetaData }}>
+      value={{ user, isLoggedIn, metaData, setMetaData, kitchenMetaData,driverMetaData,allKitchens,setKitchenMetaData, kitchenProfile }}>
       {children}
     </AuthContext.Provider>
   );

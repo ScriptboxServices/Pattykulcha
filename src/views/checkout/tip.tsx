@@ -19,9 +19,10 @@ import { encrypt } from "@/utils/commonFunctions";
 interface Props {
   selectedOption : string,
   pickupTime : string,
+  kitchen : any,
 }
 
-const TipPage: React.FC<Props> = ({selectedOption,pickupTime}) => {
+const TipPage: React.FC<Props> = ({selectedOption,pickupTime,kitchen}) => {
   const router = useRouter();
   const [selectedTip, setSelectedTip] = useState<number | null>(0);
   const [customTip, setCustomTip] = useState<number | null>(null);
@@ -188,7 +189,8 @@ const TipPage: React.FC<Props> = ({selectedOption,pickupTime}) => {
                       ? customTip.toFixed(2)
                       : selectedTip?.toFixed(2),
                       pickupTime,
-                      selectedOption
+                      selectedOption,
+                      kitchen
                 })
               )}`
             );

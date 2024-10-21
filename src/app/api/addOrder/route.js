@@ -38,10 +38,9 @@ export const POST = async (req, res) => {
     instructions,
     countryCode,
     createdAt,
-    paymentmethod
+    paymentmethod,
+    kitchenId
   } = await req.json();
-
-  const kitchenId = "0bXJJJIHMgu5MNGSArY2";
 
   try {
     const xToken = req.headers.get("x-token").split(" ")[1];

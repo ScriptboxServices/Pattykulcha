@@ -13,10 +13,11 @@ import { Timestamp } from "firebase/firestore"
 interface Props {
   tip : string,
   pickupTime : string,
-  selectedOption : string
+  selectedOption : string,
+  kitchen : any
 }
 
-const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
+const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime,kitchen}) => {
   const [loading,setLoading] = useState(false)
   const [{ clientSecret, customer, ephemeralKey,payment_id }, setStripeCred] = useState({
     clientSecret: "",
@@ -25,7 +26,7 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
     payment_id : ""
   });
 
-  const {user,isLoggedIn,metaData,kitchenMetaData} = useAuthContext()
+  const {user,isLoggedIn,metaData} = useAuthContext()
 
   const {instructions} = useMenuContext()
   const paymentInitialize = useRef(true)
@@ -79,12 +80,13 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime}) => {
           "Content-Type": "application/json",
         },
         data: {
-          address : selectedOption === 'pickup'? kitchenMetaData?.address : metaData?.address,
+          address : selectedOption === 'pickup'? kitchen?.address : metaData?.address,
           instructions,
           name : metaData?.name,
           tip,
           selectedOption,
-          pickupTime : pickupTime_
+          pickupTime : pickupTime_,
+          kitchenId : kitchen.id
         },
       })
       .then((response : any) => response.data)

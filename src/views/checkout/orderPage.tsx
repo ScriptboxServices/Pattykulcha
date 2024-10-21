@@ -30,6 +30,7 @@ import {
   useAuthContext,
   useMenuContext,
   calculateDistance,
+  getNearestKitchen,
 } from "@/context";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
@@ -51,7 +52,7 @@ const OrderPage: React.FC<Props> = ({
   setPickupTime,
   pickupTime,
 }) => {
-  const { user, metaData, setMetaData, kitchenMetaData } = useAuthContext();
+  const { user, metaData, setMetaData, kitchenMetaData, allKitchens,setKitchenMetaData } = useAuthContext();
   const { instructions, setInstructions, setIsAddressReachable } =
     useMenuContext();
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -127,18 +128,23 @@ const OrderPage: React.FC<Props> = ({
     const init = async () => {
       if (
         metaData?.address?.raw !== "" &&
-        kitchenMetaData?.address?.raw !== ""
+        allKitchens?.length !== 0
       ) {
-        const { flag }: any = await calculateDistance(
-          kitchenMetaData?.address?.raw,
-          metaData?.address?.raw,
-          Number(kitchenMetaData?.orderRange)
-        );
-        setIsAddressReachable(flag);
+        // const { flag }: any = await calculateDistance(
+        //   kitchenMetaData?.address?.raw,
+        //   metaData?.address?.raw,
+        //   Number(kitchenMetaData?.orderRange)
+        // );
+        const kitchen : any = await getNearestKitchen(metaData?.address,allKitchens)
+        setIsAddressReachable(kitchen?.data?.flag);
+        setKitchenMetaData(kitchen)
+        await updateDoc(doc(db,'users',metaData?.id),{
+          "address.distance" : kitchen.data.distance
+        })
       }
     };
     init();
-  }, [metaData, kitchenMetaData]);
+  }, [metaData, allKitchens]);
 
   const handleEditClick = (field: string) => {
     if (field == "address") {
@@ -470,8 +476,7 @@ const OrderPage: React.FC<Props> = ({
                           fontSize: { xs: "16px", lg: "18px" },
                         }}
                       >
-                       Pickup Address: 635 Kaiser Dr, Mississauga, ON L5W 1T6,
-                        Canada
+                       Pickup Address: {kitchenMetaData?.kitchen?.address?.raw}
                       </Typography>
                     </Box>
 
@@ -869,7 +874,7 @@ const OrderPage: React.FC<Props> = ({
       </Dialog>
 
       <Dialog
-        open={openInstructionsDialog}
+        open={openInstructionsDialog} 
         onClose={() => setOpenInstructionsDialog(!openInstructionsDialog)}
         maxWidth="xs"
         fullWidth

@@ -519,13 +519,7 @@ const KanbanBoard = () => {
     >
       <CircularLodar isLoading={loading} />
       <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", mb: 2, pl: 3, pt: "20px", width: "228px" }}
-        >
-          Order Details
-        </Typography>
-        <Grid container spacing={0} justifyContent="flex-start" gap={2}>
+        <Grid sx={{pl : 3}} container spacing={0} justifyContent="flex-start" gap={2}>
           <KulchaCard name="Mix" count={mixKulcha} />
           <KulchaCard name="Aloo" count={alooKulcha} />
           <KulchaCard name="Gobi" count={gobiKulcha} />

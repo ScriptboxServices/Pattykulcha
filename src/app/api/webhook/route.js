@@ -29,7 +29,7 @@ export const POST = async (req, res) => {
     if (event.type === "payment_intent.succeeded") {
       const data = event.data.object;
       const { id, metadata, latest_charge, customer } = data;
-      const kitchenId = '0bXJJJIHMgu5MNGSArY2'
+      const kitchenId = metadata.kitchenId
 
       const batch = db.batch()
       const cartResult = await db

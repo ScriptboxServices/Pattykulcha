@@ -87,9 +87,9 @@ export default function ResponsiveDrawer(props: Props) {
   const { window:WindowProp } = props;
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { user, kitchenMetaData } = useAuthContext();
+  const { user, kitchenProfile } = useAuthContext();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [distance, setDistance] = useState(kitchenMetaData?.orderRange || 0);
+  const [distance, setDistance] = useState(kitchenProfile?.orderRange || 0);
   const [activeTab, setActiveTab] = useState("Order Detail");
   const [menuExpanded, setMenuExpanded] = useState(false);
 
@@ -102,10 +102,10 @@ export default function ResponsiveDrawer(props: Props) {
   };
   console.log("object");
   useEffect(() => {
-    if (kitchenMetaData?.userId !== user?.uid) {
-      return router.push('/home')
-    }
-  }, [user, kitchenMetaData]);
+    // if (kitchenProfile?.userId !== user?.uid) {
+    //   return router.push('/home')
+    // }
+  }, [user, kitchenProfile]);
 
   const isFirstLoad = useRef(true);
   const isFirstLoadComplaint = useRef(true);
@@ -167,7 +167,7 @@ export default function ResponsiveDrawer(props: Props) {
   const onlineOfflineHandler = async (e: any) => {
     try {
       setLoading(true);
-      const docRef = doc(db, "foodtrucks", kitchenMetaData?.id);
+      const docRef = doc(db, "foodtrucks", kitchenProfile?.id);
       await updateDoc(docRef, {
         isShopOpen: e.target.checked,
       });
@@ -361,7 +361,7 @@ export default function ResponsiveDrawer(props: Props) {
   const distanceHandler = async (e: any) => {
     try {
       setLoading(true);
-      const docRef = doc(db, "foodtrucks", kitchenMetaData?.id);
+      const docRef = doc(db, "foodtrucks", kitchenProfile?.id);
       await updateDoc(docRef, {
         orderRange: distance,
       });
@@ -469,10 +469,10 @@ export default function ResponsiveDrawer(props: Props) {
               <IncreaseDistanceSlider
                 onChange={(e: any) => setDistance(Number(e.target.value))}
                 onMouseUp={distanceHandler}
-                key={kitchenMetaData?.orderRange}
+                key={kitchenProfile?.orderRange}
                 valueLabelDisplay="on"
                 aria-label="distance slider"
-                defaultValue={Number(kitchenMetaData?.orderRange)}
+                defaultValue={Number(kitchenProfile?.orderRange)}
                 marks={marks}
               />
             </Box>
@@ -480,7 +480,7 @@ export default function ResponsiveDrawer(props: Props) {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                backgroundColor: kitchenMetaData?.isShopOpen
+                backgroundColor: kitchenProfile?.isShopOpen
                   ? "#e0f7fa"
                   : "#ffebee",
                 padding: "8px 16px",
@@ -492,19 +492,19 @@ export default function ResponsiveDrawer(props: Props) {
               <FormControlLabel
                 control={
                   <Switch
-                    value={kitchenMetaData?.isShopOpen}
-                    checked={kitchenMetaData?.isShopOpen}
+                    value={kitchenProfile?.isShopOpen}
+                    checked={kitchenProfile?.isShopOpen}
                     onChange={onlineOfflineHandler}
                     color="primary"
                     sx={{
                       "& .MuiSwitch-switchBase.Mui-checked": {
-                        color: kitchenMetaData?.isShopOpen
+                        color: kitchenProfile?.isShopOpen
                           ? "#4caf50"
                           : "#f44336",
                       },
                       "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
                         {
-                          backgroundColor: kitchenMetaData?.isShopOpen
+                          backgroundColor: kitchenProfile?.isShopOpen
                             ? "#4caf50"
                             : "#f44336",
                         },
@@ -515,13 +515,13 @@ export default function ResponsiveDrawer(props: Props) {
                   <Typography
                     sx={{
                       fontWeight: "bold",
-                      color: kitchenMetaData?.isShopOpen
+                      color: kitchenProfile?.isShopOpen
                         ? "#388e3c"
                         : "#d32f2f",
                       fontSize: "1rem",
                     }}
                   >
-                    {kitchenMetaData?.isShopOpen ? "Online" : "Offline"}
+                    {kitchenProfile?.isShopOpen ? "Online" : "Offline"}
                   </Typography>
                 }
                 sx={{ margin: 0 }}
