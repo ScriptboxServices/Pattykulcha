@@ -9,24 +9,27 @@ import {
   Grid,
   Container,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
 import { useMenuContext } from "@/context";
 import { encrypt } from "@/utils/commonFunctions";
 
 interface Props {
-  selectedOption : string,
-  pickupTime : string,
-  kitchen : any,
+  selectedOption: string;
+  pickupTime: string;
+  kitchen: any;
 }
 
-const TipPage: React.FC<Props> = ({selectedOption,pickupTime,kitchen}) => {
+const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
   const router = useRouter();
   const [selectedTip, setSelectedTip] = useState<number | null>(0);
   const [customTip, setCustomTip] = useState<number | null>(null);
   const [isCustomTipSelected, setIsCustomTipSelected] = useState(false);
+  const [customTipError, setCustomTipError] = useState(false); // State for error
 
   const tipOptions = [0, 1, 2, 3, 4, 5];
 
@@ -34,24 +37,53 @@ const TipPage: React.FC<Props> = ({selectedOption,pickupTime,kitchen}) => {
     setIsCustomTipSelected(false);
     setSelectedTip(tip);
     setCustomTip(null);
+    setCustomTipError(false); // Reset error on tip selection
   };
 
   const handleCustomTipClick = () => {
     setIsCustomTipSelected(true);
-    if (isCustomTipSelected) {
-      setCustomTip(null);
-    }
+    setCustomTip(null);
     setSelectedTip(null);
+    setCustomTipError(false); // Reset error when custom tip is clicked
   };
 
-  const handleCustomTipChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCustomTipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(event.target.value);
-    setCustomTip(!isNaN(value) ? value : null);
+    if (!isNaN(value) && value >= 0) {
+      setCustomTip(value);
+      setCustomTipError(false); // Clear error if value is valid
+    } else {
+      setCustomTip(null);
+    }
+  };
+
+  const clearCustomTip = () => {
+    setCustomTip(null);
+    setIsCustomTipSelected(false);
+    setCustomTipError(false); // Clear error when clearing the custom tip
   };
 
   const { grandTotal } = useMenuContext();
+
+  const proceedToPayment = () => {
+    if (isCustomTipSelected && customTip === null) {
+      setCustomTipError(true); // Show error if custom tip is selected but empty
+    } else {
+      router.push(
+        `/payment/${encodeURIComponent(
+          encrypt({
+            tip:
+              isCustomTipSelected && customTip
+                ? customTip.toFixed(2)
+                : selectedTip?.toFixed(2),
+            pickupTime,
+            selectedOption,
+            kitchen,
+          })
+        )}`
+      );
+    }
+  };
 
   return (
     <Box
@@ -119,13 +151,14 @@ const TipPage: React.FC<Props> = ({selectedOption,pickupTime,kitchen}) => {
                   sx={{
                     width: "100%",
                     height: 40,
-                    minWidth:'40px',
+                    minWidth: "40px",
                     borderRadius: "20px",
                     backgroundColor: selectedTip === tip ? "#ECAB21" : "#fff",
                     color: selectedTip === tip ? "#fff" : "#000",
                     border: selectedTip === tip ? "none" : "1px solid #ccc",
                     "&:hover": {
-                      backgroundColor: selectedTip === tip ? "#ECAB21" : "#f5f5f5",
+                      backgroundColor:
+                        selectedTip === tip ? "#ECAB21" : "#f5f5f5",
                       color: selectedTip === tip ? "#fff" : "#000",
                     },
                   }}
@@ -172,34 +205,30 @@ const TipPage: React.FC<Props> = ({selectedOption,pickupTime,kitchen}) => {
                 InputProps={{
                   inputProps: { min: 0 },
                   inputMode: "numeric",
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={clearCustomTip}>
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
                 sx={{ mt: 2, background: "#fff" }}
+                error={customTipError} // Show error if custom tip is empty
+                helperText={customTipError ? "Custom tip cannot be empty" : ""}
               />
             </Box>
           )}
         </Box>
 
         <Button
-          onClick={() => {
-            router.push(
-              `/payment/${encodeURIComponent(
-                encrypt({
-                  tip:
-                    isCustomTipSelected && customTip
-                      ? customTip.toFixed(2)
-                      : selectedTip?.toFixed(2),
-                      pickupTime,
-                      selectedOption,
-                      kitchen
-                })
-              )}`
-            );
-          }}
+          onClick={proceedToPayment}
           variant="contained"
           fullWidth
           sx={{
             padding: 1,
             mt: 2,
+            borderRadius:"25px",
             backgroundColor: "#ECAB21",
             color: "white",
             marginTop: "0.5rem",

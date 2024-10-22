@@ -40,7 +40,6 @@ import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CircularLodar from "@/components/CircularLodar";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import { useRouter } from "next/navigation";
 
 interface FormValues {
   jobType: string;
@@ -78,9 +77,12 @@ const AvailabilityGrid = styled(Grid)({
   marginBottom: "1rem",
 });
 
-// Form validation schema using Yup
 const schema = yup.object({
-  name: yup.string().required("Name is required."),
+  name: yup
+    .string()
+    .max(20, "Name length should be less than 20 characters")
+    .matches(/^[a-zA-Z\s'-]+$/, "Name should not contain numbers or special characters.")
+    .required("Name is required."),
   permitType: yup.string().required("Please select a permit type."),
   licenseType: yup.string(),
   availability: yup
@@ -112,6 +114,12 @@ const CareersPage: React.FC = () => {
   const { user, metaData } = useAuthContext();
   const [showForm, setShowForm] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.replace(/[^a-zA-Z\s'-]/g, ''); // Allow only letters, spaces, hyphens, and apostrophes
+    setValue('name', value); // Update the form value
+  };
+
 
   const options = [
     {
@@ -186,8 +194,6 @@ const CareersPage: React.FC = () => {
     }
   }, [metaData, selectedOption]);
 
-  const router = useRouter();
-
   const [success, setSuccess] = useState({
     status: false,
     message: "",
@@ -260,12 +266,12 @@ const CareersPage: React.FC = () => {
         variant={"h4"}
         sx={{
           marginBottom: "1rem",
-          textAlign: { xs: "left", sm: "center" },
+          textAlign: {xs:"left",sm:"center"},
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           fontWeight: 700,
-          ml: 2,
+          ml:2,
         }}
       >
         Build your career with Patty kulcha
@@ -453,8 +459,12 @@ const CareersPage: React.FC = () => {
                     fullWidth
                     label="Name"
                     {...field}
+                    onChange={handleNameChange} 
                     margin="normal"
                     variant="outlined"
+                    inputProps={{
+                      maxLength: 20,
+                    }}
                     error={!!errors.name}
                     helperText={errors.name?.message}
                   />
@@ -513,6 +523,7 @@ const CareersPage: React.FC = () => {
                       {...field}
                       margin="normal"
                       variant="outlined"
+                      required
                       error={!!errors.licenseType}
                       helperText={errors.licenseType?.message}
                     >
@@ -583,16 +594,7 @@ const CareersPage: React.FC = () => {
                         checked={field.value}
                       />
                     }
-                    label={
-                      <Typography>
-                        I accept the terms and conditions &
-                        {" "}<a href="/privacypolicy" style={{
-                          textDecoration:"underline"
-                        }}>
-                          privacy policy
-                        </a>
-                      </Typography>
-                    }
+                    label="I accept the terms and condition & privacy policy"
                   />
                 )}
               />

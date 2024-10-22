@@ -597,7 +597,7 @@ const OrderHome: React.FC<Props> = ({
                         setdialogError({
                           status: true,
                           message:
-                            "We are currently offline.",
+                            "We are currently offline. We will be back online at 8:00 AM",
                         });
                         return;
                       }
@@ -611,7 +611,7 @@ const OrderHome: React.FC<Props> = ({
                         setdialogError({
                           status: true,
                           message:
-                            "We cant Deliver at your address",
+                            "We are unable to deliver to your address at this time. However, you can choose to pick up your order at a nearby location.",
                         });
                         return;
                       }
@@ -664,6 +664,12 @@ const OrderHome: React.FC<Props> = ({
                       } else {
                         setDialogOpen(true);
                       }
+                      setdialogError({
+                        status: true,
+                        message:
+                          "We are currently offline. We will be back online at 8:00 AM",
+                      });
+
                       return;
                     }
 
@@ -690,6 +696,7 @@ const OrderHome: React.FC<Props> = ({
                     paddingY: 1,
                     mt: 2,
                     fontWeight: "bold",
+                    borderRadius:"25px",
                     "&:hover": {
                       backgroundColor: "#FFC107",
                       color: "white",

@@ -30,26 +30,32 @@ import { KITCHEN_ID, useAuthContext } from "@/context";
 import CheckIcon from "@mui/icons-material/Check";
 import { Message, Phone } from "@mui/icons-material";
 
-// Define validation schema
-const schema = yup.object().shape({
-  name: yup.string().max(20),
-  phone: yup
-    .string()
-    .min(12, "Phone number must be of 10 digits")
-    .required("Phone is required"),
-  message: yup.string().required("Message is required"),
-  countryCode: yup.mixed<CountryType>().required(),
-});
+// Define validation schema with conditional logic
+const schema = (phoneExists: boolean) =>
+  yup.object().shape({
+    name: yup.string().max(20),
+    phone: phoneExists
+      ? yup.string().nullable() // If phone exists, phone validation is not required
+      : yup
+          .string()
+          .min(12, "Phone number must be of 10 digits")
+          .required("Phone is required"),
+    message: yup.string().required("Message is required"),
+    countryCode: phoneExists
+      ? yup.mixed<CountryType>().nullable() // If phone exists, countryCode is not required
+      : yup.mixed<CountryType>().required("Country code is required"),
+  });
 
 const ContactUs: React.FC = () => {
+  const { user, metaData } = useAuthContext();
   const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  const { user, metaData } = useAuthContext();
   const [error, setError] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [messageLength, setMessageLength] = useState(0);
 
   const options = [
     {
@@ -74,15 +80,19 @@ const ContactUs: React.FC = () => {
     setSelectedCountry(defaultCountry);
   }, []);
 
+  // Determine if phone number exists in metaData
+  const phoneExists = !!metaData?.phoneNumber;
+
   const {
     handleSubmit,
     control,
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema(phoneExists)),
     defaultValues: {
       countryCode: countries.find((country) => country.label === "Canada"),
+      phone: "", // Default phone to empty if it doesn't exist
     },
   });
 
@@ -107,17 +117,22 @@ const ContactUs: React.FC = () => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    const name=metaData?.name || data?.name;
-    const {  message, countryCode } = data;
-    const plainPhoneNumber = stripPhoneNumberFormatting(data.phone);
+    const name = metaData?.name || data?.name;
+    const { message, countryCode } = data;
+
+    // Use metaData.phoneNumber if exists, else get phone from form data
+    const plainPhoneNumber = metaData?.phoneNumber
+      ? metaData?.phoneNumber
+      : `+${countryCode.phone}${stripPhoneNumberFormatting(data.phone)}`;
+
     try {
       setIsLoading(true);
       const colRef = collection(db, "contactus");
-      const result = await addDoc(colRef, {
+      await addDoc(colRef, {
         createdAt: Timestamp.now(),
         customer: {
           name: name,
-          phoneNumber: `+${countryCode.phone}${plainPhoneNumber}`,
+          phoneNumber: plainPhoneNumber,
         },
         foodTruckId: KITCHEN_ID,
         message: message,
@@ -132,6 +147,7 @@ const ContactUs: React.FC = () => {
       setValue("phone", "");
       setValue("message", "");
       setError(false);
+      setMessageLength(0); // Reset message length after submission
     } catch (err) {
       console.log(err);
       setIsLoading(false);
@@ -243,7 +259,6 @@ const ContactUs: React.FC = () => {
             </>
           )}
 
-          {/* Show form when "Write a Message" is clicked */}
           {showForm && (
             <Paper
               elevation={4}
@@ -300,101 +315,6 @@ const ContactUs: React.FC = () => {
 
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Controller
-                      name="countryCode"
-                      control={control}
-                      render={({ field: { value, onChange } }) => (
-                        <Autocomplete
-                          id="country-select-demo"
-                          fullWidth
-                          options={countries}
-                          autoHighlight
-                          getOptionLabel={(option) => option.label}
-                          renderOption={(props, option) => {
-                            const { key, ...optionProps } = props;
-                            return (
-                              <Box
-                                key={key}
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...optionProps}
-                              >
-                                <Image
-                                  loading="lazy"
-                                  width={20}
-                                  height={15}
-                                  src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`} // Dynamic URL using backticks
-                                  alt={`${option.label} flag`} // Dynamic alt attribute
-                                />
-                                {option.label} ({option.code}) +{option.phone}
-                              </Box>
-                            );
-                          }}
-                          value={selectedCountry}
-                          onChange={(event, newValue) => {
-                            onChange(newValue);
-                            setSelectedCountry(newValue || (null as any));
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Choose a country code"
-                              inputProps={{
-                                ...params.inputProps,
-                                autoComplete: "new-password",
-                              }}
-                              InputProps={{
-                                ...params.InputProps,
-                                startAdornment: selectedCountry && (
-                                  <InputAdornment position="start">
-                                    <Image
-                                      loading="eager"
-                                      width={20}
-                                      height={15}
-                                      src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
-                                      priority
-                                      alt="#"
-                                    />
-                                    <Typography sx={{ ml: 1 }}>
-                                      +{selectedCountry.phone}
-                                    </Typography>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      render={({ field: { onChange, value } }) => (
-                        <TextField
-                          value={formatPhoneNumber(value)}
-                          fullWidth
-                          type="tel"
-                          label="Phone"
-                          variant="outlined"
-                          inputProps={{
-                            maxLength: 12,
-                          }}
-                          onChange={(e) => {
-                            const formattedValue = formatPhoneNumber(
-                              e.target.value
-                            );
-                            onChange(formattedValue);
-                            setValue("phone", formattedValue);
-                          }}
-                          error={!!errors.phone}
-                          helperText={errors.phone?.message}
-                        />
-                      )}
-                    />
-                  </Grid>
                   {!metaData?.name && (
                     <Grid item xs={12}>
                       <Controller
@@ -418,6 +338,111 @@ const ContactUs: React.FC = () => {
                       />
                     </Grid>
                   )}
+
+                  {/* Conditionally render phone and countryCode fields if phone doesn't exist */}
+                  {!metaData?.phoneNumber && (
+                    <>
+                      <Grid item xs={12}>
+                        <Controller
+                          name="countryCode"
+                          control={control}
+                          render={({ field: { value, onChange } }) => (
+                            <Autocomplete
+                              id="country-select-demo"
+                              fullWidth
+                              options={countries}
+                              autoHighlight
+                              getOptionLabel={(option) => option.label}
+                              renderOption={(props, option) => {
+                                const { key, ...optionProps } = props;
+                                return (
+                                  <Box
+                                    key={key}
+                                    component="li"
+                                    sx={{
+                                      "& > img": { mr: 2, flexShrink: 0 },
+                                    }}
+                                    {...optionProps}
+                                  >
+                                    <Image
+                                      loading="lazy"
+                                      width={20}
+                                      height={15}
+                                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                      alt={`${option.label} flag`}
+                                    />
+                                    {option.label} ({option.code}) +
+                                    {option.phone}
+                                  </Box>
+                                );
+                              }}
+                              value={selectedCountry}
+                              onChange={(event, newValue) => {
+                                onChange(newValue);
+                                setSelectedCountry(newValue || (null as any));
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Choose a country code"
+                                  inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: "new-password",
+                                  }}
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    startAdornment: selectedCountry && (
+                                      <InputAdornment position="start">
+                                        <Image
+                                          loading="eager"
+                                          width={20}
+                                          height={15}
+                                          src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
+                                          priority
+                                          alt="#"
+                                        />
+                                        <Typography sx={{ ml: 1 }}>
+                                          +{selectedCountry.phone}
+                                        </Typography>
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                              )}
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Controller
+                          name="phone"
+                          control={control}
+                          render={({ field: { onChange, value } }) => (
+                            <TextField
+                              value={formatPhoneNumber(value as any)}
+                              fullWidth
+                              type="tel"
+                              label="Phone"
+                              variant="outlined"
+                              inputProps={{
+                                maxLength: 12,
+                              }}
+                              onChange={(e) => {
+                                const formattedValue = formatPhoneNumber(
+                                  e.target.value
+                                );
+                                onChange(formattedValue);
+                                setValue("phone", formattedValue);
+                              }}
+                              error={!!errors.phone}
+                              helperText={errors.phone?.message}
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </>
+                  )}
+
                   <Grid item xs={12}>
                     <Controller
                       name="message"
@@ -436,9 +461,19 @@ const ContactUs: React.FC = () => {
                           variant="outlined"
                           error={!!errors.message}
                           helperText={errors.message?.message}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setMessageLength(e.target.value.length); // Update message length
+                          }}
                         />
                       )}
                     />
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", textAlign: "right", mt: 1 }}
+                    >
+                      {messageLength}/200 characters
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <Box
@@ -456,8 +491,8 @@ const ContactUs: React.FC = () => {
                           color: "white",
                           paddingX: 4,
                           paddingY: 1,
+                          borderRadius:"20px",
                           mt: 2,
-                          borderRadius:"25px",
                           fontWeight: "bold",
                           "&:hover": {
                             backgroundColor: "#FFC107",

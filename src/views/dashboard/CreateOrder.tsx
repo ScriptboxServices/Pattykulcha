@@ -69,14 +69,14 @@ import { CountryType } from "@/context/types";
 
 // Define the Yup schema
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required"),
+  name: yup.string().max(20,"Name should not be more than 20 characters").required("Name is required"),
   phoneNumber: yup
     .string()
-    .min(10, "Phone number must be at least 10 digits")
+    .min(12, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   paymentmethod: yup.string().required("Payment method is required"),
   countryCode: yup.mixed<CountryType>().required(),
-  instructions: yup.string().required("Special instructions are required"),
+  instructions: yup.string().max(200,"Instructions should not be more than 100 characters").required("Special instructions are required"),
 });
 
 // Define the TypeScript interface based on the Yup schema
@@ -101,6 +101,39 @@ const MakeOrder: React.FC = () => {
   );
   const handleDrinkDialog = () => {
     setIsDrinkDialogOpen(!isDrinkDialogOpen);
+  };
+
+  const calculateTotalAmount = () => {
+    // Calculate total for includedItems2
+    const includedItemsTotal2 = includedItems2.reduce((acc, includedItem) => {
+      const itemPrice = includedItem.items.reduce((sum: number, item: any) => {
+        return sum + (item.price || 0) * (item.quantity || 0); // Ensure price and quantity exist
+      }, 0);
+      return acc + itemPrice;
+    }, 0);
+
+    // Calculate total for allKulcha
+    const otherKulchasTotal = allKulcha.reduce(
+      (acc: number, otherItem: any) => {
+        if (otherItem.added) {
+          return acc + (otherItem.price || 0) * (otherItem.quantity || 0);
+        }
+        return acc;
+      },
+      0
+    );
+
+    // Calculate total for includedItems1
+    const includedItemsTotal1 = includedItems1.reduce((acc, includedItem) => {
+      const itemPrice =
+        (includedItem.price || 0) * (includedItem.quantity || 0); // Ensure price and quantity exist
+      return acc + itemPrice;
+    }, 0);
+
+    // Calculate the grand total
+    const total = includedItemsTotal2 + otherKulchasTotal + includedItemsTotal1;
+
+    return Number(total.toFixed(2));
   };
 
   const handleDrinkSelect = (drink: string) => {
@@ -1221,8 +1254,8 @@ const MakeOrder: React.FC = () => {
                   paddingX: 4,
                   paddingY: 1,
                   mt: 2,
-                  borderRadius:"25px",
                   mx: "auto",
+                  borderRadius: "25px",
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "#FFC107",
@@ -1230,8 +1263,9 @@ const MakeOrder: React.FC = () => {
                   },
                 }}
               >
-                Submit Order
+                {`Submit Order $${calculateTotalAmount()}`}
               </Button>
+
               {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
