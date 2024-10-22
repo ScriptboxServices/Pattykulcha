@@ -540,7 +540,6 @@ const OrderPage: React.FC<Props> = ({
                       <Typography variant='body1' sx={{ mb: 2 }}>
                         <strong>From:</strong>{kitchenMetaData?.kitchen?.address?.raw}
                       </Typography>
-
                       <TextField
                         fullWidth
                         label='Select Time'
