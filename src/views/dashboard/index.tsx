@@ -100,7 +100,7 @@ export default function ResponsiveDrawer(props: Props) {
   const toggleMenu = () => {
     setMenuExpanded(!menuExpanded);
   };
-  console.log("object");
+  
   useEffect(() => {
     // if (kitchenProfile?.userId !== user?.uid) {
     //   return router.push('/home')

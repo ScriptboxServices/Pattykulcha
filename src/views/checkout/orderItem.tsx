@@ -595,30 +595,21 @@ const OrderHome: React.FC<Props> = ({
                       return;
                     }
 
-                    if (!kitchenMetaData?.kitchen?.isShopOpen) {
-                      if (isSmallScreen) {
+                    if(!kitchenMetaData?.kitchen?.isShopOpen) {
+                      if(isSmallScreen) {
                         setDrawerOpen(true);
                       } else {
                         setDialogOpen(true);
                       }
+                      setdialogError({
+                        status: true,
+                        message:
+                          "We are currently offline.",
+                      });
                       return;
                     }
 
                     if (selectedOption !== "pickup") {
-
-                      if(!kitchenMetaData?.kitchen?.isShopOpen) {
-                        if(isSmallScreen) {
-                          setDrawerOpen(true);
-                        } else {
-                          setDialogOpen(true);
-                        }
-                        setdialogError({
-                          status: true,
-                          message:
-                            "We are currently offline.",
-                        });
-                        return;
-                      }
 
                       if (!isAddressReachable) {
                         if (isSmallScreen) {
