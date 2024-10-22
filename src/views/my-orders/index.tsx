@@ -250,7 +250,7 @@ const OrdersPage: React.FC = () => {
                     }}>
                     <LockIcon sx={{ marginRight: 1 }} />
                     <Typography variant='body2' sx={{ fontWeight: "bold" }}>
-                      ORD-{orderDoc?.orderNumber?.forCustomer}
+                      #{orderDoc?.orderNumber?.forCustomer}
                     </Typography>
                   </Box>
                   <Box
@@ -313,7 +313,7 @@ const OrdersPage: React.FC = () => {
                     fontWeight='bold'
                     textAlign='right'
                     sx={{ mt: -2 }}>
-                    Total: {orderDoc?.grand_total}
+                    Total: ${orderDoc?.grand_total}
                   </Typography>
                   <Divider sx={{ my: 2 }} />
                   <Box>
@@ -411,7 +411,7 @@ const OrdersPage: React.FC = () => {
                                     color: "white",
                                   },
                                 }}>
-                                Track Order
+                                Track Driver
                               </Button>
                             </Link>
                           )}

@@ -893,7 +893,10 @@ const MakeOrder: React.FC = () => {
                                 fontSize: "16px",
                               }}
                             >
-                              {item}
+                              {item?.name}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              ${item?.price.toFixed(2)}
                             </Typography>
                           </Box>
 
@@ -911,7 +914,7 @@ const MakeOrder: React.FC = () => {
                             }}
                           >
                             <Image
-                              src={getImageSrc(item)}
+                              src={getImageSrc(item?.name)}
                               alt={item}
                               layout="fill"
                               objectFit="cover"
@@ -933,7 +936,7 @@ const MakeOrder: React.FC = () => {
                               }}
                             >
                               <IconButton
-                                onClick={() => handleAddItem(item)}
+                                onClick={() => handleAddItem(item?.name)}
                                 sx={{
                                   color: "#336195",
                                   display: "flex",

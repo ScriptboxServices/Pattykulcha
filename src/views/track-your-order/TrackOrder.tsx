@@ -32,6 +32,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import CheckIcon from "@mui/icons-material/Check";
+import { ShortTime } from "@/utils/commonFunctions";
 
 const containerStyle = {
   width: "100%",
@@ -43,55 +44,48 @@ const initialCenter = {
   lng: -38.523,
 };
 
-const steps = ["Order Confirmed", "Preparing", "Out for Delivery", "Delivered"];
+const steps = ["Order", "Preparing", "Out for Delivery", "Delivered"];
 
-const items = [
-  {
-    id: 1,
-    name: "Mix Kulcha",
-    price: "$45.00",
-    description: "Soft kulcha bread served with a spread of butter",
-    location: { lat: -3.747, lng: -38.521 },
-    image: "/images/landingpage/menu1.png", // Replace this with the actual image path
-  },
-];
-
-const CustomConnector = styled(StepConnector)({
+const CustomConnector = styled(StepConnector)(({ theme }) => ({
   "& .MuiStepConnector-line": {
     borderTopWidth: 4,
     borderRadius: 1,
-    borderColor: "green",
-    height: 40,
+    borderColor: "#d3d3d3", // Default color
   },
-});
+  "&.Mui-active .MuiStepConnector-line": {
+    borderColor: "orange", // Active (pending) step color
+  },
+  "&.Mui-completed .MuiStepConnector-line": {
+    borderColor: "green",
+  },
+}));
 
 const activeStepAnimation = keyframes`
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4);  // Orange color with transparency
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);  // Orange color fades out
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);  // Reset to no shadow
   }
 `;
 
 const CustomStepIcon = styled("div")<{ completed?: boolean; active?: boolean }>(
   ({ completed, active }) => ({
-    color: completed || active ? "green" : "#d3d3d3",
+    color: completed ? "green" : active ? "orange" : "#d3d3d3",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     width: 24,
     height: 24,
     borderRadius: "50%",
-    backgroundColor: completed || active ? "green" : "#d3d3d3",
+    backgroundColor: completed ? "green" : active ? "orange" : "#d3d3d3",
     "& svg": {
       fill: "#fff",
     },
-    // boxShadow: active ? "0 0 0 10px rgba(0, 123, 255, 0.2)" : "none",
-    // animation: active ? `${activeStepAnimation} 1.5s infinite` : "none",
+    animation: active ? `${activeStepAnimation} 1.5s infinite` : "none",
   })
 );
 
@@ -207,13 +201,12 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
         display: "flex",
         justifyContent: "center",
         minHeight: "100dvh",
-      }}
-    >
+      }}>
       <CircularLodar isLoading={loading} />
       <Box sx={{ maxWidth: "sm", width: "100%" }}>
         {/* Map Section */}
         <Paper elevation={3} sx={{ height: "300px", width: "100%", mb: 3 }}>
-          {isLoaded && order?.driverId ? (
+          {isLoaded && order?.driverId && order?.delivery.status !== true ? (
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={mapCenter} // Use dynamic center
@@ -225,8 +218,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 zoomControl: false,
                 streetViewControl: false,
                 fullscreenControl: false,
-              }}
-            >
+              }}>
               {directionsResponse && (
                 <DirectionsRenderer
                   options={{
@@ -247,14 +239,13 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
-                }}
-              >
+                }}>
                 {activeStep == 4 ? (
-                  <Typography variant="h4">Order has been delivered</Typography>
+                  <Typography variant='h4'>Order has been delivered</Typography>
                 ) : (
                   <img
-                    src="/mp3/your-food-is-being-prepared_2x.gif"
-                    alt="Driver not assigned yet"
+                    src='/mp3/your-food-is-being-prepared_2x.gif'
+                    alt='Driver not assigned yet'
                     style={{ width: "600px", height: "300px" }}
                   />
                 )}
@@ -265,20 +256,18 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
 
         <Paper
           elevation={3}
-          sx={{ padding: "20px", marginBottom: "20px", width: "100%" }}
-        >
-          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-            Order Status
+          sx={{ padding: "20px", marginBottom: "20px", width: "100%" }}>
+          <Typography variant='h5' sx={{ fontWeight: "bold", mb: 2 }}>
+            Status
           </Typography>
-          <Box sx={{ display: "flex",flexDirection:'column' }}>
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Order {order?.orderNumber?.forCustomer}
+          <Typography variant='body1' sx={{ fontWeight: "bold" }}>
+            #{order?.orderNumber?.forCustomer}
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography variant='body2' sx={{ mt: 1 }}>
+              {order?.createdAt && ShortTime(order?.createdAt)} | Payment Mode:{" "}
+              {order?.paymentMode} | {order?.order?.length} Item
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              1:02 PM | Payment Mode: {order?.paymentMode} |{" "}
-              {order?.order?.length} Item
-            </Typography>
-            
           </Box>
           <Divider sx={{ my: 2 }} />
           <Stepper
@@ -294,8 +283,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 "&.Mui-active": { color: "#000" },
                 "&.Mui-completed": { color: "#000" },
               },
-            }}
-          >
+            }}>
             {steps.map((label, index) => (
               <Step key={label}>
                 <StepLabel
@@ -303,8 +291,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                     <CustomStepIcon completed={completed} active={active}>
                       {completed ? <CheckIcon /> : null}
                     </CustomStepIcon>
-                  )}
-                >
+                  )}>
                   {label}
                 </StepLabel>
               </Step>
@@ -316,11 +303,10 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
           {order?.order.map((item: any) => (
             <Grid
               container
-              alignItems="center"
-              justifyContent="space-between"
+              alignItems='center'
+              justifyContent='space-between'
               key={item.id}
-              sx={{ marginBottom: "10px" }}
-            >
+              sx={{ marginBottom: "10px" }}>
               <Grid item sx={{ display: "flex", alignItems: "center" }}>
                 <img
                   src={item.order.kulcha.image}
@@ -334,7 +320,7 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                   }}
                 />
                 <Box>
-                  <Typography variant="body1">
+                  <Typography variant='body1'>
                     <strong>
                       {item.order.kulcha.name} x {item.order.kulcha.quantity}
                     </strong>
@@ -342,14 +328,14 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 </Box>
               </Grid>
               <Grid item>
-                <Typography variant="body1" sx={{ textAlign: "right" }}>
+                <Typography variant='body1' sx={{ textAlign: "right" }}>
                   {item.price}
                 </Typography>
               </Grid>
             </Grid>
           ))}
 
-          <Typography variant="body1">
+          <Typography variant='body1'>
             Delivering to: {order?.customer?.name}
             <br />
             {order?.address?.raw}

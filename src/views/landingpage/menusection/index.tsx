@@ -42,7 +42,6 @@ interface MenuItem {
 const MenuSection = () => {
   const { user, isLoggedIn } = useAuthContext();
   const {
-    setIncludedItems2,
     includedItems1,
     setSelectedKulchas,
     setKulcha,
@@ -83,9 +82,9 @@ const MenuSection = () => {
   };
 
   useEffect(() => {
-    localStorage.removeItem("includedItems2");
     localStorage.removeItem("otherKulchas");
-    setIncludedItems2([]);
+    localStorage.removeItem("drinks");
+    localStorage.removeItem("extra");
   }, []);
 
   const isOrderableCategory = (categoryLabel: string) => {

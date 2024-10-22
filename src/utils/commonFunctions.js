@@ -64,3 +64,10 @@ export const formatPhoneNumber = (value) => {
   
     return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
   };
+
+  export const convertTo12Hour = (time24) => {
+    const [hours, minutes] = time24.split(":");
+    const period = +hours >= 12 ? "PM" : "AM";
+    const adjustedHours = +hours % 12 || 12;
+    return `${adjustedHours}:${minutes} ${period}`;
+  }

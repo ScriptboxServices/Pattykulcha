@@ -32,17 +32,64 @@ const KitchenLocations = () => {
         mb: 4,
       }}
     >
-      {/* Status Badge */}
-      <Chip
-        label="Online"
+      {/* Status Badge and Information Row */}
+      <Box
         sx={{
-          backgroundColor: "#28A745",
-          color: "#FFFFFF",
-          fontWeight: "bold",
-          borderRadius: "4px",
-          mb: 1,
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
-      />
+      >
+        {/* Online Status */}
+        <Box
+          sx={{
+            backgroundColor: "#28A745",
+            color: "#FFFFFF",
+            fontWeight: "bold",
+            borderRadius: "5px", // Pill shape
+            padding: "5px 15px", // Padding for pill effect
+            display: "inline-block", // Ensure it’s inline
+            fontSize: "14px", // Adjust font size
+          }}
+        >
+          Online
+        </Box>
+
+        {/* Distance (Icon + Text) */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Image
+            src="/images/kitchen-locations/image4.png" // Replace with correct path
+            alt="Distance"
+            width="24"
+            height="24"
+          />
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", color: "#162548" }}
+          >
+            1.2 km
+          </Typography>
+        </Box>
+
+        {/* Time (Icon + Text with Blue Block) */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Box sx={{ position: "relative" }}>
+            <Image
+              src="/images/kitchen-locations/image5.png" // Replace with correct path
+              alt="Time"
+              width="24"
+              height="24"
+            />
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", color: "#162548" }}
+          >
+            1 Hour
+          </Typography>
+        </Box>
+      </Box>
 
       {/* Address */}
       <Typography
@@ -51,50 +98,98 @@ const KitchenLocations = () => {
           fontWeight: "bold",
           color: "#0D0D0D",
           mb: 1,
+          mt: 3,
+          textAlign: "left", // Center the address
         }}
       >
         1214 54th Street, Yellowknife, Northwest Territories, Ca
       </Typography>
 
-      {/* Timings and Distance */}
+      {/* Timings */}
       <Typography
         variant="body1"
         sx={{
-          color: "grey",
-          mb: 1,
-          fontWeight:'bold'
+          color: "#4a4a4a", // Grey color to match the image
+          fontWeight: "bold",
+          textAlign: "left",
+          display: "flex", // Flex to align elements properly
+          alignItems: "flex-start", // Align vertically
+          gap: "0.5rem", // Add spacing between elements
+          flexDirection: "column",
+          fontSize: "1.2em",
+          mt:1
         }}
       >
-        Timings: 9:00 AM - 11:00 PM
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          color: "grey",
-          mb: 2,
-          fontWeight:'bold'
-        }}
-      >
-        Distance: 1.2 km
+        {/* Timings Label */}
+        Timings:
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+          }}
+        >
+          <Typography
+            component="span"
+            sx={{
+              fontWeight: "bold",
+              color: "#0D0D0D", // Slightly darker color for the time range
+              fontSize: "18px", // Adjust font size to match
+            }}
+          >
+            9:00 AM - 11:00 PM
+          </Typography>
+          <Typography
+            component="span"
+            sx={{
+              color: "grey", // Grey color for (Mon - Sun)
+              fontSize: "14px", // Smaller font for (Mon - Sun)
+              fontWeight: "normal", // Normal weight for (Mon - Sun)
+              mt: 0.3,
+            }}
+          >
+            (Mon - Sun)
+          </Typography>
+        </Box>
       </Typography>
 
       <Divider sx={{ my: 3 }} />
+
       {/* Delivery Options Icons */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-evenly",
+          justifyContent: "space-around", // Adjust spacing to evenly spread icons
           mb: 2,
-          width: "100%",
         }}
       >
-        <Box sx={{ textAlign: "center", display: "flex", gap: 0.7 }}>
+        <Box
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            gap: 0.7,
+            position: "relative",
+          }}
+        >
           <Image
             src="/images/kitchen-locations/image1.png"
             alt="Delivery"
             width="24"
-            height="24"
+            height="28"
           />
+          <Image
+            src="/images/kitchen-locations/image.png"
+            alt="Dine-in"
+            width="7"
+            height="18"
+            style={{
+              position: "absolute",
+              left: 16,
+              top: 20,
+              transform: "rotate(-15deg)", // Rotating the image 45 degrees towards the top-left
+              transformOrigin: "top left", // The origin of the rotation is set to the top-left corner
+            }}
+          />
+
           <Typography variant="body2" sx={{ fontWeight: "bold" }}>
             Delivery
           </Typography>
@@ -104,7 +199,7 @@ const KitchenLocations = () => {
             src="/images/kitchen-locations/image2.png"
             alt="Pickup"
             width="24"
-            height="24"
+            height="28"
           />
           <Typography variant="body2" sx={{ fontWeight: "bold" }}>
             Pickup
@@ -115,9 +210,10 @@ const KitchenLocations = () => {
           <Image
             src="/images/kitchen-locations/image3.png"
             alt="Dine-in"
-            width="24"
-            height="24"
+            width="32"
+            height="28"
           />
+
           <Typography variant="body2" sx={{ fontWeight: "bold" }}>
             Dine-in
           </Typography>
@@ -126,12 +222,13 @@ const KitchenLocations = () => {
 
       <Divider sx={{ my: 3 }} />
 
+      {/* Order Now Button */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          width: "100%", 
+          width: "100%",
         }}
       >
         <Button
@@ -141,7 +238,7 @@ const KitchenLocations = () => {
             color: "#FFFFFF",
             fontWeight: "bold",
             borderRadius: "25px",
-            width: { xs: "50%", md: "100%" },
+            width: "60%",
             padding: "10px",
             justifyContent: "center",
             "&:hover": {
@@ -187,7 +284,7 @@ const KitchenLocations = () => {
             mb: 2,
           }}
         >
-          Find A Kitchen
+          Our Locations
         </Typography>
 
         <Typography
@@ -195,11 +292,14 @@ const KitchenLocations = () => {
             fontWeight: "bold",
             color: "grey",
             mb: 1,
-            fontSize:'18px'
+            fontSize: "18px",
           }}
         >
           Primary Address:{" "}
-          <Typography component="span" sx={{ color: "#333333",fontWeight:'bold',fontSize:'18px' }}>
+          <Typography
+            component="span"
+            sx={{ color: "#333333", fontWeight: "bold", fontSize: "18px" }}
+          >
             {metaData?.address?.raw}
           </Typography>
         </Typography>
@@ -242,7 +342,7 @@ const KitchenLocations = () => {
                 width: "100%", // Full width within its grid cell
                 "&:hover": {
                   backgroundColor:
-                    selectedOption === "pickup" ? "#FFC107" : "transparent",
+                    selectedOption === "pickup" ? "#FFC107" : "#ECAB21",
                 },
               }}
             >
@@ -262,7 +362,7 @@ const KitchenLocations = () => {
                   selectedOption === "delivery" ? "#ECAB21" : "transparent",
                 width: "100%", // Full width within its grid cell
                 "&:hover": {
-                  backgroundColor: "#FFF",
+                  backgroundColor: "#ECAB21",
                 },
               }}
             >
@@ -283,7 +383,7 @@ const KitchenLocations = () => {
                   selectedOption === "dine-in" ? "#ECAB21" : "transparent",
                 width: "100%", // Full width within its grid cell
                 "&:hover": {
-                  backgroundColor: "#FFF",
+                  backgroundColor: "#ECAB21",
                 },
               }}
             >
