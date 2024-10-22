@@ -1,17 +1,10 @@
 "use client";
 
 import { useAuthContext } from "@/context";
-import {
-  Box,
-  Typography,
-  Link,
-  Button,
-  Chip,
-  Divider,
-  Grid,
-} from "@mui/material";
+import { Box, Typography, Link, Button, Grid, Divider } from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
+import EditIcon from "@mui/icons-material/Edit"; // Import MUI Edit icon
 
 const KitchenLocations = () => {
   const [selectedOption, setSelectedOption] = useState("delivery");
@@ -93,13 +86,14 @@ const KitchenLocations = () => {
 
       {/* Address */}
       <Typography
-        variant="h6"
+        variant="body1"
         sx={{
           fontWeight: "bold",
-          color: "#0D0D0D",
+          color: "#162548",
           mb: 1,
           mt: 3,
-          textAlign: "left", // Center the address
+          textAlign: "left",
+          fontSize: { xs: "18px", md: "20px" },
         }}
       >
         1214 54th Street, Yellowknife, Northwest Territories, Ca
@@ -109,15 +103,15 @@ const KitchenLocations = () => {
       <Typography
         variant="body1"
         sx={{
-          color: "#4a4a4a", // Grey color to match the image
+          color: "grey", // Grey color to match the image
           fontWeight: "bold",
           textAlign: "left",
           display: "flex", // Flex to align elements properly
           alignItems: "flex-start", // Align vertically
-          gap: "0.5rem", // Add spacing between elements
+          gap: "0.3rem", // Add spacing between elements
           flexDirection: "column",
-          fontSize: "1.2em",
-          mt:1
+          fontSize: "14px",
+          mt: 1,
         }}
       >
         {/* Timings Label */}
@@ -132,8 +126,8 @@ const KitchenLocations = () => {
             component="span"
             sx={{
               fontWeight: "bold",
-              color: "#0D0D0D", // Slightly darker color for the time range
-              fontSize: "18px", // Adjust font size to match
+              color: "grey",
+              fontSize: "14px",
             }}
           >
             9:00 AM - 11:00 PM
@@ -141,10 +135,9 @@ const KitchenLocations = () => {
           <Typography
             component="span"
             sx={{
-              color: "grey", // Grey color for (Mon - Sun)
-              fontSize: "14px", // Smaller font for (Mon - Sun)
-              fontWeight: "normal", // Normal weight for (Mon - Sun)
-              mt: 0.3,
+              color: "grey",
+              fontSize: "14px",
+              fontWeight: "normal",
             }}
           >
             (Mon - Sun)
@@ -177,7 +170,7 @@ const KitchenLocations = () => {
             height="28"
           />
           <Image
-            src="/images/kitchen-locations/image.png"
+            src="/images/kitchen-locations/image6.png"
             alt="Dine-in"
             width="7"
             height="18"
@@ -190,7 +183,15 @@ const KitchenLocations = () => {
             }}
           />
 
-          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "12px",
+              color: "#162548",
+              mt: "2px",
+            }}
+          >
             Delivery
           </Typography>
         </Box>
@@ -201,7 +202,15 @@ const KitchenLocations = () => {
             width="24"
             height="28"
           />
-          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "12px",
+              color: "#162548",
+              mt: "2px",
+            }}
+          >
             Pickup
           </Typography>
         </Box>
@@ -214,7 +223,15 @@ const KitchenLocations = () => {
             height="28"
           />
 
-          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "12px",
+              color: "#162548",
+              mt: "2px",
+            }}
+          >
             Dine-in
           </Typography>
         </Box>
@@ -268,10 +285,10 @@ const KitchenLocations = () => {
       {/* Content Container */}
       <Box
         sx={{
-          width: { xs: "100%", sm: "80%", md: "60%", textAlign: "left" },
+          width: { xs: "100%", sm: "80%", md: "100%", textAlign: "left" },
           maxWidth: "600px",
           alignSelf: { xs: "center", xl: "flex-start" },
-          ml: { xs: 0, xl: 26 },
+          ml: { xs: 0, xl: 20 },
           mt: { xs: 2, sm: 4 },
         }}
       >
@@ -287,21 +304,61 @@ const KitchenLocations = () => {
           Our Locations
         </Typography>
 
+        {/* Primary Address with Edit Icon */}
         <Typography
           sx={{
             fontWeight: "bold",
             color: "grey",
             mb: 1,
             fontSize: "18px",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" }, // Column on mobile, row on desktop
+            alignItems: { xs: "flex-start", sm: "center" }, // Align items flex-start on mobile, center on desktop
           }}
         >
-          Primary Address:{" "}
+          {/* Primary Address Label */}
           <Typography
             component="span"
-            sx={{ color: "#333333", fontWeight: "bold", fontSize: "18px" }}
+            sx={{
+              fontWeight: "bold",
+              color: "grey",
+              fontSize: "18px",
+            }}
           >
-            {metaData?.address?.raw}
+            Primary Address:
           </Typography>
+
+          {/* Address and Edit Icon Container */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mt: { xs: 1, sm: 0 }, // Add margin top on mobile for better spacing
+            }}
+          >
+            <Typography
+              component="span"
+              sx={{
+                color: "#333333",
+                fontWeight: "bold",
+                fontSize: "18px",
+                ml: { xs: 0, sm: 1 }, // Remove margin-left on mobile, add margin-left on desktop
+              }}
+            >
+              290 Bremner Blvd, Toronto, ON M5V 3L9
+            </Typography>
+
+            {/* MUI Edit Icon */}
+            <EditIcon
+              sx={{
+                ml: 3, // Add margin between text and icon
+                color: "#757575", // Light gray color
+                fontSize: "20px", // Adjust size similar to the image
+                cursor: "pointer", // Pointer to indicate it's clickable
+                fontWeight:"bold",
+              }}
+            />
+          </Box>
         </Typography>
 
         <Link
@@ -323,7 +380,7 @@ const KitchenLocations = () => {
         sx={{
           width: { xs: "100%", sm: "50%" },
           mt: 4,
-          ml: { xs: 0, xl: 26 },
+          ml: { xs: 0, xl: 20 },
           alignSelf: { xs: "center", xl: "flex-start" },
         }}
       >
@@ -335,7 +392,7 @@ const KitchenLocations = () => {
                 borderRadius: "30px",
                 border: "2px solid #FFC107",
                 padding: "8px 24px",
-                color: selectedOption === "pickup" ? "#FFF" : "#555",
+                color: selectedOption === "pickup" ? "#000" : "#555",
                 fontWeight: "bold",
                 backgroundColor:
                   selectedOption === "pickup" ? "#ECAB21" : "transparent",
@@ -395,11 +452,11 @@ const KitchenLocations = () => {
 
       <Box
         sx={{
-          width: { xs: "100%", sm: "80%", md: "90%", xl: "70%" },
+          width: { xs: "100%", sm: "80%", md: "80%", xl: "80%" },
           mt: 4,
         }}
       >
-        <Grid container spacing={4}>
+        <Grid container spacing={3}>
           {[...Array(6)].map((_, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               {renderCard()}

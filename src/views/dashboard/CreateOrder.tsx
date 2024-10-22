@@ -723,9 +723,9 @@ const MakeOrder: React.FC = () => {
                               variant="body1"
                               sx={{ fontSize: "14px", color: "#777" }}
                             >
-                            (x{  includedItems1.some(
+                            x {  includedItems1.some(
                               (item: any) => item.name === kulcha.name
-                            )?(Number(kulcha.quantity)):0})
+                            )?(Number(kulcha.quantity)):0}
                             </Typography>
                             </Box>
                           </Box>
