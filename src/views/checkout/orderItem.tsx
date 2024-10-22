@@ -578,15 +578,33 @@ const OrderHome: React.FC<Props> = ({
                 </Box>
                 <Button
                   onClick={() => {
-                    if (selectedOption !== "pickup") {
-                      // Check if address is provided
-                      if (!metaData?.address?.raw) {
-                        setError({
-                          status: true,
-                          message: "Before proceeding, please update address.",
-                        });
-                        return;
+
+                    if (!metaData?.address?.raw) {
+                      setError({
+                        status: true,
+                        message: "Before proceeding, please update address.",
+                      });
+                      return;
+                    }
+
+                    if (!metaData?.name) {
+                      setError({
+                        status: true,
+                        message: "A name is necessary to proceed.",
+                      });
+                      return;
+                    }
+
+                    if (!kitchenMetaData?.kitchen?.isShopOpen) {
+                      if (isSmallScreen) {
+                        setDrawerOpen(true);
+                      } else {
+                        setDialogOpen(true);
                       }
+                      return;
+                    }
+
+                    if (selectedOption !== "pickup") {
 
                       if(!kitchenMetaData?.kitchen?.isShopOpen) {
                         if(isSmallScreen) {
@@ -615,7 +633,6 @@ const OrderHome: React.FC<Props> = ({
                         });
                         return;
                       }
-                      console.log(kitchenMetaData?.data.distance);
                       if (kitchenMetaData?.data.distance.value > 5000 && kitchenMetaData?.data.distance.value < 10000) {
                         if (getKulchaQuantity() < 2) {
                           setError({
@@ -648,23 +665,6 @@ const OrderHome: React.FC<Props> = ({
                           return;
                         }
                       }
-                    }
-
-                    if (!metaData?.name) {
-                      setError({
-                        status: true,
-                        message: "A name is necessary to proceed.",
-                      });
-                      return;
-                    }
-
-                    if (!kitchenMetaData?.kitchen?.isShopOpen) {
-                      if (isSmallScreen) {
-                        setDrawerOpen(true);
-                      } else {
-                        setDialogOpen(true);
-                      }
-                      return;
                     }
 
                     setError({

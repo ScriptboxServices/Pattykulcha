@@ -58,9 +58,7 @@ export const POST = async (req, res) => {
       const kitchenDoc = await db.collection('foodtrucks').doc(kitchenId).get()
       if(kitchenDoc.exists){
         kitchenData = kitchenDoc.data();
-        orderNumberForCustomer = `${kitchenData.truckIdentifier}-${Math.floor(Math.random() * 900000)}`
-      }else{
-        orderNumberForCustomer = `${Math.floor(Math.random() * 900000)}`
+        orderNumberForCustomer = `${kitchenData.truckIdentifier}-${Math.floor(Math.random() * 9000)}`
       }
 
       // const now = new Date();

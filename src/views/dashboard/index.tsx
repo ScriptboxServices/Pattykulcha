@@ -118,7 +118,7 @@ export default function ResponsiveDrawer(props: Props) {
         return;
       }
       snapshot.docChanges().forEach((change) => {
-        if (change.type === "added" && change.doc.data().kitchenId === kitchenProfile.id) {
+        if (change.type === "added") {
           const audio = new Audio("/mp3/message.mp3");
           audio.play();
         }

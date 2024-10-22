@@ -20,7 +20,7 @@ import {
   onSnapshot
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import { menuItems } from "@/constants/MenuOptions";
+import { drinkOptions, extraItemsOptions, menuItems } from "@/constants/MenuOptions";
 
 export interface IncludedItem {
   id: string;
@@ -62,12 +62,10 @@ interface MenuContextType {
   setSelectedKulchas: any;
   includedItems1: any[];
   setIncludedItems1: (items: any[]) => void;
-  includedItems2: any[];
-  setIncludedItems2: (items: any[]) => void;
   quantities: { [key: string]: number };
   setQuantityForItem: (itemName: string, quantity: number) => void;
-  extraItems: string[];
-  setExtraItems: (items: string[]) => void;
+  extraItems: any[];
+  setExtraItems: any;
   plasticware: string;
   setPlasticware: (plasticware: string) => void;
   instructions: string;
@@ -92,8 +90,10 @@ interface MenuContextType {
   setGrandTotal: React.Dispatch<React.SetStateAction<string | number>>;
   isAddressReachable: boolean;
   setIsAddressReachable: React.Dispatch<React.SetStateAction<boolean>>;
+  otherKulchas : any[];
   setOtherKulchas : any;
-  otherKulchas : any;
+  allDrinks : any[];
+  setAllDrinks : any;
 }
 
 interface AuthContextType {
@@ -134,6 +134,7 @@ export const useAuthContext = () => {
   }
   return context;
 };
+
 export const getCartData = async (_id: string) => {
   try {
     let raw: any = [];
@@ -364,14 +365,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
       items: [{ name: "Butter", price: 1.5 }],
     },
   ]);
-  const [includedItems2, setIncludedItems2] = useState<any[]>([]);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
-  const [extraItems, setExtraItems] = useState<string[]>([
-    "Chana",
-    "Imli Pyaz Chutney",
-    "Amul Butter",
-    "Normal Butter",
-  ]);
+  const [extraItems, setExtraItems] = useState<any[]>([...extraItemsOptions]);
   const [plasticware, setPlasticware] = useState("no");
   const [quantity, setQuantity] = useState(1);
   const [selectedDrinks, setSelectedDrinks] = useState<string[]>([]);
@@ -381,6 +376,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [count, setCount] = useState(0);
   const [grandTotal, setGrandTotal] = useState<string | number>(0);
   const [otherKulchas, setOtherKulchas] = useState<any[]>([...menuItems]);
+  const [allDrinks, setAllDrinks] = useState<any[]>([...drinkOptions]);
 
   const getData = async (_id: string) => {
     if (_id) {
@@ -400,8 +396,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     };
     getData(user?.uid);
     setKulcha(getStoredData("kulcha", {}));
-    setIncludedItems2(getStoredData("includedItems2", []));
     setOtherKulchas(getStoredData("otherKulchas", [...menuItems]));
+    setAllDrinks(getStoredData("drinks", [...drinkOptions]));
+    setExtraItems(getStoredData("extra", [...extraItemsOptions]));
     setInstructions(localStorage.getItem("instructions") || "");
   }, [user]);
 
@@ -421,8 +418,6 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setSelectedKulchas,
     includedItems1,
     setIncludedItems1,
-    includedItems2,
-    setIncludedItems2,
     quantities,
     setQuantityForItem,
     extraItems,
@@ -452,7 +447,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     setIsAddressReachable,
     isAddressReachable,
     setOtherKulchas,
-    otherKulchas
+    otherKulchas,
+    allDrinks,
+    setAllDrinks
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
