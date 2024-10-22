@@ -29,7 +29,7 @@ const StyledRoot = styled(Box)(({ theme }) => ({
   alignItems: "center",
   [theme.breakpoints.up("xs")]: {
     paddingTop: theme.spacing(4),
-    width: "90%", 
+    width: "90%",
   },
   [theme.breakpoints.up("sm")]: {
     paddingTop: theme.spacing(10),
@@ -42,11 +42,11 @@ const StyledRoot = styled(Box)(({ theme }) => ({
     alignItems: "center",
   },
   [theme.breakpoints.up("lg")]: {
-    width: "35%", 
+    width: "35%",
     alignItems: "center",
   },
   [theme.breakpoints.up("xl")]: {
-    width: "30%", 
+    width: "30%",
     alignItems: "center",
   },
 }));
@@ -96,47 +96,16 @@ const VerificationPage: React.FC = () => {
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const { kulcha } = useMenuContext();
 
-  const handleCodeChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-  
-    if (!/^\d*$/.test(value)) {
-      return; 
-    }
-
-    if (value.length > 1) {
-      const newCode = value.split('').slice(0, verificationCode.length);
-      setVerificationCode(newCode);
-
-      const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
-      if (nextEmptyIndex !== -1) {
-        inputRefs.current[nextEmptyIndex]?.focus();
-      }
-    } else {
+  const handleCodeChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = [...verificationCode];
-      newCode[index] = value;
+      newCode[index] = event.target.value;
       setVerificationCode(newCode);
 
-      if (value && index < verificationCode.length - 1) {
+      if (event.target.value && index < verificationCode.length - 1) {
         inputRefs.current[index + 1]?.focus();
       }
-    }
-  };
-  
-  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedData = event.clipboardData.getData("text").slice(0, verificationCode.length); // Limit to the length of the OTP
-
-    if (!/^\d*$/.test(pastedData)) {
-      return;
-    }
-  
-    const newCode = pastedData.split('');
-    setVerificationCode(newCode);
-
-    const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
-    if (nextEmptyIndex !== -1) {
-      inputRefs.current[nextEmptyIndex]?.focus();
-    }
-  };
+    };
 
   const handleKeyDown =
     (index: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -148,6 +117,7 @@ const VerificationPage: React.FC = () => {
   useEffect(() => {
     inputRefs.current[0]?.focus();
     startTimer();
+    enableOTPAutoFill();
   }, []);
 
   useEffect(() => {
@@ -214,14 +184,14 @@ const VerificationPage: React.FC = () => {
                 line1: "",
               },
             },
-            savedAddress:[],
+            savedAddress: [],
             role: "customer",
             isKitchen: false,
             foodTruckId: "",
             isDriver: false,
             driverId: "",
             enable: true,
-            createdAt :Timestamp.now()
+            createdAt: Timestamp.now(),
           });
 
           const userSaved = await getDoc(doc(db, "users", user?.uid));
@@ -238,7 +208,9 @@ const VerificationPage: React.FC = () => {
         router.push("/home");
       } else {
         router.push(
-          `/cart/${encodeURIComponent(encrypt({ kulcha_name:localStorage.getItem("kulcha.name") }))}`
+          `/cart/${encodeURIComponent(
+            encrypt({ kulcha_name: localStorage.getItem("kulcha.name") })
+          )}`
         );
       }
     } catch (err: any) {
@@ -246,6 +218,26 @@ const VerificationPage: React.FC = () => {
       if (err.code === "auth/invalid-verification-code") {
         setError("Invalid verification code.");
       }
+    }
+  };
+
+  const enableOTPAutoFill = () => {
+    if ("OTPCredential" in window) {
+      const ac = new AbortController();
+      navigator.credentials
+        .get({
+          otp: { transport: ["sms"] },
+          signal: ac.signal,
+        } as CredentialRequestOptions)
+        .then((otp: any) => {
+          const otpCode = otp.code.split("");
+          setVerificationCode(otpCode);
+
+          submitOtp();
+        })
+        .catch((err) => {
+          console.error("Error fetching OTP automatically", err);
+      });
     }
   };
 
@@ -309,12 +301,7 @@ const VerificationPage: React.FC = () => {
                     value={code}
                     onChange={handleCodeChange(index)}
                     onKeyDown={handleKeyDown(index)}
-                    onPaste={handlePaste}
-                    inputProps={{ 
-                      maxLength: 1, 
-                      inputMode: "numeric",  
-                      pattern: "[0-9]*"     
-                    }}
+                    inputProps={{ maxLength: 1 }}
                     inputRef={(el) => (inputRefs.current[index] = el)}
                     sx={{
                       margin: 0.5,
