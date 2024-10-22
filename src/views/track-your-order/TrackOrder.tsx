@@ -90,8 +90,8 @@ const CustomStepIcon = styled("div")<{ completed?: boolean; active?: boolean }>(
     "& svg": {
       fill: "#fff",
     },
-    boxShadow: active ? "0 0 0 10px rgba(0, 123, 255, 0.2)" : "none",
-    animation: active ? `${activeStepAnimation} 1.5s infinite` : "none",
+    // boxShadow: active ? "0 0 0 10px rgba(0, 123, 255, 0.2)" : "none",
+    // animation: active ? `${activeStepAnimation} 1.5s infinite` : "none",
   })
 );
 

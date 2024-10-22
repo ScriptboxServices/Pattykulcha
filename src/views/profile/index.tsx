@@ -312,7 +312,13 @@ const ProfilePage: React.FC = () => {
                     <ListItem>
                       <TextField
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                          const regex = /^[a-zA-Z\s]*$/; 
+                          if (regex.test(e.target.value)) {
+                            setName(e.target.value);
+                          }
+                        }}
+                      
                         fullWidth
                         variant="outlined"
                         size="small"
