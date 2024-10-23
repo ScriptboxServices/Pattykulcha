@@ -17,6 +17,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+
 import { countries } from "@/utils/constants";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -309,17 +310,17 @@ const PastOrders: React.FC = () => {
                     </InputAdornment>
                   ),
                 }}
-                onKeyDown={(e) => {
-                  if (
-                    !/[0-9]/.test(e.key) &&
-                    e.key !== "Backspace" &&
-                    e.key !== "Delete" &&
-                    e.key !== "ArrowLeft" &&
-                    e.key !== "ArrowRight"
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
+                // onKeyDown={(e) => {
+                //   if (
+                //     !/[0-9]/.test(e.key) &&
+                //     e.key !== "Backspace" &&
+                //     e.key !== "Delete" &&
+                //     e.key !== "ArrowLeft" &&
+                //     e.key !== "ArrowRight"
+                //   ) {
+                //     e.preventDefault();
+                //   }
+                // }}
               />
             )}
           />

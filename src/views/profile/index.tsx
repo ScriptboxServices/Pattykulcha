@@ -318,7 +318,9 @@ const ProfilePage: React.FC = () => {
                             setName(e.target.value);
                           }
                         }}
-                      
+                        inputProps={{
+                          maxLength:30,
+                        }}
                         fullWidth
                         variant="outlined"
                         size="small"
@@ -414,7 +416,7 @@ const ProfilePage: React.FC = () => {
                         }}
                       />
                     </ListItem>
-
+ 
                     <ListItem>
                       <TextField
                         value={email}
