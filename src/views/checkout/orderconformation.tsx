@@ -89,6 +89,8 @@ const OrdersPage = ({ data }: { data: any }) => {
     init();
   }, [data]);
 
+  console.log(orderData);
+
   return (
     <>
       <CircularLodar isLoading={loading} />
@@ -112,9 +114,55 @@ const OrdersPage = ({ data }: { data: any }) => {
                 <Typography variant="h4" gutterBottom fontWeight="bold">
                   Thank you for your order!
                 </Typography>
-                <Typography variant="body1" paragraph>
-                  Your order will be delivered shortly.
-                </Typography>
+                <>
+                  {orderData && (
+                    <>
+                      {orderData?.pickUpAction ? (
+                        <>
+                          <Typography variant="body1" paragraph>
+                            <b>Pickup address:</b>{" "}{orderData?.address?.raw}
+                          </Typography>
+                          <Typography variant="body1" paragraph>
+                            Your order will be ready for pickup one hour after
+                            it&apos;s placed. Thank you for your patience! Once
+                            you arrive, please tap &quot;I&apos;m here&quot; in
+                            the My Orders section to notify us.
+                          </Typography>
+
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <Button
+                              variant="contained"
+                              sx={{
+                                backgroundColor: "#ECAB21",
+                                color: "white",
+                                paddingX: 4,
+                                paddingY: 1,
+                                mt: 2,
+                                borderRadius: "25px",
+                                fontWeight: "bold",
+                                minWidth:"226px",
+                                "&:hover": {
+                                  backgroundColor: "#FFC107",
+                                  color: "white",
+                                },
+                              }}
+                            >
+                              Drive to kitchen
+                            </Button>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Typography variant="body1" paragraph>
+                            Your order will be delivered shortly.
+                          </Typography>
+                        </>
+                      )}
+                    </>
+                  )}
+                </>
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                   <Button
                     onClick={() => {
@@ -127,6 +175,8 @@ const OrdersPage = ({ data }: { data: any }) => {
                       paddingX: 4,
                       paddingY: 1,
                       mt: 2,
+                      minWidth:"226px",
+                      borderRadius: "25px",
                       fontWeight: "bold",
                       "&:hover": {
                         backgroundColor: "#FFC107",
@@ -137,6 +187,7 @@ const OrdersPage = ({ data }: { data: any }) => {
                     Track your orders
                   </Button>
                 </Box>
+
                 {/* <Typography variant="h6" gutterBottom>
                   Billing Address
                 </Typography>
