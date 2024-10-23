@@ -1,16 +1,45 @@
 "use client";
 
 import { useAuthContext } from "@/context";
-import { Box, Typography, Link, Button, Grid, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Link,
+  Button,
+  Grid,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  TextField,
+} from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
-import EditIcon from "@mui/icons-material/Edit"; // Import MUI Edit icon
+import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CloseIcon from "@mui/icons-material/Close";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const KitchenLocations = () => {
   const [selectedOption, setSelectedOption] = useState("delivery");
 
   const handleButtonClick = (option: React.SetStateAction<string>) => {
     setSelectedOption(option);
+  };
+
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [selectedAddress, setSelectedAddress] = useState("");
+
+  const toggleDrawer = (open: boolean) => () => {
+    setDrawerOpen(open);
+  };
+
+  const handleEditClick = (address: string) => {
+    setSelectedAddress(address);
   };
 
   const { metaData } = useAuthContext();
@@ -349,15 +378,18 @@ const KitchenLocations = () => {
             </Typography>
 
             {/* MUI Edit Icon */}
-            <EditIcon
-              sx={{
-                ml: 3, // Add margin between text and icon
-                color: "#757575", // Light gray color
-                fontSize: "20px", // Adjust size similar to the image
-                cursor: "pointer", // Pointer to indicate it's clickable
-                fontWeight:"bold",
-              }}
-            />
+            <IconButton
+              onClick={toggleDrawer(true)}
+              sx={{ ml: { sm: 3, xs: 0 }, mt: { xs: 1, sm: 0 } }}
+            >
+              <EditIcon
+                sx={{
+                  color: "#757575",
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
+              />
+            </IconButton>
           </Box>
         </Typography>
 
@@ -433,7 +465,7 @@ const KitchenLocations = () => {
               sx={{
                 borderRadius: "30px",
                 border: "2px solid #FFC107",
-                padding: "8px 24px",
+                padding: "8px 14px",
                 color: selectedOption === "dine-in" ? "#000" : "#555",
                 fontWeight: "bold",
                 backgroundColor:
@@ -464,6 +496,182 @@ const KitchenLocations = () => {
           ))}
         </Grid>
       </Box>
+      <Drawer anchor="bottom" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{
+            width: "100vw",
+            maxHeight: "90vh",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#fff",
+            borderRadius: "20px 20px 0 0",
+          }}
+        >
+          {/* Header */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", fontSize: "27px", alignSelf:"center" }}
+            >
+              Addresses
+            </Typography>
+            <IconButton onClick={toggleDrawer(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          {/* Search Bar */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#f1f1f1",
+              borderRadius: "15px",
+              padding: "5px 10px",
+              mb: 3,
+            }}
+          >
+            <SearchIcon sx={{ color: "#757575", mr: 1 }} />
+            <TextField
+              placeholder="Search for an address"
+              variant="standard"
+              InputProps={{ disableUnderline: true }}
+              fullWidth
+            />
+          </Box>
+
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: "bold", mb: 1, fontSize: "1.7em" }}
+          >
+            Explore nearby
+          </Typography>
+
+          <List
+            sx={{ backgroundColor: "#f7f7f7", borderRadius: "10px", mb: 2 }}
+          >
+            <ListItem>
+              <LocationOnIcon sx={{ color: "#000", mr: 2 }} />
+              <ListItemText
+                primary={
+                  <Typography
+                    sx={{ fontWeight: "bold", color: "#000", fontSize: "16px" }}
+                  >
+                    {metaData?.address?.seperate?.line1}
+                  </Typography>
+                }
+                secondary={
+                  <Typography sx={{ color: "#888", fontSize: "14px" }}>
+                    {metaData?.address?.seperate.city},{" "}
+                    {metaData?.address?.seperate.state}{" "}
+                    {metaData?.address?.seperate.postal_code}
+                  </Typography>
+                }
+              />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  onClick={() => handleEditClick("7159 Magistrate Terr")}
+                >
+                  <EditIcon sx={{ color: "#757575" }} />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+
+          {/* Saved Addresses Section */}
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: "bold", mb: 0.5, fontSize: "1.7em" }}
+          >
+            Saved addresses
+          </Typography>
+          <List>
+            {metaData?.savedAddress?.map((address: any, index: number) => (
+              <ListItem key={index} sx={{ px: 0 }}>
+                <LocationOnIcon sx={{ color: "#757575", mr: 2 }} />
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        color: "#333",
+                        fontSize: "16px",
+                      }}
+                    >
+                      {address?.seperate?.line1}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography sx={{ color: "#888", fontSize: "14px" }}>
+                      {address?.seperate.city}, {address?.seperate.state}{" "}
+                      {address?.seperate.postal_code}
+                    </Typography>
+                  }
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    onClick={() => handleEditClick(address.primary)}
+                  >
+                    <EditIcon sx={{ color: "#757575" }} />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+
+          <Divider sx={{ my: 2 }} />
+
+          {/* Time Preference Section */}
+          <Typography variant="body1" sx={{ fontWeight: "bold", mt: 2 }}>
+            Time preference
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mt: 1,
+              backgroundColor: "#f1f1f1",
+              borderRadius: "10px",
+              padding: "10px",
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <AccessTimeIcon sx={{ color: "#757575" }} />
+              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                Deliver now
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              sx={{
+                fontWeight: "bold",
+                textTransform: "none",
+                borderRadius: "20px",
+                borderColor: "#E0E0E0",
+                padding: "5px 15px",
+                backgroundColor: "#F6F6F6",
+                color: "#000",
+                "&:hover": {
+                  backgroundColor: "#E0E0E0",
+                },
+              }}
+            >
+              Schedule
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   );
 };

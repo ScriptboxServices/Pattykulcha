@@ -58,7 +58,8 @@ const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
   };
 
   const clearCustomTip = () => {
-    setCustomTip(null);
+    // setCustomTip(null);
+    setCustomTip(0)
     setIsCustomTipSelected(false);
     setCustomTipError(false); // Clear error when clearing the custom tip
   };
