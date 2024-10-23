@@ -72,7 +72,7 @@ const schema = yup.object().shape({
   name: yup.string().max(20,"Name should not be more than 20 characters").required("Name is required"),
   phoneNumber: yup
     .string()
-    .min(12, "Phone number must be at least 10 digits")
+    .min(10, "Phone number must be at least 10 digits")
     .required("Phone number is required"),
   paymentmethod: yup.string().required("Payment method is required"),
   countryCode: yup.mixed<CountryType>().required(),
