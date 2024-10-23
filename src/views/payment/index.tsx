@@ -70,7 +70,6 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime,kitchen}) 
     if (isValid) return;
 
     const pickupTime_ = convertToFirebaseTimestamp(pickupTime)
-
     return axios
       .request({
         method: "POST",
@@ -83,7 +82,7 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime,kitchen}) 
           address : selectedOption === 'pickup'? kitchen?.address : metaData?.address,
           instructions,
           name : metaData?.name,
-          tip,
+          tip : tip ? tip : 0,
           selectedOption,
           pickupTime : pickupTime_,
           kitchenId : kitchen.id
@@ -106,7 +105,7 @@ const PaymentPage : React.FC <Props>= ({tip,selectedOption,pickupTime,kitchen}) 
         <CircularLodar isLoading={loading} />
         {/* <OrderPage setLoading = {setLoading}/>
         <OrderHome setLoading = {setLoading}/> */}
-        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading} tip={tip} selectedOption={selectedOption}/>
+        <CheckoutMain clientSecret={clientSecret} ephemeralKey= {ephemeralKey} payment_id={payment_id} customer= {customer}  setLoading = {setLoading} tip={tip ? tip : '0'} selectedOption={selectedOption}/>
     </>
   )
 }

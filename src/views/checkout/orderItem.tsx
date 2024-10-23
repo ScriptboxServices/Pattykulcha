@@ -56,6 +56,8 @@ const OrderHome: React.FC<Props> = ({
     setCount,
     grandTotal,
     setCarts,
+    setTotalTax,
+    totalTax,
     setGrandTotal,
     carts,
     isAddressReachable,
@@ -94,7 +96,9 @@ const OrderHome: React.FC<Props> = ({
       if (_id) {
         const result = await getCartData(_id);
         if (result) {
-          setGrandTotal(calculateGrandTotal(result || []));
+          const {total,tax} = calculateGrandTotal(result || [])
+          setGrandTotal(total);
+          setTotalTax(tax)
           setCarts([...result]);
           setCount(result.length);
         }
@@ -328,7 +332,7 @@ const OrderHome: React.FC<Props> = ({
                         </>
                       )}
                       <hr style={{ margin: "3px 0" }}></hr>
-                      <Box
+                      {/* <Box
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -359,7 +363,7 @@ const OrderHome: React.FC<Props> = ({
                         >
                           ${total}
                         </Typography>
-                      </Box>
+                      </Box> */}
                       {/* <Box
                         sx={{
                           display: "flex",
@@ -527,11 +531,22 @@ const OrderHome: React.FC<Props> = ({
                 <Box display="flex" justifyContent="space-between" gap={2}>
                   <Typography
                     variant="h6"
-                    style={{ fontWeight: 600, fontSize: "16px" }}
+                    style={{ fontWeight: 600, fontSize: "15px" }}
+                  >
+                    Tax
+                  </Typography>
+                  <Typography variant="h6" style={{ fontWeight: 600, fontSize: "15px" }}>
+                    ${totalTax}
+                  </Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Typography
+                    variant="h6"
+                    style={{ fontWeight: 600, fontSize: "15px" }}
                   >
                     Sub Total
                   </Typography>
-                  <Typography variant="h6" style={{ fontWeight: 600 }}>
+                  <Typography variant="h6" style={{ fontWeight: 600, fontSize: "15px" }}>
                     ${grandTotal}
                   </Typography>
                 </Box>
@@ -540,11 +555,11 @@ const OrderHome: React.FC<Props> = ({
                   <Box display="flex" justifyContent="space-between" gap={2}>
                     <Typography
                       variant="h6"
-                      style={{ fontWeight: 600, fontSize: "16px" }}
+                      style={{ fontWeight: 600, fontSize: "15px" }}
                     >
                       Delivery Charges
                     </Typography>
-                    <Typography variant="h6" style={{ fontWeight: 600 }}>
+                    <Typography variant="h6" style={{ fontWeight: 600 , fontSize: "15px"}}>
                       $
                       {selectedOption === "pickup" ? (
                         "0.00"
@@ -591,9 +606,10 @@ const OrderHome: React.FC<Props> = ({
                     sx={{
                       backgroundColor: "#ECAB21",
                       color: "white",
-                      paddingX: 4,
                       paddingY: 1,
                       mt: 2,
+                      paddingX: 2,
+                      fontSize:'0.75rem',
                       fontWeight: "bold",
                       borderRadius: "25px",
                       "&:hover": {
@@ -723,7 +739,8 @@ const OrderHome: React.FC<Props> = ({
                     sx={{
                       backgroundColor: "#ECAB21",
                       color: "white",
-                      paddingX: 4,
+                      paddingX: 2,
+                      fontSize:'0.75rem',
                       paddingY: 1,
                       mt: 2,
                       fontWeight: "bold",

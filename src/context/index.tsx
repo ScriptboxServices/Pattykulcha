@@ -88,6 +88,8 @@ interface MenuContextType {
   carts: any[];
   grandTotal: string | number;
   setGrandTotal: React.Dispatch<React.SetStateAction<string | number>>;
+  totalTax: string | number;
+  setTotalTax: React.Dispatch<React.SetStateAction<string | number>>;
   isAddressReachable: boolean;
   setIsAddressReachable: React.Dispatch<React.SetStateAction<boolean>>;
   otherKulchas : any[];
@@ -170,6 +172,7 @@ export const getUserMetaData = async (_id: string) => {
 };
 
 export const calculateGrandTotal = (carts: any[]) => {
+  let tax = 0
   const grandTotal = carts?.reduce((acc, item) => {
     const { order } = item;
     const { kulcha, additional } = order;
@@ -178,11 +181,11 @@ export const calculateGrandTotal = (carts: any[]) => {
         acc +
         Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity));
     }, Number(kulcha?.price) * Number(kulcha?.quantity));
-    let tax = Number(total) * 0.13;
+    tax = Number(total) * 0.13;
     return (acc = acc + (Number(total) + Number(tax)));
   }, 0);
 
-  return Number(grandTotal).toFixed(2);
+  return {total :  Number(grandTotal).toFixed(2),tax : Number(tax).toFixed(2)};
 };
 
 interface AuthProps {
@@ -375,6 +378,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [instructions, setInstructions] = useState("");
   const [count, setCount] = useState(0);
   const [grandTotal, setGrandTotal] = useState<string | number>(0);
+  const [totalTax, setTotalTax] = useState<string | number>(0);
   const [otherKulchas, setOtherKulchas] = useState<any[]>([...menuItems]);
   const [allDrinks, setAllDrinks] = useState<any[]>([...drinkOptions]);
 
@@ -382,7 +386,9 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     if (_id) {
       const result = await getCartData(_id);
       if (result) {
-        setGrandTotal(calculateGrandTotal(result || []));
+        const {total,tax} = calculateGrandTotal(result || [])
+        setGrandTotal(total);
+        setTotalTax(tax)
         setCarts([...result])
         setCount(result.length);
       }
@@ -444,6 +450,8 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     carts,
     grandTotal,
     setGrandTotal,
+    totalTax,
+    setTotalTax,
     setIsAddressReachable,
     isAddressReachable,
     setOtherKulchas,

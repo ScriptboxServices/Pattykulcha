@@ -8,7 +8,7 @@ import { useAuthContext, useMenuContext } from "@/context";
 import { getCartData, calculateGrandTotal } from "@/context";
 const Checkout = () => {
   const { user } = useAuthContext();
-  const { setGrandTotal, setCarts, setCount, carts } = useMenuContext();
+  const { setGrandTotal, setCarts, setCount, carts,setTotalTax } = useMenuContext();
   const time = new Date(new Date().setHours(new Date().getHours() + 1));
   const minutes = time.getMinutes();
   const hours = time.getHours();
@@ -24,7 +24,9 @@ const Checkout = () => {
       if (_id) {
         const result = await getCartData(_id);
         if (result) {
-          setGrandTotal(calculateGrandTotal(result || []));
+          const {total,tax} = calculateGrandTotal(result || [])
+          setGrandTotal(total);
+          setTotalTax(tax)
           setCarts([...result]);
           setCount(result.length);
         }

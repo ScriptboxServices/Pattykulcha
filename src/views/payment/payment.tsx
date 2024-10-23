@@ -234,7 +234,7 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
   });
 
   const router = useRouter();
-  const { count, grandTotal } = useMenuContext();
+  const { count, grandTotal,totalTax } = useMenuContext();
   const {metaData} = useAuthContext()
   const [error, setError] = useState("");
 
@@ -311,16 +311,20 @@ const CheckoutMain: React.FC<CheckoutProps> = ({
                   </Box>
                   <Divider sx={{ my: 3 }} />
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>Sub Total</Typography>
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>${grandTotal}</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>Tax</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>${totalTax}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>Delivery Charges</Typography>
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>${selectedOption === 'pickup' ?'0.00' : Number(calculateDeliveryCharges(metaData?.address?.distance?.value)).toFixed(2)}</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>Sub Total</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>${grandTotal}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>Tip Amount</Typography>
-                    <Typography variant="h6" sx={{fontSize:'16px'}}>${Number(tip).toFixed(2)}</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>Delivery Charges</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>${selectedOption === 'pickup' ?'0.00' : Number(calculateDeliveryCharges(metaData?.address?.distance?.value)).toFixed(2)}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>Tip Amount</Typography>
+                    <Typography variant="h6" sx={{fontSize:'13px'}}>${Number(tip).toFixed(2)}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h6">Total</Typography>

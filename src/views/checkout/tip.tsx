@@ -75,7 +75,7 @@ const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
           encrypt({
             tip:
               isCustomTipSelected && customTip
-                ? customTip.toFixed(2)
+                ? customTip.toFixed(2) 
                 : selectedTip?.toFixed(2),
             pickupTime,
             selectedOption,
@@ -132,8 +132,8 @@ const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
         <Box sx={{ textAlign: "center", mb: 2 }}>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
             Tip amount: $
-            {isCustomTipSelected && customTip
-              ? customTip.toFixed(2)
+            {isCustomTipSelected
+              ? customTip ? customTip.toFixed(2) : '0.00'
               : selectedTip?.toFixed(2)}
           </Typography>
 
@@ -201,7 +201,7 @@ const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
                 fullWidth
                 type="tel"
                 label="Enter custom tip amount"
-                value={customTip !== null ? customTip : ""}
+                value={customTip !== null ? customTip : ''}
                 onChange={handleCustomTipChange}
                 InputProps={{
                   inputProps: { min: 0 },
