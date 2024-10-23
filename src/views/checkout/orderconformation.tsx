@@ -74,7 +74,10 @@ const OrdersPage = ({ data }: { data: any }) => {
           const docRef = doc(db, "orders", transaction?.orderId);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            setOrderData(docSnap.data());
+            setOrderData({
+              id: docSnap.id, 
+              ...docSnap.data()
+            });
           }
           setCount(0);
         } else {
@@ -166,7 +169,7 @@ const OrdersPage = ({ data }: { data: any }) => {
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                   <Button
                     onClick={() => {
-                      return router.push("/my-orders");
+                      return router.push(`/tract-your-order/${orderData?.id}`);
                     }}
                     variant="contained"
                     sx={{
