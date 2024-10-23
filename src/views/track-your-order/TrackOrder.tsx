@@ -13,6 +13,7 @@ import {
   styled,
   StepConnector,
   keyframes,
+  Button
 } from "@mui/material";
 import {
   GoogleMap,
@@ -204,61 +205,77 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
       }}>
       <CircularLodar isLoading={loading} />
       <Box sx={{ maxWidth: "sm", width: "100%" }}>
-        {/* Map Section */}
-        <Paper elevation={3} sx={{ height: "300px", width: "100%", mb: 3 }}>
-          {isLoaded && order?.driverId && order?.delivery.status !== true ? (
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={mapCenter} // Use dynamic center
-              zoom={10}
-              onLoad={(map) => setMap(map)}
-              options={{
-                mapId: "368d7f53a21ed6a2",
-                mapTypeControl: false,
-                zoomControl: false,
-                streetViewControl: false,
-                fullscreenControl: false,
-              }}>
-              {directionsResponse && (
-                <DirectionsRenderer
-                  options={{
-                    polylineOptions: {
-                      strokeColor: "#ff0000",
-                    },
-                    suppressMarkers: false,
-                  }}
-                  directions={directionsResponse}
-                />
-              )}
-            </GoogleMap>
-          ) : (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
+        {
+          order?.delivery.status !== true &&
+          <Paper elevation={3} sx={{ height: "300px", width: "100%", mb: 3 }}>
+            {isLoaded && order?.driverId && order?.delivery.status !== true ? (
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={mapCenter} // Use dynamic center
+                zoom={10}
+                onLoad={(map) => setMap(map)}
+                options={{
+                  mapId: "368d7f53a21ed6a2",
+                  mapTypeControl: false,
+                  zoomControl: false,
+                  streetViewControl: false,
+                  fullscreenControl: false,
                 }}>
-                {activeStep == 4 ? (
-                  <Typography variant='h4'>Order has been delivered</Typography>
-                ) : (
-                  <img
-                    src='/mp3/your-food-is-being-prepared_2x.gif'
-                    alt='Driver not assigned yet'
-                    style={{ width: "600px", height: "300px" }}
+                {directionsResponse && (
+                  <DirectionsRenderer
+                    options={{
+                      polylineOptions: {
+                        strokeColor: "#ff0000",
+                      },
+                      suppressMarkers: false,
+                    }}
+                    directions={directionsResponse}
                   />
                 )}
-              </Box>
-            </>
-          )}
-        </Paper>
+              </GoogleMap>
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}>
+                    <img
+                      src='/mp3/your-food-is-being-prepared_2x.gif'
+                      alt='Driver not assigned yet'
+                      style={{ width: "600px", height: "300px" }}
+                    />
+                </Box>
+              </>
+            )}
+          </Paper>
+        }
 
         <Paper
           elevation={3}
           sx={{ padding: "20px", marginBottom: "20px", width: "100%" }}>
-          <Typography variant='h5' sx={{ fontWeight: "bold", mb: 2 }}>
-            Status
+          <Typography variant='h5' sx={{ fontWeight: "bold", mb: 2,display:'flex',justifyContent:'space-between' }}>
+            <span>Status</span>
+            <Button
+              variant="outlined"
+              sx={{
+                color: "#ECAB21",
+                borderColor: "#ECAB21",
+                paddingX: 2,
+                paddingY: 1,
+                fontWeight: "bold",
+                "&:hover": {
+                  borderColor: "#FFC107",
+                  color: "#FFC107",
+                },
+              }}
+              component="a"
+              href="tel:+18333381313"
+            >
+              Need Help?
+            </Button>
           </Typography>
           <Typography variant='body1' sx={{ fontWeight: "bold" }}>
             #{order?.orderNumber?.forCustomer}
