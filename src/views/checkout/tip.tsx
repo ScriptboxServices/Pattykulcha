@@ -60,9 +60,10 @@ const TipPage: React.FC<Props> = ({ selectedOption, pickupTime, kitchen }) => {
   const clearCustomTip = () => {
     setCustomTip(null);
     setIsCustomTipSelected(false);
+    setSelectedTip(0); // Set the selected tip to 0
     setCustomTipError(false); // Clear error when clearing the custom tip
   };
-
+  
   const { grandTotal } = useMenuContext();
 
   const proceedToPayment = () => {

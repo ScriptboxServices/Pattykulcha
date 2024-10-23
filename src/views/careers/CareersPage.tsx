@@ -463,7 +463,7 @@ const CareersPage: React.FC = () => {
                     margin="normal"
                     variant="outlined"
                     inputProps={{
-                      maxLength: 20,
+                      maxLength: 30,
                     }}
                     error={!!errors.name}
                     helperText={errors.name?.message}
