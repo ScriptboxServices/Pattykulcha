@@ -204,7 +204,7 @@ const OrderPage: React.FC<Props> = ({
     setInstructions(event.target.value);
   };
 
-  const router=useRouter();
+  const router = useRouter();
 
   return (
     <>
@@ -236,8 +236,10 @@ const OrderPage: React.FC<Props> = ({
             <Box
               sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}
             >
-              <Link
-                href="/home"
+              {/* <Button
+                onClick={() => {
+                  router.back();
+                }}
                 underline="none"
                 sx={{ display: "flex", alignItems: "center", mb: 3 }}
               >
@@ -245,21 +247,17 @@ const OrderPage: React.FC<Props> = ({
                 <Typography
                   variant="body1"
                   sx={{ ml: 1, fontWeight: 600, color: "#162548" }}
-                  onClick={()=>{
-                    router.push("/cart")
-                  }}
                 >
-                  Back To Cart
+                  Back
                 </Typography>
-              </Link>
+              </Button> */}
 
               <Typography
                 variant="h3"
                 component="h1"
                 sx={{ fontWeight: 700, color: "#162548", mb: 1 }}
               >
-                YOUR
-                <br />
+                YOUR <br />
                 ORDER
               </Typography>
 
@@ -276,9 +274,11 @@ const OrderPage: React.FC<Props> = ({
                     px: { xs: 2, sm: 4 },
                     py: 1.5,
                     mr: 1,
+                    display: "flex",
+                    gap: "9px",
                     border: "none",
                     backgroundColor: "#F3F4F6",
-                    color: "#4B5563",
+                    color: "#000",
                     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                     transition:
                       "background-color 0.3s, box-shadow 0.3s, transform 0.3s",
@@ -297,11 +297,25 @@ const OrderPage: React.FC<Props> = ({
                   },
                 }}
               >
-                <ToggleButton value="delivery">
+                <ToggleButton
+                  value="delivery"
+                  sx={{
+                    width: { xs: "100%", sm: "40%" },
+                    color: "black",
+                    fontWeight: "bold",
+                  }}
+                >
                   <LocalShippingIcon sx={{ mr: 1 }} />
                   Delivery
                 </ToggleButton>
-                <ToggleButton value="pickup">
+                <ToggleButton
+                  value="pickup"
+                  sx={{
+                    width: { xs: "100%", sm: "40%" },
+                    color: "black",
+                    fontWeight: "bold",
+                  }}
+                >
                   <ShoppingBagIcon sx={{ mr: 1 }} />
                   Pickup
                 </ToggleButton>
@@ -333,14 +347,15 @@ const OrderPage: React.FC<Props> = ({
                       color="text.secondary"
                       sx={{
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        // alignItems: "center",
+                        justifyContent: "flex-start",
                         // fontWeight: "bold",
                         color: "#1F2937",
                         paddingBottom: "4px",
+                        fontSize: { xs: "16px", lg: "18px" },
                       }}
                     >
-                      Delivery Time: 1 Hour
+                      <b>Delivery Time</b>: 1 Hour
                     </Typography>
                   </Box>
                   <Box
@@ -358,11 +373,16 @@ const OrderPage: React.FC<Props> = ({
                         fontSize: { xs: "16px", lg: "18px" },
                       }}
                     >
-                      Address: {metaData?.address?.raw}
+                      <Typography sx={{
+                                                  fontSize: { xs: "16px", lg: "18px" },
+                      }}>
+                        <b>Address:</b> {metaData?.address?.raw}
+                      </Typography>
                       <IconButton
                         sx={{
                           background: "#F59E0B",
                           borderRadius: "50%",
+
                           "&:hover": {
                             backgroundColor: "#FFC107",
                             color: "white",
@@ -370,7 +390,7 @@ const OrderPage: React.FC<Props> = ({
                         }}
                         onClick={() => handleEditClick("address")}
                       >
-                        <EditIcon sx={{ color: "#ffffff" }} />
+                        <EditIcon sx={{ color: "#ffffff", fontSize: "20px" }} />
                       </IconButton>
                     </Typography>
                   </Box>
@@ -391,7 +411,11 @@ const OrderPage: React.FC<Props> = ({
                         wordBreak: "break-all",
                       }}
                     >
-                      Delivery Instructions: {instructions}
+                      <Typography sx={{
+                                                  fontSize: { xs: "16px", lg: "18px" },
+                      }}>
+                        <b>Delivery Instructions:</b> {instructions}
+                      </Typography>
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -403,7 +427,7 @@ const OrderPage: React.FC<Props> = ({
                         }}
                         onClick={() => handleEditClick("instructions")}
                       >
-                        <EditIcon sx={{ color: "#ffffff" }} />
+                        <EditIcon sx={{ color: "#ffffff", fontSize: "20px" }} />
                       </IconButton>
                     </Typography>
                   </Box>
@@ -468,7 +492,11 @@ const OrderPage: React.FC<Props> = ({
                               fontSize: { xs: "16px", lg: "18px" },
                             }}
                           >
-                            Name: {metaData?.name}
+                            <Typography sx={{
+                                                        fontSize: { xs: "16px", lg: "18px" },
+                            }}>
+                              <b>Name:</b> {metaData?.name}
+                            </Typography>
                           </Typography>
                           <IconButton
                             sx={{
@@ -481,7 +509,9 @@ const OrderPage: React.FC<Props> = ({
                             }}
                             onClick={handleEditName}
                           >
-                            <EditIcon sx={{ color: "#ffffff" }} />
+                            <EditIcon
+                              sx={{ color: "#ffffff", fontSize: "20px" }}
+                            />
                           </IconButton>
                         </>
                       )}
@@ -500,11 +530,12 @@ const OrderPage: React.FC<Props> = ({
                         sx={{
                           color: "#1F2937",
                           paddingBottom: "4px",
-                          fontWeight: "bold",
+
                           fontSize: { xs: "16px", lg: "18px" },
                         }}
                       >
-                        Pickup Address: {kitchenMetaData?.kitchen?.address?.raw}
+                        <b>Pickup Address:</b>{" "}
+                        {kitchenMetaData?.kitchen?.address?.raw}
                       </Typography>
                     </Box>
 
@@ -520,7 +551,14 @@ const OrderPage: React.FC<Props> = ({
                         paddingBottom: "4px",
                       }}
                     >
-                      Pickup Time: {convertTo12Hour(pickupTime)}
+                      <Typography
+                        sx={{
+                          fontSize: { xs: "16px", lg: "18px" },
+                        }}
+                      >
+                        {" "}
+                        <b>Pickup Time:</b> {convertTo12Hour(pickupTime)}
+                      </Typography>
                       <IconButton
                         sx={{
                           background: "#F59E0B",
@@ -532,7 +570,7 @@ const OrderPage: React.FC<Props> = ({
                         }}
                         onClick={handlePickupTimeClick}
                       >
-                        <EditIcon sx={{ color: "#ffffff" }} />
+                        <EditIcon sx={{ color: "#ffffff", fontSize: "20px" }} />
                       </IconButton>
                     </Typography>
                   </Box>
@@ -697,14 +735,16 @@ const OrderPage: React.FC<Props> = ({
                             }}
                             onClick={handleEditName}
                           >
-                            <EditIcon sx={{ color: "#ffffff" }} />
+                            <EditIcon
+                              sx={{ color: "#ffffff", fontSize: "20px" }}
+                            />
                           </IconButton>
                         </>
                       )}
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mb: 3, cursor: "pointer" }}>
+                  {/* <Box sx={{ mb: 3, cursor: "pointer" }}>
                     <Typography
                       color="text.secondary"
                       sx={{
@@ -719,7 +759,7 @@ const OrderPage: React.FC<Props> = ({
                       please press <strong>&rdquo;I am here&rdquo;</strong> from
                       the My Orders section.
                     </Typography>
-                  </Box>
+                  </Box> */}
                 </Box>
               )}
             </Box>
@@ -950,9 +990,9 @@ const OrderPage: React.FC<Props> = ({
             value={instructions}
             onChange={handleInstructionsChange}
             placeholder="Enter your delivery instructions here"
-            sx={{ mt: 2,overflowX:"auto" }}
+            sx={{ mt: 2, overflowX: "auto" }}
             inputProps={{
-              maxLength:50,
+              maxLength: 50,
             }}
           />
           <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
