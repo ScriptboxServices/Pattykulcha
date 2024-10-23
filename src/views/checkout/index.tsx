@@ -35,7 +35,6 @@ const Checkout = () => {
       return err;
     }
   };
-
   useEffect(() => {
     const init = async () => {
       try {
