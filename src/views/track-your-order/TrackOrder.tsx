@@ -122,14 +122,14 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
               snapshot.data().delivery.status === false &&
               snapshot.data().delivery.message === "Preparing"
             ) {
-              setActiveStep(2);
+              setActiveStep(1);
             }
 
             if (
               snapshot.data().delivery.status === false &&
               snapshot.data().delivery.message === "Out For Delivery"
             ) {
-              setActiveStep(3);
+              setActiveStep(2);
             }
 
             if (
