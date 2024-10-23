@@ -713,9 +713,9 @@ const KitchenLocations = () => {
                 </Box>
 
                 {/* Right Edit Icon */}
-                <IconButton edge="end">
+                {/* <IconButton edge="end">
                   <EditIcon sx={{ color: "#757575" }} />
-                </IconButton>
+                </IconButton> */}
               </Box>
 
               {/* Custom Divider */}
@@ -800,14 +800,14 @@ const KitchenLocations = () => {
                       </Typography>
                     }
                   />
-                  <ListItemSecondaryAction>
+                  {/* <ListItemSecondaryAction>
                     <IconButton
                       edge="end"
                       onClick={() => handleEditClick(address.primary)}
                     >
                       <EditIcon sx={{ color: "#757575" }} />
                     </IconButton>
-                  </ListItemSecondaryAction>
+                  </ListItemSecondaryAction> */}
                 </ListItem>
 
                 {/* Divider after each address */}
@@ -822,13 +822,13 @@ const KitchenLocations = () => {
           </List>
 
           {/* Time Preference Section */}
-          <Typography
+          {/* <Typography
             variant="h5"
             sx={{ fontWeight: "bold", mt: 1, fontSize: "1.3em" }}
           >
             Time preference
-          </Typography>
-          <Box
+          </Typography> */}
+          {/* <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -867,7 +867,7 @@ const KitchenLocations = () => {
             >
               Schedule
             </Button>
-          </Box>
+          </Box> */}
         </Box>
       </Drawer>
     </Box>

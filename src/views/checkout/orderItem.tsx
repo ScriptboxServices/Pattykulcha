@@ -580,7 +580,12 @@ const OrderHome: React.FC<Props> = ({
                   onClick={() => {
 
                     if (!metaData?.address?.raw) {
-                      setError({
+                      if(isSmallScreen) {
+                        setDrawerOpen(true);
+                      } else {
+                        setDialogOpen(true);
+                      }
+                      setdialogError({
                         status: true,
                         message: "Before proceeding, please update address.",
                       });
@@ -588,7 +593,12 @@ const OrderHome: React.FC<Props> = ({
                     }
 
                     if (!metaData?.name) {
-                      setError({
+                      if(isSmallScreen) {
+                        setDrawerOpen(true);
+                      } else {
+                        setDialogOpen(true);
+                      }
+                      setdialogError({
                         status: true,
                         message: "A name is necessary to proceed.",
                       });
@@ -626,7 +636,12 @@ const OrderHome: React.FC<Props> = ({
                       }
                       if (kitchenMetaData?.data.distance.value > 5000 && kitchenMetaData?.data.distance.value < 10000) {
                         if (getKulchaQuantity() < 2) {
-                          setError({
+                          if(isSmallScreen) {
+                            setDrawerOpen(true);
+                          } else {
+                            setDialogOpen(true);
+                          }
+                          setdialogError({
                             status: true,
                             message:
                               "For deliveries between 5km and 10km, the minimum order is 2 Kulchas.",
@@ -646,7 +661,8 @@ const OrderHome: React.FC<Props> = ({
                             });
                           }
                           else{
-                            setError({
+                          setDialogOpen(true);
+                          setdialogError({
                               status: true,
                               message:
                                 "For deliveries over 10km, the minimum order is 3 Kulchas.",

@@ -204,7 +204,7 @@ const OrderPage: React.FC<Props> = ({
     setInstructions(event.target.value);
   };
 
-  const router=useRouter();
+  const router = useRouter();
 
   return (
     <>
@@ -236,8 +236,10 @@ const OrderPage: React.FC<Props> = ({
             <Box
               sx={{ width: { xs: "100%", md: "50%" }, mb: { xs: 4, md: 0 } }}
             >
-              <Link
-                href="/home"
+              {/* <Button
+                onClick={() => {
+                  router.back();
+                }}
                 underline="none"
                 sx={{ display: "flex", alignItems: "center", mb: 3 }}
               >
@@ -245,21 +247,17 @@ const OrderPage: React.FC<Props> = ({
                 <Typography
                   variant="body1"
                   sx={{ ml: 1, fontWeight: 600, color: "#162548" }}
-                  onClick={()=>{
-                    router.push("/cart")
-                  }}
                 >
-                  Back To Cart
+                  Back
                 </Typography>
-              </Link>
+              </Button> */}
 
               <Typography
                 variant="h3"
                 component="h1"
                 sx={{ fontWeight: 700, color: "#162548", mb: 1 }}
               >
-                YOUR
-                <br />
+                YOUR <br />
                 ORDER
               </Typography>
 
@@ -276,6 +274,8 @@ const OrderPage: React.FC<Props> = ({
                     px: { xs: 2, sm: 4 },
                     py: 1.5,
                     mr: 1,
+                    display:"flex",
+                    gap:"9px",
                     border: "none",
                     backgroundColor: "#F3F4F6",
                     color: "#4B5563",
@@ -297,11 +297,21 @@ const OrderPage: React.FC<Props> = ({
                   },
                 }}
               >
-                <ToggleButton value="delivery">
+                <ToggleButton
+                  value="delivery"
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <LocalShippingIcon sx={{ mr: 1 }} />
                   Delivery
                 </ToggleButton>
-                <ToggleButton value="pickup">
+                <ToggleButton
+                  value="pickup"
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <ShoppingBagIcon sx={{ mr: 1 }} />
                   Pickup
                 </ToggleButton>
@@ -950,9 +960,9 @@ const OrderPage: React.FC<Props> = ({
             value={instructions}
             onChange={handleInstructionsChange}
             placeholder="Enter your delivery instructions here"
-            sx={{ mt: 2,overflowX:"auto" }}
+            sx={{ mt: 2, overflowX: "auto" }}
             inputProps={{
-              maxLength:50,
+              maxLength: 50,
             }}
           />
           <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
