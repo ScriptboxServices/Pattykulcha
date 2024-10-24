@@ -40,11 +40,6 @@ const containerStyle = {
   height: "300px",
 };
 
-const initialCenter = {
-  lat: -3.745,
-  lng: -38.523,
-};
-
 const steps = ["Order", "Preparing", "Out for Delivery", "Delivered"];
 
 const CustomConnector = styled(StepConnector)(({ theme }) => ({
@@ -103,13 +98,6 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
   const [driver, setDriver] = useState<any>();
   const [activeStep, setActiveStep] = useState<number>(1);
   const [directionsResponse, setDirectionsResponse] = useState(null);
-  const [mapCenter, setMapCenter] = useState(initialCenter); // Added to handle dynamic center
-
-  useEffect(() => {
-    if (driver) {
-      setMapCenter({ lat: driver?.latlng.lat, lng: driver?.latlng.lng });
-    }
-  }, [driver]);
 
   useEffect(() => {
     const init = async () => {
@@ -150,10 +138,6 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
                 snapshot.forEach((doc) => {
                   const driverData = { ...doc.data() };
                   setDriver(driverData);
-                  setMapCenter({
-                    lat: driverData.latlng.lat,
-                    lng: driverData.latlng.lng,
-                  }); // Set driver location as center
                 });
               });
 
@@ -211,7 +195,10 @@ const TrackOrder = ({ orderId }: { orderId: string }) => {
             {isLoaded && order?.driverId && order?.delivery.status !== true ? (
               <GoogleMap
                 mapContainerStyle={containerStyle}
-                center={mapCenter} // Use dynamic center
+                center={{
+                  lat: order.address.latlng.lat || 0,
+                  lng: order.address.latlng.lng || 0,
+                }} // Use dynamic center
                 zoom={10}
                 onLoad={(map) => setMap(map)}
                 options={{

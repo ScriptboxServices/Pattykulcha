@@ -556,8 +556,8 @@ const DriverOrders: React.FC = () => {
                 height: "550px",
               }}
               center={{
-                lat: source.lat,
-                lng: source.lng,
+                lat: destination.lat,
+                lng: destination.lng,
               }}
               zoom={15}>
               {directionsResponse !== null && (
