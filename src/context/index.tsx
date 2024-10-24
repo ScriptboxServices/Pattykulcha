@@ -172,7 +172,7 @@ export const getUserMetaData = async (_id: string) => {
 };
 
 export const calculateGrandTotal = (carts: any[]) => {
-  let tax = 0
+  let taxSum = 0
   const grandTotal = carts?.reduce((acc, item) => {
     const { order } = item;
     const { kulcha, additional } = order;
@@ -181,11 +181,12 @@ export const calculateGrandTotal = (carts: any[]) => {
         acc +
         Number(value?.items?.[0]?.price) * Number(value?.items?.[0]?.quantity));
     }, Number(kulcha?.price) * Number(kulcha?.quantity));
-    tax = Number(total) * 0.13;
+    let tax = Number(total) * 0.13;
+    taxSum = taxSum + Number(total) * 0.13
     return (acc = acc + (Number(total) + Number(tax)));
   }, 0);
 
-  return {total :  Number(grandTotal).toFixed(2),tax : Number(tax).toFixed(2)};
+  return {total :  Number(grandTotal).toFixed(2),tax : Number(taxSum).toFixed(2)};
 };
 
 interface AuthProps {
