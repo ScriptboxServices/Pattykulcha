@@ -188,7 +188,6 @@ export const calculateGrandTotal = (carts: any[]) => {
 
   return {total :  Number(grandTotal).toFixed(2),tax : Number(taxSum).toFixed(2)};
 };
-
 interface AuthProps {
   children: ReactNode;
 }
